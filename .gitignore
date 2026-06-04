@@ -1,0 +1,21 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Local market data. Keep the repo lightweight and reproducible.
+data/
+results/
+dist/
+reports/figures/
+
+# Local planning / chat context.
+chat.md
+
+# OS/editor noise.
+.DS_Store
+.idea/
+.vscode/

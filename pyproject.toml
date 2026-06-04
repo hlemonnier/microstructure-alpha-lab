@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "microstructure-alpha-lab"
+version = "0.1.0"
+description = "Crypto microstructure alpha research tooling for quote, trade, depth, and L2 validation."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "Hugo Lemonnier" }]
+dependencies = []
+
+[project.optional-dependencies]
+research = [
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "pyarrow>=15",
+  "scikit-learn>=1.4",
+  "polars>=0.20",
+  "torch>=2.3",
+  "websockets>=12",
+  "xgboost>=2.0",
+]
+dev = [
+  "pytest>=8",
+  "ruff>=0.6",
+]
+cloud = [
+  "modal>=1.1.4",
+]
+
+[project.scripts]
+microstructure-alpha-lab = "lob_forge.cli:main"
+lob-forge = "lob_forge.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
