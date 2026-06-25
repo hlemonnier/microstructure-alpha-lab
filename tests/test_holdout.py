@@ -8,10 +8,12 @@ from lob_forge.cli import main as cli_main
 from lob_forge.holdout import (
     assert_no_holdout_leakage,
     build_holdout_manifest,
+    holdout_manifest_source_root,
     read_development_rows,
     read_holdout_rows,
     read_holdout_manifest,
     verify_holdout_manifest,
+    verify_holdout_manifest_file,
     write_development_csv,
     write_final_holdout_result,
     write_holdout_manifest,
@@ -124,6 +126,35 @@ def test_manifest_can_store_repository_relative_source_path(tmp_path: Path) -> N
         os.chdir(tmp_path)
         assert manifest.source_path == "features.csv"
         assert verify_holdout_manifest(manifest)
+    finally:
+        os.chdir(previous_cwd)
+
+
+def test_manifest_file_verification_resolves_source_path_from_manifest_ancestors(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    data_dir = repo / "examples" / "fixtures"
+    manifest_dir = repo / "artifacts" / "holdout_manifests"
+    data_dir.mkdir(parents=True)
+    manifest_dir.mkdir(parents=True)
+    data = data_dir / "features.csv"
+    manifest_path = manifest_dir / "holdout.json"
+    data.write_text("source_date,label\n2026-06-01,1\n")
+    manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-01"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+        source_root=repo,
+    )
+    write_holdout_manifest(manifest, manifest_path)
+
+    previous_cwd = Path.cwd()
+    try:
+        os.chdir(tmp_path)
+        assert not verify_holdout_manifest(read_holdout_manifest(manifest_path))
+        assert verify_holdout_manifest_file(manifest_path)
+        assert holdout_manifest_source_root(manifest_path) == repo.resolve()
     finally:
         os.chdir(previous_cwd)
 
@@ -295,3 +326,61 @@ def test_final_holdout_rule_cli_consumes_frozen_candidate_once(tmp_path: Path) -
     assert payload["metrics"]["rows"] == 1
     assert payload["metrics"]["stateful_simulator"] is True
     assert payload["candidate_sha256"] == payload["metrics"]["candidate_sha256"]
+
+
+def test_final_holdout_rule_cli_resolves_relative_manifest_source_outside_repo_root(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    data_dir = repo / "data"
+    manifest_dir = repo / "artifacts" / "holdout_manifests"
+    run_dir = tmp_path / "run"
+    data_dir.mkdir(parents=True)
+    manifest_dir.mkdir(parents=True)
+    run_dir.mkdir()
+    data = data_dir / "features.csv"
+    manifest_path = manifest_dir / "holdout.json"
+    candidate_path = run_dir / "candidate.json"
+    output_path = run_dir / "final_holdout.json"
+    data.write_text(
+        "source_date,label,microprice_deviation,bid,ask,future_bid,future_ask\n"
+        "2026-06-01,1,0.5,100.0,100.1,100.4,100.5\n"
+        "2026-06-02,-1,-0.5,100.0,100.1,99.6,99.7\n"
+    )
+    manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-02"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+        source_root=repo,
+    )
+    write_holdout_manifest(manifest, manifest_path)
+    candidate_path.write_text('{"feature":"microprice_deviation","threshold":0.1,"taker_fee_bps":0.0}\n')
+
+    previous_cwd = Path.cwd()
+    output = io.StringIO()
+    try:
+        os.chdir(run_dir)
+        with redirect_stdout(output):
+            code = cli_main(
+                [
+                    "final-holdout-rule",
+                    str(data),
+                    "--holdout-manifest",
+                    str(manifest_path),
+                    "--candidate-json",
+                    str(candidate_path),
+                    "--output",
+                    str(output_path),
+                    "--lock-dir",
+                    str(run_dir / "locks"),
+                    "--explicit-final-evaluation",
+                ]
+            )
+    finally:
+        os.chdir(previous_cwd)
+
+    assert code == 0
+    assert output.getvalue().startswith("final_holdout_result=")
+    payload = json.loads(output_path.read_text())
+    assert payload["manifest"]["source_path"] == "data/features.csv"
+    assert payload["metrics"]["stateful_simulator"] is True

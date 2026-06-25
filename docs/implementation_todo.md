@@ -73,6 +73,7 @@ This checklist tracks every missing item found during the project audit. Check a
 ## Validation And Statistics
 
 - [x] Add immutable final holdout workflow with manifest verification, candidate hashing, and duplicate-evaluation locks.
+- [x] Make holdout manifest verification resolve repository-relative source paths from the manifest location, not only from the current working directory.
 - [ ] Run and check in the declared immutable final holdout result artifact for the full selected candidate.
 - [x] Add dependence-aware intervals with explicit inference grain; reduced E2E intervals are ledger-derived, while current walk-forward CSV audits remain fold-summary audits.
 - [x] Add Bayesian posterior scoring: `P(mu > 0)`, `P(mu > cost_margin)`, and posterior Sharpe checks.

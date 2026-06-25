@@ -7,6 +7,7 @@ import re
 import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Iterator
 
 
 FORBIDDEN_GIT_SENTINELS = {"", "no" + "-git-commit"}
@@ -93,7 +94,7 @@ def read_holdout_manifest(path: Path | str) -> HoldoutManifest:
     return HoldoutManifest(**payload)
 
 
-def verify_holdout_manifest(manifest: HoldoutManifest) -> bool:
+def verify_holdout_manifest(manifest: HoldoutManifest, *, source_root: Path | str | None = None) -> bool:
     if manifest.git_commit in FORBIDDEN_GIT_SENTINELS:
         return False
     if not GIT_COMMIT_RE.fullmatch(manifest.git_commit):
@@ -102,8 +103,26 @@ def verify_holdout_manifest(manifest: HoldoutManifest) -> bool:
         return False
     if not manifest.dataset_fingerprint:
         return False
-    source_path = Path(manifest.source_path)
+    source_path = _resolve_manifest_source_path(manifest, source_root=source_root)
     return source_path.exists() and sha256_file(source_path) == manifest.source_sha256 == manifest.dataset_fingerprint
+
+
+def verify_holdout_manifest_file(path: Path | str) -> bool:
+    manifest_path = Path(path)
+    manifest = read_holdout_manifest(manifest_path)
+    for source_root in _candidate_manifest_source_roots(manifest_path):
+        if verify_holdout_manifest(manifest, source_root=source_root):
+            return True
+    return False
+
+
+def holdout_manifest_source_root(path: Path | str) -> Path | None:
+    manifest_path = Path(path)
+    manifest = read_holdout_manifest(manifest_path)
+    for source_root in _candidate_manifest_source_roots(manifest_path):
+        if verify_holdout_manifest(manifest, source_root=source_root):
+            return source_root
+    return None
 
 
 def assert_holdout_source_matches(feature_csv: Path | str, manifest: HoldoutManifest) -> None:
@@ -205,10 +224,11 @@ def write_final_holdout_result(
     explicit_final_evaluation: bool,
     candidate_sha256: str | None = None,
     lock_dir: Path | str | None = None,
+    source_root: Path | str | None = None,
 ) -> Path:
     if not explicit_final_evaluation:
         raise PermissionError("final holdout evaluation requires explicit_final_evaluation=True")
-    if not verify_holdout_manifest(manifest):
+    if not verify_holdout_manifest(manifest, source_root=source_root):
         raise ValueError("holdout manifest verification failed")
     if candidate_sha256 is not None and not _is_sha256(candidate_sha256):
         raise ValueError("candidate_sha256 must be a SHA-256 digest")
@@ -291,6 +311,25 @@ def _manifest_source_path(path: Path, *, source_root: Path | str | None) -> str:
         return resolved_path.relative_to(root.resolve()).as_posix()
     except ValueError:
         return str(resolved_path)
+
+
+def _resolve_manifest_source_path(manifest: HoldoutManifest, *, source_root: Path | str | None) -> Path:
+    source_path = Path(manifest.source_path)
+    if source_path.is_absolute():
+        return source_path
+    root = Path.cwd() if source_root is None else Path(source_root)
+    return root / source_path
+
+
+def _candidate_manifest_source_roots(manifest_path: Path) -> Iterator[Path]:
+    seen: set[Path] = set()
+    candidates = [Path.cwd().resolve(), manifest_path.parent.resolve()]
+    candidates.extend(manifest_path.parent.resolve().parents)
+    for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        yield candidate
 
 
 def _date_range(path: Path, split_column: str) -> tuple[str, str]:

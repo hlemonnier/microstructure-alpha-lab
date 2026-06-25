@@ -70,9 +70,10 @@ from lob_forge.fill_diagnostics import (
 from lob_forge.holdout import (
     build_holdout_manifest,
     canonical_json_sha256,
+    holdout_manifest_source_root,
     read_holdout_manifest,
     read_holdout_rows,
-    verify_holdout_manifest,
+    verify_holdout_manifest_file,
     write_development_csv,
     write_final_holdout_result,
     write_holdout_manifest,
@@ -993,7 +994,7 @@ def _add_holdout_manifest_arg(parser: argparse.ArgumentParser) -> None:
 @contextmanager
 def _development_feature_path(args: argparse.Namespace) -> Iterator[Path]:
     manifest = read_holdout_manifest(args.holdout_manifest)
-    if not verify_holdout_manifest(manifest):
+    if not verify_holdout_manifest_file(args.holdout_manifest):
         raise ValueError("holdout manifest verification failed; create an official manifest from a Git checkout")
     with tempfile.TemporaryDirectory(prefix="lob_forge_development_") as tmpdir:
         result = write_development_csv(
@@ -1626,6 +1627,9 @@ def _cmd_regime(args: argparse.Namespace) -> int:
 
 
 def _cmd_final_holdout_rule(args: argparse.Namespace) -> int:
+    source_root = holdout_manifest_source_root(args.holdout_manifest)
+    if source_root is None:
+        raise ValueError("holdout manifest verification failed; create an official manifest from a Git checkout")
     manifest = read_holdout_manifest(args.holdout_manifest)
     candidate_path = Path(args.candidate_json)
     candidate = json.loads(candidate_path.read_text())
@@ -1740,6 +1744,7 @@ def _cmd_final_holdout_rule(args: argparse.Namespace) -> int:
         explicit_final_evaluation=args.explicit_final_evaluation,
         candidate_sha256=candidate_sha256,
         lock_dir=Path(args.lock_dir),
+        source_root=source_root,
     )
     print(f"final_holdout_result={output}")
     return 0
