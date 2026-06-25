@@ -31,17 +31,25 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources \
    - Use for: cross-checking passive fill behavior on OKX instruments such as `BTC-USDT-SWAP`.
    - Import fields: `clOrdId -> decision_id`, `fillPx -> avgPrice`, `fillSz -> cumExecQty`, `fillPnl -> realizedPnl`, `instId -> symbol`.
 
-3. Binance Spot Testnet
+3. Binance USD-M Futures Testnet
+   - Official docs: <https://developers.binance.com/docs/derivatives/usds-margined-futures/general-info>
+   - Trading endpoint docs: <https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api>
+   - User data stream docs: <https://developers.binance.com/docs/derivatives/usds-margined-futures/user-data-streams>
+   - Why third: it is a free testnet path for USD-M futures orders and user-data order updates, so it is a better project fallback than the spot-only testnet when Bybit/OKX demo access is blocked.
+   - Use for: BTCUSDT/ETHUSDT futures testnet order-event plumbing with `newClientOrderId` mapped to `decision_id`.
+   - Import fields: `ORDER_TRADE_UPDATE.o.c -> decision_id`, `ORDER_TRADE_UPDATE.o.L -> avgPrice`, `ORDER_TRADE_UPDATE.o.l -> cumExecQty`, `ORDER_TRADE_UPDATE.o.rp -> realizedPnl`, `ORDER_TRADE_UPDATE.o.s -> symbol`.
+
+4. Binance Spot Testnet
    - Official docs: <https://developers.binance.com/docs/binance-spot-api-docs/testnet/user-data-stream>
    - Trading endpoint docs: <https://developers.binance.com/docs/binance-spot-api-docs/testnet/rest-api/trading-endpoints>
-   - Why third: it is free and simple for spot-only order-event capture. The `executionReport` stream carries client order IDs plus last fill price/quantity, and FULL order responses include a `fills` array.
+   - Why fourth: it is free and simple for spot-only order-event capture. The `executionReport` stream carries client order IDs plus last fill price/quantity, and FULL order responses include a `fills` array.
    - Use for: spot-only sanity checks and importer regression data, not as the main venue for derivatives or deep passive queue claims.
    - Import fields: `c/clientOrderId -> decision_id`, `L/fills[].price -> avgPrice`, `l/fills[].qty -> cumExecQty`, `s/symbol -> symbol`.
 
-4. Alpaca Paper
+5. Alpaca Paper
    - Official docs: <https://docs.alpaca.markets/us/docs/paper-trading>
    - Trade updates docs: <https://docs.alpaca.markets/us/docs/websocket-streaming>
-   - Why fourth: it is free and API-friendly, but it is a broker simulator rather than a crypto exchange L2 venue. Alpaca documents that paper trading does not account for order queue position, market impact, information leakage, or latency slippage.
+   - Why fifth: it is free and API-friendly, but it is a broker simulator rather than a crypto exchange L2 venue. Alpaca documents that paper trading does not account for order queue position, market impact, information leakage, or latency slippage.
    - Use for: generic order lifecycle and importer checks. Treat it as weak evidence for crypto microstructure execution quality.
    - Import fields: `client_order_id -> decision_id`, `price/filled_avg_price -> avgPrice`, `qty/filled_qty -> cumExecQty`, `symbol -> symbol`.
 
@@ -51,7 +59,8 @@ Generate a shadow fill template first. The `client_order_id` column is intention
 
 - Bybit `orderLinkId`
 - OKX `clOrdId`
-- Binance `newClientOrderId`
+- Binance USD-M Futures Testnet `newClientOrderId`, visible as `ORDER_TRADE_UPDATE.o.c`
+- Binance Spot Testnet `newClientOrderId`, visible as `executionReport.c`
 - Alpaca `client_order_id`
 
 ```bash
@@ -70,7 +79,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
   --output results/shadow_validation/observed_fills.csv
 ```
 
-Supported providers are `bybit`, `okx`, `binance`, and `alpaca`. The normalizer writes the canonical observed-fill columns:
+Supported providers are `bybit`, `okx`, `binance`, and `alpaca`. The Binance normalizer accepts both Spot Testnet `executionReport`/FULL order payloads and USD-M Futures Testnet `ORDER_TRADE_UPDATE` payloads. The normalizer writes the canonical observed-fill columns:
 
 ```text
 decision_id,client_order_id,venue,symbol,avgPrice,cumExecQty,realizedPnl,notes
@@ -98,8 +107,10 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli validate-shadow-fills \
 - Do not hand-edit fills into existence. Keep the raw provider response next to the normalized CSV.
 - Positive fill size requires a fill price.
 - Bybit and OKX transaction-history exports usually contain only actual fills; unfilled paper orders require an explicit terminal no-fill row if they should count as observed no-fill evidence.
+- Binance USD-M Futures Testnet `ORDER_TRADE_UPDATE` rows are converted when they contain positive last-fill quantity or terminal unfilled status.
 - Binance `executionReport` rows are only converted when they contain a positive last execution quantity or a terminal unfilled status.
 - Alpaca is useful for API plumbing but weak for queue-position inference; do not use it as the main argument that passive crypto execution is validated.
+- Coinbase Advanced Trade sandbox is not counted here because its sandbox responses are static and mocked, not real paper fills.
 
 ## Minimal Local Definition Of Done
 

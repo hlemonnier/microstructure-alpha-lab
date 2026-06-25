@@ -754,6 +754,9 @@ def _normalize_okx_fill_row(row: Mapping[str, Any]) -> dict[str, str] | None:
 
 def _normalize_binance_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
     record = _nested_mapping(row, "event") or row
+    futures_order_update = _nested_mapping(record, "o")
+    if futures_order_update is not None and _first_raw_value(record, ("e",)) == "ORDER_TRADE_UPDATE":
+        return _normalize_binance_futures_order_trade_update(record, futures_order_update)
     if isinstance(record.get("fills"), list):
         parent_decision_id = _first_raw_value(record, ("clientOrderId", "newClientOrderId", "c", "orderId"))
         symbol = _first_raw_value(record, ("symbol", "s"))
@@ -824,6 +827,66 @@ def _normalize_binance_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
                 size="0",
                 realized_pnl=None,
                 notes=_provider_notes(record, ("E", "T", "i", "x", "X")),
+            )
+        ]
+    return []
+
+
+def _normalize_binance_futures_order_trade_update(
+    event: Mapping[str, Any], order: Mapping[str, Any]
+) -> list[dict[str, str]]:
+    decision_id = _first_raw_value(order, ("c", "clientOrderId", "newClientOrderId", "orderId", "i"))
+    if not decision_id:
+        return []
+    status = (_first_raw_value(order, ("X", "status")) or "").upper()
+    exec_type = (_first_raw_value(order, ("x", "executionType")) or "").upper()
+    last_size = _first_raw_value(order, ("l", "lastExecutedQty"))
+    last_price = _first_raw_value(order, ("L", "lastExecutedPrice"))
+    notes = _provider_notes(event, ("e", "E", "T")) + _prefixed_notes(
+        order, "order", ("i", "t", "T", "x", "X", "m", "rp", "n", "N")
+    )
+    if _optional_float_any(last_size) not in {None, 0.0}:
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="binance",
+                symbol=_first_raw_value(order, ("s", "symbol")),
+                price=last_price,
+                size=last_size,
+                realized_pnl=_first_raw_value(order, ("rp", "realizedPnl")),
+                notes=notes,
+            )
+        ]
+
+    executed_size = _first_raw_value(order, ("z", "executedQty"))
+    executed_qty = _optional_float_any(executed_size)
+    if executed_qty is not None and executed_qty > 0 and exec_type != "TRADE":
+        avg_price = _first_raw_value(order, ("ap", "avgPrice"))
+        quote_value = _optional_float_any(_first_raw_value(order, ("Z", "cumQuote", "cumQuoteQty")))
+        if not avg_price and quote_value is not None:
+            avg_price = _format_optional(quote_value / executed_qty)
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="binance",
+                symbol=_first_raw_value(order, ("s", "symbol")),
+                price=avg_price or last_price,
+                size=executed_size,
+                realized_pnl=_first_raw_value(order, ("rp", "realizedPnl")),
+                notes=notes,
+            )
+        ]
+
+    if _is_terminal_unfilled(status):
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="binance",
+                symbol=_first_raw_value(order, ("s", "symbol")),
+                price=None,
+                size="0",
+                realized_pnl=_first_raw_value(order, ("rp", "realizedPnl")),
+                notes=notes,
             )
         ]
     return []
@@ -912,7 +975,21 @@ def _normalized_fill_row(
 
 
 def _dedupe_key(provider: str, row: Mapping[str, str]) -> str:
-    identity_fields = {"execId", "orderId", "tradeId", "billId", "execution_id", "I", "t", "i", "id", "fill.tradeId"}
+    identity_fields = {
+        "execId",
+        "orderId",
+        "tradeId",
+        "billId",
+        "execution_id",
+        "I",
+        "t",
+        "i",
+        "id",
+        "fill.tradeId",
+        "order.i",
+        "order.t",
+        "order.T",
+    }
     note_identity = "|".join(
         part for part in row.get("notes", "").split(";") if part.split("=", 1)[0] in identity_fields
     )

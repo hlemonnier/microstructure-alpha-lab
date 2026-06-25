@@ -17,7 +17,11 @@ from lob_forge.local_api_sources import (
 def test_paper_fill_sources_prioritize_crypto_demo_venues() -> None:
     sources = list_local_api_sources(data_gap=PAPER_FILL_GAP)
 
-    assert [source.source_id for source in sources[:2]] == ["bybit_demo_fills", "okx_demo_fills"]
+    assert [source.source_id for source in sources[:3]] == [
+        "bybit_demo_fills",
+        "okx_demo_fills",
+        "binance_usdm_futures_testnet_fills",
+    ]
     assert sources[0].id_field == "orderLinkId"
     assert "execPrice" in sources[0].fill_fields
     assert "normalize-observed-fills --provider bybit" in sources[0].local_commands
@@ -48,6 +52,7 @@ def test_local_api_sources_csv_includes_credentials_and_commands() -> None:
     csv_text = format_local_api_sources_csv(list_local_api_sources(data_gap=PAPER_FILL_GAP))
 
     assert "BYBIT_DEMO_API_KEY BYBIT_DEMO_API_SECRET" in csv_text
+    assert "BINANCE_FUTURES_TESTNET_API_KEY BINANCE_FUTURES_TESTNET_API_SECRET" in csv_text
     assert "normalize-observed-fills --provider okx" in csv_text
     assert "minimum_local_proof" in csv_text
 
@@ -57,6 +62,7 @@ def test_local_api_sources_filter_by_evidence_gate() -> None:
     l2_sources = list_local_api_sources(evidence_gate=SEQUENCE_MODEL_GATE)
 
     assert [source.source_id for source in fill_sources[:2]] == ["bybit_demo_fills", "okx_demo_fills"]
+    assert "binance_usdm_futures_testnet_fills" in {source.source_id for source in fill_sources}
     assert "binance_public_archives" not in {source.source_id for source in fill_sources}
     assert {source.data_gap for source in l2_sources} == {TRUE_L2_SMOKE_GAP}
     assert "coinbase_public_level2" in {source.source_id for source in l2_sources}

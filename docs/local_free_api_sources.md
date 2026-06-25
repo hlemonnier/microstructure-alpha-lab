@@ -24,14 +24,15 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources --gap true_l2_
 | --- | --- | --- | --- |
 | 1 | paper/live fills | Bybit Demo Trading | Closest fit for BTCUSDT/ETHUSDT crypto demo fills; `orderLinkId` maps directly to `decision_id`; trade history returns `execPrice`, `execQty`, `execTime`, `isMaker`, and `execType`. |
 | 2 | paper/live fills | OKX Demo Trading | Good cross-venue check; demo mode uses the normal API surface with simulated-trading credentials/header; transaction details expose `clOrdId`, `fillPx`, `fillSz`, and `fillPnl`. |
-| 3 | paper/live fills | Binance Spot Testnet | Useful free spot-only order event plumbing through `executionReport` and FULL order `fills`; not a derivatives queue source. |
-| 4 | paper/live fills | Alpaca Paper | Useful importer/order-lifecycle fallback, but weak evidence for crypto queue behavior because paper fills omit queue position, market impact, information leakage, and latency slippage. |
-| 5 | true-L2 smoke | OKX Historical Market Data | Free public downloads include high-resolution L2 order book data from March 2023 onward. Use row caps locally. |
-| 6 | true-L2 smoke | Bybit historical orderBook | Public history-data orderBook archives plus V5 order-book fields `u`, `seq`, and `cts` make it useful for replay validation. |
-| 7 | true-L2 smoke | Coinbase public level2 WebSocket | No-key live L2 capture path already supported by `live-l2-capture`; useful when public historical links are missing. |
-| 8 | true-L2 smoke | Tardis.dev CSV samples | Freemium first-day-of-month CSV samples need no API key and are useful as a cross-vendor schema sanity corpus. |
-| 9 | true-L2 smoke | Crypto Lake free samples | Extra 20-level book/trade sample corpus for parser and tensor sanity checks; inspect coverage before using it as study evidence. |
-| 10 | quote/trade/depth-band | Binance Public Data Archives | Free daily/monthly public archives are still the best local classical feature source, but `bookDepth` is aggregate percentage-band depth, not full L2. |
+| 3 | paper/live fills | Binance USD-M Futures Testnet | Better fallback than Spot Testnet for this project; testnet REST/WebSocket endpoints support USD-M futures orders and `ORDER_TRADE_UPDATE` user-data events that can be normalized with the Binance importer. |
+| 4 | paper/live fills | Binance Spot Testnet | Useful free spot-only order event plumbing through `executionReport` and FULL order `fills`; not a derivatives queue source. |
+| 5 | paper/live fills | Alpaca Paper | Useful importer/order-lifecycle fallback, but weak evidence for crypto queue behavior because paper fills omit queue position, market impact, information leakage, and latency slippage. |
+| 6 | true-L2 smoke | OKX Historical Market Data | Free public downloads include high-resolution L2 order book data from March 2023 onward. Use row caps locally. |
+| 7 | true-L2 smoke | Bybit historical orderBook | Public history-data orderBook archives plus V5 order-book fields `u`, `seq`, and `cts` make it useful for replay validation. |
+| 8 | true-L2 smoke | Coinbase public level2 WebSocket | No-key live L2 capture path already supported by `live-l2-capture`; useful when public historical links are missing. |
+| 9 | true-L2 smoke | Tardis.dev CSV samples | Freemium first-day-of-month CSV samples need no API key and are useful as a cross-vendor schema sanity corpus. |
+| 10 | true-L2 smoke | Crypto Lake free samples | Extra 20-level book/trade sample corpus for parser and tensor sanity checks; inspect coverage before using it as study evidence. |
+| 11 | quote/trade/depth-band | Binance Public Data Archives | Free daily/monthly public archives are still the best local classical feature source, but `bookDepth` is aggregate percentage-depth bands, not full L2. |
 
 ## Gate Mapping
 
@@ -60,7 +61,8 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli observed-fill-template \
 ```text
 Bybit:  orderLinkId
 OKX:    clOrdId
-Binance newClientOrderId
+Binance USD-M Futures Testnet: newClientOrderId, returned as ORDER_TRADE_UPDATE.o.c
+Binance Spot Testnet: newClientOrderId / executionReport.c
 Alpaca: client_order_id
 ```
 
@@ -147,6 +149,11 @@ The laptop definition of done is not "download everything." It is:
 - `make verify-evidence-gates` keeps true-L2/model-readiness gates green;
 - the full 60-90 day cloud gate stays honestly red until the high-RAM job finishes.
 
+## Low-Signal Or Rejected Sources
+
+- Coinbase Advanced Trade sandbox is useful for static response-shape tests only. Its official sandbox responses are mocked and pre-defined, so it cannot satisfy real shadow/paper fill validation.
+- Generic broker paper trading is lower priority than Bybit, OKX, or Binance futures testnet because this project needs crypto exchange-style maker/taker and client-order-id observations.
+
 ## Current Call
 
-Use Bybit Demo Trading first for the observed-fill gap, then OKX Demo Trading as a cross-venue check. Use OKX or Bybit public historical L2 first for local smoke imports, Coinbase live level2 when historical download discovery fails, and Tardis.dev or Crypto Lake as sample sanity corpora. Use Binance Public Data for classical quote/trade/depth-band experiments, not for full L2 replay claims.
+Use Bybit Demo Trading first for the observed-fill gap, then OKX Demo Trading as a cross-venue check. If either account path is blocked, use Binance USD-M Futures Testnet before Spot Testnet because it matches the BTCUSDT/ETHUSDT futures research surface more closely. Use OKX or Bybit public historical L2 first for local smoke imports, Coinbase live level2 when historical download discovery fails, and Tardis.dev or Crypto Lake as sample sanity corpora. Use Binance Public Data for classical quote/trade/depth-band experiments, not for full L2 replay claims.

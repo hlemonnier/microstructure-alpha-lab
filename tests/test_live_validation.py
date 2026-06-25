@@ -564,6 +564,86 @@ def test_normalize_binance_testnet_stream_and_full_order_payloads(tmp_path: Path
     assert rows[2]["cumExecQty"] == "0"
 
 
+def test_normalize_binance_usdm_futures_order_trade_updates(tmp_path: Path) -> None:
+    raw_path = tmp_path / "binance_futures_events.jsonl"
+    observed_path = tmp_path / "observed.csv"
+    raw_path.write_text(
+        "\n".join(
+            [
+                json.dumps(
+                    {
+                        "event": {
+                            "e": "ORDER_TRADE_UPDATE",
+                            "E": 1700000000001,
+                            "T": 1700000000000,
+                            "o": {
+                                "s": "BTCUSDT",
+                                "c": "d1",
+                                "S": "BUY",
+                                "o": "LIMIT",
+                                "q": "0.010",
+                                "p": "65000",
+                                "ap": "65001",
+                                "x": "TRADE",
+                                "X": "PARTIALLY_FILLED",
+                                "i": 123456,
+                                "l": "0.004",
+                                "z": "0.004",
+                                "L": "65001",
+                                "T": 1700000000000,
+                                "t": 987,
+                                "m": True,
+                                "rp": "0.12",
+                            },
+                        }
+                    }
+                ),
+                json.dumps(
+                    {
+                        "event": {
+                            "e": "ORDER_TRADE_UPDATE",
+                            "E": 1700000000101,
+                            "T": 1700000000100,
+                            "o": {
+                                "s": "ETHUSDT",
+                                "c": "d2",
+                                "S": "SELL",
+                                "o": "LIMIT",
+                                "q": "0.10",
+                                "p": "3200",
+                                "x": "CANCELED",
+                                "X": "CANCELED",
+                                "i": 123457,
+                                "l": "0",
+                                "z": "0",
+                                "L": "0",
+                                "T": 1700000000100,
+                                "t": 0,
+                                "m": False,
+                                "rp": "0",
+                            },
+                        }
+                    }
+                ),
+            ]
+        )
+    )
+
+    report = normalize_observed_fills(provider="binance", input_path=raw_path, output_path=observed_path)
+    rows = list(csv.DictReader(observed_path.open()))
+
+    assert report.output_rows == 2
+    assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["symbol"] == "BTCUSDT"
+    assert rows[0]["avgPrice"] == "65001"
+    assert rows[0]["cumExecQty"] == "0.004"
+    assert rows[0]["realizedPnl"] == "0.12"
+    assert "order.t=987" in rows[0]["notes"]
+    assert rows[1]["decision_id"] == "d2"
+    assert rows[1]["avgPrice"] == ""
+    assert rows[1]["cumExecQty"] == "0"
+
+
 def test_normalize_alpaca_paper_trade_updates(tmp_path: Path) -> None:
     raw_path = tmp_path / "alpaca_events.json"
     observed_path = tmp_path / "observed.csv"
