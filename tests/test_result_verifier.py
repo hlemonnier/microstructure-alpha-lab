@@ -3,11 +3,14 @@ from pathlib import Path
 from lob_forge.result_verifier import verify_result_artifacts
 
 
+FIXTURE_GIT_REV = "a" * 40
+
+
 def test_result_verifier_accepts_rejected_audit_with_reason(tmp_path: Path) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
         tmp_path / "experiment_ledger.jsonl",
-        git_rev="abc1234",
+        git_rev=FIXTURE_GIT_REV,
         command="python3 -m lob_forge.cli walk-forward data.csv --holdout-manifest manifest.json",
         holdout_manifest_path="manifest.json",
         holdout_manifest_sha256="a" * 64,
@@ -28,7 +31,7 @@ def test_result_verifier_rejects_missing_reason(tmp_path: Path) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
         tmp_path / "experiment_ledger.jsonl",
-        git_rev="abc1234",
+        git_rev=FIXTURE_GIT_REV,
         command="python3 -m lob_forge.cli walk-forward data.csv --holdout-manifest manifest.json",
         holdout_manifest_path="manifest.json",
         holdout_manifest_sha256="a" * 64,
@@ -73,7 +76,7 @@ def test_result_verifier_rejects_duplicate_experiment_ids(tmp_path: Path) -> Non
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
         tmp_path / "experiment_ledger.jsonl",
-        git_rev="abc1234",
+        git_rev=FIXTURE_GIT_REV,
         command="python3 -m lob_forge.cli fill-diagnostics data.csv",
         holdout_manifest_path="",
         holdout_manifest_sha256="",
@@ -90,6 +93,27 @@ def test_result_verifier_rejects_duplicate_experiment_ids(tmp_path: Path) -> Non
 
     assert not report.passed
     assert any("duplicate experiment_id" in error for error in report.errors)
+
+
+def test_result_verifier_rejects_unresolved_short_git_rev(tmp_path: Path) -> None:
+    (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
+    _write_ledger(
+        tmp_path / "experiment_ledger.jsonl",
+        git_rev="0000000",
+        command="python3 -m lob_forge.cli fill-diagnostics data.csv",
+        holdout_manifest_path="",
+        holdout_manifest_sha256="",
+    )
+    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
+    (tmp_path / "pvalue_corrections.csv").write_text(
+        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
+    )
+    (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
+
+    report = verify_result_artifacts(tmp_path)
+
+    assert not report.passed
+    assert any("invalid git_rev '0000000'" in error for error in report.errors)
 
 
 def test_result_verifier_study_mode_does_not_require_ledger(tmp_path: Path) -> None:

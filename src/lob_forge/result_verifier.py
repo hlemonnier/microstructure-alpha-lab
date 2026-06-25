@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import shlex
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -30,6 +32,7 @@ INVALID_GIT_REVS = {
     "none",
     "null",
 }
+GIT_REV_RE = re.compile(r"^[0-9a-fA-F]{7,64}$")
 
 REQUIRED_RESULT_FILES = (
     "hypotheses.jsonl",
@@ -177,7 +180,7 @@ def _verify_experiment_ledger(path: Path) -> list[str]:
             errors.append(f"{path.name}:{line_number} {experiment_id}: duplicate experiment_id")
         seen_experiment_ids.add(experiment_id)
         git_rev = str(row.get("git_rev") or "").strip()
-        if git_rev.lower() in INVALID_GIT_REVS:
+        if not _is_valid_git_rev(git_rev):
             errors.append(f"{path.name}:{line_number} {experiment_id}: invalid git_rev {git_rev!r}")
         command = str(row.get("command") or "")
         if not _uses_gated_cli_command(command):
@@ -225,6 +228,29 @@ def _command_tokens(command: str) -> list[str]:
 
 def _is_sha256(value: str) -> bool:
     return len(value) == 64 and all(char in "0123456789abcdefABCDEF" for char in value)
+
+
+def _is_valid_git_rev(value: str) -> bool:
+    if value.lower() in INVALID_GIT_REVS:
+        return False
+    if not GIT_REV_RE.fullmatch(value):
+        return False
+    if len(value) >= 40:
+        return True
+    return _git_rev_resolves(value)
+
+
+def _git_rev_resolves(value: str) -> bool:
+    try:
+        subprocess.run(
+            ["git", "cat-file", "-e", f"{value}^{{commit}}"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return False
+    return True
 
 
 if __name__ == "__main__":
