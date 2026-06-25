@@ -57,4 +57,4 @@ def test_local16_plan_only_stays_memory_scaled_without_confirmation(tmp_path: Pa
     assert result.returncode == 0
     assert "runtime_memory_limit_gb=8" in result.stdout
     assert "with_book_depth=0" in result.stdout
-    assert "max_quote_buckets=\"3600\"" in result.stdout
+    assert 'max_quote_buckets="3600"' in result.stdout

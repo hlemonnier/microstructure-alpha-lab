@@ -6,6 +6,12 @@ cd "$ROOT_DIR"
 
 PYTHONPATH="${PYTHONPATH:-src}"
 export PYTHONPATH
+if [[ -z "${PYTHON_BIN:-}" && -x ".venv/bin/python" ]]; then
+  PYTHON_BIN=".venv/bin/python"
+else
+  PYTHON_BIN="${PYTHON_BIN:-python3}"
+fi
+source scripts/holdout_manifest.sh
 
 RESULT_DIR="${RESULT_DIR:-results/expected_edge_60day_20230516_20230714}"
 PLAN_PATH="${PLAN_PATH:-$RESULT_DIR/run_plan.json}"
@@ -117,6 +123,7 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
     result_tmp="$result.tmp.$$"
     audit_tmp="$audit.tmp.$$"
     python3 -m lob_forge.cli edge-walk-forward "$combined" \
+      --holdout-manifest "$(holdout_manifest_for "$combined")" \
       --train-size "$TRAIN_SIZE" \
       --validation-size "$VALIDATION_SIZE" \
       --test-size "$TEST_SIZE" \

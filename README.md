@@ -1,108 +1,73 @@
 # Microstructure Alpha Lab
 
-Research stack for testing short-horizon crypto microstructure signals under realistic validation, cost, latency, and execution assumptions.
+Reproducible crypto microstructure research stack for the question:
 
-The project starts from Binance Vision USD-M futures archives and treats the core question as an empirical one:
+> Does public crypto market microstructure data contain short-horizon predictive information that remains executable after causal timing, fees, latency, slippage, available liquidity, inventory constraints, adverse selection, and model-selection bias?
 
-> Do quote, trade-flow, and depth-band features contain a signal that still has value after walk-forward validation, fees, spread, slippage, and latency?
+The current evidence should be read conservatively. The repository supports causal feature generation, validation-only model selection, frozen holdout manifests, stateful execution simulation, dependence-aware statistics, true-L2 replay checks, gated neural smoke paths with checkpoints/prediction exports, and a small C++ replay component. It does not claim executable alpha on the available local artifacts.
 
-This is not a trading bot. It is a reproducible research workflow for market-data ingestion, feature engineering, baseline modeling, expected-edge analysis, L2 replay checks, passive-fill diagnostics, and cloud-scale validation.
+## What Is Implemented
 
-## What Is Inside
+- Causal event-time feature construction with explicit decision, entry, and exit timestamps.
+- Chronological and purged walk-forward protocols with runtime guards against selecting by test metrics.
+- Mandatory holdout manifests for CLI research/evidence commands; development runs materialize a content-hash-checked CSV with declared holdout rows physically removed.
+- Stateful execution simulation with cash, inventory, equity, maker/taker fills, partial liquidity, fees, latency, expiry, position/leverage limits, ledgers, and a kill switch.
+- Dependence-aware inference helpers: HAC/Newey-West, day-level bootstrap, moving/stationary block bootstrap, Sharpe-like and break-even-cost intervals.
+- True-L2 schema, replay validation, normalized tensor path, TCN/Transformer CPU smoke tests with class weighting, early stopping, checkpoints, calibration metrics, prediction exports, stateful economic smoke fields, and a compact C++ L2 replay equivalence test.
 
-- Binance Vision archive download, schema inspection, and checksum-aware data handling.
-- Quote/trade/depth-band feature generation for BTCUSDT and ETHUSDT USD-M futures.
-- Baseline statistical models, calibration checks, and walk-forward validation.
-- Fee, latency, capacity, regime, and passive execution diagnostics.
-- Historical/live L2 adapters for deeper order-book replay experiments.
-- Modal cloud runner for the full high-RAM expected-edge study.
+## Current Evidence
 
-## Quick Start
+Tracked docs and smoke artifacts support the cautious conclusion that local Binance quote/trade/depth-band samples show preliminary pre-cost predictability, but ordinary taker costs and adverse-selection assumptions dominate simple strategies. Full multi-month, multi-asset confirmatory runs and large repeated-seed crypto L2 neural experiments remain external-data/cloud-compute work.
 
-Create a virtual environment, install the package, then run the direct test suite:
+The reduced E2E fixture declares the Jan 3 holdout before selection, runs walk-forward only on Jan 1-2 development rows, records the full threshold search family in `artifacts/reduced_e2e/experiment_registry.jsonl`, and feeds the validation-selected rule into the stateful simulator.
+
+## Verify Locally
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install -e ".[dev,research,cloud]"
+.venv/bin/python -m pip install -e ".[dev,research]"
 bash scripts/run_tests.sh
 ```
 
-Expected local verification:
+For a pinned full research environment, use `requirements-research.txt` instead of the range-based optional
+dependencies:
+
+```bash
+.venv/bin/python -m pip install -r requirements-research.txt
+```
+
+Current fast verification in this checkout:
 
 ```text
-passed 160 direct test functions
+passed 193 direct test functions
 ```
 
-## Local Runs
-
-Safe laptop smoke run:
+Reduced fixture-only artifacts:
 
 ```bash
-make laptop-smoke
+.venv/bin/python scripts/run_reduced_e2e.py
 ```
 
-Verify compact result artifacts:
+This writes `artifacts/reduced_e2e/result_manifest.json` plus stateful simulation ledgers and smoke-result CSVs.
+
+Optional heavier checks:
 
 ```bash
-make verify-results
-```
-
-Check which evidence gates still need external data or cloud compute:
-
-```bash
-make external-readiness
-make verify-evidence-gates
-```
-
-The full study is intentionally not a 16 GB laptop workload. Local profiles are for smoke tests and capped research only.
-
-## Full Cloud Study
-
-Authenticate Modal, dry-run the plan, then launch the full run:
-
-```bash
-.venv/bin/modal setup
 make external-readiness
 MODE=plan make modal-study
-MODE=run make modal-study
+MIN_AUDIT_FOLD_COUNT=20 bash scripts/verify_expected_edge_study.sh expected_edge_results
 ```
 
-Optional sequence-model experiments after the main run:
+## Key Documents
 
-```bash
-MODE=sequence make modal-study
-```
-
-Download Modal results:
-
-```bash
-.venv/bin/modal volume get \
-  microstructure-alpha-lab-expected-edge \
-  /results/expected_edge_60day_20230516_20230714 \
-  ./expected_edge_results
-```
-
-Verify the downloaded study:
-
-```bash
-MIN_AUDIT_FOLD_COUNT=20 \
-bash scripts/verify_expected_edge_study.sh expected_edge_results
-```
-
-## Documentation
-
-- [Case study](docs/microstructure_case_study.md)
-- [Research plan](docs/research_plan.md)
+- [Research note](docs/research_note.md)
+- [Reproducibility](docs/reproducibility.md)
+- [Traceability](IMPLEMENTATION_TRACEABILITY.md)
 - [Data source reality](docs/data_source_reality.md)
-- [Pipeline notes](docs/pipeline.md)
-- [Expected-edge methodology](docs/expected_edge.md)
-- [L2 data sources](docs/l2_data_sources.md)
 - [L2 replay](docs/l2_replay.md)
-- [Passive fill diagnostics](docs/passive_fill_diagnostics.md)
+- [Expected-edge methodology](docs/expected_edge.md)
 - [Cloud runbook](docs/full_study_cloud_run.md)
-- [Modal checklist](docs/modal_full_run.md)
-- [Implementation checklist](docs/implementation_todo.md)
 
 ## Repository Hygiene
 
-Generated market data, results, archives, local virtual environments, and private notes are intentionally ignored. The repository is source, tests, scripts, and documentation only.
+Generated market data, results, artifacts, archives, local virtual environments, and private notes are ignored. The tracked repository is source, tests, scripts, fixtures, and documentation for independently reproducing the research workflow.

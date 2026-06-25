@@ -122,9 +122,7 @@ SOURCE_DESCRIPTORS: tuple[SourceDescriptor, ...] = (
         ),
         data_types=("orderBook files", "REST snapshots", "WebSocket snapshot/delta updates"),
         optional_fields=("local_timestamp", "sequence", "update_id", "cts"),
-        limitations=(
-            "Historical file schema must be checked separately from the documented REST/WebSocket shape.",
-        ),
+        limitations=("Historical file schema must be checked separately from the documented REST/WebSocket shape.",),
     ),
     SourceDescriptor(
         source_id="binance",
@@ -173,9 +171,7 @@ SOURCE_DESCRIPTORS: tuple[SourceDescriptor, ...] = (
             "https://docs.tardis.dev/historical-data-details/okex",
         ),
         data_types=("incremental_book_L2", "book_snapshot_25", "book_snapshot_5"),
-        limitations=(
-            "First-day-of-month samples are free; arbitrary historical coverage generally needs API access.",
-        ),
+        limitations=("First-day-of-month samples are free; arbitrary historical coverage generally needs API access.",),
     ),
     SourceDescriptor(
         source_id="crypto_lake",
@@ -187,13 +183,15 @@ SOURCE_DESCRIPTORS: tuple[SourceDescriptor, ...] = (
         replay_grade="schema_must_be_verified",
         canonical_urls=("https://crypto-lake.com/free-data/",),
         data_types=("L2 order book", "trades", "candles"),
-        limitations=("Free coverage is useful for validation but source schema must be inspected before replay claims.",),
+        limitations=(
+            "Free coverage is useful for validation but source schema must be inspected before replay claims.",
+        ),
     ),
     SourceDescriptor(
         source_id="fi2010",
         name="FI-2010 Limit Order Book Benchmark",
         priority=7,
-        role="DeepLOB sanity benchmark only",
+        role="equity LOB tensor sanity benchmark only",
         free_historical_l2=True,
         live_l2=False,
         replay_grade="fixed_tensor_benchmark_not_crypto_replay",
@@ -336,7 +334,9 @@ def validate_l2_row(
     require_sequence: bool | None = None,
 ) -> L2RowValidation:
     descriptor = get_source(source_id) if source_id else None
-    should_require_sequence = descriptor.needs_sequence_validation if require_sequence is None and descriptor else bool(require_sequence)
+    should_require_sequence = (
+        descriptor.needs_sequence_validation if require_sequence is None and descriptor else bool(require_sequence)
+    )
     errors: list[ValidationIssue] = []
     warnings: list[ValidationIssue] = []
 
@@ -366,7 +366,11 @@ def validate_l2_row(
     if should_require_sequence and sequence is None and update_id is None:
         errors.append(ValidationIssue("sequence", "replay-grade source requires sequence or update_id"))
     elif sequence is None and update_id is None:
-        warnings.append(ValidationIssue("sequence", "no sequence/update_id available; deterministic replay claim is gated", "warning"))
+        warnings.append(
+            ValidationIssue(
+                "sequence", "no sequence/update_id available; deterministic replay claim is gated", "warning"
+            )
+        )
 
     return L2RowValidation(
         source_id=source_id,
@@ -550,9 +554,7 @@ def write_normalized_l2_parquet(events: Iterable[NormalizedL2Row], path: Path | 
         import pyarrow as pa
         import pyarrow.parquet as pq
     except ImportError as exc:
-        raise RuntimeError(
-            "write_normalized_l2_parquet requires pyarrow; install .[research]"
-        ) from exc
+        raise RuntimeError("write_normalized_l2_parquet requires pyarrow; install .[research]") from exc
 
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -580,9 +582,7 @@ def load_fi2010_snapshots(
                 continue
             values = _parse_numeric_line(raw)
             if len(values) < feature_count:
-                raise ValueError(
-                    f"row {row_index + 1} has {len(values)} values; expected at least {feature_count}"
-                )
+                raise ValueError(f"row {row_index + 1} has {len(values)} values; expected at least {feature_count}")
             asks: list[tuple[float, float]] = []
             bids: list[tuple[float, float]] = []
             for level in range(levels):

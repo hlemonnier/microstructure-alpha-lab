@@ -2,8 +2,13 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import sys
+import tempfile
+from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Callable, Iterator
 
 from lob_forge.alpha_factory import (
     AcceptanceCriteria,
@@ -16,6 +21,7 @@ from lob_forge.alpha_factory import (
     read_p_value_records,
 )
 from lob_forge.baselines import (
+    compute_metrics,
     evaluate_rule_file,
     format_baseline_results,
     format_calendar_walk_forward_results,
@@ -30,6 +36,7 @@ from lob_forge.baselines import (
     run_fee_sweep,
     run_threshold_baselines,
     run_walk_forward_thresholds,
+    predict_feature_threshold,
 )
 from lob_forge.capacity import format_capacity_diagnostics, run_capacity_diagnostics
 from lob_forge.archive import sample_zip_csv
@@ -47,7 +54,11 @@ from lob_forge.edge_model import (
     run_edge_walk_forward_streaming,
     write_edge_shadow_decisions_streaming,
 )
-from lob_forge.evidence_gates import evaluate_remaining_evidence_gates, format_evidence_gate_report, write_evidence_gate_report
+from lob_forge.evidence_gates import (
+    evaluate_remaining_evidence_gates,
+    format_evidence_gate_report,
+    write_evidence_gate_report,
+)
 from lob_forge.experiments import build_daily_feature_range
 from lob_forge.features import build_quote_trade_dataset, summarize_feature_csv
 from lob_forge.fill_diagnostics import (
@@ -55,6 +66,16 @@ from lob_forge.fill_diagnostics import (
     format_fill_regime_diagnostics,
     run_fill_diagnostics,
     run_fill_regime_diagnostics,
+)
+from lob_forge.holdout import (
+    build_holdout_manifest,
+    canonical_json_sha256,
+    read_holdout_manifest,
+    read_holdout_rows,
+    verify_holdout_manifest,
+    write_development_csv,
+    write_final_holdout_result,
+    write_holdout_manifest,
 )
 from lob_forge.data_sources import format_schema_validation, validate_bybit_orderbook_data_zip, validate_l2_csv_schema
 from lob_forge.l2_ingest import (
@@ -87,7 +108,15 @@ from lob_forge.ml_models import (
     run_l2_torch_sequence_experiment,
 )
 from lob_forge.portfolio import evaluate_oos_variance_stability, format_variance_stability_report
-from lob_forge.execution_sim import LatencyAssumptions, OrderConstraints, QueueAssumptions
+from lob_forge.execution_sim import (
+    LatencyAssumptions,
+    MarketEvent,
+    OrderConstraints,
+    QueueAssumptions,
+    SignalEvent,
+    StatefulExecutionConfig,
+    simulate_stateful_execution,
+)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -196,12 +225,29 @@ def main(argv: list[str] | None = None) -> int:
     )
     describe_parser.add_argument("path")
 
+    create_holdout_parser = subparsers.add_parser(
+        "create-holdout-manifest",
+        help="Create a hash-locked calendar/source holdout manifest for a feature CSV.",
+    )
+    create_holdout_parser.add_argument("path")
+    create_holdout_parser.add_argument("--output", required=True)
+    create_holdout_parser.add_argument("--split-column", default="source_date")
+    create_holdout_parser.add_argument("--holdout-values", required=True)
+    create_holdout_parser.add_argument("--feature-version", default="feature_v1")
+    create_holdout_parser.add_argument("--target-version", default="target_v1")
+    create_holdout_parser.add_argument("--git-commit")
+    create_holdout_parser.add_argument("--candidate-json")
+    create_holdout_parser.add_argument("--notes", default="")
+    create_holdout_parser.add_argument("--source-root", default=".")
+
     l2_manifest_parser = subparsers.add_parser(
         "l2-manifest",
         help="Create an OKX/Bybit historical L2 acquisition manifest.",
     )
     l2_manifest_parser.add_argument("--source", required=True, choices=["okx", "bybit"])
-    l2_manifest_parser.add_argument("--symbols", required=True, help="Comma-separated symbols, e.g. BTC-USDT-SWAP,ETH-USDT-SWAP")
+    l2_manifest_parser.add_argument(
+        "--symbols", required=True, help="Comma-separated symbols, e.g. BTC-USDT-SWAP,ETH-USDT-SWAP"
+    )
     l2_manifest_parser.add_argument("--start", required=True)
     l2_manifest_parser.add_argument("--end", required=True)
     l2_manifest_parser.add_argument("--dataset", default="order_book_l2")
@@ -294,7 +340,9 @@ def main(argv: list[str] | None = None) -> int:
         action="append",
         help="Normalized L2 candidate path. Repeatable; defaults to the OKX and Bybit BTC smoke paths.",
     )
-    evidence_gates_parser.add_argument("--baseline-audit", default="results/current/btc_full_day_edge_zero_fee_audit.csv")
+    evidence_gates_parser.add_argument(
+        "--baseline-audit", default="results/current/btc_full_day_edge_zero_fee_audit.csv"
+    )
     evidence_gates_parser.add_argument("--kelly-artifact", default="results/current/btc_full_day_edge_zero_fee.csv")
 
     live_l2_capture_parser = subparsers.add_parser(
@@ -377,6 +425,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Run simple threshold baselines on a generated feature CSV.",
     )
     baseline_parser.add_argument("path")
+    _add_holdout_manifest_arg(baseline_parser)
     baseline_parser.add_argument("--top", type=int, default=10)
     baseline_parser.add_argument("--features", help="Comma-separated feature columns to evaluate.")
     baseline_parser.add_argument("--thresholds", help="Comma-separated absolute thresholds to evaluate.")
@@ -391,8 +440,6 @@ def main(argv: list[str] | None = None) -> int:
             "validation_balanced_accuracy",
             "validation_net_pnl",
             "validation_gross_pnl",
-            "test_net_pnl",
-            "test_gross_pnl",
         ],
         default="validation_net_pnl",
     )
@@ -402,6 +449,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Select the best rule across fee tiers and report break-even fee estimates.",
     )
     fee_sweep_parser.add_argument("path")
+    _add_holdout_manifest_arg(fee_sweep_parser)
     fee_sweep_parser.add_argument("--fees", default="0,0.05,0.1,0.25,0.5,1,2,3,5")
     fee_sweep_parser.add_argument("--features", help="Comma-separated feature columns to evaluate.")
     fee_sweep_parser.add_argument("--thresholds", help="Comma-separated absolute thresholds to evaluate.")
@@ -415,8 +463,6 @@ def main(argv: list[str] | None = None) -> int:
             "validation_balanced_accuracy",
             "validation_net_pnl",
             "validation_gross_pnl",
-            "test_net_pnl",
-            "test_gross_pnl",
         ],
         default="validation_net_pnl",
     )
@@ -426,6 +472,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Run purged walk-forward threshold selection on a generated feature CSV.",
     )
     walk_forward_parser.add_argument("path")
+    _add_holdout_manifest_arg(walk_forward_parser)
     walk_forward_parser.add_argument("--train-size", type=int, default=2400)
     walk_forward_parser.add_argument("--validation-size", type=int, default=1200)
     walk_forward_parser.add_argument("--test-size", type=int, default=1200)
@@ -444,8 +491,6 @@ def main(argv: list[str] | None = None) -> int:
             "validation_balanced_accuracy",
             "validation_net_pnl",
             "validation_gross_pnl",
-            "test_net_pnl",
-            "test_gross_pnl",
         ],
         default="validation_net_pnl",
     )
@@ -455,6 +500,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Run source_date-grouped walk-forward threshold selection.",
     )
     calendar_walk_forward_parser.add_argument("path")
+    _add_holdout_manifest_arg(calendar_walk_forward_parser)
     calendar_walk_forward_parser.add_argument("--train-days", type=int, default=20)
     calendar_walk_forward_parser.add_argument("--validation-days", type=int, default=5)
     calendar_walk_forward_parser.add_argument("--test-days", type=int, default=5)
@@ -473,8 +519,6 @@ def main(argv: list[str] | None = None) -> int:
             "validation_balanced_accuracy",
             "validation_net_pnl",
             "validation_gross_pnl",
-            "test_net_pnl",
-            "test_gross_pnl",
         ],
         default="validation_net_pnl",
     )
@@ -484,13 +528,16 @@ def main(argv: list[str] | None = None) -> int:
         help="Run purged walk-forward threshold selection with optional regime filters.",
     )
     conditional_walk_forward_parser.add_argument("path")
+    _add_holdout_manifest_arg(conditional_walk_forward_parser)
     conditional_walk_forward_parser.add_argument("--train-size", type=int, default=2400)
     conditional_walk_forward_parser.add_argument("--validation-size", type=int, default=1200)
     conditional_walk_forward_parser.add_argument("--test-size", type=int, default=1200)
     conditional_walk_forward_parser.add_argument("--step-size", type=int)
     conditional_walk_forward_parser.add_argument("--no-purge", action="store_true")
     conditional_walk_forward_parser.add_argument("--features", help="Comma-separated feature columns to evaluate.")
-    conditional_walk_forward_parser.add_argument("--thresholds", help="Comma-separated absolute thresholds to evaluate.")
+    conditional_walk_forward_parser.add_argument(
+        "--thresholds", help="Comma-separated absolute thresholds to evaluate."
+    )
     conditional_walk_forward_parser.add_argument("--regime-features", help="Comma-separated columns to quantile-bin.")
     conditional_walk_forward_parser.add_argument("--regime-bins", type=int, default=3)
     conditional_walk_forward_parser.add_argument("--min-validation-trades", type=int, default=20)
@@ -505,8 +552,6 @@ def main(argv: list[str] | None = None) -> int:
             "validation_balanced_accuracy",
             "validation_net_pnl",
             "validation_gross_pnl",
-            "test_net_pnl",
-            "test_gross_pnl",
         ],
         default="validation_net_pnl",
     )
@@ -516,6 +561,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Run purged walk-forward softmax logistic regression with alpha-threshold selection.",
     )
     logistic_walk_forward_parser.add_argument("path")
+    _add_holdout_manifest_arg(logistic_walk_forward_parser)
     logistic_walk_forward_parser.add_argument("--train-size", type=int, default=2400)
     logistic_walk_forward_parser.add_argument("--validation-size", type=int, default=1200)
     logistic_walk_forward_parser.add_argument("--test-size", type=int, default=1200)
@@ -542,8 +588,6 @@ def main(argv: list[str] | None = None) -> int:
             "validation_balanced_accuracy",
             "validation_net_pnl",
             "validation_gross_pnl",
-            "test_net_pnl",
-            "test_gross_pnl",
         ],
         default="validation_net_pnl",
     )
@@ -553,6 +597,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Run purged walk-forward ridge regression on expected taker edge.",
     )
     edge_walk_forward_parser.add_argument("path")
+    _add_holdout_manifest_arg(edge_walk_forward_parser)
     edge_walk_forward_parser.add_argument("--train-size", type=int, default=2400)
     edge_walk_forward_parser.add_argument("--validation-size", type=int, default=1200)
     edge_walk_forward_parser.add_argument("--test-size", type=int, default=1200)
@@ -599,8 +644,6 @@ def main(argv: list[str] | None = None) -> int:
             "validation_balanced_accuracy",
             "validation_net_pnl",
             "validation_gross_pnl",
-            "test_net_pnl",
-            "test_gross_pnl",
         ],
         default="validation_net_pnl",
     )
@@ -610,6 +653,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Export OOS shadow decisions from the expected-edge walk-forward model.",
     )
     edge_shadow_parser.add_argument("path")
+    _add_holdout_manifest_arg(edge_shadow_parser)
     edge_shadow_parser.add_argument("--output", required=True)
     edge_shadow_parser.add_argument("--venue", required=True)
     edge_shadow_parser.add_argument("--symbol", required=True)
@@ -648,6 +692,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Evaluate one fixed threshold rule on a full file or a source_date slice.",
     )
     eval_rule_parser.add_argument("path")
+    _add_holdout_manifest_arg(eval_rule_parser)
     eval_rule_parser.add_argument("--feature", required=True)
     eval_rule_parser.add_argument("--threshold", type=float, required=True)
     eval_rule_parser.add_argument("--source-date")
@@ -661,6 +706,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Evaluate one fixed rule by spread, volatility, and liquidity regimes.",
     )
     regime_parser.add_argument("path")
+    _add_holdout_manifest_arg(regime_parser)
     regime_parser.add_argument("--feature", required=True)
     regime_parser.add_argument("--threshold", type=float, required=True)
     regime_parser.add_argument("--regime-features", help="Comma-separated columns to quantile-bin.")
@@ -670,6 +716,17 @@ def main(argv: list[str] | None = None) -> int:
     regime_parser.add_argument("--maker-fee-bps", type=float, default=0.0)
     regime_parser.add_argument("--taker-fee-bps", type=float, default=5.0)
     regime_parser.add_argument("--slippage-bps", type=float, default=0.0)
+
+    final_holdout_rule_parser = subparsers.add_parser(
+        "final-holdout-rule",
+        help="Evaluate one frozen threshold-rule candidate on the declared holdout exactly once.",
+    )
+    final_holdout_rule_parser.add_argument("path")
+    final_holdout_rule_parser.add_argument("--holdout-manifest", required=True)
+    final_holdout_rule_parser.add_argument("--candidate-json", required=True)
+    final_holdout_rule_parser.add_argument("--output", required=True)
+    final_holdout_rule_parser.add_argument("--lock-dir", default="artifacts/final_holdout_locks")
+    final_holdout_rule_parser.add_argument("--explicit-final-evaluation", action="store_true")
 
     fill_parser = subparsers.add_parser(
         "fill-diagnostics",
@@ -716,7 +773,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Check whether fold-level OOS variance is stable enough to enable fractional Kelly sizing.",
     )
     kelly_variance_parser.add_argument("path")
-    kelly_variance_parser.add_argument("--column", default="test_net_pnl")
+    kelly_variance_parser.add_argument("--column", default="validation_net_pnl")
     kelly_variance_parser.add_argument("--min-observations", type=int, default=20)
     kelly_variance_parser.add_argument("--window-size", type=int, default=5)
     kelly_variance_parser.add_argument("--max-variance-cv", type=float, default=0.5)
@@ -726,7 +783,9 @@ def main(argv: list[str] | None = None) -> int:
         "model-readiness-gate",
         help="Check whether baseline and true-L2 prerequisites are ready before sequence/deep model experiments.",
     )
-    model_readiness_parser.add_argument("--model", required=True, choices=["sequence_tcn", "sequence_transformer", "deeplob_cnn"])
+    model_readiness_parser.add_argument(
+        "--model", required=True, choices=["sequence_tcn", "sequence_transformer", "lob_cnn"]
+    )
     model_readiness_parser.add_argument("--baseline-audit", required=True)
     model_readiness_parser.add_argument("--l2", required=True)
     model_readiness_parser.add_argument("--min-fold-count", type=int, default=20)
@@ -750,6 +809,17 @@ def main(argv: list[str] | None = None) -> int:
     sequence_experiment_parser.add_argument("--flat-threshold-bps", type=float, default=0.0)
     sequence_experiment_parser.add_argument("--epochs", type=int, default=3)
     sequence_experiment_parser.add_argument("--learning-rate", type=float, default=0.001)
+    sequence_experiment_parser.add_argument("--batch-size", type=int, default=32)
+    sequence_experiment_parser.add_argument("--early-stopping-patience", type=int, default=3)
+    sequence_experiment_parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
+    sequence_experiment_parser.add_argument("--class-weighting", choices=["none", "balanced"], default="none")
+    sequence_experiment_parser.add_argument("--lr-scheduler-gamma", type=float, default=1.0)
+    sequence_experiment_parser.add_argument("--checkpoint-path")
+    sequence_experiment_parser.add_argument("--resume-from-checkpoint", action="store_true")
+    sequence_experiment_parser.add_argument("--predictions-output")
+    sequence_experiment_parser.add_argument("--economic-target-notional", type=float, default=100.0)
+    sequence_experiment_parser.add_argument("--economic-taker-fee-bps", type=float, default=1.0)
+    sequence_experiment_parser.add_argument("--economic-slippage-bps", type=float, default=0.0)
     sequence_experiment_parser.add_argument("--max-rows", type=int, default=100000)
     sequence_experiment_parser.add_argument("--max-snapshots", type=int, default=2000)
     sequence_experiment_parser.add_argument("--min-fold-count", type=int, default=20)
@@ -816,6 +886,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_build_range(args)
     if args.command == "describe-features":
         return _cmd_describe_features(args)
+    if args.command == "create-holdout-manifest":
+        return _cmd_create_holdout_manifest(args)
     if args.command == "l2-manifest":
         return _cmd_l2_manifest(args)
     if args.command == "l2-download-manifest":
@@ -864,6 +936,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_eval_rule(args)
     if args.command == "regime":
         return _cmd_regime(args)
+    if args.command == "final-holdout-rule":
+        return _cmd_final_holdout_rule(args)
     if args.command == "fill-diagnostics":
         return _cmd_fill_diagnostics(args)
     if args.command == "fill-regime":
@@ -885,6 +959,56 @@ def main(argv: list[str] | None = None) -> int:
 
     parser.error(f"unknown command: {args.command}")
     return 2
+
+
+def _add_holdout_manifest_arg(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--holdout-manifest",
+        required=True,
+        help="Required development-data manifest. The command runs on a physical CSV with declared holdout rows removed.",
+    )
+
+
+@contextmanager
+def _development_feature_path(args: argparse.Namespace) -> Iterator[Path]:
+    manifest = read_holdout_manifest(args.holdout_manifest)
+    if not verify_holdout_manifest(manifest):
+        raise ValueError("holdout manifest verification failed; create an official manifest from a Git checkout")
+    with tempfile.TemporaryDirectory(prefix="lob_forge_development_") as tmpdir:
+        result = write_development_csv(
+            Path(args.path),
+            manifest,
+            Path(tmpdir) / "development.csv",
+        )
+        yield result.path
+
+
+def _cmd_create_holdout_manifest(args: argparse.Namespace) -> int:
+    candidate_sha256 = (
+        canonical_json_sha256(json.loads(Path(args.candidate_json).read_text())) if args.candidate_json else ""
+    )
+    manifest = build_holdout_manifest(
+        Path(args.path),
+        split_column=args.split_column,
+        holdout_values=_parse_string_list(args.holdout_values),
+        created_at_utc=_utc_now_z(),
+        feature_version=args.feature_version,
+        target_version=args.target_version,
+        git_commit=args.git_commit,
+        candidate_sha256=candidate_sha256,
+        notes=args.notes,
+        source_root=Path(args.source_root),
+    )
+    output = write_holdout_manifest(manifest, Path(args.output))
+    print(f"holdout_manifest={output}")
+    print(f"source_sha256={manifest.source_sha256}")
+    if candidate_sha256:
+        print(f"candidate_sha256={candidate_sha256}")
+    return 0
+
+
+def _utc_now_z() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def _add_archive_args(parser: argparse.ArgumentParser, *, require_date: bool) -> None:
@@ -1257,207 +1381,448 @@ def _cmd_features_to_market_events(args: argparse.Namespace) -> int:
 
 
 def _cmd_baseline(args: argparse.Namespace) -> int:
-    results = run_threshold_baselines(
-        Path(args.path),
-        features=_parse_string_list(args.features) if args.features else None,
-        thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
-        execution_model=args.execution_model,
-        maker_fee_bps=args.maker_fee_bps,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-        sort_by=args.sort_by,
-    )
+    with _development_feature_path(args) as feature_path:
+        results = run_threshold_baselines(
+            feature_path,
+            features=_parse_string_list(args.features) if args.features else None,
+            thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
+            execution_model=args.execution_model,
+            maker_fee_bps=args.maker_fee_bps,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+            sort_by=args.sort_by,
+        )
     print(format_baseline_results(results, top=args.top))
     return 0
 
 
 def _cmd_fee_sweep(args: argparse.Namespace) -> int:
     fees_bps = _parse_float_list(args.fees)
-    sweep = run_fee_sweep(
-        Path(args.path),
-        fees_bps=fees_bps,
-        features=_parse_string_list(args.features) if args.features else None,
-        thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
-        execution_model=args.execution_model,
-        maker_fee_bps=args.maker_fee_bps,
-        slippage_bps=args.slippage_bps,
-        sort_by=args.sort_by,
-    )
+    with _development_feature_path(args) as feature_path:
+        sweep = run_fee_sweep(
+            feature_path,
+            fees_bps=fees_bps,
+            features=_parse_string_list(args.features) if args.features else None,
+            thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
+            execution_model=args.execution_model,
+            maker_fee_bps=args.maker_fee_bps,
+            slippage_bps=args.slippage_bps,
+            sort_by=args.sort_by,
+        )
     print(format_fee_sweep(sweep))
     return 0
 
 
 def _cmd_walk_forward(args: argparse.Namespace) -> int:
-    folds = run_walk_forward_thresholds(
-        Path(args.path),
-        train_size=args.train_size,
-        validation_size=args.validation_size,
-        test_size=args.test_size,
-        step_size=args.step_size,
-        purge_label_overlap=not args.no_purge,
-        features=_parse_string_list(args.features) if args.features else None,
-        thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
-        execution_model=args.execution_model,
-        maker_fee_bps=args.maker_fee_bps,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-        sort_by=args.sort_by,
-    )
+    with _development_feature_path(args) as feature_path:
+        folds = run_walk_forward_thresholds(
+            feature_path,
+            train_size=args.train_size,
+            validation_size=args.validation_size,
+            test_size=args.test_size,
+            step_size=args.step_size,
+            purge_label_overlap=not args.no_purge,
+            features=_parse_string_list(args.features) if args.features else None,
+            thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
+            execution_model=args.execution_model,
+            maker_fee_bps=args.maker_fee_bps,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+            sort_by=args.sort_by,
+        )
     print(format_walk_forward_results(folds))
     return 0
 
 
 def _cmd_calendar_walk_forward(args: argparse.Namespace) -> int:
-    folds = run_calendar_walk_forward_thresholds(
-        Path(args.path),
-        train_days=args.train_days,
-        validation_days=args.validation_days,
-        test_days=args.test_days,
-        step_days=args.step_days,
-        purge_label_overlap=not args.no_purge,
-        features=_parse_string_list(args.features) if args.features else None,
-        thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
-        execution_model=args.execution_model,
-        maker_fee_bps=args.maker_fee_bps,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-        sort_by=args.sort_by,
-    )
+    with _development_feature_path(args) as feature_path:
+        folds = run_calendar_walk_forward_thresholds(
+            feature_path,
+            train_days=args.train_days,
+            validation_days=args.validation_days,
+            test_days=args.test_days,
+            step_days=args.step_days,
+            purge_label_overlap=not args.no_purge,
+            features=_parse_string_list(args.features) if args.features else None,
+            thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
+            execution_model=args.execution_model,
+            maker_fee_bps=args.maker_fee_bps,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+            sort_by=args.sort_by,
+        )
     print(format_calendar_walk_forward_results(folds))
     return 0
 
 
 def _cmd_conditional_walk_forward(args: argparse.Namespace) -> int:
-    folds = run_conditional_walk_forward_thresholds(
-        Path(args.path),
-        train_size=args.train_size,
-        validation_size=args.validation_size,
-        test_size=args.test_size,
-        step_size=args.step_size,
-        purge_label_overlap=not args.no_purge,
-        features=_parse_string_list(args.features) if args.features else None,
-        thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
-        regime_features=_parse_string_list(args.regime_features) if args.regime_features else None,
-        regime_bins=args.regime_bins,
-        min_validation_trades=args.min_validation_trades,
-        execution_model=args.execution_model,
-        maker_fee_bps=args.maker_fee_bps,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-        sort_by=args.sort_by,
-    )
+    with _development_feature_path(args) as feature_path:
+        folds = run_conditional_walk_forward_thresholds(
+            feature_path,
+            train_size=args.train_size,
+            validation_size=args.validation_size,
+            test_size=args.test_size,
+            step_size=args.step_size,
+            purge_label_overlap=not args.no_purge,
+            features=_parse_string_list(args.features) if args.features else None,
+            thresholds=_parse_float_list(args.thresholds) if args.thresholds else None,
+            regime_features=_parse_string_list(args.regime_features) if args.regime_features else None,
+            regime_bins=args.regime_bins,
+            min_validation_trades=args.min_validation_trades,
+            execution_model=args.execution_model,
+            maker_fee_bps=args.maker_fee_bps,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+            sort_by=args.sort_by,
+        )
     print(format_conditional_walk_forward_results(folds))
     return 0
 
 
 def _cmd_logistic_walk_forward(args: argparse.Namespace) -> int:
-    folds = run_logistic_walk_forward(
-        Path(args.path),
-        train_size=args.train_size,
-        validation_size=args.validation_size,
-        test_size=args.test_size,
-        step_size=args.step_size,
-        purge_label_overlap=not args.no_purge,
-        features=_parse_string_list(args.features) if args.features else None,
-        alpha_thresholds=_parse_float_list(args.alpha_thresholds),
-        epochs=args.epochs,
-        learning_rate=args.learning_rate,
-        l2=args.l2,
-        class_weighting=args.class_weighting,
-        execution_model=args.execution_model,
-        maker_fee_bps=args.maker_fee_bps,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-        sort_by=args.sort_by,
-    )
+    with _development_feature_path(args) as feature_path:
+        folds = run_logistic_walk_forward(
+            feature_path,
+            train_size=args.train_size,
+            validation_size=args.validation_size,
+            test_size=args.test_size,
+            step_size=args.step_size,
+            purge_label_overlap=not args.no_purge,
+            features=_parse_string_list(args.features) if args.features else None,
+            alpha_thresholds=_parse_float_list(args.alpha_thresholds),
+            epochs=args.epochs,
+            learning_rate=args.learning_rate,
+            l2=args.l2,
+            class_weighting=args.class_weighting,
+            execution_model=args.execution_model,
+            maker_fee_bps=args.maker_fee_bps,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+            sort_by=args.sort_by,
+        )
     print(format_logistic_walk_forward_results(folds))
     return 0
 
 
 def _cmd_edge_walk_forward(args: argparse.Namespace) -> int:
     runner = run_edge_walk_forward_streaming if args.stream else run_edge_walk_forward
-    if not args.stream:
-        assert_csv_load_budget(
-            Path(args.path),
-            max_memory_gb=args.max_load_memory_gb,
-            multiplier=args.memory_estimate_multiplier,
+    with _development_feature_path(args) as feature_path:
+        if not args.stream:
+            assert_csv_load_budget(
+                feature_path,
+                max_memory_gb=args.max_load_memory_gb,
+                multiplier=args.memory_estimate_multiplier,
+            )
+        folds = runner(
+            feature_path,
+            train_size=args.train_size,
+            validation_size=args.validation_size,
+            test_size=args.test_size,
+            step_size=args.step_size,
+            purge_label_overlap=not args.no_purge,
+            features=_parse_string_list(args.features) if args.features else None,
+            edge_thresholds_bps=_parse_float_list(args.edge_thresholds_bps),
+            l2=args.l2,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+            sort_by=args.sort_by,
+            max_folds=args.max_folds,
         )
-    folds = runner(
-        Path(args.path),
-        train_size=args.train_size,
-        validation_size=args.validation_size,
-        test_size=args.test_size,
-        step_size=args.step_size,
-        purge_label_overlap=not args.no_purge,
-        features=_parse_string_list(args.features) if args.features else None,
-        edge_thresholds_bps=_parse_float_list(args.edge_thresholds_bps),
-        l2=args.l2,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-        sort_by=args.sort_by,
-        max_folds=args.max_folds,
-    )
     print(format_edge_walk_forward_results(folds))
     return 0
 
 
 def _cmd_edge_shadow_decisions(args: argparse.Namespace) -> int:
-    output = write_edge_shadow_decisions_streaming(
-        Path(args.output),
-        Path(args.path),
-        venue=args.venue,
-        symbol=args.symbol,
-        intended_size=args.intended_size,
-        intended_notional=args.intended_notional,
-        order_type=args.order_type,
-        include_flat=args.include_flat,
-        train_size=args.train_size,
-        validation_size=args.validation_size,
-        test_size=args.test_size,
-        step_size=args.step_size,
-        purge_label_overlap=not args.no_purge,
-        features=_parse_string_list(args.features) if args.features else None,
-        edge_thresholds_bps=_parse_float_list(args.edge_thresholds_bps),
-        l2=args.l2,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-        sort_by=args.sort_by,
-        max_folds=args.max_folds,
-    )
+    with _development_feature_path(args) as feature_path:
+        output = write_edge_shadow_decisions_streaming(
+            Path(args.output),
+            feature_path,
+            venue=args.venue,
+            symbol=args.symbol,
+            intended_size=args.intended_size,
+            intended_notional=args.intended_notional,
+            order_type=args.order_type,
+            include_flat=args.include_flat,
+            train_size=args.train_size,
+            validation_size=args.validation_size,
+            test_size=args.test_size,
+            step_size=args.step_size,
+            purge_label_overlap=not args.no_purge,
+            features=_parse_string_list(args.features) if args.features else None,
+            edge_thresholds_bps=_parse_float_list(args.edge_thresholds_bps),
+            l2=args.l2,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+            sort_by=args.sort_by,
+            max_folds=args.max_folds,
+        )
     print(f"shadow_decisions={output}")
     return 0
 
 
 def _cmd_eval_rule(args: argparse.Namespace) -> int:
-    evaluation = evaluate_rule_file(
-        Path(args.path),
-        feature=args.feature,
-        threshold=args.threshold,
-        source_date=args.source_date,
-        execution_model=args.execution_model,
-        maker_fee_bps=args.maker_fee_bps,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-    )
+    with _development_feature_path(args) as feature_path:
+        evaluation = evaluate_rule_file(
+            feature_path,
+            feature=args.feature,
+            threshold=args.threshold,
+            source_date=args.source_date,
+            execution_model=args.execution_model,
+            maker_fee_bps=args.maker_fee_bps,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+        )
     print(format_rule_evaluation(evaluation))
     return 0
 
 
 def _cmd_regime(args: argparse.Namespace) -> int:
-    evaluations = run_regime_analysis(
-        Path(args.path),
-        feature=args.feature,
-        threshold=args.threshold,
-        regime_features=_parse_string_list(args.regime_features) if args.regime_features else None,
-        bins=args.bins,
-        source_date=args.source_date,
-        execution_model=args.execution_model,
-        maker_fee_bps=args.maker_fee_bps,
-        taker_fee_bps=args.taker_fee_bps,
-        slippage_bps=args.slippage_bps,
-    )
+    with _development_feature_path(args) as feature_path:
+        evaluations = run_regime_analysis(
+            feature_path,
+            feature=args.feature,
+            threshold=args.threshold,
+            regime_features=_parse_string_list(args.regime_features) if args.regime_features else None,
+            bins=args.bins,
+            source_date=args.source_date,
+            execution_model=args.execution_model,
+            maker_fee_bps=args.maker_fee_bps,
+            taker_fee_bps=args.taker_fee_bps,
+            slippage_bps=args.slippage_bps,
+        )
     print(format_regime_analysis(evaluations))
     return 0
+
+
+def _cmd_final_holdout_rule(args: argparse.Namespace) -> int:
+    manifest = read_holdout_manifest(args.holdout_manifest)
+    candidate_path = Path(args.candidate_json)
+    candidate = json.loads(candidate_path.read_text())
+    candidate_sha256 = canonical_json_sha256(candidate)
+    if manifest.candidate_sha256 and candidate_sha256 != manifest.candidate_sha256:
+        raise ValueError("frozen candidate hash does not match holdout manifest candidate_sha256")
+    allowed_fields = {
+        "feature",
+        "threshold",
+        "execution_model",
+        "order_type",
+        "maker_fee_bps",
+        "taker_fee_bps",
+        "slippage_bps",
+        "target_notional",
+        "initial_cash",
+        "max_position_notional",
+        "max_leverage",
+        "latency_ms",
+        "max_order_age_ms",
+        "kill_switch_loss",
+        "rate_limit_interval_ms",
+        "queue_ahead_size",
+        "cancellation_rate_per_second",
+        "cancel_replace_edge_bps",
+    }
+    extra_fields = set(candidate) - allowed_fields
+    if extra_fields:
+        raise ValueError(f"frozen candidate contains unsupported fields: {', '.join(sorted(extra_fields))}")
+    feature = str(candidate["feature"])
+    threshold = float(candidate["threshold"])
+    execution_model = str(candidate.get("execution_model", "taker"))
+    maker_fee_bps = float(candidate.get("maker_fee_bps", 0.0))
+    taker_fee_bps = float(candidate.get("taker_fee_bps", 5.0))
+    slippage_bps = float(candidate.get("slippage_bps", 0.0))
+    if execution_model not in {"taker", "maker_entry"}:
+        raise ValueError("frozen candidate execution_model must be taker or maker_entry")
+    order_type = str(candidate.get("order_type") or ("passive" if execution_model == "maker_entry" else "market"))
+    if order_type not in {"market", "passive"}:
+        raise ValueError("frozen candidate order_type must be market or passive")
+    initial_cash = float(candidate.get("initial_cash", 1000.0))
+    target_notional = float(candidate.get("target_notional", min(100.0, initial_cash * 0.1)))
+    rows = read_holdout_rows(Path(args.path), manifest)
+
+    def predictor(row: dict[str, str]) -> int:
+        return predict_feature_threshold(row, feature, threshold)
+
+    labels = [int(float(row["label"])) for row in rows]
+    predictions = [predictor(row) for row in rows]
+    metrics = compute_metrics(labels, predictions)
+    simulation = simulate_stateful_execution(
+        _market_events_from_feature_rows(rows, target_notional=target_notional),
+        _signals_from_candidate_rows(
+            rows,
+            predictor,
+            order_type=order_type,
+            target_notional=target_notional,
+            feature=feature,
+        ),
+        config=StatefulExecutionConfig(
+            initial_cash=initial_cash,
+            max_position_notional=float(
+                candidate.get("max_position_notional", max(target_notional * 2.0, target_notional))
+            ),
+            max_leverage=float(candidate.get("max_leverage", 1.0)),
+            taker_fee_bps=taker_fee_bps,
+            maker_fee_bps=maker_fee_bps,
+            slippage_bps=slippage_bps,
+            latency_ms=int(candidate.get("latency_ms", 0)),
+            max_order_age_ms=int(candidate.get("max_order_age_ms", 1000)),
+            kill_switch_loss=(
+                float(candidate["kill_switch_loss"]) if candidate.get("kill_switch_loss") is not None else None
+            ),
+            rate_limit_interval_ms=int(candidate.get("rate_limit_interval_ms", 0)),
+            queue_ahead_size=float(candidate.get("queue_ahead_size", 0.0)),
+            cancellation_rate_per_second=float(candidate.get("cancellation_rate_per_second", 0.0)),
+            cancel_replace_edge_bps=(
+                float(candidate["cancel_replace_edge_bps"])
+                if candidate.get("cancel_replace_edge_bps") is not None
+                else None
+            ),
+        ),
+    )
+    signal_count = sum(1 for prediction in predictions if prediction != 0)
+    total_fees = sum(fill.fee for fill in simulation.fills)
+    net_pnl = simulation.final_equity - initial_cash
+    gross_pnl = net_pnl + total_fees
+    break_even_fee_bps = gross_pnl / simulation.turnover * 10_000.0 if simulation.turnover else 0.0
+    output = write_final_holdout_result(
+        manifest=manifest,
+        metrics={
+            "candidate": candidate,
+            "candidate_sha256": candidate_sha256,
+            "rows": metrics.n,
+            "accuracy": metrics.accuracy,
+            "balanced_accuracy": metrics.balanced_accuracy,
+            "macro_f1": metrics.macro_f1,
+            "coverage": metrics.coverage,
+            "signals": signal_count,
+            "trades": len(simulation.fills),
+            "fill_rate": len(simulation.fills) / signal_count if signal_count else 0.0,
+            "gross_pnl": gross_pnl,
+            "net_pnl": net_pnl,
+            "final_equity": simulation.final_equity,
+            "turnover": simulation.turnover,
+            "fees": total_fees,
+            "break_even_taker_fee_bps": break_even_fee_bps,
+            "stateful_simulator": True,
+            "kill_switch_triggered": simulation.kill_switch_triggered,
+        },
+        output_path=Path(args.output),
+        explicit_final_evaluation=args.explicit_final_evaluation,
+        candidate_sha256=candidate_sha256,
+        lock_dir=Path(args.lock_dir),
+    )
+    print(f"final_holdout_result={output}")
+    return 0
+
+
+def _market_events_from_feature_rows(rows: list[dict[str, str]], *, target_notional: float) -> list[MarketEvent]:
+    events: list[MarketEvent] = []
+    for index, row in enumerate(rows, start=1):
+        event_time = _row_time(row, "event_time", fallback=index * 1000)
+        future_time = _row_time(row, "future_event_time", fallback=event_time + 1)
+        bid = _row_float(row, "entry_bid", "bid")
+        ask = _row_float(row, "entry_ask", "ask")
+        bid_size = _top_size(row, "bid_qty", price=bid, target_notional=target_notional)
+        ask_size = _top_size(row, "ask_qty", price=ask, target_notional=target_notional)
+        events.append(
+            MarketEvent(
+                event_time,
+                bid=bid,
+                ask=ask,
+                bid_size=bid_size,
+                ask_size=ask_size,
+                trade_side=(row.get("trade_side") or None),
+                trade_size=_row_optional_float(row, "trade_size", "trade_qty") or 0.0,
+            )
+        )
+        if future_time > event_time:
+            maker_trade_side = _maker_trade_side_from_row(row)
+            future_bid = _row_float(row, "future_bid", default=bid)
+            future_ask = _row_float(row, "future_ask", default=ask)
+            events.append(
+                MarketEvent(
+                    future_time,
+                    bid=future_bid,
+                    ask=future_ask,
+                    bid_size=bid_size,
+                    ask_size=ask_size,
+                    trade_side=maker_trade_side,
+                    trade_size=max(bid_size, ask_size) if maker_trade_side else 0.0,
+                )
+            )
+    return events
+
+
+def _signals_from_candidate_rows(
+    rows: list[dict[str, str]],
+    predictor: Callable[[dict[str, str]], int],
+    *,
+    order_type: str,
+    target_notional: float,
+    feature: str,
+) -> list[SignalEvent]:
+    signals: list[SignalEvent] = []
+    for index, row in enumerate(rows, start=1):
+        side = predictor(row)
+        limit_price = None
+        if order_type == "passive" and side != 0:
+            limit_price = _row_float(row, "entry_bid", "bid") if side == 1 else _row_float(row, "entry_ask", "ask")
+        signals.append(
+            SignalEvent(
+                _row_time(row, "event_time", fallback=index * 1000),
+                target_side=side,
+                target_notional=target_notional if side else 0.0,
+                order_type=order_type,
+                limit_price=limit_price,
+                signal_id=f"final-holdout-{index}",
+                predicted_edge_bps=abs(_row_optional_float(row, feature) or 0.0),
+            )
+        )
+    return signals
+
+
+def _row_time(row: dict[str, str], column: str, *, fallback: int) -> int:
+    raw = row.get(column)
+    if raw is None or raw == "":
+        return fallback
+    return int(float(raw))
+
+
+def _row_float(row: dict[str, str], *columns: str, default: float | None = None) -> float:
+    value = _row_optional_float(row, *columns)
+    if value is not None:
+        return value
+    if default is not None:
+        return default
+    raise ValueError(f"feature CSV missing required numeric column: {' or '.join(columns)}")
+
+
+def _row_optional_float(row: dict[str, str], *columns: str) -> float | None:
+    for column in columns:
+        raw = row.get(column)
+        if raw is not None and raw != "":
+            return float(raw)
+    return None
+
+
+def _top_size(row: dict[str, str], column: str, *, price: float, target_notional: float) -> float:
+    value = _row_optional_float(row, column)
+    if value is not None:
+        return max(0.0, value)
+    if price <= 0.0:
+        return 0.0
+    return max(1.0, target_notional / price * 2.0)
+
+
+def _maker_trade_side_from_row(row: dict[str, str]) -> str | None:
+    if _truthy(row.get("maker_long_fillable")):
+        return "sell"
+    if _truthy(row.get("maker_short_fillable")):
+        return "buy"
+    return None
+
+
+def _truthy(value: str | None) -> bool:
+    return value in {"1", "true", "True", "yes", "YES"}
 
 
 def _cmd_fill_diagnostics(args: argparse.Namespace) -> int:
@@ -1546,6 +1911,17 @@ def _cmd_l2_sequence_experiment(args: argparse.Namespace) -> int:
             flat_threshold_bps=args.flat_threshold_bps,
             epochs=args.epochs,
             learning_rate=args.learning_rate,
+            batch_size=args.batch_size,
+            early_stopping_patience=args.early_stopping_patience,
+            device=args.device,
+            class_weighting=args.class_weighting,
+            lr_scheduler_gamma=args.lr_scheduler_gamma,
+            checkpoint_path=args.checkpoint_path,
+            resume_from_checkpoint=args.resume_from_checkpoint,
+            prediction_output_path=args.predictions_output,
+            economic_target_notional=args.economic_target_notional,
+            economic_taker_fee_bps=args.economic_taker_fee_bps,
+            economic_slippage_bps=args.economic_slippage_bps,
             max_rows=args.max_rows,
             max_snapshots=args.max_snapshots,
             min_fold_count=args.min_fold_count,
@@ -1637,8 +2013,8 @@ def _print_datasets() -> None:
     print("  bookDepth: aggregate depth bands, not full L2 price levels")
     print("")
     print("Critical limitation:")
-    print("  Binance Vision bookDepth is not DeepLOB-style full order book data.")
-    print("  True DeepLOB requires live depth capture or another historical L2 source.")
+    print("  Binance Vision bookDepth is not full level-by-level order book data.")
+    print("  True deep LOB claims require live depth capture or another historical L2 source.")
 
 
 if __name__ == "__main__":

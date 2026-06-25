@@ -39,7 +39,18 @@ class ReplayUpdate:
     crossed: bool
     best_bid: float | None
     best_ask: float | None
+    duplicate_update: bool = False
     needs_resnapshot: bool = False
+
+
+@dataclass(frozen=True)
+class ReplayValidation:
+    rows_checked: int
+    errors: tuple[str, ...]
+
+    @property
+    def passed(self) -> bool:
+        return not self.errors
 
 
 class OrderBookReplayer:
@@ -55,10 +66,12 @@ class OrderBookReplayer:
         self.last_update_id: int | None = None
         self.needs_resnapshot = False
         self._active_snapshot_key: tuple[int, int | None, int | None] | None = None
+        self._seen_delta_keys: set[tuple[int, int | None, int | None, str, float]] = set()
 
     def apply(self, row: NormalizedL2Row, *, row_index: int = 0) -> ReplayUpdate:
         _validate_row(row)
         reset = False
+        duplicate_update = self._detect_duplicate_update(row)
         sequence_gap = self._detect_sequence_gap(row)
 
         if row.event_type == "snapshot":
@@ -66,12 +79,13 @@ class OrderBookReplayer:
             if snapshot_key != self._active_snapshot_key:
                 self.bids.clear()
                 self.asks.clear()
+                self._seen_delta_keys.clear()
                 self._active_snapshot_key = snapshot_key
                 reset = True
             self.needs_resnapshot = False
         else:
             self._active_snapshot_key = None
-            if sequence_gap:
+            if sequence_gap or duplicate_update:
                 self.bids.clear()
                 self.asks.clear()
                 self.needs_resnapshot = True
@@ -86,7 +100,9 @@ class OrderBookReplayer:
         if row.sequence is not None:
             self.last_sequence = row.sequence if self.last_sequence is None else max(self.last_sequence, row.sequence)
         if row.update_id is not None:
-            self.last_update_id = row.update_id if self.last_update_id is None else max(self.last_update_id, row.update_id)
+            self.last_update_id = (
+                row.update_id if self.last_update_id is None else max(self.last_update_id, row.update_id)
+            )
 
         snapshot = self.snapshot(depth=1)
         return ReplayUpdate(
@@ -101,6 +117,7 @@ class OrderBookReplayer:
             crossed=snapshot.crossed,
             best_bid=snapshot.best_bid.price if snapshot.best_bid else None,
             best_ask=snapshot.best_ask.price if snapshot.best_ask else None,
+            duplicate_update=duplicate_update,
         )
 
     def snapshot(self, *, depth: int) -> L2BookSnapshot:
@@ -110,10 +127,7 @@ class OrderBookReplayer:
             BookLevel(price, size)
             for price, size in sorted(self.bids.items(), key=lambda item: item[0], reverse=True)[:depth]
         ]
-        asks = [
-            BookLevel(price, size)
-            for price, size in sorted(self.asks.items(), key=lambda item: item[0])[:depth]
-        ]
+        asks = [BookLevel(price, size) for price, size in sorted(self.asks.items(), key=lambda item: item[0])[:depth]]
         crossed = bool(bids and asks and bids[0].price >= asks[0].price)
         return L2BookSnapshot(bids=bids, asks=asks, crossed=crossed)
 
@@ -135,9 +149,20 @@ class OrderBookReplayer:
             )
         return rows
 
+    def _detect_duplicate_update(self, row: NormalizedL2Row) -> bool:
+        if row.event_type != "delta":
+            return False
+        key = (row.exchange_timestamp, row.sequence, row.update_id, row.side, row.price)
+        if key in self._seen_delta_keys:
+            return True
+        self._seen_delta_keys.add(key)
+        return False
+
     def _detect_sequence_gap(self, row: NormalizedL2Row) -> bool:
         gap = False
-        if row.sequence is not None and self.last_sequence is not None:
+        venue = (row.venue or "").lower()
+        update_id_is_primary = venue == "bybit" and row.update_id is not None
+        if row.sequence is not None and self.last_sequence is not None and not update_id_is_primary:
             if row.sequence < self.last_sequence:
                 gap = True
             elif row.sequence > self.last_sequence + self.max_sequence_step:
@@ -176,6 +201,34 @@ def validate_monotonic_snapshot(snapshot: L2BookSnapshot) -> list[str]:
     if snapshot.crossed:
         errors.append("book is crossed")
     return errors
+
+
+def validate_l2_replay_contract(
+    rows: Iterable[NormalizedL2Row],
+    *,
+    max_sequence_step: int = 1,
+) -> ReplayValidation:
+    replayer = OrderBookReplayer(max_sequence_step=max_sequence_step)
+    errors: list[str] = []
+    seen_updates: set[tuple[str, int, int | None, int | None, str, float]] = set()
+    last_timestamp: int | None = None
+    count = 0
+    for count, row in enumerate(rows, start=1):
+        if last_timestamp is not None and row.exchange_timestamp < last_timestamp:
+            errors.append(f"row {count}: exchange_timestamp moved backward")
+        last_timestamp = row.exchange_timestamp
+        update_key = (row.event_type, row.exchange_timestamp, row.sequence, row.update_id, row.side, row.price)
+        if update_key in seen_updates:
+            errors.append(f"row {count}: duplicate update key {update_key}")
+        seen_updates.add(update_key)
+        update = replayer.apply(row, row_index=count)
+        if update.duplicate_update:
+            errors.append(f"row {count}: duplicate update requires resnapshot")
+        if update.sequence_gap:
+            errors.append(f"row {count}: sequence gap requires resnapshot")
+        if update.crossed:
+            errors.append(f"row {count}: crossed book")
+    return ReplayValidation(rows_checked=count, errors=tuple(errors))
 
 
 def _validate_row(row: NormalizedL2Row) -> None:

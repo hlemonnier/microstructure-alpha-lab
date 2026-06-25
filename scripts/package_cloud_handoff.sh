@@ -24,6 +24,8 @@ rsync -a \
   --include='/Makefile' \
   --include='/README.md' \
   --include='/pyproject.toml' \
+  --include='/requirements-ci.txt' \
+  --include='/requirements-research.txt' \
   --include='/docs/***' \
   --include='/scripts/***' \
   --include='/src/***' \

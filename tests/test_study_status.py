@@ -141,6 +141,7 @@ def _write_edge_audit(path: Path) -> None:
     _write_csv(
         path,
         [
+            "inference_grain",
             "fold_count",
             "total_test_rows",
             "total_test_trades",
@@ -150,6 +151,7 @@ def _write_edge_audit(path: Path) -> None:
         ],
         [
             {
+                "inference_grain": "fold_summary",
                 "fold_count": "1",
                 "total_test_rows": "10",
                 "total_test_trades": "2",
@@ -173,7 +175,15 @@ def _write_pvalue_corrections(path: Path) -> None:
     _write_csv(
         path,
         ["hypothesis_id", "p_value", "bonferroni_p_value", "bh_adjusted_p_value", "bh_accept"],
-        [{"hypothesis_id": "BTCUSDT_5000ms_fee_0_edge", "p_value": "0.1", "bonferroni_p_value": "0.1", "bh_adjusted_p_value": "0.1", "bh_accept": "0"}],
+        [
+            {
+                "hypothesis_id": "BTCUSDT_5000ms_fee_0_edge",
+                "p_value": "0.1",
+                "bonferroni_p_value": "0.1",
+                "bh_adjusted_p_value": "0.1",
+                "bh_accept": "0",
+            }
+        ],
     )
 
 

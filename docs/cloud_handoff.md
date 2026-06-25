@@ -17,6 +17,7 @@ make cloud-package
 The package contains only the runnable project surface:
 
 - `README.md`, `Makefile`, `pyproject.toml`, `.gitignore`
+- `requirements-ci.txt`, `requirements-research.txt`
 - `docs/`
 - `scripts/`
 - `src/`
@@ -127,7 +128,7 @@ The bootstrap wrapper exposes the same path:
 MODE=sequence SKIP_INSTALL=1 RUN_TESTS=0 bash scripts/bootstrap_cloud_expected_edge.sh
 ```
 
-This writes `results/model_experiments/sequence_transformer_results.csv` and `results/model_experiments/sequence_tcn_results.csv` when `model-readiness-gate` passes. The aggregate evidence gate validates the model name, selected L2 path, readiness state, dependency state, and `passed=1` in each artifact.
+This writes `results/model_experiments/sequence_transformer_results.csv` and `results/model_experiments/sequence_tcn_results.csv` when `model-readiness-gate` passes. The runner also writes checkpoints and prediction CSVs under `results/model_experiments/checkpoints/` and `results/model_experiments/predictions/`, supports `SEEDS=7,11,13` repeated-seed orchestration, and records calibration plus stateful economic smoke fields in each artifact. The aggregate evidence gate validates the model name, selected L2 path, readiness state, dependency state, and `pipeline_completed=1` in each artifact. `acceptance_passed` is reserved for an explicit predictive/economic acceptance threshold, not for smoke completion.
 
 ## Modal Batch Runner
 

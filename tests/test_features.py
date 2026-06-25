@@ -71,8 +71,12 @@ def test_build_quote_trade_dataset(tmp_path: Path) -> None:
     assert rows[0]["label"] == "1"
     assert rows[0]["trade_count"] == "2"
     assert float(rows[0]["trade_imbalance"]) < 0
+    assert rows[0]["decision_time"] == "1500"
+    assert rows[0]["event_time"] == rows[0]["decision_time"]
+    assert rows[0]["quote_event_time"] == "1500"
+    assert rows[0]["local_receive_time"] == ""
     assert rows[0]["entry_mid"] == "100.2"
-    assert rows[0]["future_mid"] == "100.5"
+    assert rows[0]["future_mid"] == "100.6"
     assert rows[0]["depth_snapshot_age_ms"] == "-1"
     assert rows[0]["quote_ofi"] == "0"
     assert rows[1]["quote_ofi"] == "9"
@@ -80,7 +84,76 @@ def test_build_quote_trade_dataset(tmp_path: Path) -> None:
     assert float(rows[1]["mid_return_1"]) > 0
     assert rows[0]["maker_long_fillable"] == "0"
     assert rows[0]["maker_short_fillable"] == "1"
-    assert rows[0]["horizon_max_bid"] == "100.4"
+    assert rows[0]["horizon_max_bid"] == "100.5"
+
+
+def test_trade_after_decision_time_does_not_change_features(tmp_path: Path) -> None:
+    book_zip = tmp_path / "bookTicker.zip"
+    clean_trades_zip = tmp_path / "aggTrades-clean.zip"
+    adversarial_trades_zip = tmp_path / "aggTrades-adversarial.zip"
+    clean_output = tmp_path / "clean.csv"
+    adversarial_output = tmp_path / "adversarial.csv"
+
+    _write_zip_csv(
+        book_zip,
+        "BTCUSDT-bookTicker-2023-05-16.csv",
+        [
+            [
+                "update_id",
+                "best_bid_price",
+                "best_bid_qty",
+                "best_ask_price",
+                "best_ask_qty",
+                "transaction_time",
+                "event_time",
+            ],
+            ["1", "100.0", "5.0", "100.2", "2.0", "1000", "1000"],
+            ["2", "100.1", "4.0", "100.3", "3.0", "1500", "1500"],
+            ["3", "100.4", "6.0", "100.6", "2.0", "2500", "2500"],
+            ["4", "100.5", "6.0", "100.7", "2.0", "3500", "3500"],
+        ],
+    )
+    header = ["agg_trade_id", "price", "quantity", "first_trade_id", "last_trade_id", "transact_time", "is_buyer_maker"]
+    base_rows = [
+        header,
+        ["1", "100.2", "1.0", "10", "10", "1400", "false"],
+    ]
+    _write_zip_csv(clean_trades_zip, "clean.csv", base_rows)
+    _write_zip_csv(
+        adversarial_trades_zip,
+        "adversarial.csv",
+        base_rows + [["2", "101.0", "99.0", "11", "11", "1750", "true"]],
+    )
+
+    for trades_zip, output in [(clean_trades_zip, clean_output), (adversarial_trades_zip, adversarial_output)]:
+        build_quote_trade_dataset(
+            book_ticker_zip=book_zip,
+            agg_trades_zip=trades_zip,
+            output_csv=output,
+            bucket_ms=1000,
+            horizon_ms=1000,
+            threshold="zero",
+        )
+
+    with clean_output.open() as handle:
+        clean_rows = list(csv.DictReader(handle))
+    with adversarial_output.open() as handle:
+        adversarial_rows = list(csv.DictReader(handle))
+
+    comparable_fields = [
+        "decision_time",
+        "trade_count",
+        "buy_qty",
+        "sell_qty",
+        "trade_qty",
+        "trade_imbalance",
+        "large_trade_count",
+        "label",
+    ]
+    assert clean_rows[0]["decision_time"] == "1500"
+    assert {field: clean_rows[0][field] for field in comparable_fields} == {
+        field: adversarial_rows[0][field] for field in comparable_fields
+    }
 
 
 def test_build_quote_trade_dataset_refuses_feature_memory_budget(tmp_path: Path) -> None:
@@ -91,7 +164,15 @@ def test_build_quote_trade_dataset_refuses_feature_memory_budget(tmp_path: Path)
         book_zip,
         "BTCUSDT-bookTicker-2023-05-16.csv",
         [
-            ["update_id", "best_bid_price", "best_bid_qty", "best_ask_price", "best_ask_qty", "transaction_time", "event_time"],
+            [
+                "update_id",
+                "best_bid_price",
+                "best_bid_qty",
+                "best_ask_price",
+                "best_ask_qty",
+                "transaction_time",
+                "event_time",
+            ],
             ["1", "100.0", "5.0", "100.2", "2.0", "1000", "1000"],
         ],
     )
@@ -220,6 +301,7 @@ def test_quote_ofi_and_rolling_contexts() -> None:
     quotes = [
         QuoteBucket(
             bucket_start_ms=0,
+            decision_time_ms=0,
             event_time=0,
             update_id=1,
             bid=100.0,
@@ -229,6 +311,7 @@ def test_quote_ofi_and_rolling_contexts() -> None:
         ),
         QuoteBucket(
             bucket_start_ms=1000,
+            decision_time_ms=1000,
             event_time=1000,
             update_id=2,
             bid=100.0,
@@ -238,6 +321,7 @@ def test_quote_ofi_and_rolling_contexts() -> None:
         ),
         QuoteBucket(
             bucket_start_ms=2000,
+            decision_time_ms=2000,
             event_time=2000,
             update_id=3,
             bid=100.1,

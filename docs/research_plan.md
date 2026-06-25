@@ -151,7 +151,7 @@ Deep models only make sense after these baselines:
 
 - MLP/TCN on top-of-book sequences,
 - compact transformer over quote/trade event sequences,
-- DeepLOB only after true L2 data is collected.
+- Full-depth LOB CNN only after true L2 data is collected.
 
 ## Backtest Logic
 

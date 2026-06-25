@@ -86,7 +86,11 @@ EXECUTION_PATH_COLUMNS = [
 
 FEATURE_COLUMNS = [
     "bucket_start_ms",
+    "decision_time",
+    "feature_cutoff_time",
     "event_time",
+    "quote_event_time",
+    "local_receive_time",
     "update_id",
     "bid",
     "ask",
@@ -112,6 +116,10 @@ FEATURE_COLUMNS = [
     *DEPTH_FEATURE_COLUMNS,
     "execution_latency_ms",
     "holding_horizon_ms",
+    "entry_target_time",
+    "future_target_time",
+    "entry_lag_ms",
+    "future_lag_ms",
     "entry_event_time",
     "entry_bid",
     "entry_ask",
@@ -138,6 +146,8 @@ class QuoteBucket:
     bid_qty: float
     ask_qty: float
     update_count: int = 1
+    decision_time_ms: int | None = None
+    local_receive_time: int | None = None
 
     @property
     def mid(self) -> float:
@@ -146,6 +156,10 @@ class QuoteBucket:
     @property
     def spread(self) -> float:
         return self.ask - self.bid
+
+    @property
+    def decision_time(self) -> int:
+        return self.decision_time_ms if self.decision_time_ms is not None else self.event_time
 
 
 @dataclass
@@ -169,6 +183,38 @@ class TradeBucket:
     def trade_imbalance(self) -> float:
         total = self.trade_qty
         return (self.buy_qty - self.sell_qty) / total if total else 0.0
+
+
+@dataclass(frozen=True)
+class TradeEvent:
+    timestamp_ms: int
+    bucket_start_ms: int
+    quantity: float
+    notional: float
+    is_sell_initiated: bool
+    is_large: bool
+
+
+@dataclass(frozen=True)
+class TradeBucketIndex:
+    bucket_ms: int
+    events_by_bucket: dict[int, list[TradeEvent]]
+
+    def aggregate_until(self, *, bucket_start_ms: int, decision_time_ms: int) -> TradeBucket:
+        bucket = TradeBucket()
+        for event in self.events_by_bucket.get(bucket_start_ms, []):
+            if event.timestamp_ms > decision_time_ms:
+                break
+            bucket.trade_count += 1
+            if event.is_sell_initiated:
+                bucket.sell_qty += event.quantity
+                bucket.sell_notional += event.notional
+            else:
+                bucket.buy_qty += event.quantity
+                bucket.buy_notional += event.notional
+            if event.is_large:
+                bucket.large_trade_count += 1
+        return bucket
 
 
 @dataclass
@@ -260,14 +306,14 @@ def build_quote_trade_dataset(
         raise ValueError("no quote buckets produced")
 
     first_bucket = quote_buckets[0].bucket_start_ms
-    last_bucket = quote_buckets[-1].bucket_start_ms
-    trade_buckets: dict[int, TradeBucket] = {}
+    last_decision_time = quote_buckets[-1].decision_time
+    trade_index: TradeBucketIndex | None = None
     if agg_trades_zip is not None:
-        trade_buckets = aggregate_agg_trades(
+        trade_index = build_trade_bucket_index(
             Path(agg_trades_zip),
             bucket_ms=bucket_ms,
             start_bucket_ms=first_bucket,
-            end_bucket_ms=last_bucket + execution_latency_ms + horizon_ms,
+            end_time_ms=last_decision_time,
             large_trade_notional=large_trade_notional,
         )
     depth_snapshots: list[DepthSnapshot] = []
@@ -276,28 +322,28 @@ def build_quote_trade_dataset(
         depth_snapshots = load_depth_snapshots(
             Path(book_depth_zip),
             start_time_ms=first_bucket,
-            end_time_ms=last_bucket + execution_latency_ms + horizon_ms,
+            end_time_ms=last_decision_time,
         )
         depth_snapshot_times = [snapshot.snapshot_time_ms for snapshot in depth_snapshots]
 
     output_path = Path(output_csv)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    bucket_starts = [quote.bucket_start_ms for quote in quote_buckets]
+    quote_event_times = [quote.event_time for quote in quote_buckets]
     quote_contexts = build_quote_contexts(quote_buckets, rolling_window=5)
     rows_written = 0
     with output_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=FEATURE_COLUMNS)
         writer.writeheader()
         for idx, quote in enumerate(quote_buckets):
-            entry_idx = bisect_left(bucket_starts, quote.bucket_start_ms + execution_latency_ms)
+            decision_time = quote.decision_time
+            entry_target_time = decision_time + execution_latency_ms
+            future_target_time = decision_time + execution_latency_ms + horizon_ms
+            entry_idx = bisect_left(quote_event_times, entry_target_time)
             if entry_idx >= len(quote_buckets):
                 break
             entry = quote_buckets[entry_idx]
-            future_idx = bisect_left(
-                bucket_starts,
-                quote.bucket_start_ms + execution_latency_ms + horizon_ms,
-            )
+            future_idx = bisect_left(quote_event_times, future_target_time)
             if future_idx >= len(quote_buckets):
                 break
             future = quote_buckets[future_idx]
@@ -310,15 +356,25 @@ def build_quote_trade_dataset(
                 entry=entry,
                 future=future,
                 execution_path=execution_path,
-                trade=trade_buckets.get(quote.bucket_start_ms, TradeBucket()),
+                trade=(
+                    trade_index.aggregate_until(
+                        bucket_start_ms=quote.bucket_start_ms,
+                        decision_time_ms=decision_time,
+                    )
+                    if trade_index is not None
+                    else TradeBucket()
+                ),
                 depth=latest_depth_snapshot(
                     depth_snapshots,
                     depth_snapshot_times,
-                    quote.event_time,
+                    decision_time,
                 ),
                 quote_context=quote_contexts[idx],
                 execution_latency_ms=execution_latency_ms,
                 holding_horizon_ms=horizon_ms,
+                decision_time=decision_time,
+                entry_target_time=entry_target_time,
+                future_target_time=future_target_time,
                 threshold=threshold,
                 min_tick=min_tick,
             )
@@ -425,12 +481,14 @@ def iter_quote_buckets(
         bucket_start = event_time - (event_time % bucket_ms)
         quote = QuoteBucket(
             bucket_start_ms=bucket_start,
+            decision_time_ms=event_time,
             event_time=event_time,
             update_id=int(row["update_id"]),
             bid=float(row["best_bid_price"]),
             ask=float(row["best_ask_price"]),
             bid_qty=float(row["best_bid_qty"]),
             ask_qty=float(row["best_ask_qty"]),
+            local_receive_time=None,
         )
         if current is None:
             current = quote
@@ -483,6 +541,43 @@ def aggregate_agg_trades(
             bucket.large_trade_count += 1
 
     return buckets
+
+
+def build_trade_bucket_index(
+    agg_trades_zip: Path,
+    *,
+    bucket_ms: int,
+    start_bucket_ms: int | None = None,
+    end_time_ms: int | None = None,
+    large_trade_notional: float = 10_000.0,
+) -> TradeBucketIndex:
+    events_by_bucket: dict[int, list[TradeEvent]] = {}
+    for row in iter_zip_dict_rows(agg_trades_zip, AGG_TRADE_COLUMNS):
+        timestamp = int(row["transact_time"])
+        bucket_start = timestamp - (timestamp % bucket_ms)
+        if start_bucket_ms is not None and bucket_start < start_bucket_ms:
+            continue
+        if end_time_ms is not None and timestamp > end_time_ms:
+            break
+
+        price = float(row["price"])
+        qty = float(row["quantity"])
+        notional = price * qty
+        is_buyer_maker = row["is_buyer_maker"].strip().lower() == "true"
+        events_by_bucket.setdefault(bucket_start, []).append(
+            TradeEvent(
+                timestamp_ms=timestamp,
+                bucket_start_ms=bucket_start,
+                quantity=qty,
+                notional=notional,
+                is_sell_initiated=is_buyer_maker,
+                is_large=notional >= large_trade_notional,
+            )
+        )
+
+    for events in events_by_bucket.values():
+        events.sort(key=lambda event: event.timestamp_ms)
+    return TradeBucketIndex(bucket_ms=bucket_ms, events_by_bucket=events_by_bucket)
 
 
 def load_depth_snapshots(
@@ -658,6 +753,9 @@ def build_feature_row(
     quote_context: QuoteContext,
     execution_latency_ms: int,
     holding_horizon_ms: int,
+    decision_time: int,
+    entry_target_time: int,
+    future_target_time: int,
     threshold: str,
     min_tick: float,
 ) -> dict[str, str | int]:
@@ -669,21 +767,21 @@ def build_feature_row(
 
     size_sum = quote.bid_qty + quote.ask_qty
     top_imbalance = (quote.bid_qty - quote.ask_qty) / size_sum if size_sum else 0.0
-    microprice = (
-        (quote.ask * quote.bid_qty + quote.bid * quote.ask_qty) / size_sum
-        if size_sum
-        else mid
-    )
+    microprice = (quote.ask * quote.bid_qty + quote.bid * quote.ask_qty) / size_sum if size_sum else mid
     microprice_deviation = (microprice - mid) / spread if spread else 0.0
 
     theta = label_threshold(spread=entry.spread, min_tick=min_tick, mode=threshold)
     label = 1 if delta_mid > theta else -1 if delta_mid < -theta else 0
 
-    depth_features = build_depth_feature_values(depth, event_time_ms=quote.event_time)
+    depth_features = build_depth_feature_values(depth, event_time_ms=decision_time)
 
     return {
         "bucket_start_ms": quote.bucket_start_ms,
-        "event_time": quote.event_time,
+        "decision_time": decision_time,
+        "feature_cutoff_time": decision_time,
+        "event_time": decision_time,
+        "quote_event_time": quote.event_time,
+        "local_receive_time": quote.local_receive_time or "",
         "update_id": quote.update_id,
         "bid": _fmt(quote.bid),
         "ask": _fmt(quote.ask),
@@ -717,6 +815,10 @@ def build_feature_row(
         **depth_features,
         "execution_latency_ms": execution_latency_ms,
         "holding_horizon_ms": holding_horizon_ms,
+        "entry_target_time": entry_target_time,
+        "future_target_time": future_target_time,
+        "entry_lag_ms": entry.event_time - entry_target_time,
+        "future_lag_ms": future.event_time - future_target_time,
         "entry_event_time": entry.event_time,
         "entry_bid": _fmt(entry.bid),
         "entry_ask": _fmt(entry.ask),
@@ -802,9 +904,7 @@ def iter_zip_dict_rows(path: Path, default_columns: list[str]) -> Iterator[dict[
                         continue
                     header = default_columns
                 if len(row) != len(header):
-                    raise ValueError(
-                        f"Unexpected row width in {path}: expected {len(header)}, got {len(row)}"
-                    )
+                    raise ValueError(f"Unexpected row width in {path}: expected {len(header)}, got {len(row)}")
                 yield dict(zip(header, row))
 
 

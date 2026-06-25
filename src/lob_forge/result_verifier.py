@@ -1,10 +1,35 @@
 from __future__ import annotations
 
 import csv
+import json
+import shlex
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+
+GATED_CLI_COMMANDS = {
+    "baseline",
+    "fee-sweep",
+    "walk-forward",
+    "calendar-walk-forward",
+    "conditional-walk-forward",
+    "logistic-walk-forward",
+    "edge-walk-forward",
+    "edge-shadow-decisions",
+    "eval-rule",
+    "regime",
+}
+
+INVALID_GIT_REVS = {
+    "",
+    "no-git-commit",
+    "fixture-run-without-git",
+    "package-no-git",
+    "unknown",
+    "none",
+    "null",
+}
 
 REQUIRED_RESULT_FILES = (
     "hypotheses.jsonl",
@@ -41,6 +66,8 @@ def verify_result_artifacts(result_dir: Path | str, *, strict_metadata: bool = T
         path = result_dir / filename
         if not path.exists() or path.stat().st_size == 0:
             errors.append(f"missing or empty required artifact: {filename}")
+        elif strict_metadata and filename == "experiment_ledger.jsonl":
+            errors.extend(_verify_experiment_ledger(path))
 
     audit_files = sorted(result_dir.glob("*_audit.csv"))
     if not audit_files:
@@ -94,6 +121,7 @@ def _verify_audit_csv(path: Path) -> list[str]:
         return [f"{path.name}: expected exactly one audit row"]
     row = rows[0]
     required = {
+        "inference_grain",
         "fold_count",
         "total_test_rows",
         "total_test_trades",
@@ -117,6 +145,8 @@ def _verify_audit_csv(path: Path) -> list[str]:
         errors.append(f"{path.name}: total_test_rows must be positive")
     if test_trades < 0:
         errors.append(f"{path.name}: total_test_trades must be non-negative")
+    if not row["inference_grain"].strip():
+        errors.append(f"{path.name}: inference_grain must be non-empty")
     if row["acceptance_passed"] in {"0", "0.0"} and not row["rejection_reasons"].strip():
         errors.append(f"{path.name}: rejected audit needs rejection_reasons")
     return errors
@@ -132,6 +162,69 @@ def _verify_pvalue_corrections(path: Path) -> list[str]:
     if missing:
         return [f"{path.name}: missing columns {sorted(missing)}"]
     return []
+
+
+def _verify_experiment_ledger(path: Path) -> list[str]:
+    errors: list[str] = []
+    rows = list(_read_jsonl(path, errors))
+    if not rows:
+        errors.append(f"{path.name}: no experiment ledger rows")
+        return errors
+    seen_experiment_ids: set[str] = set()
+    for line_number, row in rows:
+        experiment_id = str(row.get("experiment_id") or f"line {line_number}")
+        if experiment_id in seen_experiment_ids:
+            errors.append(f"{path.name}:{line_number} {experiment_id}: duplicate experiment_id")
+        seen_experiment_ids.add(experiment_id)
+        git_rev = str(row.get("git_rev") or "").strip()
+        if git_rev.lower() in INVALID_GIT_REVS:
+            errors.append(f"{path.name}:{line_number} {experiment_id}: invalid git_rev {git_rev!r}")
+        command = str(row.get("command") or "")
+        if not _uses_gated_cli_command(command):
+            continue
+        if "--holdout-manifest" not in _command_tokens(command):
+            errors.append(f"{path.name}:{line_number} {experiment_id}: gated command lacks --holdout-manifest")
+        manifest_path = str(row.get("holdout_manifest_path") or "").strip()
+        manifest_sha256 = str(row.get("holdout_manifest_sha256") or "").strip()
+        if not manifest_path:
+            errors.append(f"{path.name}:{line_number} {experiment_id}: missing holdout_manifest_path")
+        if not _is_sha256(manifest_sha256):
+            errors.append(f"{path.name}:{line_number} {experiment_id}: missing or invalid holdout_manifest_sha256")
+    return errors
+
+
+def _read_jsonl(path: Path, errors: list[str]) -> list[tuple[int, dict[str, object]]]:
+    rows: list[tuple[int, dict[str, object]]] = []
+    with path.open() as handle:
+        for line_number, line in enumerate(handle, start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                value = json.loads(stripped)
+            except json.JSONDecodeError as exc:
+                errors.append(f"{path.name}:{line_number}: invalid JSON: {exc.msg}")
+                continue
+            if not isinstance(value, dict):
+                errors.append(f"{path.name}:{line_number}: expected JSON object")
+                continue
+            rows.append((line_number, value))
+    return rows
+
+
+def _uses_gated_cli_command(command: str) -> bool:
+    return any(token in GATED_CLI_COMMANDS for token in _command_tokens(command))
+
+
+def _command_tokens(command: str) -> list[str]:
+    try:
+        return shlex.split(command)
+    except ValueError:
+        return command.split()
+
+
+def _is_sha256(value: str) -> bool:
+    return len(value) == 64 and all(char in "0123456789abcdefABCDEF" for char in value)
 
 
 if __name__ == "__main__":

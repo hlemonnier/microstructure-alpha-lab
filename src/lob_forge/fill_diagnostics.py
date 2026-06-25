@@ -56,7 +56,9 @@ def run_fill_diagnostics(
     groups: list[tuple[str, list[dict[str, str]]]]
     if by_source_date:
         dates = sorted({row.get("source_date", "unknown") or "unknown" for row in rows})
-        groups = [(date, [row for row in rows if (row.get("source_date", "unknown") or "unknown") == date]) for date in dates]
+        groups = [
+            (date, [row for row in rows if (row.get("source_date", "unknown") or "unknown") == date]) for date in dates
+        ]
         groups.append(("all", rows))
     else:
         groups = [("all", rows)]
@@ -261,9 +263,11 @@ def _compute_group(
         fill_latency_ms += _fill_latency_ms(row, fill_event_time)
 
     break_even_exit_taker_fee_bps = (
-        ((gross_pnl - maker_fee_rate * maker_fee_turnover - slippage_rate * exit_fee_turnover)
-         / exit_fee_turnover
-         * 10_000.0)
+        (
+            (gross_pnl - maker_fee_rate * maker_fee_turnover - slippage_rate * exit_fee_turnover)
+            / exit_fee_turnover
+            * 10_000.0
+        )
         if exit_fee_turnover
         else 0.0
     )
@@ -295,11 +299,7 @@ def _quantile_buckets(
     feature: str,
     bins: int,
 ) -> list[tuple[int, float, float, list[dict[str, str]]]]:
-    finite_rows = [
-        (value, row)
-        for row in rows
-        if (value := _safe_float(row.get(feature, ""))) is not None
-    ]
+    finite_rows = [(value, row) for row in rows if (value := _safe_float(row.get(feature, ""))) is not None]
     if not finite_rows:
         raise ValueError(f"no finite values available for regime feature: {feature}")
     finite_rows.sort(key=lambda item: item[0])

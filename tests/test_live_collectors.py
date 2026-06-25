@@ -53,7 +53,15 @@ def test_binance_live_snapshot_and_delta_normalize_to_l2_rows() -> None:
     )
     delta = normalize_live_l2_message(
         "binance",
-        {"e": "depthUpdate", "E": 1_700_000_000_010, "s": "BTCUSDT", "U": 101, "u": 102, "b": [["99.9", "0"]], "a": [["100.2", "0.4"]]},
+        {
+            "e": "depthUpdate",
+            "E": 1_700_000_000_010,
+            "s": "BTCUSDT",
+            "U": 101,
+            "u": 102,
+            "b": [["99.9", "0"]],
+            "a": [["100.2", "0.4"]],
+        },
         symbol="BTCUSDT",
         local_timestamp_ms=1_700_000_000_011,
     )
@@ -76,13 +84,19 @@ def test_okx_bybit_coinbase_live_messages_normalize_sequence_fields() -> None:
         {
             "arg": {"channel": "books", "instId": "BTC-USDT-SWAP"},
             "action": "update",
-            "data": [{"ts": "1700000000000", "seqId": 12, "prevSeqId": 11, "bids": [["100", "1"]], "asks": [["101", "2"]]}],
+            "data": [
+                {"ts": "1700000000000", "seqId": 12, "prevSeqId": 11, "bids": [["100", "1"]], "asks": [["101", "2"]]}
+            ],
         },
         symbol="BTC-USDT-SWAP",
     )
     bybit = normalize_live_l2_message(
         "bybit",
-        {"type": "snapshot", "ts": 1_700_000_000_000, "data": {"s": "BTCUSDT", "u": 3, "seq": 7, "b": [["100", "1"]], "a": [["101", "2"]]}},
+        {
+            "type": "snapshot",
+            "ts": 1_700_000_000_000,
+            "data": {"s": "BTCUSDT", "u": 3, "seq": 7, "b": [["100", "1"]], "a": [["101", "2"]]},
+        },
         symbol="BTCUSDT",
     )
     coinbase = normalize_live_l2_message(
@@ -94,7 +108,14 @@ def test_okx_bybit_coinbase_live_messages_normalize_sequence_fields() -> None:
                 {
                     "type": "update",
                     "product_id": "BTC-USD",
-                    "updates": [{"side": "bid", "event_time": "2023-11-14T22:13:20Z", "price_level": "100", "new_quantity": "1.25"}],
+                    "updates": [
+                        {
+                            "side": "bid",
+                            "event_time": "2023-11-14T22:13:20Z",
+                            "price_level": "100",
+                            "new_quantity": "1.25",
+                        }
+                    ],
                 }
             ],
         },

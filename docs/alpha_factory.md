@@ -125,7 +125,7 @@ Fractional Kelly is disabled unless OOS fold variance is stable enough to pass a
 
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli kelly-variance-gate results/current/<artifact>.csv \
-  --column test_net_pnl \
+  --column validation_net_pnl \
   --min-observations 20 \
   --window-size 5 \
   --max-variance-cv 0.5
@@ -139,7 +139,7 @@ Current local evidence has one narrow Kelly-eligible candidate: `results/kelly_c
 
 ## Sequence Model Readiness Gate
 
-Do not run Transformer/TCN/DeepLOB experiments until both the economic baseline and the true-L2 tensor path are ready:
+Do not run Transformer/TCN/LOB-CNN experiments until both the economic baseline and the true-L2 tensor path are ready:
 
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli model-readiness-gate \
@@ -170,6 +170,10 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-sequence-experiment \
   --baseline-audit results/current/btc_full_day_edge_zero_fee_audit.csv \
   --l2 data/normalized_l2/bybit/BTCUSDT/2023-05-16.csv \
   --output results/model_experiments/sequence_transformer_results.csv \
+  --checkpoint-path results/model_experiments/checkpoints/sequence_transformer.pt \
+  --predictions-output results/model_experiments/predictions/sequence_transformer_predictions.csv \
+  --device auto \
+  --class-weighting balanced \
   --min-fold-count 20 \
   --min-l2-rows 1000
 
@@ -178,11 +182,15 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-sequence-experiment \
   --baseline-audit results/current/btc_full_day_edge_zero_fee_audit.csv \
   --l2 data/normalized_l2/bybit/BTCUSDT/2023-05-16.csv \
   --output results/model_experiments/sequence_tcn_results.csv \
+  --checkpoint-path results/model_experiments/checkpoints/sequence_tcn.pt \
+  --predictions-output results/model_experiments/predictions/sequence_tcn_predictions.csv \
+  --device auto \
+  --class-weighting balanced \
   --min-fold-count 20 \
   --min-l2-rows 1000
 ```
 
-The aggregate evidence gate now inspects these artifact rows; they must report the expected `model_name`, selected `l2_path`, `readiness_passed=1`, `dependency_available=1`, and `passed=1`.
+The aggregate evidence gate now inspects these artifact rows; they must report the expected `model_name`, selected `l2_path`, `readiness_passed=1`, `dependency_available=1`, and `pipeline_completed=1`. Sequence artifacts also record minibatch size, early-stopping patience, best epoch, selected device, class weighting, scheduler gamma, checkpoint path, prediction-export path, Brier/ECE calibration metrics, confusion matrices, and stateful test-set economic smoke fields. `acceptance_passed` remains separate and should only become true when an explicit predictive/economic threshold is defined and met.
 
 The dependency-free self-supervised smoke artifact is generated with:
 
@@ -194,7 +202,7 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-pretraining-smoke \
   --window 4
 ```
 
-Current local state: the Bybit true-L2 smoke path is ready, the masked reconstruction pretraining artifact exists, and local Torch smoke artifacts exist for `sequence_transformer` and `sequence_tcn` under `results/model_experiments/`. These prove the gated training/evidence path, not production model edge. The Transformer artifact scored `test_macro_f1=0.333333333333`; the TCN artifact scored `test_macro_f1=0`, so the current neural results are weak and should not be promoted as alpha.
+Current local state: the Bybit true-L2 smoke path is ready, the masked reconstruction pretraining artifact exists, and local Torch smoke artifacts exist for `sequence_transformer` and `sequence_tcn` under `results/model_experiments/`. These prove the gated training/evidence path and artifact contract, not production model edge. Current neural outputs are tiny-sample smoke artifacts and should not be promoted as alpha.
 
 ## Result Auditing
 
@@ -208,6 +216,7 @@ The audit reports:
 
 - fold count,
 - total trades,
+- inference grain,
 - total net PnL,
 - positive fold rate,
 - median fold net PnL,
@@ -216,9 +225,9 @@ The audit reports:
 - median fold mean/median net bps,
 - fold profit factor,
 - max fold drawdown in raw PnL units,
-- per-trade Sharpe,
+- mean fold Sharpe-per-trade summary,
 - fold-bootstrap mean bounds,
-- one-sided mean-positive p-value proxy,
+- one-sided HAC/Newey-West mean-positive p-value proxy at the declared inference grain,
 - acceptance/rejection reasons.
 
 ## Calendar Splits
@@ -259,7 +268,7 @@ This default is only a laptop proof-of-pipeline. The full review experiment rema
 
 The current Binance Vision archive supports quote/trade/depth-band microstructure research. It does not support:
 
-- true DeepLOB historical tensors,
+- true historical multi-level LOB tensors,
 - queue-position reconstruction,
 - production maker fill simulation,
 - strong passive capacity claims.

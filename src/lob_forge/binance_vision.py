@@ -59,10 +59,7 @@ def archive_key(
     if dataset in KLINE_DATASETS:
         if not interval:
             raise ValueError(f"dataset {dataset} requires --interval")
-        return (
-            f"data/{market}/{frequency}/{dataset}/{symbol}/{interval}/"
-            f"{symbol}-{interval}-{date_value}.zip"
-        )
+        return f"data/{market}/{frequency}/{dataset}/{symbol}/{interval}/" f"{symbol}-{interval}-{date_value}.zip"
 
     return f"data/{market}/{frequency}/{dataset}/{symbol}/{symbol}-{dataset}-{date_value}.zip"
 
@@ -151,7 +148,9 @@ def download_key(
         if overwrite or not destination.exists():
             _log_download(f"archive_download_start attempt={attempt}/{attempts} key={key}")
             _download_url(url_for_key(key), destination)
-            _log_download(f"archive_download_done attempt={attempt}/{attempts} key={key} bytes={destination.stat().st_size}")
+            _log_download(
+                f"archive_download_done attempt={attempt}/{attempts} key={key} bytes={destination.stat().st_size}"
+            )
 
         if not expected:
             return destination
@@ -165,9 +164,7 @@ def download_key(
         if destination.exists():
             destination.unlink()
         if attempt == attempts:
-            raise ValueError(
-                f"Checksum mismatch for {destination}: expected {expected}, got {actual}"
-            )
+            raise ValueError(f"Checksum mismatch for {destination}: expected {expected}, got {actual}")
 
     return destination
 

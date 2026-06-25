@@ -7,9 +7,65 @@ cd "$ROOT_DIR"
 
 PYTHONPATH="${PYTHONPATH:-src}"
 export PYTHONPATH
+if [[ -z "${PYTHON_BIN:-}" && -x ".venv/bin/python" ]]; then
+  PYTHON_BIN=".venv/bin/python"
+else
+  PYTHON_BIN="${PYTHON_BIN:-python3}"
+fi
+source scripts/holdout_manifest.sh
 
 BTC_5S="data/processed/maker_horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv"
 ETH_5S="data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv"
+HOLDOUT_MANIFEST_DIR="${HOLDOUT_MANIFEST_DIR:-artifacts/holdout_manifests/core}"
+HOLDOUT_SPLIT_COLUMN="${HOLDOUT_SPLIT_COLUMN:-event_time}"
+
+holdout_value_for() {
+  python3 - "$1" "$HOLDOUT_SPLIT_COLUMN" <<'PY'
+import csv
+import sys
+
+path, column = sys.argv[1:3]
+last = ""
+with open(path, newline="") as handle:
+    reader = csv.DictReader(handle)
+    if column not in (reader.fieldnames or []):
+        raise SystemExit(f"missing holdout split column: {column}")
+    for row in reader:
+        if row.get(column):
+            last = row[column]
+if not last:
+    raise SystemExit("could not infer holdout value")
+print(last)
+PY
+}
+
+ensure_holdout_manifest() {
+  local path="$1"
+  local slug
+  slug="$(basename "$path" .csv)"
+  local manifest="$HOLDOUT_MANIFEST_DIR/${slug}_${HOLDOUT_SPLIT_COLUMN}_holdout.json"
+  mkdir -p "$HOLDOUT_MANIFEST_DIR"
+  if [[ ! -s "$manifest" ]]; then
+    local value
+    value="$(holdout_value_for "$path")"
+    python3 -m lob_forge.cli create-holdout-manifest "$path" \
+      --output "$manifest" \
+      --split-column "$HOLDOUT_SPLIT_COLUMN" \
+      --holdout-values "$value" \
+      --source-root "$ROOT_DIR" \
+      --notes "Auto-created by scripts/reproduce_core_results.sh" >&2
+  fi
+  printf '%s' "$manifest"
+}
+
+run_with_holdout() {
+  local command="$1"
+  local path="$2"
+  shift 2
+  local manifest
+  manifest="$(ensure_holdout_manifest "$path")"
+  python3 -m lob_forge.cli "$command" "$path" --holdout-manifest "$manifest" "$@"
+}
 
 run_builds() {
   python3 -m lob_forge.cli build-range \
@@ -43,7 +99,7 @@ run_builds() {
 
 run_results() {
   echo "== BTCUSDT 5s threshold walk-forward, zero fees =="
-  python3 -m lob_forge.cli walk-forward "$BTC_5S" \
+  run_with_holdout walk-forward "$BTC_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -53,7 +109,7 @@ run_results() {
 
   echo
   echo "== BTCUSDT 5s threshold walk-forward, 5 bps taker fees =="
-  python3 -m lob_forge.cli walk-forward "$BTC_5S" \
+  run_with_holdout walk-forward "$BTC_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -63,7 +119,7 @@ run_results() {
 
   echo
   echo "== BTCUSDT 5s fixed-rule regime diagnostics, zero fees =="
-  python3 -m lob_forge.cli regime "$BTC_5S" \
+  run_with_holdout regime "$BTC_5S" \
     --feature microprice_deviation \
     --threshold 0.05 \
     --regime-features spread_mean_5,realized_volatility_5,notional_imbalance_1pct \
@@ -72,7 +128,7 @@ run_results() {
 
   echo
   echo "== BTCUSDT 5s logistic walk-forward, zero fees =="
-  python3 -m lob_forge.cli logistic-walk-forward "$BTC_5S" \
+  run_with_holdout logistic-walk-forward "$BTC_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -85,7 +141,7 @@ run_results() {
 
   echo
   echo "== ETHUSDT 5s threshold walk-forward, zero fees =="
-  python3 -m lob_forge.cli walk-forward "$ETH_5S" \
+  run_with_holdout walk-forward "$ETH_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -95,7 +151,7 @@ run_results() {
 
   echo
   echo "== ETHUSDT 5s logistic walk-forward, zero fees =="
-  python3 -m lob_forge.cli logistic-walk-forward "$ETH_5S" \
+  run_with_holdout logistic-walk-forward "$ETH_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -108,7 +164,7 @@ run_results() {
 
   echo
   echo "== ETHUSDT 5s fixed-rule regime diagnostics, zero fees =="
-  python3 -m lob_forge.cli regime "$ETH_5S" \
+  run_with_holdout regime "$ETH_5S" \
     --feature microprice_deviation \
     --threshold 0.15 \
     --regime-features spread_mean_5,realized_volatility_5,notional_imbalance_1pct \
@@ -117,7 +173,7 @@ run_results() {
 
   echo
   echo "== ETHUSDT 5s threshold walk-forward, 5 bps taker fees =="
-  python3 -m lob_forge.cli walk-forward "$ETH_5S" \
+  run_with_holdout walk-forward "$ETH_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -128,7 +184,7 @@ run_results() {
 
 run_conditionals() {
   echo "== BTCUSDT 5s conditional walk-forward, zero fees =="
-  python3 -m lob_forge.cli conditional-walk-forward "$BTC_5S" \
+  run_with_holdout conditional-walk-forward "$BTC_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -141,7 +197,7 @@ run_conditionals() {
 
   echo
   echo "== BTCUSDT 5s conditional walk-forward, 5 bps taker fees =="
-  python3 -m lob_forge.cli conditional-walk-forward "$BTC_5S" \
+  run_with_holdout conditional-walk-forward "$BTC_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -154,7 +210,7 @@ run_conditionals() {
 
   echo
   echo "== ETHUSDT 5s conditional walk-forward, zero fees =="
-  python3 -m lob_forge.cli conditional-walk-forward "$ETH_5S" \
+  run_with_holdout conditional-walk-forward "$ETH_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -167,7 +223,7 @@ run_conditionals() {
 
   echo
   echo "== ETHUSDT 5s conditional walk-forward, 5 bps taker fees =="
-  python3 -m lob_forge.cli conditional-walk-forward "$ETH_5S" \
+  run_with_holdout conditional-walk-forward "$ETH_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -181,7 +237,7 @@ run_conditionals() {
 
 run_edge() {
   echo "== BTCUSDT 5s expected-edge ridge walk-forward, zero fees =="
-  python3 -m lob_forge.cli edge-walk-forward "$BTC_5S" \
+  run_with_holdout edge-walk-forward "$BTC_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -192,7 +248,7 @@ run_edge() {
 
   echo
   echo "== BTCUSDT 5s expected-edge ridge walk-forward, 5 bps taker fees =="
-  python3 -m lob_forge.cli edge-walk-forward "$BTC_5S" \
+  run_with_holdout edge-walk-forward "$BTC_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -203,7 +259,7 @@ run_edge() {
 
   echo
   echo "== ETHUSDT 5s expected-edge ridge walk-forward, zero fees =="
-  python3 -m lob_forge.cli edge-walk-forward "$ETH_5S" \
+  run_with_holdout edge-walk-forward "$ETH_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \
@@ -214,7 +270,7 @@ run_edge() {
 
   echo
   echo "== ETHUSDT 5s expected-edge ridge walk-forward, 5 bps taker fees =="
-  python3 -m lob_forge.cli edge-walk-forward "$ETH_5S" \
+  run_with_holdout edge-walk-forward "$ETH_5S" \
     --train-size 2400 \
     --validation-size 1200 \
     --test-size 1200 \

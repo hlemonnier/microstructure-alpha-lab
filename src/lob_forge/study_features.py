@@ -47,7 +47,9 @@ def evaluate_expected_edge_feature_status(
     if not plan_path.exists():
         raise FileNotFoundError(f"missing run plan: {plan_path}")
     plan = _read_plan(plan_path)
-    processed_root_path = Path(processed_root) if processed_root is not None else Path(plan.get("processed_root", "data/processed"))
+    processed_root_path = (
+        Path(processed_root) if processed_root is not None else Path(plan.get("processed_root", "data/processed"))
+    )
     symbols = [str(symbol).upper() for symbol in plan.get("symbols", [])]
     horizons_ms = [int(horizon) for horizon in plan.get("horizons_ms", [])]
     start_date = str(plan["start_date"])

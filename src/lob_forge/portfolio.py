@@ -116,12 +116,32 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
 
     for trade in sorted(trades, key=lambda item: item.entry_time_ms):
         active = [item for item in active if item.trade.exit_time_ms > trade.entry_time_ms]
-        notional = trade.notional if trade.notional is not None else capped_expected_edge_notional(
-            trade.predicted_edge_bps,
-            base_notional=config.base_notional,
-            max_notional=config.max_notional,
-        )
         current_inventory = sum(item.inventory_notional for item in active)
+        if kill_switch:
+            simulated.append(
+                SimulatedTrade(
+                    trade=trade,
+                    notional=0.0,
+                    quantity=0.0,
+                    gross_pnl=0.0,
+                    net_pnl=0.0,
+                    return_on_capital=0.0,
+                    inventory_notional=current_inventory,
+                    margin_used=current_inventory * config.initial_margin_rate,
+                    rejected=True,
+                    rejection_reason="kill_switch",
+                )
+            )
+            continue
+        notional = (
+            trade.notional
+            if trade.notional is not None
+            else capped_expected_edge_notional(
+                trade.predicted_edge_bps,
+                base_notional=config.base_notional,
+                max_notional=config.max_notional,
+            )
+        )
         if config.max_inventory_notional is not None and current_inventory + notional > config.max_inventory_notional:
             simulated.append(
                 SimulatedTrade(
@@ -258,7 +278,7 @@ def gated_fractional_kelly_notional(
 def evaluate_oos_variance_stability(
     path: Path | str,
     *,
-    column: str = "test_net_pnl",
+    column: str = "validation_net_pnl",
     min_observations: int = 20,
     window_size: int = 5,
     max_variance_cv: float = 0.5,
@@ -398,7 +418,9 @@ def _read_numeric_column(path: Path, column: str) -> list[float]:
 
 
 def _is_numeric(value: str | None) -> bool:
-    if value in {"", None}:
+    if value is None:
+        return False
+    if value == "":
         return False
     try:
         float(value)

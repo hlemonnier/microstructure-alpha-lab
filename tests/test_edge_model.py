@@ -12,6 +12,7 @@ from lob_forge.edge_model import (
     run_edge_walk_forward_streaming,
     write_edge_shadow_decisions_streaming,
 )
+from lob_forge.holdout import build_holdout_manifest, write_holdout_manifest
 
 
 def test_edge_model_predicts_long_and_short_gross_edges() -> None:
@@ -75,6 +76,7 @@ def test_edge_walk_forward_can_select_flat_when_costs_dominate(tmp_path: Path) -
 def test_edge_walk_forward_cli_streams_by_default(tmp_path: Path) -> None:
     path = tmp_path / "features.csv"
     _write_feature_csv(path, _synthetic_rows(36))
+    holdout_manifest = _write_holdout_manifest(tmp_path, path, holdout_event_time="35000")
 
     output = io.StringIO()
     with redirect_stdout(output):
@@ -82,6 +84,8 @@ def test_edge_walk_forward_cli_streams_by_default(tmp_path: Path) -> None:
             [
                 "edge-walk-forward",
                 str(path),
+                "--holdout-manifest",
+                str(holdout_manifest),
                 "--features",
                 "microprice_deviation,top_imbalance",
                 "--edge-thresholds-bps",
@@ -111,12 +115,15 @@ def test_edge_walk_forward_cli_streams_by_default(tmp_path: Path) -> None:
 def test_edge_walk_forward_cli_no_stream_uses_memory_guard(tmp_path: Path) -> None:
     path = tmp_path / "features.csv"
     _write_feature_csv(path, _synthetic_rows(36))
+    holdout_manifest = _write_holdout_manifest(tmp_path, path, holdout_event_time="35000")
 
     try:
         cli_main(
             [
                 "edge-walk-forward",
                 str(path),
+                "--holdout-manifest",
+                str(holdout_manifest),
                 "--features",
                 "microprice_deviation,top_imbalance",
                 "--edge-thresholds-bps",
@@ -277,6 +284,19 @@ def _write_feature_csv(path: Path, rows: list[dict[str, str]]) -> None:
         handle.write(",".join(columns) + "\n")
         for row in rows:
             handle.write(",".join(row[column] for column in columns) + "\n")
+
+
+def _write_holdout_manifest(tmp_path: Path, feature_csv: Path, *, holdout_event_time: str) -> Path:
+    path = tmp_path / "holdout.json"
+    manifest = build_holdout_manifest(
+        feature_csv,
+        split_column="event_time",
+        holdout_values=[holdout_event_time],
+        created_at_utc="2026-06-25T00:00:00Z",
+        git_commit="a" * 40,
+    )
+    write_holdout_manifest(manifest, path)
+    return path
 
 
 def _synthetic_rows(n: int) -> list[dict[str, str]]:

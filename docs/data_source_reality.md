@@ -28,7 +28,7 @@ timestamp,percentage,depth,notional
 2023-01-01 00:06:05,-5,16770.30000000,271987123.35882000
 ```
 
-This is aggregate depth by percentage band, not a tensor of price levels. It cannot support a strict DeepLOB replication by itself.
+This is aggregate depth by percentage band, not a tensor of price levels. It cannot support a strict deep LOB replication by itself.
 
 ## Implication
 
@@ -36,7 +36,7 @@ The best v1 project is:
 
 Quote/trade/depth-band microstructure modeling on Binance USD-M futures using Binance Vision archives.
 
-The DeepLOB-style extension remains valid, but it requires one of:
+The deep LOB extension remains valid, but it requires one of:
 
 - live collection of Binance diff-depth streams plus snapshots,
 - a paid or third-party historical L2 archive,

@@ -8,6 +8,8 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+from lob_forge.statistics import newey_west_standard_error, stationary_block_bootstrap_mean_interval
+
 
 @dataclass(frozen=True)
 class HypothesisSpec:
@@ -39,6 +41,8 @@ class ExperimentRecord:
     git_rev: str
     created_at_utc: str
     notes: str = ""
+    holdout_manifest_path: str = ""
+    holdout_manifest_sha256: str = ""
 
 
 @dataclass(frozen=True)
@@ -60,6 +64,7 @@ class FoldResult:
 @dataclass(frozen=True)
 class ResultAudit:
     artifact_path: str
+    inference_grain: str
     fold_count: int
     total_test_rows: int
     total_test_trades: int
@@ -193,13 +198,21 @@ def audit_result_artifact(
     positive_fold_count = sum(1 for value in net_pnls if value > 0.0)
     mean_fold_net_pnl = sum(net_pnls) / len(net_pnls)
     fold_net_pnl_std = _sample_std(net_pnls)
-    lower, upper = bootstrap_mean_ci(net_pnls, samples=bootstrap_samples, seed=seed)
+    interval = stationary_block_bootstrap_mean_interval(
+        net_pnls,
+        expected_block_size=max(1, int(math.sqrt(len(net_pnls)))),
+        samples=bootstrap_samples,
+        confidence=0.90,
+        seed=seed,
+    )
+    lower, upper = interval.lower, interval.upper
     summary_break_even = _safe_float(summary_row.get("test_break_even_fee_bps")) if summary_row else 0.0
     if not summary_break_even:
         summary_break_even = _trade_weighted_break_even(folds)
 
     return ResultAudit(
         artifact_path=str(path),
+        inference_grain="fold_summary",
         fold_count=len(folds),
         total_test_rows=total_test_rows,
         total_test_trades=total_test_trades,
@@ -220,7 +233,7 @@ def audit_result_artifact(
         mean_fold_sharpe_per_trade=sum(fold.test_sharpe_per_trade for fold in folds) / len(folds),
         bootstrap_mean_net_pnl_lower_5pct=lower,
         bootstrap_mean_net_pnl_upper_95pct=upper,
-        one_sided_p_value_mean_le_zero=one_sided_normal_p_value_mean_le_zero(net_pnls),
+        one_sided_p_value_mean_le_zero=one_sided_hac_p_value_mean_le_zero(net_pnls),
     )
 
 
@@ -233,13 +246,8 @@ def evaluate_acceptance(audit: ResultAudit, criteria: AcceptanceCriteria) -> Acc
     if criteria.require_positive_median_fold and audit.median_fold_net_pnl <= 0.0:
         reasons.append("median fold net PnL is not positive")
     if audit.positive_fold_rate < criteria.min_positive_fold_rate:
-        reasons.append(
-            f"positive fold rate {audit.positive_fold_rate:.3f} < {criteria.min_positive_fold_rate:.3f}"
-        )
-    if (
-        audit.max_positive_fold_share_of_total_net
-        > criteria.max_positive_fold_share_of_total_net
-    ):
+        reasons.append(f"positive fold rate {audit.positive_fold_rate:.3f} < {criteria.min_positive_fold_rate:.3f}")
+    if audit.max_positive_fold_share_of_total_net > criteria.max_positive_fold_share_of_total_net:
         reasons.append(
             "largest positive fold share "
             f"{audit.max_positive_fold_share_of_total_net:.3f} "
@@ -250,10 +258,7 @@ def evaluate_acceptance(audit: ResultAudit, criteria: AcceptanceCriteria) -> Acc
             f"break-even fee {audit.weighted_break_even_fee_bps:.6f} bps "
             f"< required {criteria.min_break_even_fee_bps:.6f} bps"
         )
-    if (
-        criteria.require_positive_bootstrap_lower_bound
-        and audit.bootstrap_mean_net_pnl_lower_5pct <= 0.0
-    ):
+    if criteria.require_positive_bootstrap_lower_bound and audit.bootstrap_mean_net_pnl_lower_5pct <= 0.0:
         reasons.append("bootstrap lower 5% bound for mean fold net PnL is not positive")
     return AcceptanceVerdict(passed=not reasons, rejection_reasons=reasons)
 
@@ -261,6 +266,7 @@ def evaluate_acceptance(audit: ResultAudit, criteria: AcceptanceCriteria) -> Acc
 def format_result_audit_csv(audit: ResultAudit, verdict: AcceptanceVerdict) -> str:
     fields = [
         "artifact_path",
+        "inference_grain",
         "fold_count",
         "total_test_rows",
         "total_test_trades",
@@ -287,6 +293,7 @@ def format_result_audit_csv(audit: ResultAudit, verdict: AcceptanceVerdict) -> s
     ]
     values = [
         audit.artifact_path,
+        audit.inference_grain,
         str(audit.fold_count),
         str(audit.total_test_rows),
         str(audit.total_test_trades),
@@ -320,6 +327,7 @@ def format_result_audit_markdown(audit: ResultAudit, verdict: AcceptanceVerdict)
         f"# Result Audit: {Path(audit.artifact_path).name}",
         "",
         f"- Verdict: {'PASS' if verdict.passed else 'REJECT'}",
+        f"- Inference grain: {audit.inference_grain}",
         f"- Folds: {audit.fold_count}",
         f"- Total test rows: {audit.total_test_rows}",
         f"- Total test trades: {audit.total_test_trades}",
@@ -333,8 +341,8 @@ def format_result_audit_markdown(audit: ResultAudit, verdict: AcceptanceVerdict)
         f"- Median fold profit factor: {_fmt(audit.median_fold_profit_factor)}",
         f"- Max fold drawdown: {_fmt(audit.max_fold_drawdown_pnl)} raw PnL units",
         f"- Mean fold Sharpe per trade: {_fmt(audit.mean_fold_sharpe_per_trade)}",
-        f"- Fold-bootstrap mean net PnL 5/95%: {_fmt(audit.bootstrap_mean_net_pnl_lower_5pct)} / {_fmt(audit.bootstrap_mean_net_pnl_upper_95pct)}",
-        f"- One-sided normal p-value for mean <= 0: {_fmt(audit.one_sided_p_value_mean_le_zero)}",
+        f"- Fold-bootstrap mean net PnL 5/95% interval: {_fmt(audit.bootstrap_mean_net_pnl_lower_5pct)} / {_fmt(audit.bootstrap_mean_net_pnl_upper_95pct)}",
+        f"- One-sided HAC/Newey-West z p-value for mean <= 0: {_fmt(audit.one_sided_p_value_mean_le_zero)}",
         "",
         "## Reasons",
         "",
@@ -372,6 +380,17 @@ def one_sided_normal_p_value_mean_le_zero(values: list[float]) -> float:
     if std_value == 0.0:
         return 0.0 if mean_value > 0.0 else 1.0
     z_score = mean_value / (std_value / math.sqrt(len(values)))
+    return 0.5 * math.erfc(z_score / math.sqrt(2.0))
+
+
+def one_sided_hac_p_value_mean_le_zero(values: list[float]) -> float:
+    if not values:
+        raise ValueError("cannot score empty values")
+    mean_value = sum(values) / len(values)
+    se = newey_west_standard_error(values)
+    if se == 0.0:
+        return 0.0 if mean_value > 0.0 else 1.0
+    z_score = mean_value / se
     return 0.5 * math.erfc(z_score / math.sqrt(2.0))
 
 
@@ -439,9 +458,7 @@ def read_p_value_records(
 
 
 def format_p_value_corrections(corrections: list[PValueCorrection]) -> str:
-    lines = [
-        "hypothesis_id,metric,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept"
-    ]
+    lines = ["hypothesis_id,metric,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept"]
     for correction in corrections:
         lines.append(
             _csv_line(

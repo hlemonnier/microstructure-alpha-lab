@@ -61,7 +61,7 @@ Every true-L2 file must provide or be mapped to:
 - size,
 - sequence or update identifiers when the source exposes them.
 
-`validate_l2_csv_schema` enforces the required fields and checks the first rows for parseable timestamps, valid side, nonnegative size, and positive price. Files that do not pass validation should not enter replay, tensor extraction, passive fill simulation, or DeepLOB experiments.
+`validate_l2_csv_schema` enforces the required fields and checks the first rows for parseable timestamps, valid side, nonnegative size, and positive price. Files that do not pass validation should not enter replay, tensor extraction, passive fill simulation, or full-depth neural experiments.
 
 ## Storage Contract
 

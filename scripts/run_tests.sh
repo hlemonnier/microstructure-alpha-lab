@@ -7,11 +7,16 @@ cd "$ROOT_DIR"
 
 PYTHONPATH="${PYTHONPATH:-src}"
 export PYTHONPATH
+if [[ -z "${PYTHON_BIN:-}" && -x ".venv/bin/python" ]]; then
+  PYTHON_BIN=".venv/bin/python"
+else
+  PYTHON_BIN="${PYTHON_BIN:-python3}"
+fi
 
 run_direct_tests() {
-  python3 -m compileall -q src tests
+  "$PYTHON_BIN" -m compileall -q src tests
 
-  python3 - <<'PY'
+  "$PYTHON_BIN" - <<'PY'
 import importlib.util
 import inspect
 import tempfile
@@ -58,12 +63,12 @@ case "$MODE" in
     run_direct_tests
     ;;
   pytest)
-    python3 -m compileall -q src tests
-    python3 -m pytest -q
+    "$PYTHON_BIN" -m compileall -q src tests
+    "$PYTHON_BIN" -m pytest -q
     ;;
   all)
     run_direct_tests
-    python3 -m pytest -q
+    "$PYTHON_BIN" -m pytest -q
     ;;
   *)
     echo "Usage: bash scripts/run_tests.sh [direct|pytest|all]" >&2

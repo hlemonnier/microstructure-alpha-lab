@@ -87,7 +87,9 @@ def evaluate_external_gate_readiness(
 
 def format_external_gate_readiness(report: ExternalGateReadinessReport, *, output_format: str = "text") -> str:
     if output_format == "json":
-        return json.dumps({"passed": report.passed, "checks": [asdict(check) for check in report.checks]}, indent=2, sort_keys=True)
+        return json.dumps(
+            {"passed": report.passed, "checks": [asdict(check) for check in report.checks]}, indent=2, sort_keys=True
+        )
     if output_format == "csv":
         from lob_forge.evidence_gates import EvidenceGate, EvidenceGateReport
 
@@ -143,7 +145,9 @@ def _resolve_modal_binary(*, root: Path, modal_binary: str | None) -> str | None
     candidates.append("modal")
 
     for candidate in candidates:
-        resolved = shutil.which(candidate) if "/" not in candidate else candidate if os.access(candidate, os.X_OK) else None
+        resolved = (
+            shutil.which(candidate) if "/" not in candidate else candidate if os.access(candidate, os.X_OK) else None
+        )
         if resolved:
             return resolved
     return None
@@ -399,7 +403,9 @@ def _resolve(root: Path, path: Path | str) -> Path:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Check operational readiness for the remaining external evidence gates.")
+    parser = argparse.ArgumentParser(
+        description="Check operational readiness for the remaining external evidence gates."
+    )
     parser.add_argument("--format", choices=["text", "csv", "json"], default="text")
     parser.add_argument("--output")
     parser.add_argument("--project-root", default=".")

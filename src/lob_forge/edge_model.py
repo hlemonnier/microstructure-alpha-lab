@@ -3,11 +3,12 @@ from __future__ import annotations
 import csv
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Sequence
 
 from lob_forge.baselines import DEFAULT_FEATURES, EconomicMetrics, Metrics, compute_metrics, evaluate_economics
 from lob_forge.live_validation import ShadowDecision, write_shadow_decisions
 from lob_forge.logistic import Standardizer, fit_standardizer, standardize_row
+from lob_forge.protocol import assert_valid_selection_metric
 
 
 DEFAULT_EDGE_THRESHOLDS_BPS = [0.0, 0.025, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.5, 0.75, 1.0, 2.0, 5.0]
@@ -74,6 +75,7 @@ def run_edge_walk_forward(
     sort_by: str = "validation_net_pnl",
     max_folds: int | None = None,
 ) -> list[EdgeWalkForwardFold]:
+    assert_valid_selection_metric(sort_by)
     rows = _read_rows(Path(feature_csv))
     if not rows:
         raise ValueError("no rows available for expected-edge walk-forward evaluation")
@@ -135,6 +137,7 @@ def run_edge_walk_forward_streaming(
     sort_by: str = "validation_net_pnl",
     max_folds: int | None = None,
 ) -> list[EdgeWalkForwardFold]:
+    assert_valid_selection_metric(sort_by)
     effective_step, threshold_values = _validate_walk_forward_config(
         edge_thresholds_bps=edge_thresholds_bps,
         train_size=train_size,
@@ -154,7 +157,7 @@ def run_edge_walk_forward_streaming(
         window = _read_next_rows(reader, total_window)
         if not window:
             raise ValueError("no rows available for expected-edge walk-forward evaluation")
-        feature_names = _available_features_from_columns(reader.fieldnames, features)
+        feature_names = _available_features_from_columns(list(reader.fieldnames), features)
         if len(window) < total_window:
             raise ValueError("not enough rows for one expected-edge walk-forward fold")
 
@@ -206,6 +209,7 @@ def run_edge_shadow_decisions_streaming(
     sort_by: str = "validation_net_pnl",
     max_folds: int | None = None,
 ) -> list[ShadowDecision]:
+    assert_valid_selection_metric(sort_by)
     if intended_size is None and intended_notional is None:
         raise ValueError("provide intended_size or intended_notional")
     if intended_size is not None and intended_size <= 0:
@@ -244,8 +248,11 @@ def run_edge_shadow_decisions_streaming(
             if side == 0 and not include_flat:
                 continue
             intended_price = _intended_order_price(row, side=side, order_type=order_type)
-            assert intended_notional is not None or intended_size is not None
-            size = intended_size if intended_size is not None else intended_notional / intended_price
+            if intended_size is not None:
+                size = intended_size
+            else:
+                assert intended_notional is not None
+                size = intended_notional / intended_price
             decisions.append(
                 ShadowDecision(
                     decision_id=_decision_id(symbol=symbol, fold=fold_fit.fold, row_index=row_index, row=row),
@@ -300,6 +307,7 @@ def select_edge_threshold(
     slippage_bps: float,
     sort_by: str,
 ) -> EdgeResult:
+    assert_valid_selection_metric(sort_by)
     if sort_by.startswith("validation_"):
         return _select_edge_threshold_by_validation(
             model=model,
@@ -359,13 +367,16 @@ def _select_edge_threshold_by_validation(
     )
 
     for threshold in edge_thresholds_bps:
-        predictor = lambda row, threshold=threshold: predict_side(
-            model,
-            row,
-            edge_threshold_bps=threshold,
-            taker_fee_bps=taker_fee_bps,
-            slippage_bps=slippage_bps,
-        )
+
+        def predictor(row: dict[str, str], threshold: float = threshold) -> int:
+            return predict_side(
+                model,
+                row,
+                edge_threshold_bps=threshold,
+                taker_fee_bps=taker_fee_bps,
+                slippage_bps=slippage_bps,
+            )
+
         score = _validation_sort_score(
             validation_rows,
             predictor,
@@ -503,11 +514,13 @@ def format_edge_walk_forward_results(folds: list[EdgeWalkForwardFold]) -> str:
 
     summary_break_even_fee_bps = 0.0
     if total_test_fee_turnover:
-        summary_break_even_fee_bps = sum(
-            fold.result.test_economics.break_even_taker_fee_bps
-            * fold.result.test_economics.fee_turnover
-            for fold in folds
-        ) / total_test_fee_turnover
+        summary_break_even_fee_bps = (
+            sum(
+                fold.result.test_economics.break_even_taker_fee_bps * fold.result.test_economics.fee_turnover
+                for fold in folds
+            )
+            / total_test_fee_turnover
+        )
 
     lines.append(
         ",".join(
@@ -559,13 +572,15 @@ def _make_edge_result(
     taker_fee_bps: float,
     slippage_bps: float,
 ) -> EdgeResult:
-    predictor = lambda row: predict_side(
-        model,
-        row,
-        edge_threshold_bps=edge_threshold_bps,
-        taker_fee_bps=taker_fee_bps,
-        slippage_bps=slippage_bps,
-    )
+    def predictor(row: dict[str, str]) -> int:
+        return predict_side(
+            model,
+            row,
+            edge_threshold_bps=edge_threshold_bps,
+            taker_fee_bps=taker_fee_bps,
+            slippage_bps=slippage_bps,
+        )
+
     return EdgeResult(
         name="ridge_expected_edge",
         features=model.features,
@@ -609,7 +624,9 @@ def _make_constant_result(
     taker_fee_bps: float,
     slippage_bps: float,
 ) -> EdgeResult:
-    predictor = lambda row: 0
+    def predictor(row: dict[str, str]) -> int:
+        return 0
+
     return EdgeResult(
         name="always_flat",
         features=model.features,
@@ -698,6 +715,7 @@ def _evaluate_predictor(rows: list[dict[str, str]], predictor: Callable[[dict[st
 
 
 def _sort_key(result: EdgeResult, sort_by: str) -> float:
+    assert_valid_selection_metric(sort_by)
     if sort_by == "validation_macro_f1":
         return result.validation.macro_f1
     if sort_by == "validation_balanced_accuracy":
@@ -706,13 +724,9 @@ def _sort_key(result: EdgeResult, sort_by: str) -> float:
         return result.validation_economics.net_pnl
     if sort_by == "validation_gross_pnl":
         return result.validation_economics.gross_pnl
-    if sort_by == "test_net_pnl":
-        return result.test_economics.net_pnl
-    if sort_by == "test_gross_pnl":
-        return result.test_economics.gross_pnl
     raise ValueError(
         "sort_by must be one of: validation_macro_f1, validation_balanced_accuracy, "
-        "validation_net_pnl, validation_gross_pnl, test_net_pnl, test_gross_pnl"
+        "validation_net_pnl, validation_gross_pnl"
     )
 
 
@@ -742,7 +756,7 @@ def _validation_sort_score(
         return economics.gross_pnl
     raise ValueError(
         "sort_by must be one of: validation_macro_f1, validation_balanced_accuracy, "
-        "validation_net_pnl, validation_gross_pnl, test_net_pnl, test_gross_pnl"
+        "validation_net_pnl, validation_gross_pnl"
     )
 
 
@@ -811,7 +825,7 @@ def _iter_edge_fold_fits_streaming(
         window = _read_next_rows(reader, total_window)
         if not window:
             raise ValueError("no rows available for expected-edge shadow decision export")
-        feature_names = _available_features_from_columns(reader.fieldnames, features)
+        feature_names = _available_features_from_columns(list(reader.fieldnames), features)
         if len(window) < total_window:
             raise ValueError("not enough rows for one expected-edge walk-forward fold")
 
@@ -937,7 +951,7 @@ def _available_features(rows: list[dict[str, str]], features: list[str] | None) 
     return _available_features_from_columns(list(rows[0]), features)
 
 
-def _available_features_from_columns(columns: list[str], features: list[str] | None) -> list[str]:
+def _available_features_from_columns(columns: Sequence[str], features: list[str] | None) -> list[str]:
     row_features = set(columns)
     if features is not None:
         missing = [feature for feature in features if feature not in row_features]

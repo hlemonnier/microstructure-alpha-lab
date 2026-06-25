@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import csv
 import importlib.util
+import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from lob_forge.execution_sim import MarketEvent, SignalEvent, StatefulExecutionConfig, simulate_stateful_execution
 
 
 SKLEARN_MODELS = {
@@ -23,7 +26,7 @@ SKLEARN_REGRESSORS = {
 OPTIONAL_MODEL_DEPENDENCIES = {
     "sklearn": ("gradient_boosting", "random_forest", "hist_gradient_boosting"),
     "xgboost": ("xgboost_classifier",),
-    "torch": ("sequence_mlp", "sequence_tcn", "sequence_transformer", "deeplob_cnn"),
+    "torch": ("sequence_mlp", "sequence_tcn", "sequence_transformer", "lob_cnn"),
 }
 
 
@@ -134,6 +137,7 @@ class L2SequenceExperimentReport:
     snapshots: int
     sequence_count: int
     feature_count: int
+    purge_gap: int
     train_rows: int
     validation_rows: int
     test_rows: int
@@ -141,9 +145,43 @@ class L2SequenceExperimentReport:
     learning_rate: float
     validation_accuracy: float
     validation_macro_f1: float
+    validation_balanced_accuracy: float
     test_accuracy: float
     test_macro_f1: float
-    passed: bool
+    test_balanced_accuracy: float
+    validation_brier_score: float
+    validation_expected_calibration_error: float
+    test_brier_score: float
+    test_expected_calibration_error: float
+    validation_confusion_matrix_json: str
+    test_confusion_matrix_json: str
+    batch_size: int
+    early_stopping_patience: int
+    best_epoch: int
+    seed: int
+    selected_device: str
+    class_weighting: str
+    lr_scheduler_gamma: float
+    final_learning_rate: float
+    checkpoint_path: str
+    resumed_from_checkpoint: bool
+    prediction_output_path: str
+    test_stateful_trades: int
+    test_stateful_turnover: float
+    test_stateful_net_pnl: float
+    test_stateful_break_even_fee_bps: float
+    pipeline_completed: bool
+    acceptance_passed: bool
+
+    @property
+    def passed(self) -> bool:
+        return self.pipeline_completed
+
+
+@dataclass(frozen=True)
+class SequenceStandardizer:
+    means: tuple[float, ...]
+    stds: tuple[float, ...]
 
 
 @dataclass(frozen=True)
@@ -205,11 +243,11 @@ def available_model_specs() -> list[ModelSpec]:
             purpose="Transformer extension after baseline and L2 tensor paths are verified",
         ),
         ModelSpec(
-            name="deeplob_cnn",
+            name="lob_cnn",
             family="lob_tensor",
             dependency="torch",
             available=_module_available("torch"),
-            purpose="DeepLOB-style CNN gated on FI-2010 or true L2 top-N tensors",
+            purpose="compact LOB tensor CNN smoke model; not a named literature replication",
         ),
     ]
 
@@ -236,10 +274,7 @@ def build_sequence_dataset(
     for end in range(window - 1, len(rows)):
         start = end - window + 1
         sequences.append(
-            [
-                [float(rows[index].get(feature, 0.0) or 0.0) for feature in features]
-                for index in range(start, end + 1)
-            ]
+            [[float(rows[index].get(feature, 0.0) or 0.0) for feature in features] for index in range(start, end + 1)]
         )
         labels.append(int(float(rows[end][label_column])))
     return SequenceDataset(features=features, window=window, sequences=sequences, labels=labels)
@@ -329,7 +364,9 @@ def fit_xgboost_classifier(
     return model.fit(x_rows, y_rows)
 
 
-def predict_sklearn_probabilities(model: Any, rows: list[dict[str, str]], features: list[str]) -> list[dict[int, float]]:
+def predict_sklearn_probabilities(
+    model: Any, rows: list[dict[str, str]], features: list[str]
+) -> list[dict[int, float]]:
     if not hasattr(model, "predict_proba"):
         raise ValueError("model does not expose predict_proba")
     x_rows = [[float(row.get(feature, 0.0) or 0.0) for feature in features] for row in rows]
@@ -356,12 +393,14 @@ def build_torch_sequence_classifier(
     class_count: int = 3,
 ) -> Any:
     if not _module_available("torch"):
-        raise RuntimeError("torch is required for sequence MLP/TCN/DeepLOB models")
+        raise RuntimeError("torch is required for sequence MLP/TCN/Transformer/LOB CNN models")
     if window <= 0 or feature_count <= 0:
         raise ValueError("window and feature_count must be positive")
-    if model_name not in {"sequence_mlp", "sequence_tcn", "sequence_transformer", "deeplob_cnn"}:
-        raise ValueError("model_name must be one of: sequence_mlp, sequence_tcn, sequence_transformer, deeplob_cnn")
+    if model_name not in {"sequence_mlp", "sequence_tcn", "sequence_transformer", "lob_cnn"}:
+        raise ValueError("model_name must be one of: sequence_mlp, sequence_tcn, sequence_transformer, lob_cnn")
 
+    import math
+    import torch
     import torch.nn as nn
 
     class TransposeForConv1d(nn.Module):
@@ -376,6 +415,76 @@ def build_torch_sequence_classifier(
         def forward(self, tensor: Any) -> Any:
             return tensor[:, -1, :]
 
+    class Chomp1d(nn.Module):
+        def __init__(self, chomp_size: int) -> None:
+            super().__init__()
+            self.chomp_size = chomp_size
+
+        def forward(self, tensor: Any) -> Any:
+            if self.chomp_size == 0:
+                return tensor
+            return tensor[:, :, : -self.chomp_size]
+
+    class CausalBlock(nn.Module):
+        def __init__(self, channels_in: int, channels_out: int, *, dilation: int) -> None:
+            super().__init__()
+            padding = (3 - 1) * dilation
+            self.net = nn.Sequential(
+                nn.Conv1d(channels_in, channels_out, kernel_size=3, padding=padding, dilation=dilation),
+                Chomp1d(padding),
+                nn.ReLU(),
+                nn.Conv1d(channels_out, channels_out, kernel_size=3, padding=padding, dilation=dilation),
+                Chomp1d(padding),
+            )
+            self.residual = (
+                nn.Conv1d(channels_in, channels_out, kernel_size=1) if channels_in != channels_out else nn.Identity()
+            )
+            self.activation = nn.ReLU()
+            self.receptive_field = 1 + 2 * (3 - 1) * dilation
+
+        def forward(self, tensor: Any) -> Any:
+            return self.activation(self.net(tensor) + self.residual(tensor))
+
+    class CausalTCN(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.blocks = nn.Sequential(
+                CausalBlock(feature_count, hidden_size, dilation=1),
+                CausalBlock(hidden_size, hidden_size, dilation=2),
+            )
+            self.receptive_field = 1 + 2 * (3 - 1) * (1 + 2)
+            self.head = nn.Linear(hidden_size, class_count)
+
+        def forward(self, tensor: Any) -> Any:
+            encoded = self.blocks(tensor.transpose(1, 2))
+            return self.head(encoded[:, :, -1])
+
+    class PositionalTransformer(nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.input = nn.Linear(feature_count, hidden_size)
+            positions = torch.arange(window, dtype=torch.float32).unsqueeze(1)
+            dimensions = torch.arange(hidden_size, dtype=torch.float32).unsqueeze(0)
+            div_term = torch.exp(2 * (dimensions // 2) * (-math.log(10000.0) / hidden_size))
+            encoding = torch.zeros(window, hidden_size)
+            encoding[:, 0::2] = torch.sin(positions * div_term[:, 0::2])
+            encoding[:, 1::2] = torch.cos(positions * div_term[:, 1::2])
+            self.register_buffer("positional_encoding", encoding.unsqueeze(0), persistent=False)
+            self.encoder = nn.TransformerEncoder(
+                nn.TransformerEncoderLayer(
+                    d_model=hidden_size,
+                    nhead=4,
+                    batch_first=True,
+                    dim_feedforward=hidden_size * 2,
+                ),
+                num_layers=2,
+            )
+            self.head = nn.Linear(hidden_size, class_count)
+
+        def forward(self, tensor: Any) -> Any:
+            encoded = self.input(tensor) + self.positional_encoding[:, : tensor.shape[1], :]
+            return self.head(self.encoder(encoded)[:, -1, :])
+
     if model_name == "sequence_mlp":
         return nn.Sequential(
             nn.Flatten(),
@@ -384,31 +493,9 @@ def build_torch_sequence_classifier(
             nn.Linear(hidden_size, class_count),
         )
     if model_name == "sequence_tcn":
-        return nn.Sequential(
-            TransposeForConv1d(),
-            nn.Conv1d(feature_count, hidden_size, kernel_size=3, padding=2),
-            nn.ReLU(),
-            nn.Conv1d(hidden_size, hidden_size, kernel_size=3, padding=2),
-            nn.ReLU(),
-            nn.AdaptiveAvgPool1d(1),
-            nn.Flatten(),
-            nn.Linear(hidden_size, class_count),
-        )
+        return CausalTCN()
     if model_name == "sequence_transformer":
-        return nn.Sequential(
-            nn.Linear(feature_count, hidden_size),
-            nn.TransformerEncoder(
-                nn.TransformerEncoderLayer(
-                    d_model=hidden_size,
-                    nhead=4,
-                    batch_first=True,
-                    dim_feedforward=hidden_size * 2,
-                ),
-                num_layers=2,
-            ),
-            LastToken(),
-            nn.Linear(hidden_size, class_count),
-        )
+        return PositionalTransformer()
     return nn.Sequential(
         UnsqueezeChannel(),
         nn.Conv2d(1, hidden_size, kernel_size=(3, min(4, feature_count)), padding=(1, 0)),
@@ -499,9 +586,12 @@ def run_l2_masked_pretraining_smoke(
         depth=depth,
         max_rows=max_rows,
         max_snapshots=max_snapshots,
+        include_time_delta=False,
     )
     if len(snapshots) < window:
-        raise ValueError(f"not enough L2 snapshots for one pretraining sequence: snapshots={len(snapshots)} window={window}")
+        raise ValueError(
+            f"not enough L2 snapshots for one pretraining sequence: snapshots={len(snapshots)} window={window}"
+        )
 
     sequences = [snapshots[index : index + window] for index in range(0, len(snapshots) - window + 1)]
     masked, targets, mask = build_masked_pretraining_batch(sequences, mask_probability=mask_probability)
@@ -563,6 +653,17 @@ def run_l2_torch_sequence_experiment(
     min_fold_count: int = 20,
     min_l2_rows: int = 1000,
     seed: int = 7,
+    batch_size: int = 32,
+    early_stopping_patience: int = 3,
+    device: str = "auto",
+    class_weighting: str = "none",
+    lr_scheduler_gamma: float = 1.0,
+    checkpoint_path: Path | str | None = None,
+    resume_from_checkpoint: bool = False,
+    prediction_output_path: Path | str | None = None,
+    economic_target_notional: float = 100.0,
+    economic_taker_fee_bps: float = 1.0,
+    economic_slippage_bps: float = 0.0,
 ) -> L2SequenceExperimentReport:
     if model_name not in {"sequence_tcn", "sequence_transformer"}:
         raise ValueError("model_name must be sequence_tcn or sequence_transformer")
@@ -576,6 +677,18 @@ def run_l2_torch_sequence_experiment(
         raise ValueError("epochs must be positive")
     if learning_rate <= 0.0:
         raise ValueError("learning_rate must be positive")
+    if batch_size <= 0:
+        raise ValueError("batch_size must be positive")
+    if early_stopping_patience <= 0:
+        raise ValueError("early_stopping_patience must be positive")
+    if device not in {"auto", "cpu", "cuda"}:
+        raise ValueError("device must be auto, cpu, or cuda")
+    if class_weighting not in {"none", "balanced"}:
+        raise ValueError("class_weighting must be none or balanced")
+    if not 0.0 < lr_scheduler_gamma <= 1.0:
+        raise ValueError("lr_scheduler_gamma must be in (0, 1]")
+    if economic_target_notional <= 0.0:
+        raise ValueError("economic_target_notional must be positive")
 
     l2_path = Path(l2_path)
     baseline_audit_path = Path(baseline_audit_path)
@@ -599,8 +712,9 @@ def run_l2_torch_sequence_experiment(
         depth=depth,
         max_rows=max_rows,
         max_snapshots=max_snapshots,
+        include_time_delta=True,
     )
-    sequences, labels = _l2_direction_sequences(
+    sequences, labels, sequence_end_indices = _l2_direction_sequences(
         snapshots,
         window=window,
         label_horizon=label_horizon,
@@ -608,9 +722,27 @@ def run_l2_torch_sequence_experiment(
     )
     if len(sequences) < 5:
         raise ValueError(f"not enough labeled L2 sequences for train/validation/test split: {len(sequences)}")
+    sequences = _stationarize_l2_sequences(sequences)
     feature_count = len(sequences[0][0])
-    sequences = _standardize_sequences(sequences)
-    train_count, validation_count, test_count = _sequential_split_counts(len(sequences))
+    train_count, validation_count, test_count, purge_gap = _purged_sequential_split_counts(
+        len(sequences),
+        purge_gap=window + label_horizon - 1,
+    )
+    validation_start = train_count + purge_gap
+    validation_end = validation_start + validation_count
+    test_start = validation_end + purge_gap
+    train_sequences = sequences[:train_count]
+    validation_sequences = sequences[validation_start:validation_end]
+    test_sequences = sequences[test_start:]
+    train_labels = labels[:train_count]
+    validation_labels = labels[validation_start:validation_end]
+    test_labels = labels[test_start:]
+    validation_end_indices = sequence_end_indices[validation_start:validation_end]
+    test_end_indices = sequence_end_indices[test_start:]
+    standardizer = _fit_sequence_standardizer(train_sequences)
+    train_sequences = _apply_sequence_standardizer(train_sequences, standardizer)
+    validation_sequences = _apply_sequence_standardizer(validation_sequences, standardizer)
+    test_sequences = _apply_sequence_standardizer(test_sequences, standardizer)
 
     try:
         import torch
@@ -618,37 +750,145 @@ def run_l2_torch_sequence_experiment(
     except ImportError as exc:
         raise RuntimeError("torch is required for sequence model experiments") from exc
 
+    selected_device = _select_torch_device(torch, device)
+    torch_device = torch.device(selected_device)
     torch.manual_seed(seed)
+    if selected_device == "cuda":
+        torch.cuda.manual_seed_all(seed)
     model = build_torch_sequence_classifier(
         window=window,
         feature_count=feature_count,
         model_name=model_name,
         class_count=3,
-    )
-    loss_fn = nn.CrossEntropyLoss()
+    ).to(torch_device)
+    class_weights = _torch_class_weights(train_labels, torch, torch_device) if class_weighting == "balanced" else None
+    loss_fn = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    scheduler = torch.optim.lr_scheduler.StepLR(
+        optimizer,
+        step_size=max(1, epochs // 3),
+        gamma=lr_scheduler_gamma,
+    )
 
-    x_train = torch.tensor(sequences[:train_count], dtype=torch.float32)
-    y_train = torch.tensor(labels[:train_count], dtype=torch.long)
-    x_validation = torch.tensor(sequences[train_count : train_count + validation_count], dtype=torch.float32)
-    y_validation = torch.tensor(labels[train_count : train_count + validation_count], dtype=torch.long)
-    x_test = torch.tensor(sequences[train_count + validation_count :], dtype=torch.float32)
-    y_test = torch.tensor(labels[train_count + validation_count :], dtype=torch.long)
+    x_train = torch.tensor(train_sequences, dtype=torch.float32, device=torch_device)
+    y_train = torch.tensor(train_labels, dtype=torch.long, device=torch_device)
+    x_validation = torch.tensor(validation_sequences, dtype=torch.float32, device=torch_device)
+    y_validation = torch.tensor(validation_labels, dtype=torch.long, device=torch_device)
+    x_test = torch.tensor(test_sequences, dtype=torch.float32, device=torch_device)
+    y_test = torch.tensor(test_labels, dtype=torch.long, device=torch_device)
 
-    model.train()
-    for _ in range(epochs):
-        optimizer.zero_grad()
-        loss = loss_fn(model(x_train), y_train)
-        loss.backward()
-        optimizer.step()
+    best_state: dict[str, Any] | None = None
+    best_epoch = 0
+    best_validation_loss = math.inf
+    stale_epochs = 0
+    start_epoch = 1
+    checkpoint = Path(checkpoint_path) if checkpoint_path is not None else None
+    resumed_from_checkpoint = False
+    if resume_from_checkpoint and checkpoint is not None and checkpoint.exists():
+        payload = torch.load(checkpoint, map_location=torch_device)
+        model.load_state_dict(payload["model_state"])
+        optimizer.load_state_dict(payload["optimizer_state"])
+        if "scheduler_state" in payload:
+            scheduler.load_state_dict(payload["scheduler_state"])
+        best_state = payload.get("best_model_state")
+        best_epoch = int(payload.get("best_epoch", 0))
+        best_validation_loss = float(payload.get("best_validation_loss", math.inf))
+        stale_epochs = int(payload.get("stale_epochs", 0))
+        start_epoch = int(payload.get("epoch", 0)) + 1
+        resumed_from_checkpoint = True
+    effective_batch_size = max(1, min(batch_size, len(train_sequences)))
+    for epoch in range(start_epoch, epochs + 1):
+        model.train()
+        generator = torch.Generator()
+        generator.manual_seed(seed + epoch)
+        indices = torch.randperm(x_train.shape[0], generator=generator).to(torch_device)
+        for start in range(0, x_train.shape[0], effective_batch_size):
+            batch_indices = indices[start : start + effective_batch_size]
+            optimizer.zero_grad()
+            loss = loss_fn(model(x_train[batch_indices]), y_train[batch_indices])
+            loss.backward()
+            optimizer.step()
+        model.eval()
+        with torch.no_grad():
+            validation_loss = float(loss_fn(model(x_validation), y_validation).item())
+        if validation_loss < best_validation_loss - 1e-12:
+            best_validation_loss = validation_loss
+            best_epoch = epoch
+            stale_epochs = 0
+            best_state = {key: value.detach().clone() for key, value in model.state_dict().items()}
+        else:
+            stale_epochs += 1
+            if stale_epochs >= early_stopping_patience:
+                break
+        scheduler.step()
+        if checkpoint is not None:
+            _write_torch_sequence_checkpoint(
+                torch,
+                checkpoint,
+                epoch=epoch,
+                model=model,
+                optimizer=optimizer,
+                scheduler=scheduler,
+                best_state=best_state,
+                best_epoch=best_epoch,
+                best_validation_loss=best_validation_loss,
+                stale_epochs=stale_epochs,
+                seed=seed,
+            )
+    if best_state is not None:
+        model.load_state_dict(best_state)
 
     model.eval()
     with torch.no_grad():
-        validation_predictions = model(x_validation).argmax(dim=1).tolist()
-        test_predictions = model(x_test).argmax(dim=1).tolist()
+        validation_logits = model(x_validation)
+        test_logits = model(x_test)
+        validation_probabilities = torch.softmax(validation_logits, dim=1).detach().cpu().tolist()
+        test_probabilities = torch.softmax(test_logits, dim=1).detach().cpu().tolist()
+        validation_predictions = validation_logits.argmax(dim=1).detach().cpu().tolist()
+        test_predictions = test_logits.argmax(dim=1).detach().cpu().tolist()
 
-    validation_accuracy, validation_macro_f1 = _classification_scores(y_validation.tolist(), validation_predictions)
-    test_accuracy, test_macro_f1 = _classification_scores(y_test.tolist(), test_predictions)
+    validation_accuracy, validation_macro_f1, validation_balanced_accuracy, validation_confusion = (
+        _classification_report(
+            y_validation.detach().cpu().tolist(),
+            validation_predictions,
+        )
+    )
+    test_accuracy, test_macro_f1, test_balanced_accuracy, test_confusion = _classification_report(
+        y_test.detach().cpu().tolist(),
+        test_predictions,
+    )
+    validation_brier_score, validation_ece = _classification_probability_report(
+        y_validation.detach().cpu().tolist(),
+        validation_predictions,
+        validation_probabilities,
+    )
+    test_brier_score, test_ece = _classification_probability_report(
+        y_test.detach().cpu().tolist(),
+        test_predictions,
+        test_probabilities,
+    )
+    prediction_path = Path(prediction_output_path) if prediction_output_path is not None else None
+    if prediction_path is not None:
+        _write_sequence_predictions(
+            prediction_path,
+            validation_labels=y_validation.detach().cpu().tolist(),
+            validation_predictions=validation_predictions,
+            validation_probabilities=validation_probabilities,
+            validation_end_indices=validation_end_indices,
+            test_labels=y_test.detach().cpu().tolist(),
+            test_predictions=test_predictions,
+            test_probabilities=test_probabilities,
+            test_end_indices=test_end_indices,
+        )
+    economic = _sequence_stateful_economics(
+        snapshots,
+        test_end_indices,
+        test_predictions,
+        label_horizon=label_horizon,
+        target_notional=economic_target_notional,
+        taker_fee_bps=economic_taker_fee_bps,
+        slippage_bps=economic_slippage_bps,
+    )
     report = L2SequenceExperimentReport(
         model_name=model_name,
         l2_path=l2_path,
@@ -664,6 +904,7 @@ def run_l2_torch_sequence_experiment(
         snapshots=len(snapshots),
         sequence_count=len(sequences),
         feature_count=feature_count,
+        purge_gap=purge_gap,
         train_rows=train_count,
         validation_rows=validation_count,
         test_rows=test_count,
@@ -671,9 +912,33 @@ def run_l2_torch_sequence_experiment(
         learning_rate=learning_rate,
         validation_accuracy=validation_accuracy,
         validation_macro_f1=validation_macro_f1,
+        validation_balanced_accuracy=validation_balanced_accuracy,
         test_accuracy=test_accuracy,
         test_macro_f1=test_macro_f1,
-        passed=readiness.passed and test_count > 0 and math.isfinite(test_macro_f1),
+        test_balanced_accuracy=test_balanced_accuracy,
+        validation_brier_score=validation_brier_score,
+        validation_expected_calibration_error=validation_ece,
+        test_brier_score=test_brier_score,
+        test_expected_calibration_error=test_ece,
+        validation_confusion_matrix_json=json.dumps(validation_confusion, sort_keys=True),
+        test_confusion_matrix_json=json.dumps(test_confusion, sort_keys=True),
+        batch_size=effective_batch_size,
+        early_stopping_patience=early_stopping_patience,
+        best_epoch=best_epoch,
+        seed=seed,
+        selected_device=selected_device,
+        class_weighting=class_weighting,
+        lr_scheduler_gamma=lr_scheduler_gamma,
+        final_learning_rate=float(optimizer.param_groups[0]["lr"]),
+        checkpoint_path=str(checkpoint) if checkpoint is not None else "",
+        resumed_from_checkpoint=resumed_from_checkpoint,
+        prediction_output_path=str(prediction_path) if prediction_path is not None else "",
+        test_stateful_trades=int(economic["trades"]),
+        test_stateful_turnover=float(economic["turnover"]),
+        test_stateful_net_pnl=float(economic["net_pnl"]),
+        test_stateful_break_even_fee_bps=float(economic["break_even_fee_bps"]),
+        pipeline_completed=readiness.passed and test_count > 0 and math.isfinite(test_macro_f1),
+        acceptance_passed=False,
     )
     write_l2_sequence_experiment_report(report, output_path)
     return report
@@ -696,6 +961,7 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         "snapshots",
         "sequence_count",
         "feature_count",
+        "purge_gap",
         "train_rows",
         "validation_rows",
         "test_rows",
@@ -703,9 +969,33 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         "learning_rate",
         "validation_accuracy",
         "validation_macro_f1",
+        "validation_balanced_accuracy",
         "test_accuracy",
         "test_macro_f1",
-        "passed",
+        "test_balanced_accuracy",
+        "validation_brier_score",
+        "validation_expected_calibration_error",
+        "test_brier_score",
+        "test_expected_calibration_error",
+        "validation_confusion_matrix_json",
+        "test_confusion_matrix_json",
+        "batch_size",
+        "early_stopping_patience",
+        "best_epoch",
+        "seed",
+        "selected_device",
+        "class_weighting",
+        "lr_scheduler_gamma",
+        "final_learning_rate",
+        "checkpoint_path",
+        "resumed_from_checkpoint",
+        "prediction_output_path",
+        "test_stateful_trades",
+        "test_stateful_turnover",
+        "test_stateful_net_pnl",
+        "test_stateful_break_even_fee_bps",
+        "pipeline_completed",
+        "acceptance_passed",
     ]
     with output_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -713,8 +1003,8 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         writer.writerow(
             {
                 "model_name": report.model_name,
-                "l2_path": str(report.l2_path),
-                "baseline_audit_path": str(report.baseline_audit_path),
+                "l2_path": _display_path(report.l2_path),
+                "baseline_audit_path": _display_path(report.baseline_audit_path),
                 "readiness_passed": int(report.readiness_passed),
                 "dependency_available": int(report.dependency_available),
                 "depth": report.depth,
@@ -725,6 +1015,7 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
                 "snapshots": report.snapshots,
                 "sequence_count": report.sequence_count,
                 "feature_count": report.feature_count,
+                "purge_gap": report.purge_gap,
                 "train_rows": report.train_rows,
                 "validation_rows": report.validation_rows,
                 "test_rows": report.test_rows,
@@ -732,9 +1023,33 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
                 "learning_rate": f"{report.learning_rate:.12g}",
                 "validation_accuracy": f"{report.validation_accuracy:.12g}",
                 "validation_macro_f1": f"{report.validation_macro_f1:.12g}",
+                "validation_balanced_accuracy": f"{report.validation_balanced_accuracy:.12g}",
                 "test_accuracy": f"{report.test_accuracy:.12g}",
                 "test_macro_f1": f"{report.test_macro_f1:.12g}",
-                "passed": int(report.passed),
+                "test_balanced_accuracy": f"{report.test_balanced_accuracy:.12g}",
+                "validation_brier_score": f"{report.validation_brier_score:.12g}",
+                "validation_expected_calibration_error": f"{report.validation_expected_calibration_error:.12g}",
+                "test_brier_score": f"{report.test_brier_score:.12g}",
+                "test_expected_calibration_error": f"{report.test_expected_calibration_error:.12g}",
+                "validation_confusion_matrix_json": report.validation_confusion_matrix_json,
+                "test_confusion_matrix_json": report.test_confusion_matrix_json,
+                "batch_size": report.batch_size,
+                "early_stopping_patience": report.early_stopping_patience,
+                "best_epoch": report.best_epoch,
+                "seed": report.seed,
+                "selected_device": report.selected_device,
+                "class_weighting": report.class_weighting,
+                "lr_scheduler_gamma": f"{report.lr_scheduler_gamma:.12g}",
+                "final_learning_rate": f"{report.final_learning_rate:.12g}",
+                "checkpoint_path": report.checkpoint_path,
+                "resumed_from_checkpoint": int(report.resumed_from_checkpoint),
+                "prediction_output_path": report.prediction_output_path,
+                "test_stateful_trades": report.test_stateful_trades,
+                "test_stateful_turnover": f"{report.test_stateful_turnover:.12g}",
+                "test_stateful_net_pnl": f"{report.test_stateful_net_pnl:.12g}",
+                "test_stateful_break_even_fee_bps": f"{report.test_stateful_break_even_fee_bps:.12g}",
+                "pipeline_completed": int(report.pipeline_completed),
+                "acceptance_passed": int(report.acceptance_passed),
             }
         )
     return output_path
@@ -747,24 +1062,40 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             "l2_path",
             "output_path",
             "sequence_count",
+            "purge_gap",
             "train_rows",
             "validation_rows",
             "test_rows",
             "validation_macro_f1",
+            "validation_balanced_accuracy",
             "test_macro_f1",
-            "passed",
+            "test_balanced_accuracy",
+            "test_brier_score",
+            "test_expected_calibration_error",
+            "test_stateful_net_pnl",
+            "test_stateful_break_even_fee_bps",
+            "pipeline_completed",
+            "acceptance_passed",
         ]
         values = [
             report.model_name,
             str(report.l2_path),
             str(report.output_path),
             str(report.sequence_count),
+            str(report.purge_gap),
             str(report.train_rows),
             str(report.validation_rows),
             str(report.test_rows),
             f"{report.validation_macro_f1:.12g}",
+            f"{report.validation_balanced_accuracy:.12g}",
             f"{report.test_macro_f1:.12g}",
-            str(int(report.passed)),
+            f"{report.test_balanced_accuracy:.12g}",
+            f"{report.test_brier_score:.12g}",
+            f"{report.test_expected_calibration_error:.12g}",
+            f"{report.test_stateful_net_pnl:.12g}",
+            f"{report.test_stateful_break_even_fee_bps:.12g}",
+            str(int(report.pipeline_completed)),
+            str(int(report.acceptance_passed)),
         ]
         return ",".join(fields) + "\n" + ",".join(values)
     if output_format != "text":
@@ -785,6 +1116,7 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"snapshots={report.snapshots}",
             f"sequence_count={report.sequence_count}",
             f"feature_count={report.feature_count}",
+            f"purge_gap={report.purge_gap}",
             f"train_rows={report.train_rows}",
             f"validation_rows={report.validation_rows}",
             f"test_rows={report.test_rows}",
@@ -792,9 +1124,33 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"learning_rate={report.learning_rate:.12g}",
             f"validation_accuracy={report.validation_accuracy:.12g}",
             f"validation_macro_f1={report.validation_macro_f1:.12g}",
+            f"validation_balanced_accuracy={report.validation_balanced_accuracy:.12g}",
             f"test_accuracy={report.test_accuracy:.12g}",
             f"test_macro_f1={report.test_macro_f1:.12g}",
-            f"passed={int(report.passed)}",
+            f"test_balanced_accuracy={report.test_balanced_accuracy:.12g}",
+            f"validation_brier_score={report.validation_brier_score:.12g}",
+            f"validation_expected_calibration_error={report.validation_expected_calibration_error:.12g}",
+            f"test_brier_score={report.test_brier_score:.12g}",
+            f"test_expected_calibration_error={report.test_expected_calibration_error:.12g}",
+            f"validation_confusion_matrix_json={report.validation_confusion_matrix_json}",
+            f"test_confusion_matrix_json={report.test_confusion_matrix_json}",
+            f"batch_size={report.batch_size}",
+            f"early_stopping_patience={report.early_stopping_patience}",
+            f"best_epoch={report.best_epoch}",
+            f"seed={report.seed}",
+            f"selected_device={report.selected_device}",
+            f"class_weighting={report.class_weighting}",
+            f"lr_scheduler_gamma={report.lr_scheduler_gamma:.12g}",
+            f"final_learning_rate={report.final_learning_rate:.12g}",
+            f"checkpoint_path={report.checkpoint_path}",
+            f"resumed_from_checkpoint={int(report.resumed_from_checkpoint)}",
+            f"prediction_output_path={report.prediction_output_path}",
+            f"test_stateful_trades={report.test_stateful_trades}",
+            f"test_stateful_turnover={report.test_stateful_turnover:.12g}",
+            f"test_stateful_net_pnl={report.test_stateful_net_pnl:.12g}",
+            f"test_stateful_break_even_fee_bps={report.test_stateful_break_even_fee_bps:.12g}",
+            f"pipeline_completed={int(report.pipeline_completed)}",
+            f"acceptance_passed={int(report.acceptance_passed)}",
         ]
     )
 
@@ -1137,6 +1493,7 @@ def _load_l2_top_n_vectors(
     depth: int,
     max_rows: int,
     max_snapshots: int,
+    include_time_delta: bool = False,
 ) -> tuple[list[list[float]], int]:
     snapshots: list[list[float]] = []
     rows_checked = 0
@@ -1144,10 +1501,12 @@ def _load_l2_top_n_vectors(
     asks: dict[float, float] = {}
     current_event_key: tuple[str, int | None, str, str] | None = None
     current_event_type = ""
+    current_exchange_timestamp = ""
+    previous_snapshot_timestamp: int | None = None
     pending_levels: list[tuple[str, float, float]] = []
 
     def flush_event() -> None:
-        nonlocal pending_levels
+        nonlocal pending_levels, previous_snapshot_timestamp
         if not pending_levels:
             return
         if current_event_type == "snapshot":
@@ -1166,7 +1525,13 @@ def _load_l2_top_n_vectors(
             return
         if max(bids) >= min(asks):
             return
-        snapshots.append(_book_vector(bids, asks, depth=depth))
+        vector = _book_vector(bids, asks, depth=depth)
+        if include_time_delta:
+            timestamp = _optional_int(current_exchange_timestamp) or previous_snapshot_timestamp or 0
+            delta_ms = 0 if previous_snapshot_timestamp is None else max(0, timestamp - previous_snapshot_timestamp)
+            vector.append(math.log1p(delta_ms))
+            previous_snapshot_timestamp = timestamp
+        snapshots.append(vector)
 
     with path.open(newline="") as handle:
         reader = csv.DictReader(handle)
@@ -1190,6 +1555,7 @@ def _load_l2_top_n_vectors(
                 flush_event()
             current_event_key = event_key
             current_event_type = event_type
+            current_exchange_timestamp = row.get("exchange_timestamp", "")
             pending_levels.append(
                 (
                     row.get("side", ""),
@@ -1232,7 +1598,7 @@ def _l2_direction_sequences(
     window: int,
     label_horizon: int,
     flat_threshold_bps: float,
-) -> tuple[list[list[list[float]]], list[int]]:
+) -> tuple[list[list[list[float]]], list[int], list[int]]:
     if len(snapshots) < window + label_horizon:
         raise ValueError(
             "not enough L2 snapshots for labeled sequence experiment: "
@@ -1240,6 +1606,7 @@ def _l2_direction_sequences(
         )
     sequences: list[list[list[float]]] = []
     labels: list[int] = []
+    end_indices: list[int] = []
     for end_index in range(window - 1, len(snapshots) - label_horizon):
         current_mid = _top_mid_from_vector(snapshots[end_index])
         future_mid = _top_mid_from_vector(snapshots[end_index + label_horizon])
@@ -1255,9 +1622,10 @@ def _l2_direction_sequences(
         start_index = end_index - window + 1
         sequences.append(snapshots[start_index : end_index + 1])
         labels.append(label)
+        end_indices.append(end_index)
     if not sequences:
         raise ValueError("L2 snapshots produced no labeled sequences")
-    return sequences, labels
+    return sequences, labels, end_indices
 
 
 def _top_mid_from_vector(vector: list[float]) -> float:
@@ -1268,7 +1636,38 @@ def _top_mid_from_vector(vector: list[float]) -> float:
     return (ask_price + bid_price) / 2.0 if ask_price > 0.0 and bid_price > 0.0 else 0.0
 
 
-def _standardize_sequences(sequences: list[list[list[float]]]) -> list[list[list[float]]]:
+def _stationarize_l2_sequences(sequences: list[list[list[float]]]) -> list[list[list[float]]]:
+    return [[_stationary_l2_vector(row) for row in sequence] for sequence in sequences]
+
+
+def _stationary_l2_vector(vector: list[float]) -> list[float]:
+    if len(vector) < 4:
+        return vector[:]
+    ask0 = vector[0]
+    bid0 = vector[2]
+    mid = (ask0 + bid0) / 2.0 if ask0 > 0.0 and bid0 > 0.0 else 0.0
+    book_feature_count = len(vector) - (1 if len(vector) % 4 == 1 else 0)
+    transformed: list[float] = []
+    for index in range(0, book_feature_count, 4):
+        ask_price, ask_size, bid_price, bid_size = vector[index : index + 4]
+        ask_distance = 10000.0 * (ask_price - mid) / mid if mid > 0.0 and ask_price > 0.0 else 0.0
+        bid_distance = 10000.0 * (bid_price - mid) / mid if mid > 0.0 and bid_price > 0.0 else 0.0
+        transformed.extend(
+            [
+                ask_distance,
+                math.log1p(max(0.0, ask_size)),
+                bid_distance,
+                math.log1p(max(0.0, bid_size)),
+            ]
+        )
+    if book_feature_count < len(vector):
+        transformed.append(vector[-1])
+    return transformed
+
+
+def _fit_sequence_standardizer(sequences: list[list[list[float]]]) -> SequenceStandardizer:
+    if not sequences:
+        raise ValueError("cannot fit sequence standardizer on empty data")
     feature_count = len(sequences[0][0])
     totals = [0.0] * feature_count
     squared_totals = [0.0] * feature_count
@@ -1279,16 +1678,41 @@ def _standardize_sequences(sequences: list[list[list[float]]]) -> list[list[list
             for index, value in enumerate(row):
                 totals[index] += value
                 squared_totals[index] += value * value
+    if count == 0:
+        raise ValueError("cannot fit sequence standardizer on empty data")
     means = [total / count for total in totals]
     variances = [max(squared_totals[index] / count - means[index] ** 2, 0.0) for index in range(feature_count)]
     stds = [math.sqrt(variance) if variance > 1e-12 else 1.0 for variance in variances]
+    return SequenceStandardizer(means=tuple(means), stds=tuple(stds))
+
+
+def _apply_sequence_standardizer(
+    sequences: list[list[list[float]]],
+    standardizer: SequenceStandardizer,
+) -> list[list[list[float]]]:
     return [
         [
-            [(value - means[index]) / stds[index] for index, value in enumerate(row)]
+            [(value - standardizer.means[index]) / standardizer.stds[index] for index, value in enumerate(row)]
             for row in sequence
         ]
         for sequence in sequences
     ]
+
+
+def _standardize_sequences(sequences: list[list[list[float]]]) -> list[list[list[float]]]:
+    return _apply_sequence_standardizer(sequences, _fit_sequence_standardizer(sequences))
+
+
+def _purged_sequential_split_counts(total_rows: int, *, purge_gap: int) -> tuple[int, int, int, int]:
+    if purge_gap < 0:
+        raise ValueError("purge_gap must be non-negative")
+    if total_rows < 5:
+        raise ValueError("need at least 5 sequences for train/validation/test split")
+    available_after_purge = total_rows - 2 * purge_gap
+    if available_after_purge < 5:
+        raise ValueError("Insufficient samples to satisfy the requested sequence purge and embargo.")
+    train_rows, validation_rows, test_rows = _sequential_split_counts(available_after_purge)
+    return train_rows, validation_rows, test_rows, purge_gap
 
 
 def _sequential_split_counts(total_rows: int) -> tuple[int, int, int]:
@@ -1308,17 +1732,186 @@ def _sequential_split_counts(total_rows: int) -> tuple[int, int, int]:
     return train_rows, validation_rows, test_rows
 
 
-def _classification_scores(labels: list[int], predictions: list[int]) -> tuple[float, float]:
+def _select_torch_device(torch: Any, requested: str) -> str:
+    if requested == "auto":
+        return "cuda" if torch.cuda.is_available() else "cpu"
+    if requested == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but torch.cuda.is_available() is false")
+    return requested
+
+
+def _torch_class_weights(labels: list[int], torch: Any, device: Any) -> Any:
+    counts = [labels.count(klass) for klass in (0, 1, 2)]
+    total = len(labels)
+    weights = [total / (3.0 * count) if count else 0.0 for count in counts]
+    return torch.tensor(weights, dtype=torch.float32, device=device)
+
+
+def _write_torch_sequence_checkpoint(
+    torch: Any,
+    path: Path,
+    *,
+    epoch: int,
+    model: Any,
+    optimizer: Any,
+    scheduler: Any,
+    best_state: dict[str, Any] | None,
+    best_epoch: int,
+    best_validation_loss: float,
+    stale_epochs: int,
+    seed: int,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(
+        {
+            "epoch": epoch,
+            "model_state": model.state_dict(),
+            "optimizer_state": optimizer.state_dict(),
+            "scheduler_state": scheduler.state_dict(),
+            "best_model_state": best_state,
+            "best_epoch": best_epoch,
+            "best_validation_loss": best_validation_loss,
+            "stale_epochs": stale_epochs,
+            "seed": seed,
+        },
+        path,
+    )
+
+
+def _write_sequence_predictions(
+    path: Path,
+    *,
+    validation_labels: list[int],
+    validation_predictions: list[int],
+    validation_probabilities: list[list[float]],
+    validation_end_indices: list[int],
+    test_labels: list[int],
+    test_predictions: list[int],
+    test_probabilities: list[list[float]],
+    test_end_indices: list[int],
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = [
+        "split",
+        "row",
+        "sequence_end_index",
+        "true_label",
+        "predicted_label",
+        "prob_down",
+        "prob_flat",
+        "prob_up",
+    ]
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        rows = [
+            ("validation", validation_labels, validation_predictions, validation_probabilities, validation_end_indices),
+            ("test", test_labels, test_predictions, test_probabilities, test_end_indices),
+        ]
+        for split, labels, predictions, probabilities, end_indices in rows:
+            for row_number, (label, prediction, probability, end_index) in enumerate(
+                zip(labels, predictions, probabilities, end_indices),
+                start=1,
+            ):
+                padded = (probability + [0.0, 0.0, 0.0])[:3]
+                writer.writerow(
+                    {
+                        "split": split,
+                        "row": row_number,
+                        "sequence_end_index": end_index,
+                        "true_label": label,
+                        "predicted_label": prediction,
+                        "prob_down": f"{padded[0]:.12g}",
+                        "prob_flat": f"{padded[1]:.12g}",
+                        "prob_up": f"{padded[2]:.12g}",
+                    }
+                )
+
+
+def _sequence_stateful_economics(
+    snapshots: list[list[float]],
+    end_indices: list[int],
+    predictions: list[int],
+    *,
+    label_horizon: int,
+    target_notional: float,
+    taker_fee_bps: float,
+    slippage_bps: float,
+) -> dict[str, float | int]:
+    events: list[MarketEvent] = []
+    signals: list[SignalEvent] = []
+    for row_number, (end_index, prediction) in enumerate(zip(end_indices, predictions), start=1):
+        if end_index + label_horizon >= len(snapshots):
+            continue
+        current = snapshots[end_index]
+        future = snapshots[end_index + label_horizon]
+        current_bid, current_ask = _top_bid_ask_from_vector(current)
+        future_bid, future_ask = _top_bid_ask_from_vector(future)
+        if min(current_bid, current_ask, future_bid, future_ask) <= 0.0:
+            continue
+        event_time = row_number * 2000
+        future_time = event_time + 1000
+        events.append(MarketEvent(event_time, bid=current_bid, ask=current_ask, bid_size=10.0, ask_size=10.0))
+        events.append(MarketEvent(future_time, bid=future_bid, ask=future_ask, bid_size=10.0, ask_size=10.0))
+        side = -1 if prediction == 0 else 1 if prediction == 2 else 0
+        signals.append(
+            SignalEvent(
+                event_time,
+                target_side=side,
+                target_notional=target_notional if side else 0.0,
+                signal_id=f"neural-test-{row_number}",
+            )
+        )
+    if not events:
+        return {"trades": 0, "turnover": 0.0, "net_pnl": 0.0, "break_even_fee_bps": 0.0}
+    initial_cash = 1000.0
+    result = simulate_stateful_execution(
+        events,
+        signals,
+        config=StatefulExecutionConfig(
+            initial_cash=initial_cash,
+            max_position_notional=target_notional * 2.0,
+            max_leverage=1.0,
+            taker_fee_bps=taker_fee_bps,
+            slippage_bps=slippage_bps,
+            latency_ms=0,
+        ),
+    )
+    fees = sum(fill.fee for fill in result.fills)
+    net_pnl = result.final_equity - initial_cash
+    gross_pnl = net_pnl + fees
+    break_even = gross_pnl / result.turnover * 10_000.0 if result.turnover else 0.0
+    return {
+        "trades": len(result.fills),
+        "turnover": result.turnover,
+        "net_pnl": net_pnl,
+        "break_even_fee_bps": break_even,
+    }
+
+
+def _top_bid_ask_from_vector(vector: list[float]) -> tuple[float, float]:
+    if len(vector) < 3:
+        return 0.0, 0.0
+    return vector[2], vector[0]
+
+
+def _classification_report(labels: list[int], predictions: list[int]) -> tuple[float, float, float, list[list[int]]]:
     if len(labels) != len(predictions):
         raise ValueError("labels and predictions must have the same length")
+    confusion = [[0, 0, 0] for _ in range(3)]
+    for label, prediction in zip(labels, predictions):
+        if 0 <= label <= 2 and 0 <= prediction <= 2:
+            confusion[label][prediction] += 1
     if not labels:
-        return 0.0, 0.0
+        return 0.0, 0.0, 0.0, confusion
     accuracy = sum(1 for label, prediction in zip(labels, predictions) if label == prediction) / len(labels)
     f1_scores: list[float] = []
+    recalls: list[float] = []
     for klass in (0, 1, 2):
         tp = sum(1 for label, prediction in zip(labels, predictions) if label == klass and prediction == klass)
         fp = sum(1 for label, prediction in zip(labels, predictions) if label != klass and prediction == klass)
         fn = sum(1 for label, prediction in zip(labels, predictions) if label == klass and prediction != klass)
+        recalls.append(tp / (tp + fn) if tp + fn else 0.0)
         if tp == 0 and (fp > 0 or fn > 0):
             f1_scores.append(0.0)
             continue
@@ -1328,7 +1921,52 @@ def _classification_scores(labels: list[int], predictions: list[int]) -> tuple[f
         precision = tp / (tp + fp) if tp + fp else 0.0
         recall = tp / (tp + fn) if tp + fn else 0.0
         f1_scores.append(2.0 * precision * recall / (precision + recall) if precision + recall else 0.0)
-    return accuracy, sum(f1_scores) / len(f1_scores)
+    return accuracy, sum(f1_scores) / len(f1_scores), sum(recalls) / len(recalls), confusion
+
+
+def _classification_scores(labels: list[int], predictions: list[int]) -> tuple[float, float]:
+    accuracy, macro_f1, _, _ = _classification_report(labels, predictions)
+    return accuracy, macro_f1
+
+
+def _classification_probability_report(
+    labels: list[int],
+    predictions: list[int],
+    probabilities: list[list[float]],
+    *,
+    bins: int = 10,
+) -> tuple[float, float]:
+    if len(labels) != len(predictions) or len(labels) != len(probabilities):
+        raise ValueError("labels, predictions and probabilities must have the same length")
+    if not labels:
+        return 0.0, 0.0
+    brier = 0.0
+    confidence_buckets: list[list[tuple[float, float]]] = [[] for _ in range(bins)]
+    for label, prediction, probability in zip(labels, predictions, probabilities):
+        padded = (probability + [0.0, 0.0, 0.0])[:3]
+        for klass in (0, 1, 2):
+            target = 1.0 if label == klass else 0.0
+            brier += (padded[klass] - target) ** 2
+        confidence = max(padded)
+        correct = 1.0 if label == prediction else 0.0
+        bucket = min(bins - 1, int(confidence * bins))
+        confidence_buckets[bucket].append((confidence, correct))
+    ece = 0.0
+    for bucket_values in confidence_buckets:
+        if not bucket_values:
+            continue
+        weight = len(bucket_values) / len(labels)
+        avg_confidence = sum(value[0] for value in bucket_values) / len(bucket_values)
+        avg_accuracy = sum(value[1] for value in bucket_values) / len(bucket_values)
+        ece += weight * abs(avg_accuracy - avg_confidence)
+    return brier / len(labels), ece
+
+
+def _display_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        return str(path)
 
 
 def _optional_int(value: object) -> int | None:

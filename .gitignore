@@ -9,6 +9,7 @@ __pycache__/
 # Local market data. Keep the repo lightweight and reproducible.
 data/
 results/
+artifacts/
 dist/
 reports/figures/
 

@@ -1,5 +1,4 @@
 import csv
-import os
 import zipfile
 from pathlib import Path
 
@@ -41,7 +40,7 @@ def test_external_readiness_reports_missing_modal_and_external_evidence(tmp_path
 
 def test_external_readiness_rejects_packages_with_excluded_nested_entries(tmp_path: Path) -> None:
     fake_modal = tmp_path / "modal"
-    fake_modal.write_text("#!/bin/sh\nprintf '{\"token_id\": null, \"token_secret\": null}\\n'\n")
+    fake_modal.write_text('#!/bin/sh\nprintf \'{"token_id": null, "token_secret": null}\\n\'\n')
     fake_modal.chmod(fake_modal.stat().st_mode | 0o111)
     package = tmp_path / "dist" / "microstructure-alpha-lab-cloud-handoff-test.zip"
     _write_package(package, {"lob-forge/data/raw.csv": "bad\n"})
@@ -64,7 +63,9 @@ def test_external_readiness_rejects_packages_with_excluded_nested_entries(tmp_pa
 
 def test_external_readiness_passes_modal_auth_when_token_fields_are_present(tmp_path: Path) -> None:
     fake_modal = tmp_path / "modal"
-    fake_modal.write_text("#!/bin/sh\nprintf '{\"token_id\": \"ak-test-token\", \"token_secret\": \"raw-modal-secret-value\"}\\n'\n")
+    fake_modal.write_text(
+        '#!/bin/sh\nprintf \'{"token_id": "ak-test-token", "token_secret": "raw-modal-secret-value"}\\n\'\n'
+    )
     fake_modal.chmod(fake_modal.stat().st_mode | 0o111)
     package = tmp_path / "dist" / "microstructure-alpha-lab-cloud-handoff-test.zip"
     _write_package(package, {"lob-forge/README.md": "# ok\n"})

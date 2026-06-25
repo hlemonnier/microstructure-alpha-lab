@@ -248,7 +248,9 @@ def _recommendations(
 ) -> list[str]:
     recommendations: list[str] = []
     if profile == "laptop_tiny":
-        recommendations.append("tiny laptop profile is for proof-of-pipeline only; use cloud for serious 60-day evidence")
+        recommendations.append(
+            "tiny laptop profile is for proof-of-pipeline only; use cloud for serious 60-day evidence"
+        )
     if profile == "cloud_full":
         recommendations.append("run on 64-128GB RAM cloud machine; do not run full profile on a 16GB laptop")
     if profile == "local16_60day":

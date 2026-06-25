@@ -36,12 +36,18 @@ KELLY_WINDOW_SIZE="${KELLY_WINDOW_SIZE:-5}"
 MAX_VARIANCE_CV="${MAX_VARIANCE_CV:-0.5}"
 
 export LOB_FORGE_MAX_PROCESS_MEMORY_GB
+source scripts/holdout_manifest.sh
 
 safe_fee="$(printf '%s' "$FEE_BPS" | tr '.' 'p')"
 symbol_lower="$(printf '%s' "$SYMBOL" | tr '[:upper:]' '[:lower:]')"
 combined="$SOURCE_PROCESSED_ROOT/${symbol_lower}_${HORIZON_MS}ms_latency_${LATENCY_MS}/${SYMBOL}-${START_DATE}_${END_DATE}-combined-features.csv"
 result="$OUT_DIR/${SYMBOL}_${HORIZON_MS}ms_fee_${safe_fee}_balanced_edge.csv"
 audit="$OUT_DIR/${SYMBOL}_${HORIZON_MS}ms_fee_${safe_fee}_balanced_edge_audit.csv"
+if [[ "$DRY_RUN" == "0" ]]; then
+  holdout_manifest="$(holdout_manifest_for "$combined")"
+else
+  holdout_manifest="${HOLDOUT_MANIFEST_DIR:-results/holdout_manifests}/$(basename "$combined" .csv).holdout.json"
+fi
 
 mkdir -p "$OUT_DIR"
 
@@ -51,6 +57,7 @@ printf 'edge_thresholds_bps=%s\n' "$EDGE_THRESHOLDS_BPS"
 
 command=(
   "$PYTHON_BIN" -m lob_forge.cli edge-walk-forward "$combined"
+  --holdout-manifest "$holdout_manifest"
   --train-size "$TRAIN_SIZE"
   --validation-size "$VALIDATION_SIZE"
   --test-size "$TEST_SIZE"
@@ -80,7 +87,7 @@ fi
   --max-fold-contribution "$MAX_FOLD_CONTRIBUTION" \
   > "$audit"
 "$PYTHON_BIN" -m lob_forge.cli kelly-variance-gate "$result" \
-  --column test_net_pnl \
+  --column validation_net_pnl \
   --min-observations "$MIN_AUDIT_FOLD_COUNT" \
   --window-size "$KELLY_WINDOW_SIZE" \
   --max-variance-cv "$MAX_VARIANCE_CV"

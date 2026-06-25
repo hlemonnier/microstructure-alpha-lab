@@ -51,7 +51,9 @@ image = (
     modal.Image.debian_slim(python_version="3.11")
     .apt_install("bash", "curl", "git", "rsync", "unzip", "zip")
     .add_local_dir(PROJECT_ROOT, remote_path=str(REMOTE_PROJECT_DIR), copy=True, ignore=PACKAGE_IGNORE)
-    .run_commands(f"cd {REMOTE_PROJECT_DIR} && python -m pip install --upgrade pip && python -m pip install -e '.[research]'")
+    .run_commands(
+        f"cd {REMOTE_PROJECT_DIR} && python -m pip install --upgrade pip && python -m pip install -e '.[research]'"
+    )
 )
 
 volume = modal.Volume.from_name(DEFAULT_VOLUME_NAME, create_if_missing=True)

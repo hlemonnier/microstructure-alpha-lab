@@ -26,9 +26,7 @@ def test_compute_metrics() -> None:
 def test_run_threshold_baselines(tmp_path) -> None:
     path = tmp_path / "features.csv"
     with path.open("w") as handle:
-        handle.write(
-            "label,microprice_deviation,top_imbalance,trade_imbalance,bid,ask,future_bid,future_ask\n"
-        )
+        handle.write("label,microprice_deviation,top_imbalance,trade_imbalance,bid,ask,future_bid,future_ask\n")
         for _ in range(10):
             handle.write("1,0.5,0.4,0.3,100.0,100.1,100.4,100.5\n")
             handle.write("0,0.0,0.0,0.0,100.0,100.1,100.0,100.1\n")
@@ -43,9 +41,7 @@ def test_run_threshold_baselines(tmp_path) -> None:
 def test_run_threshold_baselines_can_sort_by_validation_net_pnl(tmp_path) -> None:
     path = tmp_path / "features.csv"
     with path.open("w") as handle:
-        handle.write(
-            "label,microprice_deviation,top_imbalance,trade_imbalance,bid,ask,future_bid,future_ask\n"
-        )
+        handle.write("label,microprice_deviation,top_imbalance,trade_imbalance,bid,ask,future_bid,future_ask\n")
         for _ in range(10):
             handle.write("1,0.5,0.4,0.3,100.0,100.1,100.4,100.5\n")
             handle.write("0,0.0,0.0,0.0,100.0,100.1,100.0,100.1\n")
@@ -55,6 +51,22 @@ def test_run_threshold_baselines_can_sort_by_validation_net_pnl(tmp_path) -> Non
 
     assert results[0].name == "always_flat"
     assert results[0].validation_economics.net_pnl == 0
+
+
+def test_run_threshold_baselines_rejects_test_selection_metric(tmp_path) -> None:
+    path = tmp_path / "features.csv"
+    with path.open("w") as handle:
+        handle.write("label,microprice_deviation,top_imbalance,trade_imbalance,bid,ask,future_bid,future_ask\n")
+        for _ in range(4):
+            handle.write("1,0.5,0.4,0.3,100.0,100.1,100.4,100.5\n")
+            handle.write("-1,-0.5,-0.4,-0.3,100.0,100.1,99.6,99.7\n")
+
+    try:
+        run_threshold_baselines(path, sort_by="test_net_pnl")
+    except ValueError as exc:
+        assert "training/validation only" in str(exc)
+    else:
+        raise AssertionError("expected test metric selection to be rejected")
 
 
 def test_taker_economics_reports_fee_turnover_and_break_even() -> None:
@@ -168,9 +180,7 @@ def test_maker_entry_economics_tracks_fills_and_exit_fee_break_even() -> None:
 def test_run_fee_sweep_selects_best_rule_per_fee(tmp_path) -> None:
     path = tmp_path / "features.csv"
     with path.open("w") as handle:
-        handle.write(
-            "label,microprice_deviation,top_imbalance,trade_imbalance,bid,ask,future_bid,future_ask\n"
-        )
+        handle.write("label,microprice_deviation,top_imbalance,trade_imbalance,bid,ask,future_bid,future_ask\n")
         for _ in range(10):
             handle.write("1,0.5,0.4,0.3,100.0,100.1,100.4,100.5\n")
             handle.write("0,0.0,0.0,0.0,100.0,100.1,100.0,100.1\n")

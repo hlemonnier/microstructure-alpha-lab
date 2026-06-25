@@ -74,6 +74,7 @@ def sample_zip_csv(path: Path | str, rows: int = 5) -> ZipCsvSample:
         return ZipCsvSample(archive_path, inner_name, 0, None, [])
 
     first = first_rows[0]
+    header: list[str] | None
     has_header = any(not _looks_numeric(cell) for cell in first)
     if has_header:
         header = first

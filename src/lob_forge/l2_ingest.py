@@ -9,7 +9,7 @@ import urllib.request
 from dataclasses import asdict, dataclass
 from datetime import datetime, time as datetime_time, timezone
 from pathlib import Path
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Mapping
 
 from lob_forge.binance_vision import iter_dates, sha256_file
 from lob_forge.data_sources import (
@@ -113,7 +113,26 @@ def write_historical_l2_manifest(entries: Iterable[HistoricalL2ManifestEntry], p
 
 def read_historical_l2_manifest(path: Path | str) -> list[HistoricalL2ManifestEntry]:
     with Path(path).open(newline="") as handle:
-        return [HistoricalL2ManifestEntry(**row) for row in csv.DictReader(handle)]
+        return [_historical_l2_manifest_entry_from_row(row) for row in csv.DictReader(handle)]
+
+
+def _historical_l2_manifest_entry_from_row(row: Mapping[str, str]) -> HistoricalL2ManifestEntry:
+    return HistoricalL2ManifestEntry(
+        source_id=row.get("source_id", ""),
+        symbol=row.get("symbol", ""),
+        session_date=row.get("session_date", ""),
+        dataset=row.get("dataset", ""),
+        market=row.get("market", ""),
+        source_page_url=row.get("source_page_url", ""),
+        direct_url=row.get("direct_url", ""),
+        local_path=row.get("local_path", ""),
+        status=row.get("status", "url_required"),
+        sha256=row.get("sha256", ""),
+        bytes=int(row.get("bytes") or 0),
+        rows_checked=int(row.get("rows_checked") or 0),
+        normalized_path=row.get("normalized_path", ""),
+        notes=row.get("notes", ""),
+    )
 
 
 def download_historical_l2_manifest(

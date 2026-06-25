@@ -17,7 +17,7 @@ It separates replay-grade inputs from useful but weaker sample or feature source
 5. Tardis.dev and Crypto Lake are sample/validation sources. Tardis documents `incremental_book_L2`, `book_snapshot_25`, and first-day-of-month no-key samples:
    https://docs.tardis.dev/downloadable-csv-files/overview
    https://crypto-lake.com/free-data/
-6. FI-2010 is an equity LOB benchmark for DeepLOB sanity checks, not crypto evidence:
+6. FI-2010 is an equity LOB benchmark for neural architecture sanity checks, not crypto evidence:
    https://arxiv.org/abs/1705.03233
 
 ## Replay Gate

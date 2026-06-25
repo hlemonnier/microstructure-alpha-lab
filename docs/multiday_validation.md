@@ -171,4 +171,4 @@ The project should now prioritize:
 - more calendar coverage,
 - passive fill probability and queue assumptions,
 - conditional expected net PnL only after the sample is much larger,
-- true L2 capture if the goal shifts back toward DeepLOB.
+- true L2 capture if the goal shifts back toward full-depth LOB modeling.

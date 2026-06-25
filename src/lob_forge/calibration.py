@@ -47,7 +47,9 @@ def multiclass_brier_score(
         raise ValueError("labels and probabilities must have the same length")
     if not labels:
         raise ValueError("need at least one prediction")
-    class_values = classes or sorted({label for label in labels} | {klass for probs in probabilities for klass in probs})
+    class_values = classes or sorted(
+        {label for label in labels} | {klass for probs in probabilities for klass in probs}
+    )
     total = 0.0
     for label, probs in zip(labels, probabilities):
         for klass in class_values:

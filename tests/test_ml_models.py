@@ -2,6 +2,10 @@ import csv
 from pathlib import Path
 
 from lob_forge.ml_models import (
+    _apply_sequence_standardizer,
+    _fit_sequence_standardizer,
+    _purged_sequential_split_counts,
+    _stationary_l2_vector,
     available_model_specs,
     build_sequence_dataset,
     build_torch_sequence_classifier,
@@ -27,7 +31,8 @@ def test_model_specs_include_optional_research_stack() -> None:
     assert "xgboost_classifier" in specs
     assert "sequence_mlp" in specs
     assert "sequence_transformer" in specs
-    assert specs["deeplob_cnn"].purpose.startswith("DeepLOB")
+    assert "lob_cnn" in specs
+    assert "not a named literature replication" in specs["lob_cnn"].purpose
 
 
 def test_build_sequence_dataset_creates_rolling_windows() -> None:
@@ -55,28 +60,23 @@ def test_require_unknown_dependency_is_rejected() -> None:
 
 
 def test_optional_model_trainers_are_dependency_gated() -> None:
-    rows = [
-        {"feature": "-1.0", "label": "-1", "target": "-0.5"},
-        {"feature": "0.0", "label": "0", "target": "0.0"},
-        {"feature": "1.0", "label": "1", "target": "0.5"},
-    ]
     specs = {spec.name: spec for spec in available_model_specs()}
 
-    if specs["xgboost_classifier"].available:
-        assert fit_xgboost_classifier(rows, ["feature"]) is not None
-    else:
+    if not specs["xgboost_classifier"].available:
         try:
-            fit_xgboost_classifier(rows, ["feature"])
+            fit_xgboost_classifier([{"feature": "1.0", "label": "1"}], ["feature"])
         except RuntimeError as exc:
             assert "xgboost" in str(exc)
+        else:
+            raise AssertionError("expected missing xgboost dependency to be rejected")
 
-    if specs["gradient_boosting"].available:
-        assert fit_sklearn_regressor(rows, ["feature"], target_column="target") is not None
-    else:
+    if not specs["gradient_boosting"].available:
         try:
-            fit_sklearn_regressor(rows, ["feature"], target_column="target")
+            fit_sklearn_regressor([{"feature": "1.0", "target": "1.0"}], ["feature"], target_column="target")
         except RuntimeError as exc:
             assert "scikit-learn" in str(exc)
+        else:
+            raise AssertionError("expected missing scikit-learn dependency to be rejected")
 
 
 def test_torch_sequence_builder_is_dependency_gated_or_builds() -> None:
@@ -88,6 +88,17 @@ def test_torch_sequence_builder_is_dependency_gated_or_builds() -> None:
         assert model is not None
 
 
+def test_torch_tcn_and_transformer_architecture_contracts() -> None:
+    try:
+        tcn = build_torch_sequence_classifier(window=8, feature_count=5, model_name="sequence_tcn")
+        transformer = build_torch_sequence_classifier(window=8, feature_count=5, model_name="sequence_transformer")
+    except RuntimeError as exc:
+        assert "torch" in str(exc)
+    else:
+        assert getattr(tcn, "receptive_field") >= 8
+        assert hasattr(transformer, "positional_encoding")
+
+
 def test_masked_pretraining_batch_returns_targets_and_mask() -> None:
     sequences = [[[1.0, 2.0], [3.0, 4.0]]]
 
@@ -96,6 +107,41 @@ def test_masked_pretraining_batch_returns_targets_and_mask() -> None:
     assert masked == [[[0.0, 0.0], [0.0, 0.0]]]
     assert targets == sequences
     assert mask == [[[1, 1], [1, 1]]]
+
+
+def test_sequence_standardizer_is_fit_on_training_sequences_only() -> None:
+    train = [
+        [[1.0, 10.0], [3.0, 14.0]],
+        [[5.0, 18.0], [7.0, 22.0]],
+    ]
+    validation = [[[1000.0, 2000.0], [1200.0, 2400.0]]]
+
+    standardizer = _fit_sequence_standardizer(train)
+    transformed = _apply_sequence_standardizer(train + validation, standardizer)
+
+    train_values = [row[0] for sequence in transformed[:2] for row in sequence]
+    validation_values = [row[0] for sequence in transformed[2:] for row in sequence]
+    assert abs(sum(train_values)) < 1e-12
+    assert min(validation_values) > 100.0
+
+
+def test_purged_sequence_split_leaves_embargo_between_folds() -> None:
+    train, validation, test, gap = _purged_sequential_split_counts(12, purge_gap=3)
+
+    validation_start = train + gap
+    test_start = validation_start + validation + gap
+    assert gap == 3
+    assert validation_start > train
+    assert test_start + test == 12
+
+
+def test_purged_sequence_split_rejects_insufficient_samples() -> None:
+    try:
+        _purged_sequential_split_counts(6, purge_gap=3)
+    except ValueError as exc:
+        assert "Insufficient samples" in str(exc)
+    else:
+        raise AssertionError("expected insufficient purged split to be rejected")
 
 
 def test_l2_tensor_readiness_requires_true_l2_when_fi2010_not_allowed(tmp_path: Path) -> None:
@@ -148,6 +194,26 @@ def test_l2_tensor_readiness_groups_row_expanded_bybit_events(tmp_path: Path) ->
     assert report.crossed_updates == 0
     assert report.sequence_gaps == 0
     assert report.passed
+
+
+def test_l2_stationary_vector_uses_mid_distance_and_log_depth() -> None:
+    vector = _stationary_l2_vector([101.0, 3.0, 99.0, 1.0, 7.0])
+
+    assert round(vector[0], 6) == 100.0
+    assert round(vector[2], 6) == -100.0
+    assert vector[1] > vector[3]
+    assert vector[-1] == 7.0
+
+
+def test_sequence_standardizer_fits_train_only() -> None:
+    train_sequences = [[[1.0], [1.0]], [[1.0], [1.0]]]
+    validation_test = [[[1000.0], [1000.0]]]
+
+    standardizer = _fit_sequence_standardizer(train_sequences)
+    transformed = _apply_sequence_standardizer(train_sequences + validation_test, standardizer)
+
+    assert transformed[0][0][0] == 0.0
+    assert transformed[-1][0][0] == 999.0
 
 
 def test_l2_masked_pretraining_smoke_writes_artifact(tmp_path: Path) -> None:
@@ -239,6 +305,8 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
     audit_path = tmp_path / "audit.csv"
     l2_path = tmp_path / "bybit_l2.csv"
     output_path = tmp_path / "sequence_tcn_results.csv"
+    checkpoint_path = tmp_path / "sequence_tcn.pt"
+    prediction_path = tmp_path / "sequence_tcn_predictions.csv"
     _write_audit(audit_path, fold_count=20, acceptance_passed=1, rejection_reasons="")
     _write_many_l2_snapshots_and_deltas(l2_path)
 
@@ -255,6 +323,11 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
             min_l2_rows=20,
             max_rows=200,
             max_snapshots=50,
+            batch_size=2,
+            class_weighting="balanced",
+            lr_scheduler_gamma=0.9,
+            checkpoint_path=checkpoint_path,
+            prediction_output_path=prediction_path,
         )
     except RuntimeError as exc:
         assert "torch" in str(exc) or "model readiness gate failed" in str(exc)
@@ -265,7 +338,38 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
         assert report.model_name == "sequence_tcn"
         assert report.test_rows > 0
         assert output_path.exists()
-        assert "passed=1" in text
+        assert checkpoint_path.exists()
+        assert prediction_path.exists()
+        assert prediction_path.read_text().splitlines()[0].startswith("split,row,sequence_end_index")
+        assert report.selected_device in {"cpu", "cuda"}
+        assert report.class_weighting == "balanced"
+        assert report.checkpoint_path == str(checkpoint_path)
+        assert report.prediction_output_path == str(prediction_path)
+        assert report.test_stateful_trades >= 0
+        assert "pipeline_completed=1" in text
+        assert "acceptance_passed=0" in text
+        assert "test_brier_score=" in text
+        assert "test_stateful_break_even_fee_bps=" in text
+        resumed = run_l2_torch_sequence_experiment(
+            model_name="sequence_tcn",
+            l2_path=l2_path,
+            baseline_audit_path=audit_path,
+            output_path=tmp_path / "sequence_tcn_resumed_results.csv",
+            depth=1,
+            window=3,
+            label_horizon=1,
+            epochs=2,
+            min_l2_rows=20,
+            max_rows=200,
+            max_snapshots=50,
+            batch_size=2,
+            class_weighting="balanced",
+            checkpoint_path=checkpoint_path,
+            resume_from_checkpoint=True,
+            prediction_output_path=tmp_path / "sequence_tcn_resumed_predictions.csv",
+        )
+        assert resumed.resumed_from_checkpoint
+        assert resumed.pipeline_completed
 
 
 def _write_audit(path: Path, *, fold_count: int, acceptance_passed: int, rejection_reasons: str) -> None:

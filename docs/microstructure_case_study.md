@@ -6,7 +6,7 @@ Built a reproducible crypto microstructure research stack on Binance Vision USD-
 
 ## Why This Project Exists
 
-The initial idea was a DeepLOB-style order-book project. The first research decision was to verify the data source instead of assuming it supported the desired model.
+The initial idea was a deep order-book project. The first research decision was to verify the data source instead of assuming it supported the desired model.
 
 Binance Vision does not provide historical full level-by-level Spot order books. For USD-M futures, it provides:
 
@@ -17,7 +17,7 @@ Binance Vision does not provide historical full level-by-level Spot order books.
 So the project was reframed correctly:
 
 ```text
-Not a fake DeepLOB replication.
+Not a fake full-depth LOB replication.
 Yes: a quote/trade/depth-band microstructure lab with cost-aware validation.
 ```
 
@@ -417,7 +417,7 @@ The next high-value branches are:
 3. Add conditional trading:
    - estimate expected move magnitude on a much larger sample,
    - trade only when calibrated expected move exceeds spread plus fee drag.
-4. Use live diff-depth capture or another full L2 source if a true DeepLOB/TCN/Transformer extension is required.
+4. Use live diff-depth capture or another full L2 source if a true full-depth neural extension is required.
 
 ## Reproducibility
 

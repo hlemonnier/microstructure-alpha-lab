@@ -1,0 +1,7 @@
+event_type,exchange_timestamp,local_timestamp,side,price,size,sequence,update_id,venue,symbol
+snapshot,1000,1001,bid,100.0,1.0,1,1,fixture,BTCUSDT
+snapshot,1000,1001,ask,100.5,1.2,1,1,fixture,BTCUSDT
+delta,1010,1011,bid,100.1,0.8,2,2,fixture,BTCUSDT
+delta,1020,1021,ask,100.5,0.0,3,3,fixture,BTCUSDT
+delta,1030,1031,ask,100.6,1.4,4,4,fixture,BTCUSDT
+delta,1050,1051,bid,99.9,2.0,7,7,fixture,BTCUSDT

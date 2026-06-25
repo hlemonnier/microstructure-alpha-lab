@@ -115,7 +115,9 @@ def test_shadow_evidence_gate_uses_default_error_thresholds(tmp_path: Path) -> N
     shadow = tmp_path / "shadow.csv"
     _write_audit(audit, fold_count=4, acceptance_passed=0, rejection_reasons="fold count too low")
     _write_kelly(kelly, [1.0, -10.0, 2.0, 0.0])
-    _write_simulated_fills(simulated, [{"decision_id": "d1", "simulated_fill_price": "100.0", "simulated_fill_size": "1.0"}])
+    _write_simulated_fills(
+        simulated, [{"decision_id": "d1", "simulated_fill_price": "100.0", "simulated_fill_size": "1.0"}]
+    )
     _write_shadow_decisions(
         shadow,
         [
@@ -192,6 +194,78 @@ def test_evidence_gates_pass_pretraining_when_artifact_matches_l2(tmp_path: Path
     assert pretraining_gate.passed
     assert "artifact_passed=1" in pretraining_gate.evidence
     assert "artifact_l2_match=1" in pretraining_gate.evidence
+
+
+def test_sequence_model_gate_requires_pipeline_completed_artifacts(tmp_path: Path) -> None:
+    capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
+    full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")
+    audit = tmp_path / "audit.csv"
+    kelly = tmp_path / "kelly.csv"
+    bybit_l2 = tmp_path / "normalized_l2" / "bybit" / "BTCUSDT" / "2023-05-16.csv"
+    transformer = tmp_path / "sequence_transformer_results.csv"
+    tcn = tmp_path / "sequence_tcn_results.csv"
+    pretraining = tmp_path / "self_supervised_pretraining.csv"
+    legacy_transformer = tmp_path / "legacy_sequence_transformer_results.csv"
+    legacy_tcn = tmp_path / "legacy_sequence_tcn_results.csv"
+    _write_audit(audit, fold_count=20, acceptance_passed=1, rejection_reasons="")
+    _write_kelly(kelly, [1.0, -10.0, 2.0, 0.0])
+    _write_l2(bybit_l2)
+    _write_sequence_model_artifact(transformer, model_name="sequence_transformer", l2_path=bybit_l2)
+    _write_sequence_model_artifact(tcn, model_name="sequence_tcn", l2_path=bybit_l2)
+
+    report = evaluate_remaining_evidence_gates(
+        capped_plan=capped_plan,
+        capped_result_dir=capped_plan.parent,
+        full_plan=full_plan,
+        full_result_dir=full_plan.parent,
+        simulated_fills=tmp_path / "simulated.csv",
+        shadow_decisions=tmp_path / "shadow.csv",
+        kelly_artifact=kelly,
+        kelly_min_observations=4,
+        kelly_window_size=2,
+        baseline_audit=audit,
+        l2_paths=[bybit_l2],
+        min_l2_rows=4,
+        transformer_artifact=transformer,
+        tcn_artifact=tcn,
+        pretraining_artifact=pretraining,
+    )
+    gate = next(gate for gate in report.gates if gate.gate_id == "sequence_transformer_tcn_experiments")
+    assert gate.passed
+    assert "pipeline_completed=1" in gate.evidence
+
+    _write_sequence_model_artifact(
+        legacy_transformer,
+        model_name="sequence_transformer",
+        l2_path=bybit_l2,
+        legacy_passed_only=True,
+    )
+    _write_sequence_model_artifact(
+        legacy_tcn,
+        model_name="sequence_tcn",
+        l2_path=bybit_l2,
+        legacy_passed_only=True,
+    )
+    legacy_report = evaluate_remaining_evidence_gates(
+        capped_plan=capped_plan,
+        capped_result_dir=capped_plan.parent,
+        full_plan=full_plan,
+        full_result_dir=full_plan.parent,
+        simulated_fills=tmp_path / "simulated.csv",
+        shadow_decisions=tmp_path / "shadow.csv",
+        kelly_artifact=kelly,
+        kelly_min_observations=4,
+        kelly_window_size=2,
+        baseline_audit=audit,
+        l2_paths=[bybit_l2],
+        min_l2_rows=4,
+        transformer_artifact=legacy_transformer,
+        tcn_artifact=legacy_tcn,
+        pretraining_artifact=pretraining,
+    )
+    legacy_gate = next(gate for gate in legacy_report.gates if gate.gate_id == "sequence_transformer_tcn_experiments")
+    assert not legacy_gate.passed
+    assert "pipeline_completed=0" in legacy_gate.evidence
 
 
 def test_kelly_gate_requires_variance_and_audit_acceptance(tmp_path: Path) -> None:
@@ -409,3 +483,29 @@ def _write_pretraining_artifact(path: Path, *, l2_path: Path) -> None:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+
+
+def _write_sequence_model_artifact(
+    path: Path,
+    *,
+    model_name: str,
+    l2_path: Path,
+    legacy_passed_only: bool = False,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    row = {
+        "model_name": model_name,
+        "l2_path": str(l2_path),
+        "readiness_passed": "1",
+        "dependency_available": "1",
+        "test_macro_f1": "0.0",
+    }
+    if legacy_passed_only:
+        row["passed"] = "1"
+    else:
+        row["pipeline_completed"] = "1"
+        row["acceptance_passed"] = "0"
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(row))
+        writer.writeheader()
+        writer.writerow(row)

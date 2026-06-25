@@ -129,4 +129,4 @@ The next higher-upside branches are:
 - expand the sample from two one-hour slices to many days and regimes,
 - model expected net PnL with richer nonlinear methods after the data size supports it,
 - add passive fill probability as a target,
-- use true historical L2 or live diff-depth capture if the project moves toward DeepLOB/TCN/Transformer architectures.
+- use true historical L2 or live diff-depth capture if the project moves toward full-depth TCN/Transformer architectures.

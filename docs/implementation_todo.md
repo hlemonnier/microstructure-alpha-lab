@@ -9,7 +9,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add historical L2 source adapters for Bybit.
 - [x] Add sample/validation adapters for Tardis.dev CSV formats.
 - [x] Add sample/validation adapters for Crypto Lake formats.
-- [x] Add FI-2010 benchmark loader for DeepLOB sanity checks.
+- [x] Add FI-2010 benchmark loader for neural LOB sanity checks.
 - [x] Add schema validation for every L2 file: snapshot/delta flag, timestamps, side, price, size, and sequence/update IDs when available.
 - [x] Add Parquet storage path for normalized L2 events and snapshots.
 - [x] Add and verify laptop-safe tiny/quick expected-edge study profiles.
@@ -32,7 +32,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add OKX public historical-data download-link resolver for L2 acquisition manifests.
 - [x] Add Bybit public history-data orderBook resolver and `.data.zip` importer for L2 acquisition manifests.
 - [x] Add row-capped historical L2 import smoke path for 16 GB laptop runs and allow evidence gates to use OKX or Bybit normalized L2 candidates.
-- [x] Run the capped 60-day BTC/ETH local profile, or run it on a larger machine if Binance downloads are too slow locally.
+- [x] Re-run the capped 60-day BTC/ETH local/cloud profile with current holdout-manifest and result-verifier metadata.
 - [ ] Run the full uncapped 60-90 day multi-symbol expected-edge study on a high-RAM/cloud machine.
 - [x] Expand coverage beyond first-hour slices to full-day or sampled multi-session data.
 
@@ -42,7 +42,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Implement deterministic order book replay from snapshots and deltas.
 - [x] Add sequence-gap detection and replay reset logic.
 - [x] Add crossed-book and monotonic-side validation.
-- [x] Add top-N tensor/snapshot extraction for DeepLOB-style models.
+- [x] Add top-N tensor/snapshot extraction for LOB tensor models.
 - [x] Add live collector specs and URL/subscription builders for Binance REST snapshot plus diff-depth WebSocket.
 - [x] Add live collector specs and subscription builders for OKX snapshot/delta WebSocket.
 - [x] Add live collector specs and subscription builders for Bybit snapshot/delta WebSocket.
@@ -71,8 +71,9 @@ This checklist tracks every missing item found during the project audit. Check a
 
 ## Validation And Statistics
 
-- [x] Add immutable final holdout workflow.
-- [x] Add trade-level block bootstrap or Newey-West/HAC standard errors.
+- [x] Add immutable final holdout workflow with manifest verification, candidate hashing, and duplicate-evaluation locks.
+- [ ] Run and check in the declared immutable final holdout result artifact for the full selected candidate.
+- [x] Add dependence-aware intervals with explicit inference grain; reduced E2E intervals are ledger-derived, while current walk-forward CSV audits remain fold-summary audits.
 - [x] Add Bayesian posterior scoring: `P(mu > 0)`, `P(mu > cost_margin)`, and posterior Sharpe checks.
 - [x] Add Brier score and ECE calibration metrics.
 - [x] Add reliability tables/curves by predicted edge decile.
@@ -102,7 +103,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add gradient boosting / random forest / XGBoost-style baselines where dependencies are available.
 - [x] Add nonlinear expected-net-PnL models.
 - [x] Add top-of-book sequence MLP/TCN alternative before true L2.
-- [x] Add FI-2010 loader, top-N tensors, and gated DeepLOB/CNN builder hook.
+- [x] Add FI-2010 loader, top-N tensors, and gated LOB-CNN builder hook.
 - [x] Add optional Transformer/TCN builder hooks.
 - [x] Add model-readiness gate that requires accepted baseline evidence plus verified normalized L2 data before sequence/deep experiments.
 - [x] Add executable Torch-backed L2 Transformer/TCN experiment runner and artifact validation gate.
@@ -113,7 +114,7 @@ This checklist tracks every missing item found during the project audit. Check a
 
 ## Documentation And Claims
 
-- [x] Keep all DeepLOB claims gated on true L2/FI-2010 evidence.
+- [x] Keep all full-depth neural LOB claims gated on true L2/FI-2010 evidence.
 - [x] Keep 5 bps taker research as a negative control, not a target strategy.
 - [x] Remove stale Markdown that describes already implemented items as missing.
 - [x] Keep all results labeled as sanity/pipeline evidence until 20+ OOS folds and cost gates pass.

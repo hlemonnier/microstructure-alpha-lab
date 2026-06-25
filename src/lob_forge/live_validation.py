@@ -351,7 +351,7 @@ def simulate_shadow_fill_predictions(
     for decision in decisions:
         decision_events = [event for event in events if event.timestamp_ms >= decision.timestamp_ms]
         if mode == "taker":
-            fill = simulate_taker_latency_order(
+            taker_fill = simulate_taker_latency_order(
                 decision_events,
                 decision_time_ms=decision.timestamp_ms,
                 side=decision.predicted_side,
@@ -362,12 +362,12 @@ def simulate_shadow_fill_predictions(
             predictions.append(
                 SimulatedFillPrediction(
                     decision_id=decision.decision_id,
-                    simulated_fill_price=fill.fill_price,
-                    simulated_fill_size=fill.quantity if fill.accepted else 0.0,
+                    simulated_fill_price=taker_fill.fill_price,
+                    simulated_fill_size=taker_fill.quantity if taker_fill.accepted else 0.0,
                 )
             )
         else:
-            fill = simulate_passive_limit_order(
+            passive_fill = simulate_passive_limit_order(
                 decision_events,
                 side=decision.predicted_side,
                 price=decision.intended_price,
@@ -378,8 +378,8 @@ def simulate_shadow_fill_predictions(
             predictions.append(
                 SimulatedFillPrediction(
                     decision_id=decision.decision_id,
-                    simulated_fill_price=fill.avg_fill_price,
-                    simulated_fill_size=fill.filled_size,
+                    simulated_fill_price=passive_fill.avg_fill_price,
+                    simulated_fill_size=passive_fill.filled_size,
                 )
             )
     return predictions

@@ -51,8 +51,7 @@ def run_capacity_diagnostics(
     if by_source_date:
         dates = sorted({row.get("source_date", "unknown") or "unknown" for row in rows})
         groups = [
-            (date, [row for row in rows if (row.get("source_date", "unknown") or "unknown") == date])
-            for date in dates
+            (date, [row for row in rows if (row.get("source_date", "unknown") or "unknown") == date]) for date in dates
         ]
         groups.append(("all", rows))
     else:

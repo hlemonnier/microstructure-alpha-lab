@@ -9,7 +9,12 @@ from pathlib import Path
 from typing import Sequence
 
 from lob_forge.live_validation import read_shadow_decisions, validate_shadow_fill_predictions
-from lob_forge.ml_models import evaluate_l2_tensor_readiness, evaluate_model_readiness
+from lob_forge.ml_models import (
+    L2TensorReadiness,
+    ModelReadinessReport,
+    evaluate_l2_tensor_readiness,
+    evaluate_model_readiness,
+)
 from lob_forge.portfolio import evaluate_oos_variance_stability
 from lob_forge.study_status import evaluate_expected_edge_study_status
 
@@ -129,7 +134,9 @@ def evaluate_remaining_evidence_gates(
 
 def format_evidence_gate_report(report: EvidenceGateReport, *, output_format: str = "text") -> str:
     if output_format == "json":
-        return json.dumps({"passed": report.passed, "gates": [asdict(gate) for gate in report.gates]}, indent=2, sort_keys=True)
+        return json.dumps(
+            {"passed": report.passed, "gates": [asdict(gate) for gate in report.gates]}, indent=2, sort_keys=True
+        )
     if output_format == "csv":
         fields = ["gate_id", "status", "passed", "evidence", "next_action", "todo_text"]
         lines = [",".join(fields)]
@@ -170,9 +177,18 @@ def write_evidence_gate_report(report: EvidenceGateReport, path: Path | str, *, 
     return output_path
 
 
-def _study_gate(*, gate_id: str, todo_text: str, plan_path: Path, result_dir: Path, min_audit_fold_count: int) -> EvidenceGate:
+def _study_gate(
+    *, gate_id: str, todo_text: str, plan_path: Path, result_dir: Path, min_audit_fold_count: int
+) -> EvidenceGate:
     if not plan_path.exists():
-        return EvidenceGate(gate_id, todo_text, "missing", False, f"missing run_plan={plan_path}", "generate the run plan before running the study")
+        return EvidenceGate(
+            gate_id,
+            todo_text,
+            "missing",
+            False,
+            f"missing run_plan={plan_path}",
+            "generate the run plan before running the study",
+        )
     try:
         status = evaluate_expected_edge_study_status(
             plan_path=plan_path,
@@ -180,7 +196,9 @@ def _study_gate(*, gate_id: str, todo_text: str, plan_path: Path, result_dir: Pa
             min_audit_fold_count=min_audit_fold_count,
         )
     except Exception as exc:
-        return EvidenceGate(gate_id, todo_text, "failed", False, repr(exc), "fix the study status error and rerun the verifier")
+        return EvidenceGate(
+            gate_id, todo_text, "failed", False, repr(exc), "fix the study status error and rerun the verifier"
+        )
     if status.complete:
         evidence = (
             f"profile={status.profile} result_dir={status.result_dir} "
@@ -196,7 +214,14 @@ def _study_gate(*, gate_id: str, todo_text: str, plan_path: Path, result_dir: Pa
         f"missing_required={len(status.missing_required_files)} verifier_passed={int(status.artifact_verifier_passed)} "
         f"min_audit_fold_count={min_audit_fold_count}"
     )
-    return EvidenceGate(gate_id, todo_text, "not_ready", False, evidence, "finish/resume the expected-edge study and rerun verify_expected_edge_study.sh")
+    return EvidenceGate(
+        gate_id,
+        todo_text,
+        "not_ready",
+        False,
+        evidence,
+        "finish/resume the expected-edge study and rerun verify_expected_edge_study.sh",
+    )
 
 
 def _shadow_gate(
@@ -233,10 +258,24 @@ def _shadow_gate(
             max_fill_rate_error=max_fill_rate_error,
         )
     except Exception as exc:
-        return EvidenceGate("real_shadow_fill_validation", todo, "failed", False, repr(exc), "fix the shadow/simulated fill files, import observed fills, and rerun validate-shadow-fills")
+        return EvidenceGate(
+            "real_shadow_fill_validation",
+            todo,
+            "failed",
+            False,
+            repr(exc),
+            "fix the shadow/simulated fill files, import observed fills, and rerun validate-shadow-fills",
+        )
     if len(observed) < min_shadow_observations:
         evidence = f"observed_shadow_rows={len(observed)} required={min_shadow_observations} matched={report.matched_observations} validation_passed={int(report.passed)}"
-        return EvidenceGate("real_shadow_fill_validation", todo, "not_ready", False, evidence, "collect more real paper/live fill observations")
+        return EvidenceGate(
+            "real_shadow_fill_validation",
+            todo,
+            "not_ready",
+            False,
+            evidence,
+            "collect more real paper/live fill observations",
+        )
     evidence = (
         f"observed_shadow_rows={len(observed)} matched={report.matched_observations} "
         f"mean_abs_price_error={report.validation.mean_abs_price_error:.12g} "
@@ -246,7 +285,16 @@ def _shadow_gate(
         f"max_size_error={max_size_error if max_size_error is not None else 'none'} "
         f"max_fill_rate_error={max_fill_rate_error if max_fill_rate_error is not None else 'none'}"
     )
-    return EvidenceGate("real_shadow_fill_validation", todo, "passed" if report.passed else "failed", report.passed, evidence, "checkbox can be marked complete" if report.passed else "tighten simulator assumptions or investigate paper/live fill mismatch")
+    return EvidenceGate(
+        "real_shadow_fill_validation",
+        todo,
+        "passed" if report.passed else "failed",
+        report.passed,
+        evidence,
+        "checkbox can be marked complete"
+        if report.passed
+        else "tighten simulator assumptions or investigate paper/live fill mismatch",
+    )
 
 
 def _kelly_gate(
@@ -260,7 +308,14 @@ def _kelly_gate(
 ) -> EvidenceGate:
     todo = "Enable fractional Kelly on real strategy artifacts only after the OOS variance-stability gate passes."
     if not artifact_paths:
-        return EvidenceGate("kelly_variance_stability", todo, "missing", False, "missing artifact candidates", "run accepted strategy artifacts first")
+        return EvidenceGate(
+            "kelly_variance_stability",
+            todo,
+            "missing",
+            False,
+            "missing artifact candidates",
+            "run accepted strategy artifacts first",
+        )
     candidate_details = []
     variance_passed_candidates = 0
     for artifact_path in artifact_paths:
@@ -328,7 +383,14 @@ def _model_experiment_gate(
     required_artifacts: tuple[Path, ...],
 ) -> EvidenceGate:
     if not baseline_audit.exists():
-        return EvidenceGate(gate_id, todo_text, "missing", False, f"missing baseline_audit={baseline_audit}", "produce accepted baseline audit before model experiments")
+        return EvidenceGate(
+            gate_id,
+            todo_text,
+            "missing",
+            False,
+            f"missing baseline_audit={baseline_audit}",
+            "produce accepted baseline audit before model experiments",
+        )
     existing_l2_paths = tuple(path for path in l2_paths if path.exists())
     if not existing_l2_paths:
         return EvidenceGate(
@@ -340,9 +402,9 @@ def _model_experiment_gate(
             "import verified normalized L2 rows before model experiments",
         )
     missing_artifacts = [path for path in required_artifacts if not path.exists() or path.stat().st_size == 0]
-    candidate_readiness = []
+    candidate_readiness: list[tuple[Path, bool, tuple[ModelReadinessReport, ...], str]] = []
     for candidate_l2_path in existing_l2_paths:
-        readiness = []
+        readiness: list[ModelReadinessReport] = []
         for model_name in model_names:
             try:
                 readiness.append(
@@ -358,11 +420,20 @@ def _model_experiment_gate(
                 candidate_readiness.append((candidate_l2_path, False, (), repr(exc)))
                 break
         else:
-            candidate_readiness.append((candidate_l2_path, all(report.passed for report in readiness), tuple(readiness), ""))
+            candidate_readiness.append(
+                (candidate_l2_path, all(report.passed for report in readiness), tuple(readiness), "")
+            )
     ready_candidate = next((candidate for candidate in candidate_readiness if candidate[1]), None)
-    selected_l2_path, ready, readiness, failure = ready_candidate or candidate_readiness[0]
+    selected_l2_path, ready, selected_readiness, failure = ready_candidate or candidate_readiness[0]
     if failure:
-        return EvidenceGate(gate_id, todo_text, "not_ready", False, failure, "produce accepted baseline audit and verified normalized L2 rows before model experiments")
+        return EvidenceGate(
+            gate_id,
+            todo_text,
+            "not_ready",
+            False,
+            failure,
+            "produce accepted baseline audit and verified normalized L2 rows before model experiments",
+        )
     artifact_checks = tuple(
         _model_experiment_artifact_status(path, expected_model=model_name, selected_l2_path=selected_l2_path)
         for model_name, path in zip(model_names, required_artifacts)
@@ -376,11 +447,18 @@ def _model_experiment_gate(
         return EvidenceGate(gate_id, todo_text, "passed", True, evidence, "checkbox can be marked complete")
     evidence = (
         f"l2_path={selected_l2_path} readiness_passed={int(ready)} "
-        f"model_reasons={' | '.join(';'.join(report.reasons) or 'ready' for report in readiness)} "
+        f"model_reasons={' | '.join(';'.join(report.reasons) or 'ready' for report in selected_readiness)} "
         f"missing_artifacts={','.join(str(path) for path in missing_artifacts) or 'none'} "
         f"artifact_checks={' | '.join(detail for _, detail in artifact_checks)}"
     )
-    return EvidenceGate(gate_id, todo_text, "not_ready", False, evidence, "satisfy model-readiness-gate, run experiments, and save result artifacts")
+    return EvidenceGate(
+        gate_id,
+        todo_text,
+        "not_ready",
+        False,
+        evidence,
+        "satisfy model-readiness-gate, run experiments, and save result artifacts",
+    )
 
 
 def _pretraining_gate(*, l2_paths: tuple[Path, ...], min_l2_rows: int, artifact_path: Path) -> EvidenceGate:
@@ -395,30 +473,52 @@ def _pretraining_gate(*, l2_paths: tuple[Path, ...], min_l2_rows: int, artifact_
             f"missing l2_paths={','.join(str(path) for path in l2_paths)}",
             "import verified true L2 tensor rows before pretraining",
         )
-    candidate_results = []
+    candidate_results: list[tuple[Path, L2TensorReadiness | None, str]] = []
     for candidate_l2_path in existing_l2_paths:
         try:
-            l2 = evaluate_l2_tensor_readiness(candidate_l2_path, min_rows=min_l2_rows, require_delta=True, allow_fi2010=False)
+            l2 = evaluate_l2_tensor_readiness(
+                candidate_l2_path, min_rows=min_l2_rows, require_delta=True, allow_fi2010=False
+            )
         except Exception as exc:
             candidate_results.append((candidate_l2_path, None, repr(exc)))
         else:
             candidate_results.append((candidate_l2_path, l2, ""))
-    passing_candidate = next((candidate for candidate in candidate_results if candidate[1] is not None and candidate[1].passed), None)
-    selected_l2_path, l2, failure = passing_candidate or candidate_results[0]
-    if l2 is None:
-        return EvidenceGate("self_supervised_l2_pretraining", todo, "not_ready", False, failure, "import verified true L2 tensor rows before pretraining")
-    artifact_passed, artifact_evidence = _pretraining_artifact_status(artifact_path, selected_l2_path=selected_l2_path)
-    if l2.passed and artifact_passed:
-        evidence = f"l2_path={selected_l2_path} l2_rows_checked={l2.rows_checked} {artifact_evidence}"
-        return EvidenceGate("self_supervised_l2_pretraining", todo, "passed", True, evidence, "checkbox can be marked complete")
-    evidence = (
-        f"l2_path={selected_l2_path} l2_passed={int(l2.passed)} rows_checked={l2.rows_checked} "
-        f"has_delta={int(l2.has_delta)} has_sequence={int(l2.has_sequence)} {artifact_evidence}"
+    passing_candidate = next(
+        (candidate for candidate in candidate_results if candidate[1] is not None and candidate[1].passed), None
     )
-    return EvidenceGate("self_supervised_l2_pretraining", todo, "not_ready", False, evidence, "import true L2 rows, run pretraining, and save the artifact")
+    selected_l2_path, selected_l2, failure = passing_candidate or candidate_results[0]
+    if selected_l2 is None:
+        return EvidenceGate(
+            "self_supervised_l2_pretraining",
+            todo,
+            "not_ready",
+            False,
+            failure,
+            "import verified true L2 tensor rows before pretraining",
+        )
+    artifact_passed, artifact_evidence = _pretraining_artifact_status(artifact_path, selected_l2_path=selected_l2_path)
+    if selected_l2.passed and artifact_passed:
+        evidence = f"l2_path={selected_l2_path} l2_rows_checked={selected_l2.rows_checked} {artifact_evidence}"
+        return EvidenceGate(
+            "self_supervised_l2_pretraining", todo, "passed", True, evidence, "checkbox can be marked complete"
+        )
+    evidence = (
+        f"l2_path={selected_l2_path} l2_passed={int(selected_l2.passed)} rows_checked={selected_l2.rows_checked} "
+        f"has_delta={int(selected_l2.has_delta)} has_sequence={int(selected_l2.has_sequence)} {artifact_evidence}"
+    )
+    return EvidenceGate(
+        "self_supervised_l2_pretraining",
+        todo,
+        "not_ready",
+        False,
+        evidence,
+        "import true L2 rows, run pretraining, and save the artifact",
+    )
 
 
-def _model_experiment_artifact_status(artifact_path: Path, *, expected_model: str, selected_l2_path: Path) -> tuple[bool, str]:
+def _model_experiment_artifact_status(
+    artifact_path: Path, *, expected_model: str, selected_l2_path: Path
+) -> tuple[bool, str]:
     prefix = f"artifact={artifact_path}"
     if not artifact_path.exists() or artifact_path.stat().st_size == 0:
         return False, f"{prefix} present=0 expected_model={expected_model}"
@@ -432,14 +532,14 @@ def _model_experiment_artifact_status(artifact_path: Path, *, expected_model: st
     row = rows[0]
     model_match = row.get("model_name") == expected_model
     l2_match = row.get("l2_path") == str(selected_l2_path)
-    passed = row.get("passed") in {"1", "true", "True"}
+    pipeline_completed = row.get("pipeline_completed") in {"1", "true", "True"}
     readiness_passed = row.get("readiness_passed") in {"1", "true", "True"}
     dependency_available = row.get("dependency_available") in {"1", "true", "True"}
-    ok = model_match and l2_match and passed and readiness_passed and dependency_available
+    ok = model_match and l2_match and pipeline_completed and readiness_passed and dependency_available
     detail = (
         f"{prefix} present=1 expected_model={expected_model} model_match={int(model_match)} "
         f"l2_match={int(l2_match)} readiness_passed={int(readiness_passed)} "
-        f"dependency_available={int(dependency_available)} passed={int(passed)}"
+        f"dependency_available={int(dependency_available)} pipeline_completed={int(pipeline_completed)}"
     )
     return ok, detail
 
@@ -503,9 +603,7 @@ def _resolve_kelly_artifacts(*, single_artifact: Path, artifacts: Sequence[Path 
         return tuple(Path(path) for path in artifacts)
     if single_artifact == DEFAULT_KELLY_ARTIFACT:
         candidates = tuple(
-            candidate
-            for pattern in DEFAULT_KELLY_CANDIDATE_GLOBS
-            for candidate in sorted(Path(".").glob(pattern))
+            candidate for pattern in DEFAULT_KELLY_CANDIDATE_GLOBS for candidate in sorted(Path(".").glob(pattern))
         )
         if candidates:
             return candidates

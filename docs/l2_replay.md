@@ -31,7 +31,7 @@ The replayer reports, per applied row:
 
 ## Tensor Extraction
 
-`OrderBookReplayer.top_n_tensor(depth=N)` returns rows in FI-2010/DeepLOB-friendly order:
+`OrderBookReplayer.top_n_tensor(depth=N)` returns rows in a stable LOB tensor order:
 
 ```text
 ask_price, ask_size, bid_price, bid_size

@@ -43,7 +43,9 @@ def test_inventory_limit_rejects_excess_trade() -> None:
         Trade(0, 2000, 1, 100.0, 101.0, predicted_edge_bps=1.0),
         Trade(500, 2500, 1, 100.0, 101.0, predicted_edge_bps=1.0),
     ]
-    config = PortfolioConfig(capital=10_000.0, base_notional=1_000.0, max_notional=1_000.0, max_inventory_notional=1_500.0)
+    config = PortfolioConfig(
+        capital=10_000.0, base_notional=1_000.0, max_notional=1_000.0, max_inventory_notional=1_500.0
+    )
 
     result = simulate_fixed_notional_portfolio(trades, config)
 
@@ -51,9 +53,30 @@ def test_inventory_limit_rejects_excess_trade() -> None:
     assert result.trades[1].rejection_reason == "max_inventory_notional"
 
 
+def test_legacy_portfolio_kill_switch_rejects_later_trades() -> None:
+    trades = [
+        Trade(0, 1000, 1, 100.0, 99.0, predicted_edge_bps=1.0),
+        Trade(2000, 3000, 1, 100.0, 101.0, predicted_edge_bps=1.0),
+    ]
+    config = PortfolioConfig(
+        capital=10_000.0,
+        base_notional=1_000.0,
+        max_notional=1_000.0,
+        daily_loss_limit=5.0,
+    )
+
+    result = simulate_fixed_notional_portfolio(trades, config)
+
+    assert result.kill_switch_triggered
+    assert result.trades[1].rejected
+    assert result.trades[1].rejection_reason == "kill_switch"
+
+
 def test_sizing_helpers_are_capped() -> None:
     assert capped_expected_edge_notional(0.5, base_notional=1000, max_notional=5000, full_size_edge_bps=1.0) == 500
-    assert fractional_kelly_notional(mean_edge=0.01, variance=0.02, capital=10000, fraction=0.25, cap_fraction=0.01) == 100
+    assert (
+        fractional_kelly_notional(mean_edge=0.01, variance=0.02, capital=10000, fraction=0.25, cap_fraction=0.01) == 100
+    )
 
 
 def test_inventory_penalty_reduces_net_pnl() -> None:
@@ -81,6 +104,7 @@ def test_kelly_variance_gate_passes_stable_oos_variance(tmp_path: Path) -> None:
 
     report = evaluate_oos_variance_stability(
         path,
+        column="test_net_pnl",
         min_observations=9,
         window_size=3,
         max_variance_cv=0.01,
@@ -108,6 +132,7 @@ def test_gated_kelly_returns_zero_for_unstable_variance(tmp_path: Path) -> None:
 
     report = evaluate_oos_variance_stability(
         path,
+        column="test_net_pnl",
         min_observations=9,
         window_size=3,
         max_variance_cv=0.1,
@@ -131,6 +156,7 @@ def test_variance_gate_ignores_summary_rows(tmp_path: Path) -> None:
 
     report = evaluate_oos_variance_stability(
         path,
+        column="test_net_pnl",
         min_observations=4,
         window_size=2,
         max_variance_cv=0.5,

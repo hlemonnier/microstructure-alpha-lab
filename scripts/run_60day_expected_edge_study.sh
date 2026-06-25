@@ -6,6 +6,12 @@ cd "$ROOT_DIR"
 
 PYTHONPATH="${PYTHONPATH:-src}"
 export PYTHONPATH
+if [[ -z "${PYTHON_BIN:-}" && -x ".venv/bin/python" ]]; then
+  PYTHON_BIN=".venv/bin/python"
+else
+  PYTHON_BIN="${PYTHON_BIN:-python3}"
+fi
+source scripts/holdout_manifest.sh
 
 STUDY_PROFILE="${STUDY_PROFILE:-laptop_tiny}"
 PLAN_ONLY="${PLAN_ONLY:-0}"
@@ -399,6 +405,7 @@ PY
       printf 'skip existing result/audit: %s %s\n' "$result" "$audit"
     else
       python3 -m lob_forge.cli edge-walk-forward "$combined" \
+        --holdout-manifest "$(holdout_manifest_for "$combined")" \
         --train-size "$TRAIN_SIZE" \
         --validation-size "$VALIDATION_SIZE" \
         --test-size "$TEST_SIZE" \

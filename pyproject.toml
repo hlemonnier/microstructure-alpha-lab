@@ -25,6 +25,7 @@ research = [
 dev = [
   "pytest>=8",
   "ruff>=0.6",
+  "mypy>=1.11",
 ]
 cloud = [
   "modal>=1.1.4",
@@ -36,3 +37,28 @@ lob-forge = "lob_forge.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+check_untyped_defs = false
+follow_imports = "skip"
+warn_unused_ignores = false
+show_error_codes = true
+
+[tool.pytest.ini_options]
+markers = [
+  "unit: deterministic dependency-light checks",
+  "integration: deterministic multi-module checks",
+  "slow: long-running CPU checks excluded from fast verification",
+  "gpu: GPU-dependent checks",
+  "research: full empirical research runs",
+]

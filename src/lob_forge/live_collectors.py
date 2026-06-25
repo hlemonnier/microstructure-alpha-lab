@@ -85,7 +85,11 @@ class LiveL2SequenceTracker:
                 and batch.prev_sequence != self.last_sequence
             )
         if self.venue == "coinbase":
-            return self.last_sequence is not None and batch.sequence is not None and batch.sequence != self.last_sequence + 1
+            return (
+                self.last_sequence is not None
+                and batch.sequence is not None
+                and batch.sequence != self.last_sequence + 1
+            )
         return self.last_sequence is not None and batch.sequence is not None and batch.sequence <= self.last_sequence
 
 
@@ -400,7 +404,8 @@ def _normalize_okx_message(
 ) -> LiveL2Batch:
     action = str(payload.get("action") or "snapshot").lower()
     event_type = "delta" if action in {"update", "delta"} else "snapshot"
-    arg = payload.get("arg") if isinstance(payload.get("arg"), Mapping) else {}
+    raw_arg = payload.get("arg")
+    arg: Mapping[str, Any] = raw_arg if isinstance(raw_arg, Mapping) else {}
     resolved_symbol = str(arg.get("instId") or symbol)
     data = payload.get("data") or []
     if isinstance(data, Mapping):
@@ -435,7 +440,8 @@ def _normalize_bybit_message(
     symbol: str,
     local_timestamp_ms: int | None,
 ) -> LiveL2Batch:
-    data = payload.get("data") if isinstance(payload.get("data"), Mapping) else payload
+    raw_data = payload.get("data")
+    data: Mapping[str, Any] = raw_data if isinstance(raw_data, Mapping) else payload
     event_type = str(payload.get("type") or data.get("type") or "delta").lower()
     if event_type not in {"snapshot", "delta"}:
         event_type = "delta"
@@ -443,10 +449,7 @@ def _normalize_bybit_message(
     sequence = _optional_int(data.get("seq") or payload.get("seq"))
     update_id = _optional_int(data.get("u") or payload.get("u"))
     exchange_timestamp = (
-        _optional_timestamp_ms(data.get("cts"))
-        or _optional_timestamp_ms(payload.get("ts"))
-        or local_timestamp_ms
-        or 0
+        _optional_timestamp_ms(data.get("cts")) or _optional_timestamp_ms(payload.get("ts")) or local_timestamp_ms or 0
     )
     rows = _rows_from_book_levels(
         venue="bybit",
@@ -518,14 +521,18 @@ def _normalize_coinbase_message(
                 side = _normalize_side(update.get("side"))
                 if side is None:
                     continue
+                price_level = update.get("price_level")
+                new_quantity = update.get("new_quantity")
+                if price_level is None or new_quantity is None:
+                    continue
                 rows.append(
                     NormalizedL2Row(
                         event_type=event_type,
                         exchange_timestamp=_optional_timestamp_ms(update.get("event_time")) or local_timestamp_ms or 0,
                         local_timestamp=local_timestamp_ms,
                         side=side,
-                        price=float(update.get("price_level")),
-                        size=float(update.get("new_quantity")),
+                        price=float(price_level),
+                        size=float(new_quantity),
                         sequence=sequence,
                         venue="coinbase",
                         symbol=resolved_symbol,
@@ -590,6 +597,8 @@ def _level_price_size(level: Any) -> tuple[float, float]:
         size = level.get("size") or level.get("qty") or level.get("new_quantity") or level.get("sz")
     else:
         price, size = level[0], level[1]
+    if price is None or size is None:
+        raise ValueError("book level missing price or size")
     return float(price), float(size)
 
 

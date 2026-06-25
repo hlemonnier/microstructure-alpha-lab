@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
+from lob_forge.protocol import assert_valid_selection_metric
+
 
 CLASSES = [-1, 0, 1]
 DEFAULT_FEATURES = [
@@ -178,6 +180,7 @@ def run_threshold_baselines(
     slippage_bps: float = 0.0,
     sort_by: str = "validation_net_pnl",
 ) -> list[BaselineResult]:
+    assert_valid_selection_metric(sort_by)
     rows = _read_rows(Path(feature_csv))
     if len(rows) < 10:
         raise ValueError("need at least 10 rows for baseline evaluation")
@@ -208,6 +211,10 @@ def run_threshold_baselines(
 
     for feature in feature_names:
         for threshold in threshold_values:
+
+            def predictor(row: dict[str, str], feature: str = feature, threshold: float = threshold) -> int:
+                return predict_feature_threshold(row, feature, threshold)
+
             results.append(
                 _make_result(
                     name=f"{feature}_threshold",
@@ -220,11 +227,7 @@ def run_threshold_baselines(
                     maker_fee_bps=maker_fee_bps,
                     slippage_bps=slippage_bps,
                     execution_model=execution_model,
-                    predictor=lambda row, feature=feature, threshold=threshold: predict_feature_threshold(
-                        row,
-                        feature,
-                        threshold,
-                    ),
+                    predictor=predictor,
                 )
             )
 
@@ -247,6 +250,7 @@ def run_walk_forward_thresholds(
     slippage_bps: float = 0.0,
     sort_by: str = "validation_net_pnl",
 ) -> list[WalkForwardFoldResult]:
+    assert_valid_selection_metric(sort_by)
     rows = _read_rows(Path(feature_csv))
     if not rows:
         raise ValueError("no rows available for walk-forward evaluation")
@@ -331,6 +335,7 @@ def run_calendar_walk_forward_thresholds(
     slippage_bps: float = 0.0,
     sort_by: str = "validation_net_pnl",
 ) -> list[CalendarWalkForwardFoldResult]:
+    assert_valid_selection_metric(sort_by)
     rows = _read_rows(Path(feature_csv))
     if not rows:
         raise ValueError("no rows available for calendar walk-forward evaluation")
@@ -427,6 +432,7 @@ def run_conditional_walk_forward_thresholds(
     slippage_bps: float = 0.0,
     sort_by: str = "validation_net_pnl",
 ) -> list[ConditionalWalkForwardFoldResult]:
+    assert_valid_selection_metric(sort_by)
     rows = _read_rows(Path(feature_csv))
     if not rows:
         raise ValueError("no rows available for conditional walk-forward evaluation")
@@ -519,7 +525,10 @@ def evaluate_rule_file(
         rows = [row for row in rows if row.get("source_date") == source_date]
     if not rows:
         raise ValueError("no rows available for rule evaluation")
-    predictor = lambda row: predict_feature_threshold(row, feature, threshold)
+
+    def predictor(row: dict[str, str]) -> int:
+        return predict_feature_threshold(row, feature, threshold)
+
     return RuleEvaluation(
         feature=feature,
         threshold=threshold,
@@ -558,16 +567,16 @@ def run_regime_analysis(
     if bins <= 0:
         raise ValueError("bins must be positive")
 
-    selected_regime_features = regime_features or [
-        name for name in DEFAULT_REGIME_FEATURES if name in rows[0]
-    ]
+    selected_regime_features = regime_features or [name for name in DEFAULT_REGIME_FEATURES if name in rows[0]]
     if not selected_regime_features:
         raise ValueError("no default regime feature columns found")
     missing = [name for name in selected_regime_features if name not in rows[0]]
     if missing:
         raise ValueError(f"regime feature columns not found: {', '.join(missing)}")
 
-    predictor = lambda row: predict_feature_threshold(row, feature, threshold)
+    def predictor(row: dict[str, str]) -> int:
+        return predict_feature_threshold(row, feature, threshold)
+
     evaluations: list[RegimeEvaluation] = []
     for regime_feature in selected_regime_features:
         bucketed = _quantile_buckets(rows, regime_feature, bins)
@@ -618,6 +627,7 @@ def run_fee_sweep(
     slippage_bps: float = 0.0,
     sort_by: str = "validation_net_pnl",
 ) -> list[FeeSweepResult]:
+    assert_valid_selection_metric(sort_by)
     sweep: list[FeeSweepResult] = []
     for fee_bps in fees_bps:
         results = run_threshold_baselines(
@@ -697,6 +707,9 @@ def _select_threshold_result(
     execution_model: str,
     sort_by: str,
 ) -> BaselineResult:
+    def flat_predictor(row: dict[str, str]) -> int:
+        return 0
+
     results = [
         _make_result(
             name="always_flat",
@@ -709,11 +722,15 @@ def _select_threshold_result(
             maker_fee_bps=maker_fee_bps,
             slippage_bps=slippage_bps,
             execution_model=execution_model,
-            predictor=lambda row: 0,
+            predictor=flat_predictor,
         )
     ]
     for feature in feature_names:
         for threshold in threshold_values:
+
+            def predictor(row: dict[str, str], feature: str = feature, threshold: float = threshold) -> int:
+                return predict_feature_threshold(row, feature, threshold)
+
             results.append(
                 _make_result(
                     name=f"{feature}_threshold",
@@ -726,11 +743,7 @@ def _select_threshold_result(
                     maker_fee_bps=maker_fee_bps,
                     slippage_bps=slippage_bps,
                     execution_model=execution_model,
-                    predictor=lambda row, feature=feature, threshold=threshold: predict_feature_threshold(
-                        row,
-                        feature,
-                        threshold,
-                    ),
+                    predictor=predictor,
                 )
             )
     return sorted(results, key=lambda result: _sort_key(result, sort_by), reverse=True)[0]
@@ -752,6 +765,9 @@ def _select_conditional_result(
     execution_model: str,
     sort_by: str,
 ) -> ConditionalResult:
+    def flat_predictor(row: dict[str, str]) -> int:
+        return 0
+
     results = [
         _make_conditional_result(
             name="always_flat",
@@ -765,7 +781,7 @@ def _select_conditional_result(
             maker_fee_bps=maker_fee_bps,
             slippage_bps=slippage_bps,
             execution_model=execution_model,
-            predictor=lambda row: 0,
+            predictor=flat_predictor,
         )
     ]
     regime_specs = [
@@ -776,6 +792,10 @@ def _select_conditional_result(
 
     for feature in feature_names:
         for threshold in threshold_values:
+
+            def predictor(row: dict[str, str], feature: str = feature, threshold: float = threshold) -> int:
+                return predict_feature_threshold(row, feature, threshold)
+
             results.append(
                 _make_conditional_result(
                     name=f"{feature}_threshold",
@@ -789,14 +809,21 @@ def _select_conditional_result(
                     maker_fee_bps=maker_fee_bps,
                     slippage_bps=slippage_bps,
                     execution_model=execution_model,
-                    predictor=lambda row, feature=feature, threshold=threshold: predict_feature_threshold(
-                        row,
-                        feature,
-                        threshold,
-                    ),
+                    predictor=predictor,
                 )
             )
             for spec in regime_specs:
+
+                def regime_predictor(
+                    row: dict[str, str],
+                    feature: str = feature,
+                    threshold: float = threshold,
+                    spec: RegimeBucketSpec = spec,
+                ) -> int:
+                    if not _row_in_regime_bucket(row, spec):
+                        return 0
+                    return predict_feature_threshold(row, feature, threshold)
+
                 results.append(
                     _make_conditional_result(
                         name=f"{feature}_threshold_if_{spec.feature}_bucket_{spec.bucket}",
@@ -810,11 +837,7 @@ def _select_conditional_result(
                         maker_fee_bps=maker_fee_bps,
                         slippage_bps=slippage_bps,
                         execution_model=execution_model,
-                        predictor=lambda row, feature=feature, threshold=threshold, spec=spec: (
-                            predict_feature_threshold(row, feature, threshold)
-                            if _row_in_regime_bucket(row, spec)
-                            else 0
-                        ),
+                        predictor=regime_predictor,
                     )
                 )
 
@@ -907,7 +930,8 @@ def _available_regime_features(rows: list[dict[str, str]], regime_features: list
     return available
 
 
-def _sort_key(result: BaselineResult, sort_by: str) -> float:
+def _sort_key(result: BaselineResult | ConditionalResult, sort_by: str) -> float:
+    assert_valid_selection_metric(sort_by)
     if sort_by == "validation_macro_f1":
         return result.validation.macro_f1
     if sort_by == "validation_balanced_accuracy":
@@ -916,13 +940,9 @@ def _sort_key(result: BaselineResult, sort_by: str) -> float:
         return result.validation_economics.net_pnl
     if sort_by == "validation_gross_pnl":
         return result.validation_economics.gross_pnl
-    if sort_by == "test_net_pnl":
-        return result.test_economics.net_pnl
-    if sort_by == "test_gross_pnl":
-        return result.test_economics.gross_pnl
     raise ValueError(
         "sort_by must be one of: validation_macro_f1, validation_balanced_accuracy, "
-        "validation_net_pnl, validation_gross_pnl, test_net_pnl, test_gross_pnl"
+        "validation_net_pnl, validation_gross_pnl"
     )
 
 
@@ -1070,9 +1090,7 @@ def evaluate_taker_economics(
         if trade_net > 0:
             wins += 1
 
-    break_even_taker_fee_bps = (
-        (gross_pnl / fee_turnover * 10_000.0) - slippage_bps if fee_turnover else 0.0
-    )
+    break_even_taker_fee_bps = (gross_pnl / fee_turnover * 10_000.0) - slippage_bps if fee_turnover else 0.0
     return EconomicMetrics(
         signals=signals,
         trades=trades,
@@ -1151,9 +1169,11 @@ def evaluate_maker_entry_economics(
             wins += 1
 
     break_even_taker_fee_bps = (
-        ((gross_pnl - maker_fee_rate * maker_fee_turnover - slippage_rate * exit_fee_turnover)
-         / exit_fee_turnover
-         * 10_000.0)
+        (
+            (gross_pnl - maker_fee_rate * maker_fee_turnover - slippage_rate * exit_fee_turnover)
+            / exit_fee_turnover
+            * 10_000.0
+        )
         if exit_fee_turnover
         else 0.0
     )
@@ -1394,11 +1414,13 @@ def format_walk_forward_results(folds: list[WalkForwardFoldResult]) -> str:
 
     summary_break_even_fee_bps = 0.0
     if total_test_fee_turnover:
-        summary_break_even_fee_bps = sum(
-            fold.result.test_economics.break_even_taker_fee_bps
-            * fold.result.test_economics.fee_turnover
-            for fold in folds
-        ) / total_test_fee_turnover
+        summary_break_even_fee_bps = (
+            sum(
+                fold.result.test_economics.break_even_taker_fee_bps * fold.result.test_economics.fee_turnover
+                for fold in folds
+            )
+            / total_test_fee_turnover
+        )
     lines.append(
         ",".join(
             [
@@ -1511,11 +1533,13 @@ def format_calendar_walk_forward_results(folds: list[CalendarWalkForwardFoldResu
 
     summary_break_even_fee_bps = 0.0
     if total_test_fee_turnover:
-        summary_break_even_fee_bps = sum(
-            fold.result.test_economics.break_even_taker_fee_bps
-            * fold.result.test_economics.fee_turnover
-            for fold in folds
-        ) / total_test_fee_turnover
+        summary_break_even_fee_bps = (
+            sum(
+                fold.result.test_economics.break_even_taker_fee_bps * fold.result.test_economics.fee_turnover
+                for fold in folds
+            )
+            / total_test_fee_turnover
+        )
     lines.append(
         ",".join(
             [
@@ -1632,11 +1656,13 @@ def format_conditional_walk_forward_results(folds: list[ConditionalWalkForwardFo
 
     summary_break_even_fee_bps = 0.0
     if total_test_fee_turnover:
-        summary_break_even_fee_bps = sum(
-            fold.result.test_economics.break_even_taker_fee_bps
-            * fold.result.test_economics.fee_turnover
-            for fold in folds
-        ) / total_test_fee_turnover
+        summary_break_even_fee_bps = (
+            sum(
+                fold.result.test_economics.break_even_taker_fee_bps * fold.result.test_economics.fee_turnover
+                for fold in folds
+            )
+            / total_test_fee_turnover
+        )
     lines.append(
         ",".join(
             [
@@ -1733,11 +1759,7 @@ def _quantile_buckets(
     feature: str,
     bins: int,
 ) -> list[list[dict[str, str]]]:
-    finite_rows = [
-        (value, row)
-        for row in rows
-        if (value := _safe_float(row.get(feature, ""))) is not None
-    ]
+    finite_rows = [(value, row) for row in rows if (value := _safe_float(row.get(feature, ""))) is not None]
     if not finite_rows:
         raise ValueError(f"no finite values available for regime feature: {feature}")
     finite_rows.sort(key=lambda item: item[0])
@@ -1755,11 +1777,7 @@ def _quantile_bucket_specs(
     feature: str,
     bins: int,
 ) -> list[RegimeBucketSpec]:
-    finite_values = sorted(
-        value
-        for row in rows
-        if (value := _safe_float(row.get(feature, ""))) is not None
-    )
+    finite_values = sorted(value for row in rows if (value := _safe_float(row.get(feature, ""))) is not None)
     if not finite_values:
         raise ValueError(f"no finite values available for regime feature: {feature}")
     bucket_count = min(bins, len(finite_values))

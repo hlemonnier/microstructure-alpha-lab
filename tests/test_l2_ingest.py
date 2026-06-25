@@ -389,7 +389,7 @@ def test_bybit_orderbook_import_can_be_row_capped(tmp_path: Path) -> None:
                 "u": 2,
                 "cts": 1684195202400,
             },
-        }
+        },
     ]
     with zipfile.ZipFile(archive_path, "w") as archive:
         archive.writestr("2023-05-16_BTCUSDT_ob500.data", "\n".join(json.dumps(item) for item in payloads) + "\n")

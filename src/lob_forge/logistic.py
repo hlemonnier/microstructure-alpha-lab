@@ -14,6 +14,7 @@ from lob_forge.baselines import (
     compute_metrics,
     evaluate_economics,
 )
+from lob_forge.protocol import assert_valid_selection_metric
 
 
 DEFAULT_ALPHA_THRESHOLDS = [0.0, 0.025, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.5, 0.75]
@@ -76,6 +77,7 @@ def run_logistic_walk_forward(
     slippage_bps: float = 0.0,
     sort_by: str = "validation_net_pnl",
 ) -> list[LogisticWalkForwardFold]:
+    assert_valid_selection_metric(sort_by)
     rows = _read_rows(Path(feature_csv))
     if not rows:
         raise ValueError("no rows available for logistic walk-forward evaluation")
@@ -211,6 +213,7 @@ def select_logistic_threshold(
     slippage_bps: float,
     sort_by: str,
 ) -> LogisticResult:
+    assert_valid_selection_metric(sort_by)
     results = [
         _make_constant_result(
             model=model,
@@ -223,18 +226,18 @@ def select_logistic_threshold(
             slippage_bps=slippage_bps,
         ),
         *[
-        _make_logistic_result(
-            model=model,
-            alpha_threshold=threshold,
-            train_rows=train_rows,
-            validation_rows=validation_rows,
-            test_rows=test_rows,
-            execution_model=execution_model,
-            maker_fee_bps=maker_fee_bps,
-            taker_fee_bps=taker_fee_bps,
-            slippage_bps=slippage_bps,
-        )
-        for threshold in alpha_thresholds
+            _make_logistic_result(
+                model=model,
+                alpha_threshold=threshold,
+                train_rows=train_rows,
+                validation_rows=validation_rows,
+                test_rows=test_rows,
+                execution_model=execution_model,
+                maker_fee_bps=maker_fee_bps,
+                taker_fee_bps=taker_fee_bps,
+                slippage_bps=slippage_bps,
+            )
+            for threshold in alpha_thresholds
         ],
     ]
     return sorted(results, key=lambda result: _sort_key(result, sort_by), reverse=True)[0]
@@ -266,7 +269,7 @@ def fit_standardizer(rows: list[dict[str, str]], features: list[str]) -> Standar
         values = [float(row[feature]) for row in rows]
         mean = sum(values) / len(values)
         variance = sum((value - mean) ** 2 for value in values) / len(values)
-        scale = variance ** 0.5
+        scale = variance**0.5
         means.append(mean)
         scales.append(scale if scale > 1e-12 else 1.0)
     return Standardizer(means=means, scales=scales)
@@ -348,11 +351,13 @@ def format_logistic_walk_forward_results(folds: list[LogisticWalkForwardFold]) -
 
     summary_break_even_fee_bps = 0.0
     if total_test_fee_turnover:
-        summary_break_even_fee_bps = sum(
-            fold.result.test_economics.break_even_taker_fee_bps
-            * fold.result.test_economics.fee_turnover
-            for fold in folds
-        ) / total_test_fee_turnover
+        summary_break_even_fee_bps = (
+            sum(
+                fold.result.test_economics.break_even_taker_fee_bps * fold.result.test_economics.fee_turnover
+                for fold in folds
+            )
+            / total_test_fee_turnover
+        )
 
     lines.append(
         ",".join(
@@ -406,7 +411,9 @@ def _make_logistic_result(
     taker_fee_bps: float,
     slippage_bps: float,
 ) -> LogisticResult:
-    predictor = lambda row: predict_side(model, row, alpha_threshold)
+    def predictor(row: dict[str, str]) -> int:
+        return predict_side(model, row, alpha_threshold)
+
     return LogisticResult(
         name="softmax_logistic",
         features=model.features,
@@ -452,7 +459,9 @@ def _make_constant_result(
     taker_fee_bps: float,
     slippage_bps: float,
 ) -> LogisticResult:
-    predictor = lambda row: 0
+    def predictor(row: dict[str, str]) -> int:
+        return 0
+
     return LogisticResult(
         name="always_flat",
         features=model.features,
@@ -500,6 +509,7 @@ def _sample_weights(y_indices: list[int], *, class_weighting: str) -> list[float
 
 
 def _sort_key(result: LogisticResult, sort_by: str) -> float:
+    assert_valid_selection_metric(sort_by)
     if sort_by == "validation_macro_f1":
         return result.validation.macro_f1
     if sort_by == "validation_balanced_accuracy":
@@ -508,13 +518,9 @@ def _sort_key(result: LogisticResult, sort_by: str) -> float:
         return result.validation_economics.net_pnl
     if sort_by == "validation_gross_pnl":
         return result.validation_economics.gross_pnl
-    if sort_by == "test_net_pnl":
-        return result.test_economics.net_pnl
-    if sort_by == "test_gross_pnl":
-        return result.test_economics.gross_pnl
     raise ValueError(
         "sort_by must be one of: validation_macro_f1, validation_balanced_accuracy, "
-        "validation_net_pnl, validation_gross_pnl, test_net_pnl, test_gross_pnl"
+        "validation_net_pnl, validation_gross_pnl"
     )
 
 
