@@ -2,6 +2,7 @@ import csv
 import gzip
 from pathlib import Path
 
+from lob_forge.cli import main as cli_main
 from lob_forge.data_sources import (
     get_source,
     list_sources,
@@ -89,3 +90,25 @@ def test_validate_l2_csv_handles_gzip(tmp_path: Path) -> None:
 
     assert result.ok
     assert result.rows_checked == 1
+
+
+def test_l2_validate_cli_accepts_coinbase_live_l2_rows(tmp_path: Path) -> None:
+    path = tmp_path / "coinbase_live.csv"
+    rows = [
+        {
+            "event_type": "delta",
+            "exchange_timestamp": "1700000000000",
+            "side": "bid",
+            "price": "100.5",
+            "size": "1.25",
+            "sequence": "9",
+            "venue": "coinbase",
+            "symbol": "BTC-USD",
+        }
+    ]
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+    assert cli_main(["l2-validate", str(path), "--source", "coinbase"]) == 0

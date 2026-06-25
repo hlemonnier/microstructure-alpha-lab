@@ -10,6 +10,10 @@ The same source priority is also available as machine-readable CLI output:
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources \
   --gap paper_live_fill_validation \
   --format markdown
+
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources \
+  --evidence-gate real_shadow_fill_validation \
+  --format json
 ```
 
 ## Source Priority
@@ -102,6 +106,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli validate-shadow-fills \
 For the second-part local gap, the repo is ready once:
 
 - raw demo/paper exports are saved under `results/shadow_validation/`,
+- the chosen source appears in `free-api-sources --evidence-gate real_shadow_fill_validation`,
 - `normalize-observed-fills` produces a non-empty observed-fill CSV,
 - `import-observed-fills` reports matched decisions,
 - `validate-shadow-fills` passes the configured thresholds,

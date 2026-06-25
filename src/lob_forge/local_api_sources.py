@@ -11,6 +11,22 @@ PAPER_FILL_GAP = "paper_live_fill_validation"
 TRUE_L2_SMOKE_GAP = "true_l2_laptop_smoke"
 QUOTE_TRADE_GAP = "quote_trade_depth_band_research"
 
+REAL_SHADOW_FILL_GATE = "real_shadow_fill_validation"
+PAPER_LIVE_FILL_GATE = "paper_live_fill_validation"
+CAPPED_60DAY_GATE = "capped_60day_btc_eth"
+KELLY_VARIANCE_GATE = "kelly_variance_stability"
+SEQUENCE_MODEL_GATE = "sequence_transformer_tcn_experiments"
+L2_PRETRAINING_GATE = "self_supervised_l2_pretraining"
+
+LOCAL_EVIDENCE_GATES = (
+    REAL_SHADOW_FILL_GATE,
+    PAPER_LIVE_FILL_GATE,
+    CAPPED_60DAY_GATE,
+    KELLY_VARIANCE_GATE,
+    SEQUENCE_MODEL_GATE,
+    L2_PRETRAINING_GATE,
+)
+
 
 @dataclass(frozen=True)
 class LocalApiSource:
@@ -30,6 +46,9 @@ class LocalApiSource:
     local_commands: tuple[str, ...]
     docs_urls: tuple[str, ...]
     limitations: tuple[str, ...]
+    evidence_gates: tuple[str, ...] = ()
+    target_artifacts: tuple[str, ...] = ()
+    minimum_local_proof: str = ""
 
 
 LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
@@ -53,6 +72,13 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "https://bybit-exchange.github.io/docs/v5/order/execution",
         ),
         limitations=("demo orders are retained for 7 days", "demo trading is not a live execution-quality claim"),
+        evidence_gates=(REAL_SHADOW_FILL_GATE, PAPER_LIVE_FILL_GATE),
+        target_artifacts=(
+            "results/shadow_validation/raw_bybit_executions.json",
+            "results/shadow_validation/observed_fills.csv",
+            "results/shadow_validation/shadow_decisions_observed.csv",
+        ),
+        minimum_local_proof="non-empty normalized Bybit fills matched back to shadow decision_id/orderLinkId",
     ),
     LocalApiSource(
         source_id="okx_demo_fills",
@@ -79,6 +105,13 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "requires x-simulated-trading: 1 with demo API credentials",
             "transaction-detail history is windowed",
         ),
+        evidence_gates=(REAL_SHADOW_FILL_GATE, PAPER_LIVE_FILL_GATE),
+        target_artifacts=(
+            "results/shadow_validation/raw_okx_fills.json",
+            "results/shadow_validation/observed_fills.csv",
+            "results/shadow_validation/shadow_decisions_observed.csv",
+        ),
+        minimum_local_proof="non-empty normalized OKX fills matched back to shadow decision_id/clOrdId",
     ),
     LocalApiSource(
         source_id="binance_spot_testnet_fills",
@@ -100,6 +133,12 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "https://developers.binance.com/docs/binance-spot-api-docs/testnet/rest-api/trading-endpoints",
         ),
         limitations=("spot testnet only", "not a futures L2 queue validation source"),
+        evidence_gates=(REAL_SHADOW_FILL_GATE, PAPER_LIVE_FILL_GATE),
+        target_artifacts=(
+            "results/shadow_validation/raw_binance_execution_reports.json",
+            "results/shadow_validation/observed_fills.csv",
+        ),
+        minimum_local_proof="spot testnet executionReport/FULL order rows normalize into canonical observed fills",
     ),
     LocalApiSource(
         source_id="alpaca_paper_fills",
@@ -118,6 +157,12 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         local_commands=("normalize-observed-fills --provider alpaca",),
         docs_urls=("https://docs.alpaca.markets/us/docs/paper-trading",),
         limitations=("paper simulator omits queue position, market impact, information leakage, and latency slippage",),
+        evidence_gates=(REAL_SHADOW_FILL_GATE, PAPER_LIVE_FILL_GATE),
+        target_artifacts=(
+            "results/shadow_validation/raw_alpaca_trade_updates.json",
+            "results/shadow_validation/observed_fills.csv",
+        ),
+        minimum_local_proof="paper trade updates normalize and merge, but only as low-weight order-lifecycle evidence",
     ),
     LocalApiSource(
         source_id="okx_public_historical_l2",
@@ -141,6 +186,9 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         ),
         docs_urls=("https://www.okx.com/en-us/historical-data",),
         limitations=("download-link discovery is rate-limited and can legitimately return no file for a row",),
+        evidence_gates=(SEQUENCE_MODEL_GATE, L2_PRETRAINING_GATE),
+        target_artifacts=("data/normalized_l2/okx/BTC-USDT-SWAP/2023-05-16.csv",),
+        minimum_local_proof="row-capped normalized OKX L2 CSV passes l2-import-manifest and l2-validate",
     ),
     LocalApiSource(
         source_id="bybit_public_historical_l2",
@@ -167,11 +215,41 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "https://bybit-exchange.github.io/docs/v5/market/orderbook",
         ),
         limitations=("historical file availability varies by symbol/date",),
+        evidence_gates=(SEQUENCE_MODEL_GATE, L2_PRETRAINING_GATE),
+        target_artifacts=("data/normalized_l2/bybit/BTCUSDT/2023-05-16.csv",),
+        minimum_local_proof="row-capped normalized Bybit orderBook CSV preserves seq/u/cts and passes l2-validate",
+    ),
+    LocalApiSource(
+        source_id="coinbase_public_level2",
+        name="Coinbase Public Level2 WebSocket",
+        priority=7,
+        data_gap=TRUE_L2_SMOKE_GAP,
+        access_tier="free_public_websocket",
+        requires_account=False,
+        requires_api_key=False,
+        credential_env=(),
+        best_for="no-key live L2 smoke capture when historical archives are unavailable",
+        not_for="historical 60-90 day model evidence or exchange-specific Bybit/OKX fill validation",
+        id_field="sequence_num",
+        fill_fields=(),
+        endpoints=("wss://advanced-trade-ws.coinbase.com level2",),
+        local_commands=(
+            "live-l2-capture --venue coinbase --symbol BTC-USD",
+            "l2-validate --source coinbase",
+        ),
+        docs_urls=(
+            "https://docs.cdp.coinbase.com/exchange/websocket-feed/overview",
+            "https://docs.cdp.coinbase.com/exchange/websocket-feed/channels",
+        ),
+        limitations=("live-only for this project; no free historical backfill claim",),
+        evidence_gates=(SEQUENCE_MODEL_GATE, L2_PRETRAINING_GATE),
+        target_artifacts=("data/live_l2/coinbase/BTC-USD/session.csv",),
+        minimum_local_proof="captured normalized level2 rows pass l2-validate with monitored sequence gaps",
     ),
     LocalApiSource(
         source_id="tardis_free_csv_samples",
         name="Tardis.dev Free CSV Samples",
-        priority=7,
+        priority=8,
         data_gap=TRUE_L2_SMOKE_GAP,
         access_tier="freemium_no_key_monthly_samples",
         requires_account=False,
@@ -188,11 +266,35 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "https://docs.tardis.dev/historical-data-details/bybit",
         ),
         limitations=("only first-day-of-month historical CSV samples are available without an API key",),
+        evidence_gates=(SEQUENCE_MODEL_GATE, L2_PRETRAINING_GATE),
+        target_artifacts=("data/normalized_l2/tardis/{exchange}/{symbol}/{sample-date}.csv",),
+        minimum_local_proof="sample incremental_book_L2 rows validate as schema/replay sanity data; not arbitrary history",
+    ),
+    LocalApiSource(
+        source_id="crypto_lake_free_samples",
+        name="Crypto Lake Free Data",
+        priority=9,
+        data_gap=TRUE_L2_SMOKE_GAP,
+        access_tier="freemium_python_api",
+        requires_account=False,
+        requires_api_key=False,
+        credential_env=(),
+        best_for="extra 20-level book/trade sample corpus for L2 parser and tensor sanity checks",
+        not_for="main replay-grade claim until source schema and sampling limits are inspected",
+        id_field="lakeapi_query",
+        fill_fields=(),
+        endpoints=("lakeapi free data",),
+        local_commands=("l2-validate --source crypto_lake",),
+        docs_urls=("https://crypto-lake.com/free-data/", "https://crypto-lake.com/data/"),
+        limitations=("free coverage is a sample corpus; inspect dates/symbols before treating it as study coverage",),
+        evidence_gates=(SEQUENCE_MODEL_GATE, L2_PRETRAINING_GATE),
+        target_artifacts=("data/normalized_l2/crypto_lake/{exchange}/{symbol}/{sample-date}.csv",),
+        minimum_local_proof="book_delta_v2 or compatible rows normalize and pass l2-validate on a bounded sample",
     ),
     LocalApiSource(
         source_id="binance_public_archives",
         name="Binance Public Data Archives",
-        priority=8,
+        priority=10,
         data_gap=QUOTE_TRADE_GAP,
         access_tier="free_public_archive",
         requires_account=False,
@@ -206,12 +308,27 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         local_commands=("download-range", "build-range"),
         docs_urls=("https://github.com/binance/binance-public-data", "https://data.binance.vision/"),
         limitations=("bookDepth archives are aggregate percentage-depth bands, not full price-level L2",),
+        evidence_gates=(CAPPED_60DAY_GATE, KELLY_VARIANCE_GATE),
+        target_artifacts=(
+            "results/expected_edge_local16_20230516_20230714/",
+            "results/kelly_candidate_search/",
+        ),
+        minimum_local_proof="bounded local16 quote/trade/depth-band study artifacts pass audit and variance gates",
     ),
 )
 
 
-def list_local_api_sources(*, data_gap: str | None = None) -> list[LocalApiSource]:
-    sources = [source for source in LOCAL_API_SOURCES if data_gap is None or source.data_gap == data_gap]
+def list_local_api_sources(
+    *,
+    data_gap: str | None = None,
+    evidence_gate: str | None = None,
+) -> list[LocalApiSource]:
+    sources = [
+        source
+        for source in LOCAL_API_SOURCES
+        if (data_gap is None or source.data_gap == data_gap)
+        and (evidence_gate is None or evidence_gate in source.evidence_gates)
+    ]
     return sorted(sources, key=lambda source: source.priority)
 
 
@@ -231,6 +348,9 @@ def format_local_api_sources_csv(sources: Iterable[LocalApiSource]) -> str:
         "local_commands",
         "docs_urls",
         "limitations",
+        "evidence_gates",
+        "target_artifacts",
+        "minimum_local_proof",
     ]
     handle = io.StringIO()
     writer = csv.DictWriter(handle, fieldnames=fields)
@@ -252,6 +372,9 @@ def format_local_api_sources_csv(sources: Iterable[LocalApiSource]) -> str:
                 "local_commands": " | ".join(source.local_commands),
                 "docs_urls": " ".join(source.docs_urls),
                 "limitations": " | ".join(source.limitations),
+                "evidence_gates": " ".join(source.evidence_gates),
+                "target_artifacts": " | ".join(source.target_artifacts),
+                "minimum_local_proof": source.minimum_local_proof,
             }
         )
     return handle.getvalue().strip("\r\n")
@@ -263,8 +386,8 @@ def format_local_api_sources_json(sources: Iterable[LocalApiSource]) -> str:
 
 def format_local_api_sources_markdown(sources: Iterable[LocalApiSource]) -> str:
     lines = [
-        "| Priority | Source | Gap | Access | API Key | Use | Main Limitation |",
-        "| --- | --- | --- | --- | --- | --- | --- |",
+        "| Priority | Source | Gap | Evidence Gate | Access | API Key | Use | Target Artifact | Main Limitation |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for source in sources:
         lines.append(
@@ -274,9 +397,11 @@ def format_local_api_sources_markdown(sources: Iterable[LocalApiSource]) -> str:
                     str(source.priority),
                     source.name,
                     source.data_gap,
+                    ", ".join(source.evidence_gates),
                     source.access_tier,
                     "yes" if source.requires_api_key else "no",
                     source.best_for,
+                    source.target_artifacts[0] if source.target_artifacts else "",
                     source.limitations[0] if source.limitations else "",
                 ]
             )

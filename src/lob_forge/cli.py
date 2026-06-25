@@ -102,6 +102,7 @@ from lob_forge.live_validation import (
     write_market_events_from_feature_csv,
 )
 from lob_forge.local_api_sources import (
+    LOCAL_EVIDENCE_GATES,
     PAPER_FILL_GAP,
     QUOTE_TRADE_GAP,
     TRUE_L2_SMOKE_GAP,
@@ -299,7 +300,11 @@ def main(argv: list[str] | None = None) -> int:
         help="Validate one historical L2 CSV/gzip/ZIP file schema.",
     )
     l2_validate_parser.add_argument("path")
-    l2_validate_parser.add_argument("--source", required=True, choices=["okx", "bybit", "tardis", "crypto_lake"])
+    l2_validate_parser.add_argument(
+        "--source",
+        required=True,
+        choices=["okx", "bybit", "binance", "coinbase", "tardis", "crypto_lake"],
+    )
     l2_validate_parser.add_argument("--max-rows", type=int, default=1000)
 
     l2_import_parser = subparsers.add_parser(
@@ -366,6 +371,11 @@ def main(argv: list[str] | None = None) -> int:
         "--gap",
         choices=[PAPER_FILL_GAP, TRUE_L2_SMOKE_GAP, QUOTE_TRADE_GAP],
         help="Filter to one local data gap.",
+    )
+    free_api_sources_parser.add_argument(
+        "--evidence-gate",
+        choices=LOCAL_EVIDENCE_GATES,
+        help="Filter to the unfinished evidence gate the source can help satisfy.",
     )
     free_api_sources_parser.add_argument("--format", choices=["markdown", "csv", "json"], default="markdown")
 
@@ -1337,7 +1347,7 @@ def _cmd_evidence_gates(args: argparse.Namespace) -> int:
 
 
 def _cmd_free_api_sources(args: argparse.Namespace) -> int:
-    sources = list_local_api_sources(data_gap=args.gap)
+    sources = list_local_api_sources(data_gap=args.gap, evidence_gate=args.evidence_gate)
     if args.format == "csv":
         print(format_local_api_sources_csv(sources))
     elif args.format == "json":

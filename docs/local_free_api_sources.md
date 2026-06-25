@@ -13,6 +13,8 @@ The machine-readable catalog is exposed by:
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources --format markdown
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources --gap paper_live_fill_validation --format json
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources --evidence-gate real_shadow_fill_validation --format json
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources --evidence-gate sequence_transformer_tcn_experiments --format csv
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources --gap true_l2_laptop_smoke --format csv
 ```
 
@@ -26,8 +28,20 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources --gap true_l2_
 | 4 | paper/live fills | Alpaca Paper | Useful importer/order-lifecycle fallback, but weak evidence for crypto queue behavior because paper fills omit queue position, market impact, information leakage, and latency slippage. |
 | 5 | true-L2 smoke | OKX Historical Market Data | Free public downloads include high-resolution L2 order book data from March 2023 onward. Use row caps locally. |
 | 6 | true-L2 smoke | Bybit historical orderBook | Public history-data orderBook archives plus V5 order-book fields `u`, `seq`, and `cts` make it useful for replay validation. |
-| 7 | true-L2 smoke | Tardis.dev CSV samples | Freemium first-day-of-month CSV samples need no API key and are useful as a cross-vendor schema sanity corpus. |
-| 8 | quote/trade/depth-band | Binance Public Data Archives | Free daily/monthly public archives are still the best local classical feature source, but `bookDepth` is aggregate percentage-band depth, not full L2. |
+| 7 | true-L2 smoke | Coinbase public level2 WebSocket | No-key live L2 capture path already supported by `live-l2-capture`; useful when public historical links are missing. |
+| 8 | true-L2 smoke | Tardis.dev CSV samples | Freemium first-day-of-month CSV samples need no API key and are useful as a cross-vendor schema sanity corpus. |
+| 9 | true-L2 smoke | Crypto Lake free samples | Extra 20-level book/trade sample corpus for parser and tensor sanity checks; inspect coverage before using it as study evidence. |
+| 10 | quote/trade/depth-band | Binance Public Data Archives | Free daily/monthly public archives are still the best local classical feature source, but `bookDepth` is aggregate percentage-band depth, not full L2. |
+
+## Gate Mapping
+
+| Evidence gate | Local source class | Minimum artifact |
+| --- | --- | --- |
+| `real_shadow_fill_validation` / `paper_live_fill_validation` | Bybit or OKX demo fills first, Binance/Alpaca fallback | raw provider export plus non-empty `results/shadow_validation/observed_fills.csv` merged into shadow decisions |
+| `sequence_transformer_tcn_experiments` | OKX/Bybit historical L2, Coinbase live L2, Tardis/Crypto Lake samples | row-capped normalized L2 CSV that passes `l2-validate` and model-readiness checks |
+| `self_supervised_l2_pretraining` | same true-L2 smoke sources | normalized L2 CSV plus pretraining smoke artifact whose `l2_path` matches the checked file |
+| `capped_60day_btc_eth` | Binance public archives | local16 study artifacts under `results/expected_edge_local16_20230516_20230714/` |
+| `kelly_variance_stability` | Binance public archives | audited Kelly candidate artifacts under `results/kelly_candidate_search/` |
 
 ## Local Fill Acquisition Loop
 
@@ -110,6 +124,22 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-import-manifest \
   --require-sequence
 ```
 
+For Coinbase live L2:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli live-l2-capture \
+  --venue coinbase \
+  --symbol BTC-USD \
+  --output data/live_l2/coinbase/BTC-USD/session.csv \
+  --seconds 60 \
+  --max-messages 1000 \
+  --reset-on-gap
+
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-validate \
+  data/live_l2/coinbase/BTC-USD/session.csv \
+  --source coinbase
+```
+
 The laptop definition of done is not "download everything." It is:
 
 - at least one row-capped OKX or Bybit normalized true-L2 file;
@@ -119,4 +149,4 @@ The laptop definition of done is not "download everything." It is:
 
 ## Current Call
 
-Use Bybit Demo Trading first for the observed-fill gap, then OKX Demo Trading as a cross-venue check. Use OKX or Bybit public historical L2 for local smoke imports. Use Tardis.dev only as a freemium schema sanity corpus unless a paid API key is available. Use Binance Public Data for classical quote/trade/depth-band experiments, not for full L2 replay claims.
+Use Bybit Demo Trading first for the observed-fill gap, then OKX Demo Trading as a cross-venue check. Use OKX or Bybit public historical L2 first for local smoke imports, Coinbase live level2 when historical download discovery fails, and Tardis.dev or Crypto Lake as sample sanity corpora. Use Binance Public Data for classical quote/trade/depth-band experiments, not for full L2 replay claims.

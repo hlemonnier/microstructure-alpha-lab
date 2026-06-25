@@ -2,6 +2,13 @@
 
 This document is the implementation companion to `src/lob_forge/data_sources.py`.
 It separates replay-grade inputs from useful but weaker sample or feature sources.
+For the local free/freemium acquisition plan tied to evidence gates, use:
+
+```bash
+PYTHONPATH=src python3 -m lob_forge.cli free-api-sources \
+  --evidence-gate sequence_transformer_tcn_experiments \
+  --format markdown
+```
 
 ## Priority
 
