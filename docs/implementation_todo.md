@@ -66,6 +66,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add CSV-driven shadow/paper fill validation CLI that joins simulated and observed fills by `decision_id`.
 - [x] Add OOS edge-model shadow-decision export and feature-to-market-event conversion for offline fill-validation dry runs.
 - [x] Add observed paper/live fill import CLI that aggregates partial fills by `decision_id` or client order ID.
+- [x] Add free/freemium paper-demo API source priority and raw-fill normalization for Bybit, OKX, Binance Spot Testnet, and Alpaca Paper exports.
 - [x] Add observed-fill template generation, ignore blank templates during import, and enforce default shadow-fill error thresholds in evidence gates.
 - [ ] Run simulated-vs-paper/live fill validation on real shadow or paper observations.
 

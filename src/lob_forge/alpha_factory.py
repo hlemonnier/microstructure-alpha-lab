@@ -341,7 +341,7 @@ def format_result_audit_markdown(audit: ResultAudit, verdict: AcceptanceVerdict)
         f"- Median fold profit factor: {_fmt(audit.median_fold_profit_factor)}",
         f"- Max fold drawdown: {_fmt(audit.max_fold_drawdown_pnl)} raw PnL units",
         f"- Mean fold Sharpe per trade: {_fmt(audit.mean_fold_sharpe_per_trade)}",
-        f"- Fold-bootstrap mean net PnL 5/95% interval: {_fmt(audit.bootstrap_mean_net_pnl_lower_5pct)} / {_fmt(audit.bootstrap_mean_net_pnl_upper_95pct)}",
+        f"- Fold-bootstrap mean net PnL 90% central interval (5/95%): {_fmt(audit.bootstrap_mean_net_pnl_lower_5pct)} / {_fmt(audit.bootstrap_mean_net_pnl_upper_95pct)}",
         f"- One-sided HAC/Newey-West z p-value for mean <= 0: {_fmt(audit.one_sided_p_value_mean_le_zero)}",
         "",
         "## Reasons",

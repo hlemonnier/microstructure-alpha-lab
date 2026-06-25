@@ -78,7 +78,7 @@ def test_audit_result_artifact_uses_seeded_5_95_bootstrap_and_hac_wording(tmp_pa
     assert calls == [(123, 0.90)]
     assert audit.bootstrap_mean_net_pnl_lower_5pct == 1.0
     assert audit.bootstrap_mean_net_pnl_upper_95pct == 2.0
-    assert "5/95% interval" in markdown
+    assert "90% central interval (5/95%)" in markdown
     assert "HAC/Newey-West z p-value" in markdown
 
 
@@ -164,7 +164,7 @@ def test_result_audit_markdown_names_hac_and_interval_correctly(tmp_path: Path) 
 
     markdown = format_result_audit_markdown(audit, verdict)
 
-    assert "95% interval" in markdown
+    assert "90% central interval (5/95%)" in markdown
     assert "Inference grain: fold_summary" in markdown
     assert "HAC/Newey-West" in markdown
     assert "One-sided normal p-value" not in markdown
