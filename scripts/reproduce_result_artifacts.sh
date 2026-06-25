@@ -12,6 +12,7 @@ else
   PYTHON_BIN="${PYTHON_BIN:-python3}"
 fi
 source scripts/holdout_manifest.sh
+source scripts/source_provenance.sh
 
 OUT_DIR="${OUT_DIR:-results/current}"
 mkdir -p "$OUT_DIR"
@@ -23,7 +24,7 @@ fi
 trap 'rmdir "$LOCK_DIR"' EXIT
 
 LEDGER="$OUT_DIR/experiment_ledger.jsonl"
-GIT_REV="$(git rev-parse HEAD 2>/dev/null || printf 'package-no-git')"
+GIT_REV="$(source_git_rev)"
 
 BTC_2D="data/processed/maker_horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv"
 ETH_2D="data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv"

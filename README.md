@@ -39,7 +39,7 @@ dependencies:
 Current fast verification in this checkout:
 
 ```text
-passed 240 direct test functions
+passed 244 direct test functions
 ```
 
 Reduced fixture-only artifacts:
