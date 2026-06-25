@@ -1,10 +1,14 @@
 import asyncio
 import csv
 import json
+import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 from lob_forge.live_collectors import (
+    DEFAULT_WEBSOCKET_MAX_SIZE_BYTES,
     LiveL2SequenceTracker,
+    _default_websocket_factory,
     capture_live_l2,
     build_snapshot_url,
     build_subscribe_message,
@@ -42,6 +46,24 @@ def test_live_collector_specs_expose_sequence_fields() -> None:
     assert "u" in bybit.sequence_fields
     assert "seq" in bybit.sequence_fields
     assert "coinbase" in markdown
+
+
+def test_default_websocket_factory_allows_large_l2_snapshots() -> None:
+    calls = []
+    fake_module = SimpleNamespace(connect=lambda url, **kwargs: calls.append((url, kwargs)) or "context")
+    previous = sys.modules.get("websockets")
+    sys.modules["websockets"] = fake_module
+    try:
+        result = _default_websocket_factory("wss://example.test")
+    finally:
+        if previous is None:
+            del sys.modules["websockets"]
+        else:
+            sys.modules["websockets"] = previous
+
+    assert result == "context"
+    assert calls == [("wss://example.test", {"max_size": DEFAULT_WEBSOCKET_MAX_SIZE_BYTES})]
+    assert DEFAULT_WEBSOCKET_MAX_SIZE_BYTES >= 16 * 1024 * 1024
 
 
 def test_binance_live_snapshot_and_delta_normalize_to_l2_rows() -> None:

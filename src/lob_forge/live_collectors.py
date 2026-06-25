@@ -16,6 +16,9 @@ from lob_forge.data_sources import NormalizedL2Row
 from lob_forge.l2_storage import NORMALIZED_L2_COLUMNS
 
 
+DEFAULT_WEBSOCKET_MAX_SIZE_BYTES = 16 * 1024 * 1024
+
+
 @dataclass(frozen=True)
 class LiveCollectorSpec:
     venue: str
@@ -669,4 +672,4 @@ def _default_websocket_factory(url: str):
         import websockets
     except ImportError as exc:
         raise RuntimeError("live L2 capture requires websockets; install .[research]") from exc
-    return websockets.connect(url)
+    return websockets.connect(url, max_size=DEFAULT_WEBSOCKET_MAX_SIZE_BYTES)
