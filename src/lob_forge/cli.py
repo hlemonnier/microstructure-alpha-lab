@@ -101,6 +101,11 @@ from lob_forge.live_validation import (
     write_observed_fill_template,
     write_market_events_from_feature_csv,
 )
+from lob_forge.observed_fill_fetch import (
+    SUPPORTED_OBSERVED_FILL_FETCH_PROVIDERS,
+    fetch_observed_fill_export,
+    format_observed_fill_fetch_report,
+)
 from lob_forge.local_api_sources import (
     LOCAL_EVIDENCE_GATES,
     PAPER_FILL_GAP,
@@ -440,6 +445,32 @@ def main(argv: list[str] | None = None) -> int:
     )
     normalize_observed_fills_parser.add_argument("--output", required=True)
     normalize_observed_fills_parser.add_argument("--format", choices=["text", "csv"], default="text")
+
+    fetch_observed_fills_parser = subparsers.add_parser(
+        "fetch-observed-fills",
+        help="Fetch raw Bybit/OKX demo fill history from free demo APIs.",
+    )
+    fetch_observed_fills_parser.add_argument(
+        "--provider",
+        required=True,
+        choices=SUPPORTED_OBSERVED_FILL_FETCH_PROVIDERS,
+        help="Demo API provider.",
+    )
+    fetch_observed_fills_parser.add_argument("--output", required=True)
+    fetch_observed_fills_parser.add_argument(
+        "--symbol",
+        help="Bybit symbol or OKX instId, for example BTCUSDT or BTC-USDT-SWAP.",
+    )
+    fetch_observed_fills_parser.add_argument("--start-time-ms", type=int)
+    fetch_observed_fills_parser.add_argument("--end-time-ms", type=int)
+    fetch_observed_fills_parser.add_argument("--limit", type=int, default=50)
+    fetch_observed_fills_parser.add_argument("--category", default="linear", help="Bybit category.")
+    fetch_observed_fills_parser.add_argument("--inst-type", default="SWAP", help="OKX instrument type.")
+    fetch_observed_fills_parser.add_argument("--cursor", help="Bybit nextPageCursor.")
+    fetch_observed_fills_parser.add_argument("--base-url", help="Override provider REST base URL.")
+    fetch_observed_fills_parser.add_argument("--recv-window", type=int, default=5000)
+    fetch_observed_fills_parser.add_argument("--timeout-seconds", type=float, default=30.0)
+    fetch_observed_fills_parser.add_argument("--format", choices=["text", "csv"], default="text")
 
     observed_fill_template_parser = subparsers.add_parser(
         "observed-fill-template",
@@ -976,6 +1007,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_import_observed_fills(args)
     if args.command == "normalize-observed-fills":
         return _cmd_normalize_observed_fills(args)
+    if args.command == "fetch-observed-fills":
+        return _cmd_fetch_observed_fills(args)
     if args.command == "observed-fill-template":
         return _cmd_observed_fill_template(args)
     if args.command == "simulate-shadow-fills":
@@ -1421,6 +1454,25 @@ def _cmd_normalize_observed_fills(args: argparse.Namespace) -> int:
         output_path=Path(args.output),
     )
     print(format_observed_fill_normalization_report(report, output_format=args.format))
+    return 0
+
+
+def _cmd_fetch_observed_fills(args: argparse.Namespace) -> int:
+    report = fetch_observed_fill_export(
+        provider=args.provider,
+        output_path=Path(args.output),
+        symbol=args.symbol,
+        start_time_ms=args.start_time_ms,
+        end_time_ms=args.end_time_ms,
+        limit=args.limit,
+        category=args.category,
+        inst_type=args.inst_type,
+        cursor=args.cursor,
+        base_url=args.base_url,
+        recv_window=args.recv_window,
+        timeout_seconds=args.timeout_seconds,
+    )
+    print(format_observed_fill_fetch_report(report, output_format=args.format))
     return 0
 
 

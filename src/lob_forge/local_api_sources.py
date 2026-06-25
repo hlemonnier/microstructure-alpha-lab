@@ -66,7 +66,10 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         id_field="orderLinkId",
         fill_fields=("execPrice", "execQty", "execPnl", "isMaker", "execType"),
         endpoints=("/v5/order/create", "/v5/execution/list", "wss://stream-demo.bybit.com/v5/private"),
-        local_commands=("normalize-observed-fills --provider bybit",),
+        local_commands=(
+            "fetch-observed-fills --provider bybit",
+            "normalize-observed-fills --provider bybit",
+        ),
         docs_urls=(
             "https://bybit-exchange.github.io/docs/v5/demo",
             "https://bybit-exchange.github.io/docs/v5/order/execution",
@@ -101,7 +104,10 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "/api/v5/trade/fills-history",
             "demo private WebSocket order channel",
         ),
-        local_commands=("normalize-observed-fills --provider okx",),
+        local_commands=(
+            "fetch-observed-fills --provider okx",
+            "normalize-observed-fills --provider okx",
+        ),
         docs_urls=("https://my.okx.com/docs-v5/en/",),
         limitations=(
             "requires x-simulated-trading: 1 with demo API credentials",

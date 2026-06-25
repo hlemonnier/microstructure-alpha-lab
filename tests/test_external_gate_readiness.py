@@ -35,6 +35,7 @@ def test_external_readiness_reports_missing_modal_and_external_evidence(tmp_path
     assert checks["full_cloud_study"].status == "not_ready"
     assert checks["paper_live_fill_validation"].status == "not_ready"
     assert "template_exists=0" in checks["paper_live_fill_validation"].evidence
+    assert "fetch-observed-fills" in checks["paper_live_fill_validation"].next_action
     assert "check=modal_cli" in text
 
 

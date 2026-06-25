@@ -369,9 +369,9 @@ def _shadow_fill_readiness_check(
     )
     if len(observed) < min_shadow_observations:
         next_action = (
-            "generate observed-fill-template and import real paper/live fills"
+            "generate observed-fill-template, then fetch Bybit/OKX demo fills with fetch-observed-fills and import them"
             if not observed_template_path.exists()
-            else "populate/import real paper/live fills; blank templates do not count as evidence"
+            else "fetch Bybit/OKX demo fills with fetch-observed-fills, normalize/import them; blank templates do not count"
         )
         return ReadinessCheck("paper_live_fill_validation", "not_ready", False, evidence, next_action)
     if report.passed:

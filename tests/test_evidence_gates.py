@@ -44,6 +44,8 @@ def test_evidence_gates_report_missing_remaining_artifacts(tmp_path: Path) -> No
     assert "passed=0" in text
     assert '"passed": false' in json_text
     assert any(gate.status in {"missing", "not_ready"} for gate in report.gates)
+    shadow_gate = next(gate for gate in report.gates if gate.gate_id == "real_shadow_fill_validation")
+    assert "fetch-observed-fills" in shadow_gate.next_action
 
 
 def test_evidence_gate_csv_format_quotes_commas(tmp_path: Path) -> None:

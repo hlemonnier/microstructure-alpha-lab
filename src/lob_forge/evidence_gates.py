@@ -241,7 +241,7 @@ def _shadow_gate(
             "missing",
             False,
             f"simulated_exists={int(simulated_path.exists())} shadow_exists={int(shadow_path.exists())}",
-            "run a shadow/paper session, import observed fills, then run validate-shadow-fills",
+            "run a shadow/paper session, fetch Bybit/OKX demo fills with fetch-observed-fills, import them, then validate",
         )
     try:
         decisions = read_shadow_decisions(shadow_path)
@@ -264,7 +264,7 @@ def _shadow_gate(
             "failed",
             False,
             repr(exc),
-            "fix the shadow/simulated fill files, import observed fills, and rerun validate-shadow-fills",
+            "fix shadow/simulated files, fetch/normalize/import demo fills, and rerun validate-shadow-fills",
         )
     if len(observed) < min_shadow_observations:
         evidence = f"observed_shadow_rows={len(observed)} required={min_shadow_observations} matched={report.matched_observations} validation_passed={int(report.passed)}"
@@ -274,7 +274,7 @@ def _shadow_gate(
             "not_ready",
             False,
             evidence,
-            "collect more real paper/live fill observations",
+            "fetch Bybit/OKX demo fills with fetch-observed-fills, normalize/import them, then rerun validate-shadow-fills",
         )
     evidence = (
         f"observed_shadow_rows={len(observed)} matched={report.matched_observations} "

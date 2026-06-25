@@ -1,6 +1,6 @@
 # Paper And Demo Fill Sources
 
-Date checked: 2026-06-25.
+Date checked: 2026-06-26.
 
 This runbook covers the local, non-GPU path for the remaining paper/live fill validation gap. The objective is not to prove profitability; it is to collect real paper/demo execution observations that can be joined back to `decision_id` and compared against the repository's simulated fill predictions.
 
@@ -76,6 +76,24 @@ For OKX demo REST requests, include `x-simulated-trading: 1`.
 After a paper/demo session, save the raw API response as `.json`, `.jsonl`, or `.csv`, then normalize it:
 
 ```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
+  --provider bybit \
+  --symbol BTCUSDT \
+  --start-time-ms 1700000000000 \
+  --end-time-ms 1700000600000 \
+  --output results/shadow_validation/raw_bybit_executions.json
+
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
+  --provider okx \
+  --symbol BTC-USDT-SWAP \
+  --start-time-ms 1700000000000 \
+  --end-time-ms 1700000600000 \
+  --output results/shadow_validation/raw_okx_fills.json
+```
+
+The fetch command uses `BYBIT_DEMO_API_KEY`/`BYBIT_DEMO_API_SECRET` for Bybit and `OKX_DEMO_API_KEY`/`OKX_DEMO_API_SECRET`/`OKX_DEMO_API_PASSPHRASE` for OKX. It writes only the raw provider response; the normalizer remains the source of the canonical import schema.
+
+```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
   --provider bybit \
   --input results/shadow_validation/raw_bybit_executions.json \
@@ -112,6 +130,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli validate-shadow-fills \
 - Bybit and OKX transaction-history exports usually contain only actual fills; unfilled paper orders require an explicit terminal no-fill row if they should count as observed no-fill evidence.
 - Binance USD-M Futures Testnet `ORDER_TRADE_UPDATE` rows are converted when they contain positive last-fill quantity or terminal unfilled status.
 - Binance `executionReport` rows are only converted when they contain a positive last execution quantity or a terminal unfilled status.
+- Binance testnet remains a stream-first fallback for this project: keep `ORDER_TRADE_UPDATE` or `executionReport` user-data messages with the client ID, then normalize those logs. Do not substitute a REST trade list that cannot be joined back to `decision_id`.
 - Alpaca is useful for API plumbing but weak for queue-position inference; do not use it as the main argument that passive crypto execution is validated.
 - Coinbase Advanced Trade sandbox is not counted here because its sandbox responses are static and mocked, not real paper fills.
 

@@ -1,6 +1,6 @@
 # Local Free/Freemium API Source Plan
 
-Date checked: 2026-06-25.
+Date checked: 2026-06-26.
 
 This page covers the second-part data gap: sources that can be used locally on an M1 Pro with 16 GB RAM. It does not claim that the full 60-90 day confirmatory matrix is laptop work. That remains a high-RAM/cloud run. The local objective is to collect or normalize the data needed to unblock:
 
@@ -69,6 +69,24 @@ Alpaca: client_order_id
 For OKX demo, send requests to the documented OKX REST/WebSocket demo URLs and include `x-simulated-trading: 1` on REST requests.
 
 4. Save the raw provider response under `results/shadow_validation/`.
+   The Bybit and OKX demo REST pulls are executable:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
+  --provider bybit \
+  --symbol BTCUSDT \
+  --start-time-ms 1700000000000 \
+  --end-time-ms 1700000600000 \
+  --output results/shadow_validation/raw_bybit_executions.json
+
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
+  --provider okx \
+  --symbol BTC-USDT-SWAP \
+  --start-time-ms 1700000000000 \
+  --end-time-ms 1700000600000 \
+  --output results/shadow_validation/raw_okx_fills.json
+```
+
 5. Normalize, import, and validate:
 
 ```bash
