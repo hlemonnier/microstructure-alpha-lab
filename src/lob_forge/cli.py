@@ -910,6 +910,14 @@ def main(argv: list[str] | None = None) -> int:
     sequence_experiment_parser.add_argument("--checkpoint-path")
     sequence_experiment_parser.add_argument("--resume-from-checkpoint", action="store_true")
     sequence_experiment_parser.add_argument("--predictions-output")
+    sequence_experiment_parser.add_argument(
+        "--holdout-manifest",
+        help="Verified holdout manifest for the source L2 CSV. When supplied, training uses a filtered development L2 CSV.",
+    )
+    sequence_experiment_parser.add_argument(
+        "--development-l2-output",
+        help="Optional output path for the manifest-filtered development L2 CSV.",
+    )
     sequence_experiment_parser.add_argument("--economic-target-notional", type=float, default=100.0)
     sequence_experiment_parser.add_argument("--economic-taker-fee-bps", type=float, default=1.0)
     sequence_experiment_parser.add_argument("--economic-slippage-bps", type=float, default=0.0)
@@ -2069,6 +2077,8 @@ def _cmd_l2_sequence_experiment(args: argparse.Namespace) -> int:
             checkpoint_path=args.checkpoint_path,
             resume_from_checkpoint=args.resume_from_checkpoint,
             prediction_output_path=args.predictions_output,
+            holdout_manifest_path=args.holdout_manifest,
+            development_l2_output_path=args.development_l2_output,
             economic_target_notional=args.economic_target_notional,
             economic_taker_fee_bps=args.economic_taker_fee_bps,
             economic_slippage_bps=args.economic_slippage_bps,

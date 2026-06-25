@@ -162,7 +162,7 @@ The gate checks:
 - no detected sequence gaps or crossed-book states,
 - true crypto L2 rather than FI-2010 unless `--allow-fi2010` is explicitly set for a sanity benchmark.
 
-Once the readiness gate passes on a Torch-capable machine, run the actual L2 sequence experiments:
+For serious L2 sequence experiments, create a holdout manifest against the source L2 CSV first and pass it to the runner. The command verifies the manifest, writes a filtered development L2 CSV, and trains only on the development rows:
 
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli l2-sequence-experiment \
@@ -170,6 +170,8 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-sequence-experiment \
   --baseline-audit results/current/btc_full_day_edge_zero_fee_audit.csv \
   --l2 data/normalized_l2/bybit/BTCUSDT/2023-05-16.csv \
   --output results/model_experiments/sequence_transformer_results.csv \
+  --holdout-manifest results/holdout_manifests/bybit_l2_sequence_holdout.json \
+  --development-l2-output results/model_experiments/development_l2/sequence_transformer_development_l2.csv \
   --checkpoint-path results/model_experiments/checkpoints/sequence_transformer.pt \
   --predictions-output results/model_experiments/predictions/sequence_transformer_predictions.csv \
   --device auto \
@@ -182,6 +184,8 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-sequence-experiment \
   --baseline-audit results/current/btc_full_day_edge_zero_fee_audit.csv \
   --l2 data/normalized_l2/bybit/BTCUSDT/2023-05-16.csv \
   --output results/model_experiments/sequence_tcn_results.csv \
+  --holdout-manifest results/holdout_manifests/bybit_l2_sequence_holdout.json \
+  --development-l2-output results/model_experiments/development_l2/sequence_tcn_development_l2.csv \
   --checkpoint-path results/model_experiments/checkpoints/sequence_tcn.pt \
   --predictions-output results/model_experiments/predictions/sequence_tcn_predictions.csv \
   --device auto \
@@ -190,7 +194,7 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-sequence-experiment \
   --min-l2-rows 1000
 ```
 
-The aggregate evidence gate now inspects these artifact rows; they must report the expected `model_name`, selected `l2_path`, `readiness_passed=1`, `dependency_available=1`, and `pipeline_completed=1`. Sequence artifacts also record minibatch size, early-stopping patience, best epoch, selected device, class weighting, scheduler gamma, checkpoint path, prediction-export path, Brier/ECE calibration metrics, confusion matrices, and stateful test-set economic smoke fields. `acceptance_passed` remains separate and should only become true when an explicit predictive/economic threshold is defined and met.
+The aggregate evidence gate now inspects these artifact rows; they must report the expected `model_name`, selected `l2_path`, `readiness_passed=1`, `dependency_available=1`, and `pipeline_completed=1`. Sequence artifacts also record holdout manifest path/hash, the filtered development L2 path, holdout row counts, minibatch size, early-stopping patience, best epoch, selected device, class weighting, scheduler gamma, checkpoint path, prediction-export path, Brier/ECE calibration metrics, confusion matrices, and stateful test-set economic smoke fields. `acceptance_passed` remains separate and should only become true when an explicit predictive/economic threshold is defined and met.
 
 The dependency-free self-supervised smoke artifact is generated with:
 

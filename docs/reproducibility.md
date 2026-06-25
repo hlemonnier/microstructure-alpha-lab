@@ -69,6 +69,19 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-sequence-experiment \
   --max-rows 100 --max-snapshots 20 --min-fold-count 1 --min-l2-rows 1
 ```
 
+For a serious neural L2 run, do not train against the full source CSV directly. Create a holdout manifest for the L2 source, then pass it through the sequence runner so a filtered development L2 CSV is written and used for training:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli create-holdout-manifest \
+  data/normalized_l2/bybit/BTCUSDT/2023-05-16.csv \
+  --output results/holdout_manifests/bybit_l2_sequence_holdout.json \
+  --split-column exchange_timestamp \
+  --holdout-values <held-out-exchange-timestamp-or-session>
+
+HOLDOUT_MANIFEST_PATH=results/holdout_manifests/bybit_l2_sequence_holdout.json \
+SEEDS=7,11,13 DRY_RUN=0 RESUME=0 bash scripts/run_l2_sequence_experiments.sh
+```
+
 Plan-only cloud/full study:
 
 ```bash

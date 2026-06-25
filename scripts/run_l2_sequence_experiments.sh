@@ -21,6 +21,8 @@ RESUME="${RESUME:-1}"
 RESUME_CHECKPOINT="${RESUME_CHECKPOINT:-$RESUME}"
 CHECKPOINT_DIR="${CHECKPOINT_DIR:-$OUT_DIR/checkpoints}"
 PREDICTION_DIR="${PREDICTION_DIR:-$OUT_DIR/predictions}"
+HOLDOUT_MANIFEST_PATH="${HOLDOUT_MANIFEST_PATH:-${HOLDOUT_MANIFEST:-}}"
+DEVELOPMENT_L2_DIR="${DEVELOPMENT_L2_DIR:-$OUT_DIR/development_l2}"
 
 MIN_FOLD_COUNT="${MIN_FOLD_COUNT:-20}"
 MIN_L2_ROWS="${MIN_L2_ROWS:-1000}"
@@ -44,6 +46,9 @@ SEED="${SEED:-7}"
 SEEDS="${SEEDS:-$SEED}"
 
 mkdir -p "$OUT_DIR" "$CHECKPOINT_DIR" "$PREDICTION_DIR"
+if [[ -n "$HOLDOUT_MANIFEST_PATH" ]]; then
+  mkdir -p "$DEVELOPMENT_L2_DIR"
+fi
 normalized_seeds="${SEEDS//,/ }"
 read -r -a seed_values <<< "$normalized_seeds"
 seed_count="${#seed_values[@]}"
@@ -51,6 +56,9 @@ seed_count="${#seed_values[@]}"
 printf 'models="%s"\n' "$MODELS"
 printf 'baseline_audit=%s l2=%s out_dir=%s dry_run=%s resume=%s resume_checkpoint=%s seeds="%s"\n' \
   "$BASELINE_AUDIT_PATH" "$L2_PATH" "$OUT_DIR" "$DRY_RUN" "$RESUME" "$RESUME_CHECKPOINT" "$SEEDS"
+if [[ -n "$HOLDOUT_MANIFEST_PATH" ]]; then
+  printf 'holdout_manifest=%s development_l2_dir=%s\n' "$HOLDOUT_MANIFEST_PATH" "$DEVELOPMENT_L2_DIR"
+fi
 printf 'sequence_params=depth=%s window=%s label_horizon=%s min_fold_count=%s min_l2_rows=%s epochs=%s batch_size=%s patience=%s device=%s class_weighting=%s lr_gamma=%s\n' \
   "$DEPTH" "$WINDOW" "$LABEL_HORIZON" "$MIN_FOLD_COUNT" "$MIN_L2_ROWS" "$EPOCHS" "$BATCH_SIZE" "$EARLY_STOPPING_PATIENCE" "$DEVICE" "$CLASS_WEIGHTING" "$LR_SCHEDULER_GAMMA"
 
@@ -72,6 +80,7 @@ for model in $MODELS; do
     output="$OUT_DIR/${model}${suffix}_results.csv"
     checkpoint="$CHECKPOINT_DIR/${model}${suffix}.pt"
     predictions="$PREDICTION_DIR/${model}${suffix}_predictions.csv"
+    development_l2="$DEVELOPMENT_L2_DIR/${model}${suffix}_development_l2.csv"
     if [[ "$RESUME" == "1" && -s "$output" ]]; then
       printf 'skip existing model=%s seed=%s output=%s\n' "$model" "$seed" "$output"
       continue
@@ -105,6 +114,9 @@ for model in $MODELS; do
       --min-l2-rows "$MIN_L2_ROWS"
       --seed "$seed"
     )
+    if [[ -n "$HOLDOUT_MANIFEST_PATH" ]]; then
+      command+=(--holdout-manifest "$HOLDOUT_MANIFEST_PATH" --development-l2-output "$development_l2")
+    fi
     if [[ "$RESUME_CHECKPOINT" == "1" && -s "$checkpoint" ]]; then
       command+=(--resume-from-checkpoint)
     fi

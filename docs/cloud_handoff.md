@@ -122,6 +122,13 @@ Execute them deliberately on a Torch-capable environment:
 DRY_RUN=0 bash scripts/run_l2_sequence_experiments.sh
 ```
 
+For manifest-filtered neural runs, set `HOLDOUT_MANIFEST_PATH` before launching the same runner. It will pass `--holdout-manifest`, write per-model development L2 CSVs under `results/model_experiments/development_l2/`, and record the manifest hash plus excluded-row counts in each result artifact:
+
+```bash
+HOLDOUT_MANIFEST_PATH=results/holdout_manifests/bybit_l2_sequence_holdout.json \
+DRY_RUN=0 bash scripts/run_l2_sequence_experiments.sh
+```
+
 The bootstrap wrapper exposes the same path:
 
 ```bash

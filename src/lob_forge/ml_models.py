@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from lob_forge.execution_sim import MarketEvent, SignalEvent, StatefulExecutionConfig, simulate_stateful_execution
+from lob_forge.holdout import read_holdout_manifest, sha256_file, verify_holdout_manifest_file, write_development_csv
 
 
 SKLEARN_MODELS = {
@@ -127,6 +128,13 @@ class L2SequenceExperimentReport:
     l2_path: Path
     baseline_audit_path: Path
     output_path: Path
+    holdout_manifest_path: str
+    holdout_manifest_sha256: str
+    holdout_manifest_verified: bool
+    development_l2_path: str
+    source_rows_before_holdout_filter: int
+    development_rows_after_holdout_filter: int
+    holdout_rows_excluded: int
     readiness_passed: bool
     dependency_available: bool
     depth: int
@@ -182,6 +190,17 @@ class L2SequenceExperimentReport:
 class SequenceStandardizer:
     means: tuple[float, ...]
     stds: tuple[float, ...]
+
+
+@dataclass(frozen=True)
+class SequenceHoldoutMetadata:
+    holdout_manifest_path: str = ""
+    holdout_manifest_sha256: str = ""
+    holdout_manifest_verified: bool = False
+    development_l2_path: str = ""
+    source_rows_before_holdout_filter: int = 0
+    development_rows_after_holdout_filter: int = 0
+    holdout_rows_excluded: int = 0
 
 
 @dataclass(frozen=True)
@@ -636,6 +655,37 @@ def run_l2_masked_pretraining_smoke(
     return report
 
 
+def _prepare_sequence_l2_training_source(
+    *,
+    source_l2_path: Path,
+    output_path: Path,
+    holdout_manifest_path: Path | str | None,
+    development_l2_output_path: Path | str | None,
+) -> tuple[Path, SequenceHoldoutMetadata]:
+    if holdout_manifest_path is None:
+        return source_l2_path, SequenceHoldoutMetadata()
+
+    manifest_path = Path(holdout_manifest_path)
+    if not verify_holdout_manifest_file(manifest_path):
+        raise ValueError(f"holdout manifest verification failed: {manifest_path}")
+    manifest = read_holdout_manifest(manifest_path)
+    development_path = (
+        Path(development_l2_output_path)
+        if development_l2_output_path is not None
+        else output_path.with_name(output_path.stem + "_development_l2.csv")
+    )
+    development = write_development_csv(source_l2_path, manifest, development_path)
+    return development.path, SequenceHoldoutMetadata(
+        holdout_manifest_path=str(manifest_path),
+        holdout_manifest_sha256=sha256_file(manifest_path),
+        holdout_manifest_verified=True,
+        development_l2_path=str(development.path),
+        source_rows_before_holdout_filter=development.source_rows,
+        development_rows_after_holdout_filter=development.development_rows,
+        holdout_rows_excluded=development.excluded_holdout_rows,
+    )
+
+
 def run_l2_torch_sequence_experiment(
     *,
     model_name: str,
@@ -661,6 +711,8 @@ def run_l2_torch_sequence_experiment(
     checkpoint_path: Path | str | None = None,
     resume_from_checkpoint: bool = False,
     prediction_output_path: Path | str | None = None,
+    holdout_manifest_path: Path | str | None = None,
+    development_l2_output_path: Path | str | None = None,
     economic_target_notional: float = 100.0,
     economic_taker_fee_bps: float = 1.0,
     economic_slippage_bps: float = 0.0,
@@ -690,13 +742,19 @@ def run_l2_torch_sequence_experiment(
     if economic_target_notional <= 0.0:
         raise ValueError("economic_target_notional must be positive")
 
-    l2_path = Path(l2_path)
+    source_l2_path = Path(l2_path)
     baseline_audit_path = Path(baseline_audit_path)
     output_path = Path(output_path)
+    training_l2_path, holdout_metadata = _prepare_sequence_l2_training_source(
+        source_l2_path=source_l2_path,
+        output_path=output_path,
+        holdout_manifest_path=holdout_manifest_path,
+        development_l2_output_path=development_l2_output_path,
+    )
     readiness = evaluate_model_readiness(
         model_name=model_name,
         baseline_audit_path=baseline_audit_path,
-        l2_path=l2_path,
+        l2_path=training_l2_path,
         min_fold_count=min_fold_count,
         min_l2_rows=min_l2_rows,
         require_delta=True,
@@ -708,7 +766,7 @@ def run_l2_torch_sequence_experiment(
         raise RuntimeError(f"model readiness gate failed for {model_name}: {reasons}")
 
     snapshots, rows_checked = _load_l2_top_n_vectors(
-        l2_path,
+        training_l2_path,
         depth=depth,
         max_rows=max_rows,
         max_snapshots=max_snapshots,
@@ -891,9 +949,16 @@ def run_l2_torch_sequence_experiment(
     )
     report = L2SequenceExperimentReport(
         model_name=model_name,
-        l2_path=l2_path,
+        l2_path=source_l2_path,
         baseline_audit_path=baseline_audit_path,
         output_path=output_path,
+        holdout_manifest_path=holdout_metadata.holdout_manifest_path,
+        holdout_manifest_sha256=holdout_metadata.holdout_manifest_sha256,
+        holdout_manifest_verified=holdout_metadata.holdout_manifest_verified,
+        development_l2_path=holdout_metadata.development_l2_path,
+        source_rows_before_holdout_filter=holdout_metadata.source_rows_before_holdout_filter,
+        development_rows_after_holdout_filter=holdout_metadata.development_rows_after_holdout_filter,
+        holdout_rows_excluded=holdout_metadata.holdout_rows_excluded,
         readiness_passed=readiness.passed,
         dependency_available=readiness.dependency_available,
         depth=depth,
@@ -951,6 +1016,13 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         "model_name",
         "l2_path",
         "baseline_audit_path",
+        "holdout_manifest_path",
+        "holdout_manifest_sha256",
+        "holdout_manifest_verified",
+        "development_l2_path",
+        "source_rows_before_holdout_filter",
+        "development_rows_after_holdout_filter",
+        "holdout_rows_excluded",
         "readiness_passed",
         "dependency_available",
         "depth",
@@ -1005,6 +1077,13 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
                 "model_name": report.model_name,
                 "l2_path": _display_path(report.l2_path),
                 "baseline_audit_path": _display_path(report.baseline_audit_path),
+                "holdout_manifest_path": report.holdout_manifest_path,
+                "holdout_manifest_sha256": report.holdout_manifest_sha256,
+                "holdout_manifest_verified": int(report.holdout_manifest_verified),
+                "development_l2_path": report.development_l2_path,
+                "source_rows_before_holdout_filter": report.source_rows_before_holdout_filter,
+                "development_rows_after_holdout_filter": report.development_rows_after_holdout_filter,
+                "holdout_rows_excluded": report.holdout_rows_excluded,
                 "readiness_passed": int(report.readiness_passed),
                 "dependency_available": int(report.dependency_available),
                 "depth": report.depth,
@@ -1061,6 +1140,13 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             "model_name",
             "l2_path",
             "output_path",
+            "holdout_manifest_path",
+            "holdout_manifest_sha256",
+            "holdout_manifest_verified",
+            "development_l2_path",
+            "source_rows_before_holdout_filter",
+            "development_rows_after_holdout_filter",
+            "holdout_rows_excluded",
             "sequence_count",
             "purge_gap",
             "train_rows",
@@ -1081,6 +1167,13 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             report.model_name,
             str(report.l2_path),
             str(report.output_path),
+            report.holdout_manifest_path,
+            report.holdout_manifest_sha256,
+            str(int(report.holdout_manifest_verified)),
+            report.development_l2_path,
+            str(report.source_rows_before_holdout_filter),
+            str(report.development_rows_after_holdout_filter),
+            str(report.holdout_rows_excluded),
             str(report.sequence_count),
             str(report.purge_gap),
             str(report.train_rows),
@@ -1106,6 +1199,13 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"l2_path={report.l2_path}",
             f"baseline_audit_path={report.baseline_audit_path}",
             f"output_path={report.output_path}",
+            f"holdout_manifest_path={report.holdout_manifest_path}",
+            f"holdout_manifest_sha256={report.holdout_manifest_sha256}",
+            f"holdout_manifest_verified={int(report.holdout_manifest_verified)}",
+            f"development_l2_path={report.development_l2_path}",
+            f"source_rows_before_holdout_filter={report.source_rows_before_holdout_filter}",
+            f"development_rows_after_holdout_filter={report.development_rows_after_holdout_filter}",
+            f"holdout_rows_excluded={report.holdout_rows_excluded}",
             f"readiness_passed={int(report.readiness_passed)}",
             f"dependency_available={int(report.dependency_available)}",
             f"depth={report.depth}",

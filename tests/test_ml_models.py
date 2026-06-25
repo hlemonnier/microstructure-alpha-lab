@@ -1,6 +1,7 @@
 import csv
 from pathlib import Path
 
+from lob_forge.holdout import build_holdout_manifest, sha256_file, write_holdout_manifest
 from lob_forge.ml_models import (
     _apply_sequence_standardizer,
     _fit_sequence_standardizer,
@@ -307,8 +308,18 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
     output_path = tmp_path / "sequence_tcn_results.csv"
     checkpoint_path = tmp_path / "sequence_tcn.pt"
     prediction_path = tmp_path / "sequence_tcn_predictions.csv"
+    holdout_manifest_path = tmp_path / "l2_holdout_manifest.json"
+    development_l2_path = tmp_path / "sequence_tcn_development_l2.csv"
     _write_audit(audit_path, fold_count=20, acceptance_passed=1, rejection_reasons="")
     _write_many_l2_snapshots_and_deltas(l2_path)
+    holdout_manifest = build_holdout_manifest(
+        l2_path,
+        split_column="exchange_timestamp",
+        holdout_values=["1684195200000"],
+        created_at_utc="2026-06-26T00:00:00Z",
+        git_commit="a" * 40,
+    )
+    write_holdout_manifest(holdout_manifest, holdout_manifest_path)
 
     try:
         report = run_l2_torch_sequence_experiment(
@@ -328,6 +339,8 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
             lr_scheduler_gamma=0.9,
             checkpoint_path=checkpoint_path,
             prediction_output_path=prediction_path,
+            holdout_manifest_path=holdout_manifest_path,
+            development_l2_output_path=development_l2_path,
         )
     except RuntimeError as exc:
         assert "torch" in str(exc) or "model readiness gate failed" in str(exc)
@@ -338,15 +351,33 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
         assert report.model_name == "sequence_tcn"
         assert report.test_rows > 0
         assert output_path.exists()
+        assert development_l2_path.exists()
         assert checkpoint_path.exists()
         assert prediction_path.exists()
+        result_rows = list(csv.DictReader(output_path.open()))
+        assert result_rows[0]["holdout_manifest_path"] == str(holdout_manifest_path)
+        assert result_rows[0]["holdout_manifest_sha256"] == sha256_file(holdout_manifest_path)
+        assert result_rows[0]["holdout_manifest_verified"] == "1"
+        assert result_rows[0]["development_l2_path"] == str(development_l2_path)
+        assert result_rows[0]["source_rows_before_holdout_filter"] == "24"
+        assert result_rows[0]["development_rows_after_holdout_filter"] == "22"
+        assert result_rows[0]["holdout_rows_excluded"] == "2"
+        development_rows = list(csv.DictReader(development_l2_path.open()))
+        assert {row["exchange_timestamp"] for row in development_rows} == {
+            str(1684195200000 + index) for index in range(1, 12)
+        }
         assert prediction_path.read_text().splitlines()[0].startswith("split,row,sequence_end_index")
         assert report.selected_device in {"cpu", "cuda"}
         assert report.class_weighting == "balanced"
+        assert report.holdout_manifest_verified
+        assert report.holdout_manifest_sha256 == sha256_file(holdout_manifest_path)
+        assert report.development_l2_path == str(development_l2_path)
         assert report.checkpoint_path == str(checkpoint_path)
         assert report.prediction_output_path == str(prediction_path)
         assert report.test_stateful_trades >= 0
         assert "pipeline_completed=1" in text
+        assert f"holdout_manifest_sha256={sha256_file(holdout_manifest_path)}" in text
+        assert "holdout_rows_excluded=2" in text
         assert "acceptance_passed=0" in text
         assert "test_brier_score=" in text
         assert "test_stateful_break_even_fee_bps=" in text

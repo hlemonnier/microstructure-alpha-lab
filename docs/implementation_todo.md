@@ -111,6 +111,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add optional Transformer/TCN builder hooks.
 - [x] Add model-readiness gate that requires accepted baseline evidence plus verified normalized L2 data before sequence/deep experiments.
 - [x] Add executable Torch-backed L2 Transformer/TCN experiment runner and artifact validation gate.
+- [x] Add optional holdout-manifest filtering for L2 Transformer/TCN experiments so serious neural runs train on physically materialized development L2 data only.
 - [x] Add dry-run-first cloud/Modal runner for Transformer/TCN L2 experiment artifacts.
 - [x] Run Transformer/TCN experiments only after baseline and L2 paths are verified.
 - [x] Add masked sequence pretraining batch utility.
