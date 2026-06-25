@@ -94,6 +94,8 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         id_field="clOrdId",
         fill_fields=("fillPx", "fillSz", "fillPnl", "execType"),
         endpoints=(
+            "https://eea.okx.com",
+            "wss://wseeapap.okx.com:8443/ws/v5/private",
             "/api/v5/trade/order",
             "/api/v5/trade/fills",
             "/api/v5/trade/fills-history",

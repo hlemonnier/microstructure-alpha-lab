@@ -23,7 +23,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources --gap true_l2_
 | Rank | Gap | Source | Why |
 | --- | --- | --- | --- |
 | 1 | paper/live fills | Bybit Demo Trading | Closest fit for BTCUSDT/ETHUSDT crypto demo fills; `orderLinkId` maps directly to `decision_id`; trade history returns `execPrice`, `execQty`, `execTime`, `isMaker`, and `execType`. |
-| 2 | paper/live fills | OKX Demo Trading | Good cross-venue check; demo mode uses the normal API surface with simulated-trading credentials/header; transaction details expose `clOrdId`, `fillPx`, `fillSz`, and `fillPnl`. |
+| 2 | paper/live fills | OKX Demo Trading | Good cross-venue check; demo mode uses the normal API surface with demo credentials plus `x-simulated-trading: 1`; transaction details expose `clOrdId`, `fillPx`, `fillSz`, and `fillPnl`. |
 | 3 | paper/live fills | Binance USD-M Futures Testnet | Better fallback than Spot Testnet for this project; testnet REST/WebSocket endpoints support USD-M futures orders and `ORDER_TRADE_UPDATE` user-data events that can be normalized with the Binance importer. |
 | 4 | paper/live fills | Binance Spot Testnet | Useful free spot-only order event plumbing through `executionReport` and FULL order `fills`; not a derivatives queue source. |
 | 5 | paper/live fills | Alpaca Paper | Useful importer/order-lifecycle fallback, but weak evidence for crypto queue behavior because paper fills omit queue position, market impact, information leakage, and latency slippage. |
@@ -65,6 +65,8 @@ Binance USD-M Futures Testnet: newClientOrderId, returned as ORDER_TRADE_UPDATE.
 Binance Spot Testnet: newClientOrderId / executionReport.c
 Alpaca: client_order_id
 ```
+
+For OKX demo, send requests to the documented OKX REST/WebSocket demo URLs and include `x-simulated-trading: 1` on REST requests.
 
 4. Save the raw provider response under `results/shadow_validation/`.
 5. Normalize, import, and validate:

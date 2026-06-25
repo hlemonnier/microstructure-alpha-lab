@@ -8,7 +8,7 @@ The repo can now perform the first reproducible Binance Vision pipeline:
 2. Download exact ZIP files.
 3. Verify Binance-published SHA-256 checksums.
 4. Inspect CSV schemas inside ZIP files.
-5. Build a bucketed quote/trade/depth-band feature dataset from `bookTicker`, `aggTrades`, and optional `bookDepth`.
+5. Build a bucketed quote/trade/depth-band feature dataset from `bookTicker`, `aggTrades`, and optional `bookDepth`, with raw quote-event entry/exit resolution by default.
 6. Summarize the output label balance and basic ranges.
 
 ## First Real Sample
@@ -76,17 +76,19 @@ The label uses future mid-price from `bookTicker`.
 
 For row time `t`, the signal features come from the quote bucket at `t`.
 
-The executable entry quote is the first quote bucket at or after:
+The executable entry quote is the first raw `bookTicker` quote event at or after:
 
 ```text
 t + execution_latency_ms
 ```
 
-The exit/future quote is the first quote bucket at or after:
+The exit/future quote is the first raw `bookTicker` quote event at or after:
 
 ```text
 t + execution_latency_ms + horizon_ms
 ```
+
+Use `--execution-quote-resolution bucket` only when reproducing older studies that resolved execution from retained bucket quotes.
 
 The label uses executable movement:
 

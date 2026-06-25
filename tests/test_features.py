@@ -156,6 +156,121 @@ def test_trade_after_decision_time_does_not_change_features(tmp_path: Path) -> N
     }
 
 
+def test_build_quote_trade_dataset_resolves_execution_on_raw_quotes(tmp_path: Path) -> None:
+    book_zip = tmp_path / "bookTicker.zip"
+    trades_zip = tmp_path / "aggTrades.zip"
+    output = tmp_path / "features.csv"
+
+    _write_zip_csv(
+        book_zip,
+        "BTCUSDT-bookTicker-2023-05-16.csv",
+        [
+            [
+                "update_id",
+                "best_bid_price",
+                "best_bid_qty",
+                "best_ask_price",
+                "best_ask_qty",
+                "transaction_time",
+                "event_time",
+            ],
+            ["1", "100.0", "5.0", "100.2", "2.0", "900", "900"],
+            ["2", "100.1", "4.0", "100.3", "3.0", "1050", "1050"],
+            ["3", "101.0", "6.0", "101.2", "2.0", "1480", "1480"],
+            ["4", "99.0", "6.0", "99.2", "2.0", "1910", "1910"],
+            ["5", "102.0", "6.0", "102.2", "2.0", "2100", "2100"],
+        ],
+    )
+    _write_zip_csv(
+        trades_zip,
+        "BTCUSDT-aggTrades-2023-05-16.csv",
+        [
+            ["agg_trade_id", "price", "quantity", "first_trade_id", "last_trade_id", "transact_time", "is_buyer_maker"],
+        ],
+    )
+
+    build_quote_trade_dataset(
+        book_ticker_zip=book_zip,
+        agg_trades_zip=trades_zip,
+        output_csv=output,
+        bucket_ms=1000,
+        horizon_ms=1000,
+        execution_latency_ms=200,
+        threshold="zero",
+    )
+
+    with output.open() as handle:
+        rows = list(csv.DictReader(handle))
+
+    assert len(rows) == 1
+    assert rows[0]["decision_time"] == "900"
+    assert rows[0]["entry_target_time"] == "1100"
+    assert rows[0]["entry_event_time"] == "1480"
+    assert rows[0]["entry_lag_ms"] == "380"
+    assert rows[0]["entry_mid"] == "101.1"
+    assert rows[0]["future_event_time"] == "2100"
+    assert rows[0]["future_lag_ms"] == "0"
+    assert rows[0]["future_mid"] == "102.1"
+    assert rows[0]["horizon_min_ask"] == "99.2"
+    assert rows[0]["maker_long_fillable"] == "1"
+    assert rows[0]["maker_long_fill_event_time"] == "1910"
+
+
+def test_build_quote_trade_dataset_keeps_bucket_execution_fallback(tmp_path: Path) -> None:
+    book_zip = tmp_path / "bookTicker.zip"
+    trades_zip = tmp_path / "aggTrades.zip"
+    output = tmp_path / "features.csv"
+
+    _write_zip_csv(
+        book_zip,
+        "BTCUSDT-bookTicker-2023-05-16.csv",
+        [
+            [
+                "update_id",
+                "best_bid_price",
+                "best_bid_qty",
+                "best_ask_price",
+                "best_ask_qty",
+                "transaction_time",
+                "event_time",
+            ],
+            ["1", "100.0", "5.0", "100.2", "2.0", "900", "900"],
+            ["2", "100.1", "4.0", "100.3", "3.0", "1050", "1050"],
+            ["3", "101.0", "6.0", "101.2", "2.0", "1480", "1480"],
+            ["4", "99.0", "6.0", "99.2", "2.0", "1910", "1910"],
+            ["5", "102.0", "6.0", "102.2", "2.0", "2100", "2100"],
+        ],
+    )
+    _write_zip_csv(
+        trades_zip,
+        "BTCUSDT-aggTrades-2023-05-16.csv",
+        [
+            ["agg_trade_id", "price", "quantity", "first_trade_id", "last_trade_id", "transact_time", "is_buyer_maker"],
+        ],
+    )
+
+    build_quote_trade_dataset(
+        book_ticker_zip=book_zip,
+        agg_trades_zip=trades_zip,
+        output_csv=output,
+        bucket_ms=1000,
+        horizon_ms=1000,
+        execution_latency_ms=200,
+        threshold="zero",
+        execution_quote_resolution="bucket",
+    )
+
+    with output.open() as handle:
+        rows = list(csv.DictReader(handle))
+
+    assert len(rows) == 1
+    assert rows[0]["decision_time"] == "900"
+    assert rows[0]["entry_target_time"] == "1100"
+    assert rows[0]["entry_event_time"] == "1910"
+    assert rows[0]["entry_lag_ms"] == "810"
+    assert rows[0]["entry_mid"] == "99.1"
+
+
 def test_build_quote_trade_dataset_refuses_feature_memory_budget(tmp_path: Path) -> None:
     book_zip = tmp_path / "bookTicker.zip"
     trades_zip = tmp_path / "aggTrades.zip"

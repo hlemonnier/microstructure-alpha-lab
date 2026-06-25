@@ -175,6 +175,12 @@ def main(argv: list[str] | None = None) -> int:
     build_parser.add_argument("--horizon-ms", type=int, default=1000)
     build_parser.add_argument("--execution-latency-ms", type=int, default=0)
     build_parser.add_argument(
+        "--execution-quote-resolution",
+        choices=["raw", "bucket"],
+        default="raw",
+        help="Resolve entry/exit prices from first raw quote event or from retained bucket quotes.",
+    )
+    build_parser.add_argument(
         "--threshold",
         choices=["half_spread", "one_tick", "zero"],
         default="half_spread",
@@ -209,6 +215,12 @@ def main(argv: list[str] | None = None) -> int:
     build_range_parser.add_argument("--bucket-ms", type=int, default=1000)
     build_range_parser.add_argument("--horizon-ms", type=int, default=1000)
     build_range_parser.add_argument("--execution-latency-ms", type=int, default=0)
+    build_range_parser.add_argument(
+        "--execution-quote-resolution",
+        choices=["raw", "bucket"],
+        default="raw",
+        help="Resolve entry/exit prices from first raw quote event or from retained bucket quotes.",
+    )
     build_range_parser.add_argument(
         "--threshold",
         choices=["half_spread", "one_tick", "zero"],
@@ -1166,6 +1178,7 @@ def _cmd_build_sample(args: argparse.Namespace) -> int:
         max_quote_buckets=args.max_quote_buckets,
         max_feature_build_memory_gb=args.max_feature_build_memory_gb,
         memory_estimate_multiplier=args.feature_memory_estimate_multiplier,
+        execution_quote_resolution=args.execution_quote_resolution,
     )
     print(output)
     return 0
@@ -1192,6 +1205,7 @@ def _cmd_build_range(args: argparse.Namespace) -> int:
         verify_checksum=not args.no_verify,
         max_feature_build_memory_gb=args.max_feature_build_memory_gb,
         memory_estimate_multiplier=args.feature_memory_estimate_multiplier,
+        execution_quote_resolution=args.execution_quote_resolution,
     )
     for result in results:
         print(f"{result.date}\t{result.feature_csv}")

@@ -27,7 +27,8 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources \
 
 2. OKX Demo Trading
    - Official docs: <https://my.okx.com/docs-v5/en/>
-   - Why second: OKX supports demo trading through the normal API with the `x-simulated-trading: 1` header and exposes transaction detail fields with `clOrdId`, `fillPx`, `fillSz`, `fillPnl`, and maker/taker `execType`.
+   - Demo URLs: REST `https://eea.okx.com`, private WebSocket `wss://wseeapap.okx.com:8443/ws/v5/private`.
+   - Why second: OKX supports demo trading through the normal API with demo credentials plus the `x-simulated-trading: 1` header and exposes transaction detail fields with `clOrdId`, `fillPx`, `fillSz`, `fillPnl`, and maker/taker `execType`.
    - Use for: cross-checking passive fill behavior on OKX instruments such as `BTC-USDT-SWAP`.
    - Import fields: `clOrdId -> decision_id`, `fillPx -> avgPrice`, `fillSz -> cumExecQty`, `fillPnl -> realizedPnl`, `instId -> symbol`.
 
@@ -69,6 +70,8 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli observed-fill-template \
   --output results/shadow_validation/observed_fills_template.csv \
   --limit 50
 ```
+
+For OKX demo REST requests, include `x-simulated-trading: 1`.
 
 After a paper/demo session, save the raw API response as `.json`, `.jsonl`, or `.csv`, then normalize it:
 

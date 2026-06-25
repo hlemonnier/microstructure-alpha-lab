@@ -261,6 +261,52 @@ class FeatureSummary:
     delta_mid_max: float
 
 
+@dataclass(frozen=True)
+class ExecutionQuoteResolution:
+    entry: QuoteBucket
+    future: QuoteBucket
+    execution_path: ExecutionPath
+
+
+@dataclass
+class _ExecutionPathAccumulator:
+    index: int
+    entry: QuoteBucket
+    future: QuoteBucket
+    horizon_min_ask: float
+    horizon_max_bid: float
+    maker_long_fill_event_time: int | None = None
+    maker_short_fill_event_time: int | None = None
+
+    @classmethod
+    def from_resolution(cls, *, index: int, entry: QuoteBucket, future: QuoteBucket) -> "_ExecutionPathAccumulator":
+        return cls(
+            index=index,
+            entry=entry,
+            future=future,
+            horizon_min_ask=entry.ask,
+            horizon_max_bid=entry.bid,
+        )
+
+    def update(self, quote: QuoteBucket) -> None:
+        self.horizon_min_ask = min(self.horizon_min_ask, quote.ask)
+        self.horizon_max_bid = max(self.horizon_max_bid, quote.bid)
+        if self.maker_long_fill_event_time is None and quote.ask <= self.entry.bid:
+            self.maker_long_fill_event_time = quote.event_time
+        if self.maker_short_fill_event_time is None and quote.bid >= self.entry.ask:
+            self.maker_short_fill_event_time = quote.event_time
+
+    def to_execution_path(self) -> ExecutionPath:
+        return ExecutionPath(
+            horizon_min_ask=self.horizon_min_ask,
+            horizon_max_bid=self.horizon_max_bid,
+            maker_long_fillable=self.maker_long_fill_event_time is not None,
+            maker_short_fillable=self.maker_short_fill_event_time is not None,
+            maker_long_fill_event_time=self.maker_long_fill_event_time,
+            maker_short_fill_event_time=self.maker_short_fill_event_time,
+        )
+
+
 def build_quote_trade_dataset(
     *,
     book_ticker_zip: Path | str,
@@ -276,6 +322,7 @@ def build_quote_trade_dataset(
     max_quote_buckets: int | None = None,
     max_feature_build_memory_gb: float = 0.0,
     memory_estimate_multiplier: float = 12.0,
+    execution_quote_resolution: str = "raw",
 ) -> Path:
     """Build a compact feature/label CSV from Binance Vision ZIP archives.
 
@@ -289,6 +336,8 @@ def build_quote_trade_dataset(
         raise ValueError("horizon_ms must be positive")
     if execution_latency_ms < 0:
         raise ValueError("execution_latency_ms must be >= 0")
+    if execution_quote_resolution not in {"raw", "bucket"}:
+        raise ValueError("execution_quote_resolution must be raw or bucket")
     assert_feature_build_budget(
         [book_ticker_zip, agg_trades_zip, book_depth_zip],
         max_memory_gb=max_feature_build_memory_gb,
@@ -331,6 +380,16 @@ def build_quote_trade_dataset(
 
     quote_event_times = [quote.event_time for quote in quote_buckets]
     quote_contexts = build_quote_contexts(quote_buckets, rolling_window=5)
+    raw_resolutions = (
+        resolve_raw_execution_quote_resolutions(
+            Path(book_ticker_zip),
+            quote_buckets,
+            execution_latency_ms=execution_latency_ms,
+            horizon_ms=horizon_ms,
+        )
+        if execution_quote_resolution == "raw"
+        else []
+    )
     rows_written = 0
     with output_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=FEATURE_COLUMNS)
@@ -339,18 +398,26 @@ def build_quote_trade_dataset(
             decision_time = quote.decision_time
             entry_target_time = decision_time + execution_latency_ms
             future_target_time = decision_time + execution_latency_ms + horizon_ms
-            entry_idx = bisect_left(quote_event_times, entry_target_time)
-            if entry_idx >= len(quote_buckets):
-                break
-            entry = quote_buckets[entry_idx]
-            future_idx = bisect_left(quote_event_times, future_target_time)
-            if future_idx >= len(quote_buckets):
-                break
-            future = quote_buckets[future_idx]
-            execution_path = summarize_execution_path(
-                quote_buckets[entry_idx + 1 : future_idx + 1],
-                entry=entry,
-            )
+            if execution_quote_resolution == "raw":
+                resolution = raw_resolutions[idx]
+                if resolution is None:
+                    break
+                entry = resolution.entry
+                future = resolution.future
+                execution_path = resolution.execution_path
+            else:
+                entry_idx = bisect_left(quote_event_times, entry_target_time)
+                if entry_idx >= len(quote_buckets):
+                    break
+                entry = quote_buckets[entry_idx]
+                future_idx = bisect_left(quote_event_times, future_target_time)
+                if future_idx >= len(quote_buckets):
+                    break
+                future = quote_buckets[future_idx]
+                execution_path = summarize_execution_path(
+                    quote_buckets[entry_idx + 1 : future_idx + 1],
+                    entry=entry,
+                )
             row = build_feature_row(
                 quote=quote,
                 entry=entry,
@@ -505,6 +572,88 @@ def iter_quote_buckets(
 
     if current is not None:
         yield current
+
+
+def iter_quote_events(book_ticker_zip: Path) -> Iterator[QuoteBucket]:
+    for row in iter_zip_dict_rows(book_ticker_zip, BOOK_TICKER_COLUMNS):
+        event_time = int(row["event_time"])
+        yield QuoteBucket(
+            bucket_start_ms=event_time,
+            decision_time_ms=event_time,
+            event_time=event_time,
+            update_id=int(row["update_id"]),
+            bid=float(row["best_bid_price"]),
+            ask=float(row["best_ask_price"]),
+            bid_qty=float(row["best_bid_qty"]),
+            ask_qty=float(row["best_ask_qty"]),
+            update_count=1,
+            local_receive_time=None,
+        )
+
+
+def resolve_raw_execution_quote_resolutions(
+    book_ticker_zip: Path,
+    quote_buckets: list[QuoteBucket],
+    *,
+    execution_latency_ms: int,
+    horizon_ms: int,
+) -> list[ExecutionQuoteResolution | None]:
+    if execution_latency_ms < 0:
+        raise ValueError("execution_latency_ms must be >= 0")
+    if horizon_ms <= 0:
+        raise ValueError("horizon_ms must be positive")
+    entries: list[QuoteBucket | None] = [None] * len(quote_buckets)
+    futures: list[QuoteBucket | None] = [None] * len(quote_buckets)
+    requests: list[tuple[int, int, int, str]] = []
+    for index, quote in enumerate(quote_buckets):
+        entry_target_time = quote.decision_time + execution_latency_ms
+        future_target_time = entry_target_time + horizon_ms
+        requests.append((entry_target_time, 0, index, "entry"))
+        requests.append((future_target_time, 1, index, "future"))
+    requests.sort()
+
+    request_index = 0
+    for raw_quote in iter_quote_events(book_ticker_zip):
+        while request_index < len(requests) and raw_quote.event_time >= requests[request_index][0]:
+            _, _, index, kind = requests[request_index]
+            if kind == "entry":
+                entries[index] = raw_quote
+            else:
+                futures[index] = raw_quote
+            request_index += 1
+    accumulators = [
+        _ExecutionPathAccumulator.from_resolution(index=index, entry=entry, future=future)
+        for index, (entry, future) in enumerate(zip(entries, futures))
+        if entry is not None and future is not None
+    ]
+    accumulators.sort(key=lambda item: (item.entry.event_time, item.future.event_time, item.index))
+    active: list[_ExecutionPathAccumulator] = []
+    next_accumulator = 0
+    for raw_quote in iter_quote_events(book_ticker_zip):
+        while (
+            next_accumulator < len(accumulators)
+            and accumulators[next_accumulator].entry.event_time < raw_quote.event_time
+        ):
+            active.append(accumulators[next_accumulator])
+            next_accumulator += 1
+        if not active:
+            continue
+        still_active: list[_ExecutionPathAccumulator] = []
+        for accumulator in active:
+            if raw_quote.event_time > accumulator.future.event_time:
+                continue
+            accumulator.update(raw_quote)
+            still_active.append(accumulator)
+        active = still_active
+
+    resolutions: list[ExecutionQuoteResolution | None] = [None] * len(quote_buckets)
+    for accumulator in accumulators:
+        resolutions[accumulator.index] = ExecutionQuoteResolution(
+            entry=accumulator.entry,
+            future=accumulator.future,
+            execution_path=accumulator.to_execution_path(),
+        )
+    return resolutions
 
 
 def aggregate_agg_trades(

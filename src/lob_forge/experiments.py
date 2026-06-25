@@ -37,6 +37,7 @@ def build_daily_feature_range(
     verify_checksum: bool = True,
     max_feature_build_memory_gb: float = 0.0,
     memory_estimate_multiplier: float = 12.0,
+    execution_quote_resolution: str = "raw",
 ) -> tuple[list[DailyBuildResult], Path | None]:
     """Download/build feature samples for a daily date range."""
     results: list[DailyBuildResult] = []
@@ -91,6 +92,7 @@ def build_daily_feature_range(
                 max_quote_buckets=max_quote_buckets,
                 max_feature_build_memory_gb=max_feature_build_memory_gb,
                 memory_estimate_multiplier=memory_estimate_multiplier,
+                execution_quote_resolution=execution_quote_resolution,
             )
             done_marker.write_text("ok\n")
         results.append(
