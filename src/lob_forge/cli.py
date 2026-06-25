@@ -1667,7 +1667,12 @@ def _cmd_final_holdout_rule(args: argparse.Namespace) -> int:
     candidate_path = Path(args.candidate_json)
     candidate = json.loads(candidate_path.read_text())
     candidate_sha256 = canonical_json_sha256(candidate)
-    if manifest.candidate_sha256 and candidate_sha256 != manifest.candidate_sha256:
+    if not manifest.candidate_sha256:
+        raise ValueError(
+            "holdout manifest missing pre-registered candidate_sha256; "
+            "create it with create-holdout-manifest --candidate-json"
+        )
+    if candidate_sha256 != manifest.candidate_sha256:
         raise ValueError("frozen candidate hash does not match holdout manifest candidate_sha256")
     allowed_fields = {
         "feature",

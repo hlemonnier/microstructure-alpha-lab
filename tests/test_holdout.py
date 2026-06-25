@@ -8,6 +8,7 @@ from lob_forge.cli import main as cli_main
 from lob_forge.holdout import (
     assert_no_holdout_leakage,
     build_holdout_manifest,
+    canonical_json_sha256,
     holdout_manifest_source_root,
     read_development_rows,
     read_holdout_rows,
@@ -291,15 +292,17 @@ def test_final_holdout_rule_cli_consumes_frozen_candidate_once(tmp_path: Path) -
         "2026-06-01,1,0.5,100.0,100.1,100.4,100.5\n"
         "2026-06-02,-1,-0.5,100.0,100.1,99.6,99.7\n"
     )
+    candidate_path.write_text('{"feature":"microprice_deviation","threshold":0.1,"taker_fee_bps":0.0}\n')
+    candidate_sha256 = canonical_json_sha256(json.loads(candidate_path.read_text()))
     manifest = build_holdout_manifest(
         data,
         split_column="source_date",
         holdout_values=["2026-06-02"],
         created_at_utc="2026-06-03T00:00:00Z",
         git_commit=FIXTURE_GIT_COMMIT,
+        candidate_sha256=candidate_sha256,
     )
     write_holdout_manifest(manifest, manifest_path)
-    candidate_path.write_text('{"feature":"microprice_deviation","threshold":0.1,"taker_fee_bps":0.0}\n')
 
     output = io.StringIO()
     with redirect_stdout(output):
@@ -328,6 +331,48 @@ def test_final_holdout_rule_cli_consumes_frozen_candidate_once(tmp_path: Path) -
     assert payload["candidate_sha256"] == payload["metrics"]["candidate_sha256"]
 
 
+def test_final_holdout_rule_cli_requires_pre_registered_candidate_hash(tmp_path: Path) -> None:
+    data = tmp_path / "features.csv"
+    manifest_path = tmp_path / "holdout.json"
+    candidate_path = tmp_path / "candidate.json"
+    output_path = tmp_path / "final_holdout.json"
+    data.write_text(
+        "source_date,label,microprice_deviation,bid,ask,future_bid,future_ask\n"
+        "2026-06-01,1,0.5,100.0,100.1,100.4,100.5\n"
+        "2026-06-02,-1,-0.5,100.0,100.1,99.6,99.7\n"
+    )
+    manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-02"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+    )
+    write_holdout_manifest(manifest, manifest_path)
+    candidate_path.write_text('{"feature":"microprice_deviation","threshold":0.1,"taker_fee_bps":0.0}\n')
+
+    try:
+        cli_main(
+            [
+                "final-holdout-rule",
+                str(data),
+                "--holdout-manifest",
+                str(manifest_path),
+                "--candidate-json",
+                str(candidate_path),
+                "--output",
+                str(output_path),
+                "--lock-dir",
+                str(tmp_path / "locks"),
+                "--explicit-final-evaluation",
+            ]
+        )
+    except ValueError as exc:
+        assert "pre-registered candidate_sha256" in str(exc)
+    else:
+        raise AssertionError("expected final holdout to reject a manifest without candidate_sha256")
+
+
 def test_final_holdout_rule_cli_resolves_relative_manifest_source_outside_repo_root(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     data_dir = repo / "data"
@@ -345,6 +390,8 @@ def test_final_holdout_rule_cli_resolves_relative_manifest_source_outside_repo_r
         "2026-06-01,1,0.5,100.0,100.1,100.4,100.5\n"
         "2026-06-02,-1,-0.5,100.0,100.1,99.6,99.7\n"
     )
+    candidate_path.write_text('{"feature":"microprice_deviation","threshold":0.1,"taker_fee_bps":0.0}\n')
+    candidate_sha256 = canonical_json_sha256(json.loads(candidate_path.read_text()))
     manifest = build_holdout_manifest(
         data,
         split_column="source_date",
@@ -352,9 +399,9 @@ def test_final_holdout_rule_cli_resolves_relative_manifest_source_outside_repo_r
         created_at_utc="2026-06-03T00:00:00Z",
         git_commit=FIXTURE_GIT_COMMIT,
         source_root=repo,
+        candidate_sha256=candidate_sha256,
     )
     write_holdout_manifest(manifest, manifest_path)
-    candidate_path.write_text('{"feature":"microprice_deviation","threshold":0.1,"taker_fee_bps":0.0}\n')
 
     previous_cwd = Path.cwd()
     output = io.StringIO()

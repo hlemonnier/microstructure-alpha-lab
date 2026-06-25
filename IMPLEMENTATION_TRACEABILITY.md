@@ -7,7 +7,7 @@ Authoritative scope: local implementation specification supplied outside the rep
 | A. Causal event-time construction | implemented | `src/lob_forge/features.py`, `src/lob_forge/protocol.py` | `tests/test_features.py`, `tests/test_protocol.py`, `bash scripts/run_tests.sh` | None for local fixture path |
 | B. Leakage-free preprocessing and sequence splits | implemented | `src/lob_forge/protocol.py`, `src/lob_forge/logistic.py`, `src/lob_forge/ml_models.py` | `tests/test_protocol.py`, `tests/test_ml_models.py` | None for local path |
 | C. Strict model-selection protocol | implemented | `src/lob_forge/protocol.py`, `src/lob_forge/baselines.py`, `src/lob_forge/logistic.py`, `src/lob_forge/edge_model.py`, `src/lob_forge/cli.py` | `tests/test_protocol.py`, `tests/test_baselines.py`; search for CLI `test_*` sort choices | None |
-| D. Real untouched calendar holdout | implemented-smoke-tested | `src/lob_forge/holdout.py`, `src/lob_forge/cli.py`, `scripts/run_reduced_e2e.py` | `tests/test_holdout.py`; reduced E2E declares holdout before selection and filters development rows; `final-holdout-rule` consumes a frozen candidate | Final empirical holdout artifact pending a declared full run |
+| D. Real untouched calendar holdout | implemented-smoke-tested | `src/lob_forge/holdout.py`, `src/lob_forge/cli.py`, `scripts/run_reduced_e2e.py` | `tests/test_holdout.py`; reduced E2E declares holdout before selection and filters development rows; `final-holdout-rule` requires a frozen candidate pre-registered in the manifest | Final empirical holdout artifact pending a declared full run |
 | E. Stateful execution simulator | implemented-smoke-tested | `src/lob_forge/execution_sim.py`, `src/lob_forge/portfolio.py`, `scripts/run_reduced_e2e.py` | `tests/test_execution_sim.py`, `tests/test_portfolio.py`; reduced E2E feeds selected rule signals into simulator ledgers | Full strategy reports must be regenerated from simulator ledgers |
 | F. Execution realism, capacity, adverse selection | implemented-smoke-tested | `src/lob_forge/execution_sim.py`, `src/lob_forge/fill_diagnostics.py`, `src/lob_forge/capacity.py`, `src/lob_forge/passive_capacity.py` | `tests/test_execution_sim.py`, `tests/test_fill_diagnostics.py`, `tests/test_capacity.py`, `tests/test_passive_capacity.py` | Paper/live fill validation remains external |
 | G. Statistical validity | implemented-smoke-tested | `src/lob_forge/statistics.py`, `src/lob_forge/alpha_factory.py`, `src/lob_forge/experiment_registry.py` | `tests/test_statistics.py`, `tests/test_alpha_factory.py`, `tests/test_experiment_registry.py` | Selection-adjusted exact inference for large search families remains a documented limitation |
@@ -20,7 +20,7 @@ Authoritative scope: local implementation specification supplied outside the rep
 ## Verification Log
 
 - Baseline direct tests before edits: `passed 160 direct test functions`.
-- Current direct tests after implementation: `passed 223 direct test functions`.
+- Current direct tests after implementation: `passed 224 direct test functions`.
 - C++ replay equivalence is included in the direct suite when a local C++ compiler is present.
 - Reduced E2E fixture artifacts generated under `artifacts/reduced_e2e/`.
 - CPU neural fixture smokes generated `sequence_tcn_smoke.csv` and `sequence_transformer_smoke.csv`; sequence runs now expose checkpoint/resume, repeated-seed runner support, prediction CSV export, calibration metrics, confusion matrices, and stateful economic smoke fields.
