@@ -230,40 +230,38 @@ def write_final_holdout_result(
         raise PermissionError("final holdout evaluation requires explicit_final_evaluation=True")
     if not verify_holdout_manifest(manifest, source_root=source_root):
         raise ValueError("holdout manifest verification failed")
-    if candidate_sha256 is not None and not _is_sha256(candidate_sha256):
+    if candidate_sha256 is None:
+        raise ValueError("final holdout evaluation requires candidate_sha256")
+    if not _is_sha256(candidate_sha256):
         raise ValueError("candidate_sha256 must be a SHA-256 digest")
     path = Path(output_path)
     if path.exists():
         raise FileExistsError(f"immutable holdout result already exists: {path}")
-    lock_path: Path | None = None
-    if candidate_sha256 is not None:
-        manifest_sha256 = canonical_json_sha256(asdict(manifest))
-        lock_root = Path(lock_dir) if lock_dir is not None else path.parent / ".holdout_locks"
-        lock_root.mkdir(parents=True, exist_ok=True)
-        lock_path = lock_root / f"{manifest_sha256}_{candidate_sha256}.lock"
-        if lock_path.exists():
-            raise FileExistsError(f"final holdout already evaluated for manifest/candidate: {lock_path}")
+    manifest_sha256 = canonical_json_sha256(asdict(manifest))
+    lock_root = Path(lock_dir) if lock_dir is not None else path.parent / ".holdout_locks"
+    lock_root.mkdir(parents=True, exist_ok=True)
+    lock_path = lock_root / f"{manifest_sha256}_{candidate_sha256}.lock"
+    if lock_path.exists():
+        raise FileExistsError(f"final holdout already evaluated for manifest/candidate: {lock_path}")
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "manifest": asdict(manifest),
         "metrics": metrics,
         "final_evaluation": True,
     }
-    if candidate_sha256 is not None:
-        payload["candidate_sha256"] = candidate_sha256
+    payload["candidate_sha256"] = candidate_sha256
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
-    if lock_path is not None:
-        lock_path.write_text(
-            json.dumps(
-                {
-                    "candidate_sha256": candidate_sha256,
-                    "manifest_sha256": canonical_json_sha256(asdict(manifest)),
-                    "result_path": str(path),
-                },
-                sort_keys=True,
-            )
-            + "\n"
+    lock_path.write_text(
+        json.dumps(
+            {
+                "candidate_sha256": candidate_sha256,
+                "manifest_sha256": manifest_sha256,
+                "result_path": str(path),
+            },
+            sort_keys=True,
         )
+        + "\n"
+    )
     return path
 
 

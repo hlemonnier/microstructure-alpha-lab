@@ -73,7 +73,7 @@ This checklist tracks every missing item found during the project audit. Check a
 
 ## Validation And Statistics
 
-- [x] Add immutable final holdout workflow with manifest verification, candidate hashing, and duplicate-evaluation locks.
+- [x] Add immutable final holdout workflow with manifest verification, required candidate hashing, and duplicate-evaluation locks.
 - [x] Make holdout manifest verification resolve repository-relative source paths from the manifest location, not only from the current working directory.
 - [x] Require final holdout manifests to pre-register `candidate_sha256` before `final-holdout-rule` evaluates the held-out data.
 - [ ] Run and check in the declared immutable final holdout result artifact for the full selected candidate.

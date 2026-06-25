@@ -91,7 +91,7 @@ SEEDS=7,11,13 DRY_RUN=0 RESUME=0 bash scripts/run_l2_sequence_experiments.sh
 
 CLI research commands such as `baseline`, `walk-forward`, `calendar-walk-forward`, `conditional-walk-forward`, `logistic-walk-forward`, `edge-walk-forward`, `edge-shadow-decisions`, `eval-rule`, and `regime` require `--holdout-manifest`. The CLI verifies the source content hash and runs against a temporary development CSV with declared holdout rows removed.
 
-Final holdout evaluation must call `write_final_holdout_result(..., explicit_final_evaluation=True)`, and the output path is immutable. A serious final command must consume a frozen candidate file rather than accepting tuning/search options, and the holdout manifest must pre-register that candidate's `candidate_sha256` before evaluation.
+Final holdout evaluation must call `write_final_holdout_result(..., explicit_final_evaluation=True, candidate_sha256=...)`; the output path is immutable, and the manifest/candidate pair is locked even if a different output path is later supplied. A serious final command must consume a frozen candidate file rather than accepting tuning/search options, and the holdout manifest must pre-register that candidate's `candidate_sha256` before evaluation.
 
 For the fixed threshold-rule family, the CLI exposes that one-way path:
 

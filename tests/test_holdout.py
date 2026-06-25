@@ -203,7 +203,7 @@ def test_create_holdout_manifest_cli_writes_hash_locked_manifest(tmp_path: Path)
     assert manifest.holdout_values == ("2026-06-02",)
 
 
-def test_final_holdout_result_requires_explicit_flag_and_is_immutable(tmp_path: Path) -> None:
+def test_final_holdout_result_requires_explicit_flag_candidate_hash_and_is_immutable(tmp_path: Path) -> None:
     data = tmp_path / "features.csv"
     output = tmp_path / "holdout_result.json"
     data.write_text("source_date,label\n2026-06-01,1\n")
@@ -227,11 +227,25 @@ def test_final_holdout_result_requires_explicit_flag_and_is_immutable(tmp_path: 
     else:
         raise AssertionError("expected explicit final evaluation gate")
 
+    try:
+        write_final_holdout_result(
+            manifest=manifest,
+            metrics={"macro_f1": 0.0},
+            output_path=output,
+            explicit_final_evaluation=True,
+        )
+    except ValueError as exc:
+        assert "requires candidate_sha256" in str(exc)
+    else:
+        raise AssertionError("expected final holdout result to require a candidate hash")
+
     write_final_holdout_result(
         manifest=manifest,
         metrics={"macro_f1": 0.0},
         output_path=output,
         explicit_final_evaluation=True,
+        candidate_sha256="b" * 64,
+        lock_dir=tmp_path / "locks",
     )
     try:
         write_final_holdout_result(
@@ -239,6 +253,8 @@ def test_final_holdout_result_requires_explicit_flag_and_is_immutable(tmp_path: 
             metrics={"macro_f1": 0.1},
             output_path=output,
             explicit_final_evaluation=True,
+            candidate_sha256="c" * 64,
+            lock_dir=tmp_path / "locks",
         )
     except FileExistsError:
         pass
