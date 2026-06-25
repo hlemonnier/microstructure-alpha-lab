@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import subprocess
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -23,7 +24,7 @@ from lob_forge.execution_sim import (
     StatefulExecutionConfig,
     simulate_stateful_execution,
 )
-from lob_forge.holdout import build_holdout_manifest, write_development_csv, write_holdout_manifest
+from lob_forge.holdout import GIT_COMMIT_RE, build_holdout_manifest, write_development_csv, write_holdout_manifest
 from lob_forge.ml_models import run_l2_torch_sequence_experiment
 from lob_forge.statistics import (
     break_even_cost_interval,
@@ -42,6 +43,7 @@ VALIDATION_SIZE = 2
 TEST_SIZE = 2
 STEP_SIZE = 2
 INITIAL_CASH = 1000.0
+SOURCE_GIT_COMMIT_ENV = "LOB_FORGE_SOURCE_GIT_COMMIT"
 
 
 def main() -> int:
@@ -72,7 +74,7 @@ def main() -> int:
         created_at_utc="2026-06-24T00:00:00Z",
         feature_version="synthetic_fixture_v1",
         target_version="fixture_mid_move_v1",
-        git_commit=_git_commit(allow_fallback=True),
+        git_commit=_git_commit(),
         notes="Synthetic fixture for CI/reduced pipeline only; not empirical evidence.",
         source_root=ROOT,
     )
@@ -211,7 +213,7 @@ def main() -> int:
         "artifact_version": 1,
         "claim_scope": "Repository verification and synthetic fixture evidence only; no final empirical profitability claim.",
         "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "git_commit": _git_commit(allow_fallback=True),
+        "git_commit": _git_commit(),
         "working_tree_dirty": _working_tree_dirty(),
         "spec_traceability": "IMPLEMENTATION_TRACEABILITY.md",
         "research_note": "docs/research_note.md",
@@ -426,13 +428,21 @@ def _run_sequence_smokes(
     return outputs
 
 
-def _git_commit(*, allow_fallback: bool = False) -> str:
+def _git_commit() -> str:
+    env_commit = os.environ.get(SOURCE_GIT_COMMIT_ENV, "").strip()
+    if env_commit:
+        if not GIT_COMMIT_RE.fullmatch(env_commit):
+            raise RuntimeError(f"{SOURCE_GIT_COMMIT_ENV} must be a 40- or 64-character Git commit hash")
+        return env_commit
     try:
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     except (OSError, subprocess.CalledProcessError):
-        if allow_fallback:
-            return "no-git-commit"
-        raise
+        raise RuntimeError(
+            f"run_reduced_e2e requires a Git checkout or {SOURCE_GIT_COMMIT_ENV}=<commit-hash>"
+        ) from None
+    if not GIT_COMMIT_RE.fullmatch(commit):
+        raise RuntimeError("git rev-parse HEAD did not return a valid commit hash")
+    return commit
 
 
 def _working_tree_dirty() -> bool | None:
