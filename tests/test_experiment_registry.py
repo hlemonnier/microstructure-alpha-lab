@@ -15,6 +15,12 @@ def test_threshold_experiment_registry_records_full_search_family(tmp_path: Path
         selection_metric="validation_net_pnl",
         selected=("microprice_deviation", 0.15),
         selected_metrics={"validation_net_pnl": 1.25, "test_net_pnl": 0.5},
+        attempt_metrics={
+            ("microprice_deviation", 0.05): {"validation_net_pnl": 0.75, "test_net_pnl": -0.25},
+            ("microprice_deviation", 0.15): {"validation_net_pnl": 1.25, "test_net_pnl": 0.5},
+            ("trade_imbalance", 0.05): {"validation_net_pnl": -0.1, "test_net_pnl": 0.0},
+            ("trade_imbalance", 0.15): {"validation_net_pnl": -0.2, "test_net_pnl": -0.3},
+        },
         artifact_path="results/walk_forward.csv",
         data_path="data/features.csv",
         holdout_manifest_path="data/holdout.json",
@@ -38,3 +44,23 @@ def test_threshold_experiment_registry_records_full_search_family(tmp_path: Path
     assert selected[0].holdout_manifest_path == "data/holdout.json"
     assert selected[0].config_sha256
     assert all(attempt.status != "planned" for attempt in loaded)
+    assert all(attempt.validation_net_pnl is not None for attempt in loaded)
+    assert all(attempt.test_net_pnl is not None for attempt in loaded)
+
+
+def test_threshold_experiment_registry_records_failed_attempt_reason(tmp_path: Path) -> None:
+    path = tmp_path / "experiment_registry.jsonl"
+
+    attempts = write_threshold_experiment_registry(
+        path,
+        run_id="fixture-run",
+        model_class="threshold_rule",
+        features=["microprice_deviation"],
+        thresholds=[0.05],
+        selection_metric="validation_net_pnl",
+        attempt_failures={("microprice_deviation", 0.05): "no validation rows"},
+    )
+
+    assert len(attempts) == 1
+    assert attempts[0].status == "failed"
+    assert attempts[0].failure_reason == "no validation rows"

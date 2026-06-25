@@ -112,7 +112,7 @@ The statistics layer includes:
 - break-even-cost intervals;
 - multiple-testing correction utilities.
 
-Adjacent folds, overlapping label windows, and repeated high-frequency trades are not iid observations. Reports should aggregate by day/fold/regime where possible and should state when exact selection-adjusted inference is infeasible. `audit-results` now declares its `inference_grain` explicitly; the current walk-forward CSV artifacts are fold-summary audits, while the reduced E2E fixture derives its intervals from simulator ledgers. Larger empirical runs must preserve trade/day ledgers beside fold summaries before claiming trade- or day-level inference. The reduced E2E run writes a machine-readable experiment registry before threshold selection; larger empirical runs must do the same for every attempted feature, horizon, cost, model class, hyperparameter, and seed.
+Adjacent folds, overlapping label windows, and repeated high-frequency trades are not iid observations. Reports should aggregate by day/fold/regime where possible and should state when exact selection-adjusted inference is infeasible. `audit-results` now declares its `inference_grain` explicitly; the current walk-forward CSV artifacts are fold-summary audits, while the reduced E2E fixture derives its intervals from simulator ledgers. Larger empirical runs must preserve trade/day ledgers beside fold summaries before claiming trade- or day-level inference. The reduced E2E run writes a machine-readable experiment registry with evaluated status and validation/test PnL for each predeclared threshold attempt; larger empirical runs must do the same for every attempted feature, horizon, cost, model class, hyperparameter, and seed.
 
 ## 8. Current Artifact Taxonomy
 
@@ -121,7 +121,7 @@ The tracked reduced E2E manifest is `artifacts/reduced_e2e/result_manifest.json`
 | Category | Artifact | Status | Interpretation |
 |---|---|---:|---|
 | Forecast evidence | `artifacts/reduced_e2e/classical_walk_forward.csv` | smoke-tested | Synthetic fixture proves validation-selected walk-forward path over development rows only; not market evidence. |
-| Experiment registry | `artifacts/reduced_e2e/experiment_registry.jsonl` | smoke-tested | Records the full threshold search family before reduced walk-forward selection. |
+| Experiment registry | `artifacts/reduced_e2e/experiment_registry.jsonl` | smoke-tested | Records the full predeclared threshold search family with selected/evaluated status and validation/test PnL per attempt. |
 | Diagnostic gross edge | legacy local docs/results under ignored `results/` | local-only | Useful historical exploration, but not final reproducible evidence unless regenerated with manifests. |
 | Stateful executable simulation | `artifacts/reduced_e2e/stateful_orders.csv`, `stateful_fills.csv`, `stateful_positions.csv` | smoke-tested | Synthetic fixture feeds validation-selected rule signals into the simulator and proves ledger accounting constraints. |
 | Untouched holdout | `artifacts/reduced_e2e/holdout_manifest.json` | manifest only | Final empirical holdout evaluation remains pending. |

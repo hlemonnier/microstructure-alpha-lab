@@ -1,5 +1,6 @@
 from lob_forge.baselines import (
     compute_metrics,
+    evaluate_threshold_grid_on_splits,
     evaluate_rule_file,
     evaluate_maker_entry_economics,
     evaluate_taker_economics,
@@ -51,6 +52,61 @@ def test_run_threshold_baselines_can_sort_by_validation_net_pnl(tmp_path) -> Non
 
     assert results[0].name == "always_flat"
     assert results[0].validation_economics.net_pnl == 0
+
+
+def test_evaluate_threshold_grid_on_splits_handles_small_explicit_windows() -> None:
+    train_rows = [
+        {
+            "label": "1",
+            "microprice_deviation": "0.5",
+            "bid": "100",
+            "ask": "100.1",
+            "future_bid": "100.4",
+            "future_ask": "100.5",
+        },
+        {
+            "label": "-1",
+            "microprice_deviation": "-0.5",
+            "bid": "100",
+            "ask": "100.1",
+            "future_bid": "99.6",
+            "future_ask": "99.7",
+        },
+    ]
+    validation_rows = [
+        {
+            "label": "1",
+            "microprice_deviation": "0.4",
+            "bid": "100",
+            "ask": "100.1",
+            "future_bid": "100.3",
+            "future_ask": "100.4",
+        },
+    ]
+    test_rows = [
+        {
+            "label": "-1",
+            "microprice_deviation": "-0.4",
+            "bid": "100",
+            "ask": "100.1",
+            "future_bid": "99.7",
+            "future_ask": "99.8",
+        },
+    ]
+
+    results = evaluate_threshold_grid_on_splits(
+        train_rows=train_rows,
+        validation_rows=validation_rows,
+        test_rows=test_rows,
+        features=["microprice_deviation"],
+        thresholds=[0.05, 0.25],
+        taker_fee_bps=1.0,
+        slippage_bps=0.1,
+    )
+
+    assert len(results) == 2
+    assert {result.threshold for result in results} == {0.05, 0.25}
+    assert all(result.validation_economics.net_pnl is not None for result in results)
 
 
 def test_run_threshold_baselines_rejects_test_selection_metric(tmp_path) -> None:

@@ -9,6 +9,7 @@ from pathlib import Path
 
 from lob_forge.baselines import (
     WalkForwardFoldResult,
+    evaluate_threshold_grid_on_splits,
     format_walk_forward_results,
     predict_feature_threshold,
     run_walk_forward_thresholds,
@@ -97,6 +98,27 @@ def main() -> int:
     selected = (
         (selected_result.feature, selected_result.threshold) if selected_result.feature in selected_features else None
     )
+    development_rows = _read_csv_rows(development_fixture_path)
+    train_rows = development_rows[:TRAIN_SIZE]
+    validation_rows = development_rows[TRAIN_SIZE : TRAIN_SIZE + VALIDATION_SIZE]
+    test_rows = development_rows[TRAIN_SIZE + VALIDATION_SIZE : TRAIN_SIZE + VALIDATION_SIZE + TEST_SIZE]
+    evaluated_grid = evaluate_threshold_grid_on_splits(
+        train_rows=train_rows,
+        validation_rows=validation_rows,
+        test_rows=test_rows,
+        features=selected_features,
+        thresholds=selected_thresholds,
+        taker_fee_bps=1.0,
+        slippage_bps=0.1,
+        sort_by="validation_net_pnl",
+    )
+    attempt_metrics = {
+        (result.feature, result.threshold): {
+            "validation_net_pnl": result.validation_economics.net_pnl,
+            "test_net_pnl": result.test_economics.net_pnl,
+        }
+        for result in evaluated_grid
+    }
     registry_attempts = write_threshold_experiment_registry(
         experiment_registry_path,
         run_id="reduced_e2e_fixture",
@@ -109,6 +131,7 @@ def main() -> int:
             "validation_net_pnl": selected_result.validation_economics.net_pnl,
             "test_net_pnl": selected_result.test_economics.net_pnl,
         },
+        attempt_metrics=attempt_metrics,
         artifact_path=str(classical_path.relative_to(ROOT)),
         data_path=str(development_fixture_path.relative_to(ROOT)),
         holdout_manifest_path=str(holdout_path.relative_to(ROOT)),
@@ -119,7 +142,6 @@ def main() -> int:
         extra_config={"features": selected_features, "thresholds": selected_thresholds},
         notes="Synthetic fixture registry of the evaluated threshold grid and selected validation candidate.",
     )
-    development_rows = _read_csv_rows(development_fixture_path)
 
     simulation = simulate_stateful_execution(
         _market_events_from_rows(development_rows),

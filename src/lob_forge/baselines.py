@@ -234,6 +234,71 @@ def run_threshold_baselines(
     return sorted(results, key=lambda result: _sort_key(result, sort_by), reverse=True)
 
 
+def evaluate_threshold_grid_on_splits(
+    *,
+    train_rows: list[dict[str, str]],
+    validation_rows: list[dict[str, str]],
+    test_rows: list[dict[str, str]],
+    features: list[str] | None = None,
+    thresholds: list[float] | None = None,
+    execution_model: str = "taker",
+    maker_fee_bps: float = 0.0,
+    taker_fee_bps: float = 5.0,
+    slippage_bps: float = 0.0,
+    sort_by: str = "validation_net_pnl",
+    include_always_flat: bool = False,
+) -> list[BaselineResult]:
+    assert_valid_selection_metric(sort_by)
+    if not train_rows or not validation_rows or not test_rows:
+        raise ValueError("train_rows, validation_rows, and test_rows must be non-empty")
+    rows = train_rows + validation_rows + test_rows
+    feature_names = _available_features(rows, features)
+    threshold_values = thresholds or DEFAULT_THRESHOLDS
+    results: list[BaselineResult] = []
+    if include_always_flat:
+
+        def flat_predictor(row: dict[str, str]) -> int:
+            return 0
+
+        results.append(
+            _make_result(
+                name="always_flat",
+                feature="constant",
+                threshold=0.0,
+                train_rows=train_rows,
+                validation_rows=validation_rows,
+                test_rows=test_rows,
+                taker_fee_bps=taker_fee_bps,
+                maker_fee_bps=maker_fee_bps,
+                slippage_bps=slippage_bps,
+                execution_model=execution_model,
+                predictor=flat_predictor,
+            )
+        )
+    for feature in feature_names:
+        for threshold in threshold_values:
+
+            def predictor(row: dict[str, str], feature: str = feature, threshold: float = threshold) -> int:
+                return predict_feature_threshold(row, feature, threshold)
+
+            results.append(
+                _make_result(
+                    name=f"{feature}_threshold",
+                    feature=feature,
+                    threshold=threshold,
+                    train_rows=train_rows,
+                    validation_rows=validation_rows,
+                    test_rows=test_rows,
+                    taker_fee_bps=taker_fee_bps,
+                    maker_fee_bps=maker_fee_bps,
+                    slippage_bps=slippage_bps,
+                    execution_model=execution_model,
+                    predictor=predictor,
+                )
+            )
+    return sorted(results, key=lambda result: _sort_key(result, sort_by), reverse=True)
+
+
 def run_walk_forward_thresholds(
     feature_csv: Path | str,
     *,

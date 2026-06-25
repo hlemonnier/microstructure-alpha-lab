@@ -39,7 +39,7 @@ Fixture-only smoke:
 .venv/bin/python scripts/run_reduced_e2e.py
 ```
 
-This command first writes `artifacts/reduced_e2e/holdout_manifest.json`, then materializes `artifacts/reduced_e2e/development_feature_fixture.csv` with the declared holdout rows removed, then runs model selection on that development CSV only. It also writes `artifacts/reduced_e2e/experiment_registry.jsonl` before threshold selection.
+This command first writes `artifacts/reduced_e2e/holdout_manifest.json`, then materializes `artifacts/reduced_e2e/development_feature_fixture.csv` with the declared holdout rows removed, then runs model selection on that development CSV only. It predeclares the reduced threshold search family and writes `artifacts/reduced_e2e/experiment_registry.jsonl` with evaluated statuses plus validation/test PnL for each attempted threshold rule.
 
 C++ replay smoke:
 

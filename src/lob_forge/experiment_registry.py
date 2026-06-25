@@ -42,6 +42,8 @@ def write_threshold_experiment_registry(
     selection_metric: str,
     selected: tuple[str, float] | None = None,
     selected_metrics: dict[str, float] | None = None,
+    attempt_metrics: dict[tuple[str, float], dict[str, float]] | None = None,
+    attempt_failures: dict[tuple[str, float], str] | None = None,
     artifact_path: str = "",
     data_path: str = "",
     holdout_manifest_path: str = "",
@@ -65,6 +67,12 @@ def write_threshold_experiment_registry(
     for feature in features:
         for threshold in thresholds:
             is_selected = selected == (feature, threshold)
+            attempt_key = (feature, threshold)
+            metrics = (attempt_metrics or {}).get(attempt_key, {})
+            if is_selected and selected_metrics:
+                metrics = {**selected_metrics, **metrics}
+            failure_reason = (attempt_failures or {}).get(attempt_key, "")
+            status = "failed" if failure_reason else "selected" if is_selected else "evaluated_unselected"
             config = {
                 "family": "threshold_grid",
                 "model_class": model_class,
@@ -99,13 +107,12 @@ def write_threshold_experiment_registry(
                     taker_fee_bps=taker_fee_bps,
                     maker_fee_bps=maker_fee_bps,
                     random_seed=random_seed,
-                    status="selected" if is_selected else "evaluated_unselected",
+                    status=status,
                     selected=is_selected,
                     artifact_path=artifact_path,
-                    validation_net_pnl=selected_metrics.get("validation_net_pnl")
-                    if is_selected and selected_metrics
-                    else None,
-                    test_net_pnl=selected_metrics.get("test_net_pnl") if is_selected and selected_metrics else None,
+                    validation_net_pnl=metrics.get("validation_net_pnl"),
+                    test_net_pnl=metrics.get("test_net_pnl"),
+                    failure_reason=failure_reason,
                     notes=notes,
                 )
             )
