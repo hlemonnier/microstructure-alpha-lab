@@ -101,6 +101,15 @@ from lob_forge.live_validation import (
     write_observed_fill_template,
     write_market_events_from_feature_csv,
 )
+from lob_forge.local_api_sources import (
+    PAPER_FILL_GAP,
+    QUOTE_TRADE_GAP,
+    TRUE_L2_SMOKE_GAP,
+    format_local_api_sources_csv,
+    format_local_api_sources_json,
+    format_local_api_sources_markdown,
+    list_local_api_sources,
+)
 from lob_forge.logistic import format_logistic_walk_forward_results, run_logistic_walk_forward
 from lob_forge.memory_guard import apply_process_memory_limit, assert_csv_load_budget
 from lob_forge.ml_models import (
@@ -348,6 +357,17 @@ def main(argv: list[str] | None = None) -> int:
         "--baseline-audit", default="results/current/btc_full_day_edge_zero_fee_audit.csv"
     )
     evidence_gates_parser.add_argument("--kelly-artifact", default="results/current/btc_full_day_edge_zero_fee.csv")
+
+    free_api_sources_parser = subparsers.add_parser(
+        "free-api-sources",
+        help="List free/freemium APIs that can unblock local data gaps.",
+    )
+    free_api_sources_parser.add_argument(
+        "--gap",
+        choices=[PAPER_FILL_GAP, TRUE_L2_SMOKE_GAP, QUOTE_TRADE_GAP],
+        help="Filter to one local data gap.",
+    )
+    free_api_sources_parser.add_argument("--format", choices=["markdown", "csv", "json"], default="markdown")
 
     live_l2_capture_parser = subparsers.add_parser(
         "live-l2-capture",
@@ -924,6 +944,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_l2_import_manifest(args)
     if args.command == "evidence-gates":
         return _cmd_evidence_gates(args)
+    if args.command == "free-api-sources":
+        return _cmd_free_api_sources(args)
     if args.command == "live-l2-capture":
         return _cmd_live_l2_capture(args)
     if args.command == "validate-shadow-fills":
@@ -1312,6 +1334,17 @@ def _cmd_evidence_gates(args: argparse.Namespace) -> int:
         print(f"evidence_gates={output_path}")
     print(format_evidence_gate_report(report, output_format=args.format))
     return 0 if report.passed else 1
+
+
+def _cmd_free_api_sources(args: argparse.Namespace) -> int:
+    sources = list_local_api_sources(data_gap=args.gap)
+    if args.format == "csv":
+        print(format_local_api_sources_csv(sources))
+    elif args.format == "json":
+        print(format_local_api_sources_json(sources))
+    else:
+        print(format_local_api_sources_markdown(sources))
+    return 0
 
 
 def _cmd_live_l2_capture(args: argparse.Namespace) -> int:

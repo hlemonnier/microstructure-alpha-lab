@@ -4,6 +4,14 @@ Date checked: 2026-06-25.
 
 This runbook covers the local, non-GPU path for the remaining paper/live fill validation gap. The objective is not to prove profitability; it is to collect real paper/demo execution observations that can be joined back to `decision_id` and compared against the repository's simulated fill predictions.
 
+The same source priority is also available as machine-readable CLI output:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources \
+  --gap paper_live_fill_validation \
+  --format markdown
+```
+
 ## Source Priority
 
 1. Bybit Demo Trading

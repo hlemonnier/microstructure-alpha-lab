@@ -1,8 +1,16 @@
 # Historical L2 Source Priority
 
-Date checked: 2026-06-03.
+Date checked: 2026-06-25.
 
 This project now treats Binance Vision `bookTicker` / `aggTrades` / `bookDepth` as the v1 quote-trade-depth-band lab, and treats true L2 as a separate ingestion lane. The priority below is based on practical ability to obtain snapshots plus deltas, validate schema, replay sequence state, and run fill/queue research.
+
+For the local M1-safe source subset, use the machine-readable free/freemium API catalog:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources \
+  --gap true_l2_laptop_smoke \
+  --format markdown
+```
 
 ## Priority Order
 

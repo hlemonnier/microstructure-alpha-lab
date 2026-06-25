@@ -39,7 +39,7 @@ dependencies:
 Current fast verification in this checkout:
 
 ```text
-passed 219 direct test functions
+passed 223 direct test functions
 ```
 
 Reduced fixture-only artifacts:
@@ -64,6 +64,7 @@ MIN_AUDIT_FOLD_COUNT=20 bash scripts/verify_expected_edge_study.sh expected_edge
 - [Reproducibility](docs/reproducibility.md)
 - [Traceability](IMPLEMENTATION_TRACEABILITY.md)
 - [Data source reality](docs/data_source_reality.md)
+- [Local free/freemium API source plan](docs/local_free_api_sources.md)
 - [L2 replay](docs/l2_replay.md)
 - [Paper/demo fill sources](docs/paper_demo_fill_sources.md)
 - [Expected-edge methodology](docs/expected_edge.md)

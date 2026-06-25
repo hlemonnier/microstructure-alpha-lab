@@ -5,6 +5,7 @@ This checklist tracks every missing item found during the project audit. Check a
 ## Data Sources And L2
 
 - [x] Verify and document free L2 source priority with primary-source links: OKX, Bybit, Binance, Coinbase, Tardis.dev, Crypto Lake, FI-2010.
+- [x] Add machine-readable local free/freemium API source catalog for paper fills, true-L2 smoke imports, and public quote/trade archives.
 - [x] Add historical L2 source adapters for OKX.
 - [x] Add historical L2 source adapters for Bybit.
 - [x] Add sample/validation adapters for Tardis.dev CSV formats.
