@@ -44,6 +44,7 @@ TEST_SIZE = 2
 STEP_SIZE = 2
 INITIAL_CASH = 1000.0
 SOURCE_GIT_COMMIT_ENV = "LOB_FORGE_SOURCE_GIT_COMMIT"
+SOURCE_ARCHIVE_COMMIT_FILE = ".source-git-commit"
 
 
 def main() -> int:
@@ -437,12 +438,28 @@ def _git_commit() -> str:
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     except (OSError, subprocess.CalledProcessError):
+        archive_commit = _source_archive_git_commit()
+        if archive_commit:
+            return archive_commit
         raise RuntimeError(
-            f"run_reduced_e2e requires a Git checkout or {SOURCE_GIT_COMMIT_ENV}=<commit-hash>"
+            "run_reduced_e2e requires Git metadata, a Git archive with expanded "
+            f"{SOURCE_ARCHIVE_COMMIT_FILE}, or {SOURCE_GIT_COMMIT_ENV}=<commit-hash>"
         ) from None
     if not GIT_COMMIT_RE.fullmatch(commit):
         raise RuntimeError("git rev-parse HEAD did not return a valid commit hash")
     return commit
+
+
+def _source_archive_git_commit() -> str | None:
+    path = ROOT / SOURCE_ARCHIVE_COMMIT_FILE
+    if not path.exists():
+        return None
+    value = path.read_text().strip()
+    if not value or "$Format" in value:
+        return None
+    if not GIT_COMMIT_RE.fullmatch(value):
+        raise RuntimeError(f"{SOURCE_ARCHIVE_COMMIT_FILE} must contain a 40- or 64-character Git commit hash")
+    return value
 
 
 def _working_tree_dirty() -> bool | None:
