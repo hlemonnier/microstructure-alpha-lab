@@ -255,6 +255,15 @@ DRY_RUN=0 bash scripts/prepare_shadow_fill_validation_session.sh
 
 Populate `observed_fills.csv` from a real paper/live order export. Blank template rows are ignored by `import-observed-fills`; they do not count as no-fill evidence. Use explicit `cumExecQty=0` rows for real no-fill observations. Positive fill sizes require a fill price.
 
+The local API source and normalization runbook is [paper_demo_fill_sources.md](paper_demo_fill_sources.md). The recommended order is Bybit Demo Trading first, then OKX Demo Trading, Binance Spot Testnet for spot-only checks, and Alpaca Paper only as a generic simulator/API sanity check. Raw `.json`, `.jsonl`, or `.csv` provider exports can be normalized before import:
+
+```bash
+PYTHONPATH=src python3 -m lob_forge.cli normalize-observed-fills \
+  --provider bybit \
+  --input results/shadow_validation/raw_bybit_executions.json \
+  --output results/shadow_validation/observed_fills.csv
+```
+
 Import observed fills, then run the real gate:
 
 ```bash

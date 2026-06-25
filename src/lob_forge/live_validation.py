@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import csv
+import json
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
+from typing import Any
 
 from lob_forge.execution_sim import (
     FillValidation,
@@ -93,6 +96,18 @@ OBSERVED_FILL_TEMPLATE_COLUMNS = [
     "notes",
 ]
 
+NORMALIZED_OBSERVED_FILL_COLUMNS = [
+    "decision_id",
+    "client_order_id",
+    "venue",
+    "symbol",
+    "avgPrice",
+    "cumExecQty",
+    "realizedPnl",
+    "notes",
+]
+SUPPORTED_OBSERVED_FILL_PROVIDERS = ("bybit", "okx", "binance", "alpaca")
+
 MARKET_EVENT_COLUMNS = [
     "timestamp_ms",
     "bid",
@@ -162,6 +177,15 @@ class ObservedFillMergeReport:
     matched_decisions: int
     updated_decisions: int
     unmatched_observed_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ObservedFillNormalizationReport:
+    output_path: Path
+    provider: str
+    input_rows: int
+    output_rows: int
+    skipped_rows: int
 
 
 @dataclass
@@ -283,6 +307,50 @@ def write_observed_fill_template(
                 }
             )
     return output
+
+
+def normalize_observed_fills(
+    *,
+    provider: str,
+    input_path: Path | str,
+    output_path: Path | str,
+) -> ObservedFillNormalizationReport:
+    provider = provider.lower()
+    if provider not in SUPPORTED_OBSERVED_FILL_PROVIDERS:
+        raise ValueError(f"provider must be one of: {', '.join(SUPPORTED_OBSERVED_FILL_PROVIDERS)}")
+    raw_rows = _read_raw_provider_rows(Path(input_path))
+    output_rows: list[dict[str, str]] = []
+    seen_keys: set[str] = set()
+    skipped_rows = 0
+
+    for row in raw_rows:
+        normalized_rows = _normalize_provider_fill_row(provider, row)
+        if not normalized_rows:
+            skipped_rows += 1
+            continue
+        for normalized in normalized_rows:
+            key = _dedupe_key(provider, normalized)
+            if key in seen_keys:
+                skipped_rows += 1
+                continue
+            seen_keys.add(key)
+            output_rows.append(normalized)
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=NORMALIZED_OBSERVED_FILL_COLUMNS)
+        writer.writeheader()
+        for row in output_rows:
+            writer.writerow({column: row.get(column, "") for column in NORMALIZED_OBSERVED_FILL_COLUMNS})
+
+    return ObservedFillNormalizationReport(
+        output_path=output,
+        provider=provider,
+        input_rows=len(raw_rows),
+        output_rows=len(output_rows),
+        skipped_rows=skipped_rows,
+    )
 
 
 def write_simulated_fill_predictions(path: Path | str, predictions: list[SimulatedFillPrediction]) -> Path:
@@ -533,6 +601,34 @@ def format_observed_fill_merge_report(report: ObservedFillMergeReport, *, output
     return "\n".join(lines)
 
 
+def format_observed_fill_normalization_report(
+    report: ObservedFillNormalizationReport,
+    *,
+    output_format: str = "text",
+) -> str:
+    if output_format == "csv":
+        fields = ["output_path", "provider", "input_rows", "output_rows", "skipped_rows"]
+        values = [
+            str(report.output_path),
+            report.provider,
+            str(report.input_rows),
+            str(report.output_rows),
+            str(report.skipped_rows),
+        ]
+        return ",".join(fields) + "\n" + ",".join(values)
+    if output_format != "text":
+        raise ValueError("output_format must be text or csv")
+    return "\n".join(
+        [
+            f"output_path={report.output_path}",
+            f"provider={report.provider}",
+            f"input_rows={report.input_rows}",
+            f"output_rows={report.output_rows}",
+            f"skipped_rows={report.skipped_rows}",
+        ]
+    )
+
+
 def _read_observed_fill_aggregates(path: Path | str) -> dict[str, _ObservedFillAggregate]:
     aggregates: dict[str, _ObservedFillAggregate] = {}
     with Path(path).open(newline="") as handle:
@@ -564,6 +660,306 @@ def _read_observed_fill_aggregates(path: Path | str) -> dict[str, _ObservedFillA
                 aggregate.realized_pnl += realized_pnl
                 aggregate.has_realized_pnl = True
     return aggregates
+
+
+def _read_raw_provider_rows(path: Path) -> list[dict[str, Any]]:
+    suffix = path.suffix.lower()
+    if suffix == ".csv":
+        with path.open(newline="") as handle:
+            reader = csv.DictReader(handle)
+            if reader.fieldnames is None:
+                raise ValueError("provider fill CSV has no header")
+            return [dict(row) for row in reader]
+    if suffix == ".jsonl":
+        rows: list[dict[str, Any]] = []
+        with path.open() as handle:
+            for line_number, line in enumerate(handle, start=1):
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                payload = json.loads(stripped)
+                rows.extend(_json_payload_rows(payload, label=f"line {line_number}"))
+        return rows
+    if suffix == ".json":
+        return _json_payload_rows(json.loads(path.read_text()), label=str(path))
+    raise ValueError("provider fill input must be .csv, .json, or .jsonl")
+
+
+def _json_payload_rows(payload: Any, *, label: str) -> list[dict[str, Any]]:
+    if isinstance(payload, list):
+        return [_expect_mapping(row, label=label) for row in payload]
+    if isinstance(payload, dict):
+        if isinstance(payload.get("result"), dict) and isinstance(payload["result"].get("list"), list):
+            return [_expect_mapping(row, label=label) for row in payload["result"]["list"]]
+        if isinstance(payload.get("data"), list):
+            return [_expect_mapping(row, label=label) for row in payload["data"]]
+        if isinstance(payload.get("list"), list):
+            return [_expect_mapping(row, label=label) for row in payload["list"]]
+        return [dict(payload)]
+    raise ValueError(f"provider fill JSON payload in {label} must contain an object or array")
+
+
+def _expect_mapping(value: Any, *, label: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"provider fill row in {label} must be an object")
+    return dict(value)
+
+
+def _normalize_provider_fill_row(provider: str, row: Mapping[str, Any]) -> list[dict[str, str]]:
+    if provider == "bybit":
+        normalized = _normalize_bybit_fill_row(row)
+        return [] if normalized is None else [normalized]
+    if provider == "okx":
+        normalized = _normalize_okx_fill_row(row)
+        return [] if normalized is None else [normalized]
+    if provider == "binance":
+        return _normalize_binance_fill_row(row)
+    if provider == "alpaca":
+        return _normalize_alpaca_fill_row(row)
+    raise ValueError(f"unsupported provider: {provider}")
+
+
+def _normalize_bybit_fill_row(row: Mapping[str, Any]) -> dict[str, str] | None:
+    decision_id = _first_raw_value(row, ("orderLinkId", "order_link_id", "clientOrderId", "client_order_id", "orderId"))
+    price = _first_raw_value(row, ("execPrice", "avgPrice"))
+    size = _first_raw_value(row, ("execQty", "cumExecQty"))
+    if not decision_id or _optional_float_any(size) in {None, 0.0}:
+        return None
+    return _normalized_fill_row(
+        decision_id=decision_id,
+        venue="bybit",
+        symbol=_first_raw_value(row, ("symbol",)),
+        price=price,
+        size=size,
+        realized_pnl=_first_raw_value(row, ("execPnl", "closedPnl", "realizedPnl")),
+        notes=_provider_notes(row, ("execTime", "execId", "orderId", "isMaker", "execType", "feeCurrency", "execFee")),
+    )
+
+
+def _normalize_okx_fill_row(row: Mapping[str, Any]) -> dict[str, str] | None:
+    decision_id = _first_raw_value(row, ("clOrdId", "ordId"))
+    size = _first_raw_value(row, ("fillSz",))
+    if not decision_id or _optional_float_any(size) in {None, 0.0}:
+        return None
+    return _normalized_fill_row(
+        decision_id=decision_id,
+        venue="okx",
+        symbol=_first_raw_value(row, ("instId",)),
+        price=_first_raw_value(row, ("fillPx",)),
+        size=size,
+        realized_pnl=_first_raw_value(row, ("fillPnl",)),
+        notes=_provider_notes(row, ("fillTime", "ts", "tradeId", "billId", "ordId", "execType", "feeCcy", "fee")),
+    )
+
+
+def _normalize_binance_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
+    record = _nested_mapping(row, "event") or row
+    if isinstance(record.get("fills"), list):
+        parent_decision_id = _first_raw_value(record, ("clientOrderId", "newClientOrderId", "c", "orderId"))
+        symbol = _first_raw_value(record, ("symbol", "s"))
+        rows: list[dict[str, str]] = []
+        for fill in record["fills"]:
+            fill_row = _expect_mapping(fill, label="binance fills")
+            fill_decision_id = parent_decision_id or _first_raw_value(fill_row, ("clientOrderId", "c", "orderId"))
+            if not fill_decision_id:
+                continue
+            rows.append(
+                _normalized_fill_row(
+                    decision_id=fill_decision_id,
+                    venue="binance",
+                    symbol=symbol,
+                    price=_first_raw_value(fill_row, ("price", "p")),
+                    size=_first_raw_value(fill_row, ("qty", "q")),
+                    realized_pnl=None,
+                    notes=_provider_notes(record, ("transactTime", "orderId", "status", "type", "side"))
+                    + _prefixed_notes(fill_row, "fill", ("tradeId", "commission", "commissionAsset")),
+                )
+            )
+        return rows
+
+    decision_id = _first_raw_value(record, ("c", "clientOrderId", "newClientOrderId", "orderId", "i"))
+    if not decision_id:
+        return []
+    status = (_first_raw_value(record, ("X", "status")) or "").upper()
+    exec_type = (_first_raw_value(record, ("x", "executionType")) or "").upper()
+    last_size = _first_raw_value(record, ("l", "lastExecutedQty"))
+    last_price = _first_raw_value(record, ("L", "lastExecutedPrice"))
+    if _optional_float_any(last_size) not in {None, 0.0}:
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="binance",
+                symbol=_first_raw_value(record, ("s", "symbol")),
+                price=last_price,
+                size=last_size,
+                realized_pnl=None,
+                notes=_provider_notes(record, ("E", "T", "i", "t", "I", "x", "X", "m")),
+            )
+        ]
+
+    executed_size = _first_raw_value(record, ("executedQty", "z"))
+    executed_qty = _optional_float_any(executed_size)
+    if executed_qty is not None and executed_qty > 0 and exec_type != "TRADE":
+        quote_value = _optional_float_any(_first_raw_value(record, ("cummulativeQuoteQty", "cumulativeQuoteQty", "Z")))
+        avg_price = _format_optional(quote_value / executed_qty) if quote_value is not None else last_price
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="binance",
+                symbol=_first_raw_value(record, ("s", "symbol")),
+                price=avg_price,
+                size=executed_size,
+                realized_pnl=None,
+                notes=_provider_notes(record, ("E", "T", "i", "t", "I", "x", "X", "m")),
+            )
+        ]
+
+    if _is_terminal_unfilled(status):
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="binance",
+                symbol=_first_raw_value(record, ("s", "symbol")),
+                price=None,
+                size="0",
+                realized_pnl=None,
+                notes=_provider_notes(record, ("E", "T", "i", "x", "X")),
+            )
+        ]
+    return []
+
+
+def _normalize_alpaca_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
+    data = _nested_mapping(row, "data") or row
+    order = _nested_mapping(data, "order") or data
+    decision_id = _first_raw_value(order, ("client_order_id", "id"))
+    if not decision_id:
+        return []
+    event = (_first_raw_value(data, ("event",)) or _first_raw_value(row, ("event",)) or "").lower()
+    if event in {"fill", "partial_fill"}:
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="alpaca",
+                symbol=_first_raw_value(order, ("symbol",)),
+                price=_first_raw_value(data, ("price",)) or _first_raw_value(order, ("filled_avg_price",)),
+                size=_first_raw_value(data, ("qty",)) or _first_raw_value(order, ("filled_qty",)),
+                realized_pnl=None,
+                notes=_provider_notes(data, ("timestamp", "execution_id", "event")),
+            )
+        ]
+
+    filled_size = _first_raw_value(order, ("filled_qty",))
+    filled_qty = _optional_float_any(filled_size)
+    status = (_first_raw_value(order, ("status",)) or "").lower()
+    if filled_qty is not None and filled_qty > 0:
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="alpaca",
+                symbol=_first_raw_value(order, ("symbol",)),
+                price=_first_raw_value(order, ("filled_avg_price",)),
+                size=filled_size,
+                realized_pnl=None,
+                notes=_provider_notes(order, ("submitted_at", "filled_at", "status", "id")),
+            )
+        ]
+    if status in {"canceled", "expired", "rejected", "done_for_day"}:
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="alpaca",
+                symbol=_first_raw_value(order, ("symbol",)),
+                price=None,
+                size="0",
+                realized_pnl=None,
+                notes=_provider_notes(
+                    order, ("submitted_at", "canceled_at", "expired_at", "failed_at", "status", "id")
+                ),
+            )
+        ]
+    return []
+
+
+def _normalized_fill_row(
+    *,
+    decision_id: str,
+    venue: str,
+    symbol: str | None,
+    price: str | None,
+    size: str | None,
+    realized_pnl: str | None,
+    notes: str,
+) -> dict[str, str]:
+    size_value = _optional_float_any(size)
+    price_value = _optional_float_any(price)
+    if size_value is None:
+        raise ValueError(f"observed fill for {decision_id} missing fill size")
+    if size_value < 0:
+        raise ValueError(f"observed fill for {decision_id} has negative fill size")
+    if size_value > 0 and price_value is None:
+        raise ValueError(f"observed fill for {decision_id} has positive fill size but no fill price")
+    return {
+        "decision_id": decision_id,
+        "client_order_id": decision_id,
+        "venue": venue,
+        "symbol": symbol or "",
+        "avgPrice": _format_optional(price_value),
+        "cumExecQty": _format_optional(size_value),
+        "realizedPnl": _format_optional(_optional_float_any(realized_pnl)),
+        "notes": notes,
+    }
+
+
+def _dedupe_key(provider: str, row: Mapping[str, str]) -> str:
+    identity_fields = {"execId", "orderId", "tradeId", "billId", "execution_id", "I", "t", "i", "id", "fill.tradeId"}
+    note_identity = "|".join(
+        part for part in row.get("notes", "").split(";") if part.split("=", 1)[0] in identity_fields
+    )
+    if note_identity:
+        return f"{provider}|{row['decision_id']}|{note_identity}"
+    return f"{provider}|{id(row)}"
+
+
+def _nested_mapping(row: Mapping[str, Any], key: str) -> Mapping[str, Any] | None:
+    value = row.get(key)
+    return value if isinstance(value, Mapping) else None
+
+
+def _first_raw_value(row: Mapping[str, Any], columns: tuple[str, ...]) -> str | None:
+    for column in columns:
+        value = row.get(column)
+        if value is None:
+            continue
+        if isinstance(value, str) and value == "":
+            continue
+        return str(value)
+    return None
+
+
+def _optional_float_any(value: Any) -> float | None:
+    if value is None:
+        return None
+    if isinstance(value, str) and value == "":
+        return None
+    return float(value)
+
+
+def _provider_notes(row: Mapping[str, Any], columns: tuple[str, ...]) -> str:
+    return ";".join(
+        f"{column}={value}" for column in columns if (value := _first_raw_value(row, (column,))) is not None
+    )
+
+
+def _prefixed_notes(row: Mapping[str, Any], prefix: str, columns: tuple[str, ...]) -> str:
+    notes = _provider_notes(row, columns)
+    if not notes:
+        return ""
+    return ";" + ";".join(f"{prefix}.{part}" for part in notes.split(";"))
+
+
+def _is_terminal_unfilled(status: str) -> bool:
+    return status in {"CANCELED", "CANCELLED", "EXPIRED", "REJECTED"}
 
 
 def _decision_from_row(row: dict[str, str]) -> ShadowDecision:

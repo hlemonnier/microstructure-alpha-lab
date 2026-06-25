@@ -89,9 +89,12 @@ from lob_forge.l2_ingest import (
 )
 from lob_forge.live_collectors import capture_live_l2
 from lob_forge.live_validation import (
+    SUPPORTED_OBSERVED_FILL_PROVIDERS,
     format_observed_fill_merge_report,
+    format_observed_fill_normalization_report,
     format_shadow_fill_validation_report,
     merge_observed_fills_into_shadow_decisions,
+    normalize_observed_fills,
     simulate_shadow_fills_to_file,
     validate_shadow_fill_predictions,
     write_observed_fill_template,
@@ -378,6 +381,22 @@ def main(argv: list[str] | None = None) -> int:
     import_observed_fills_parser.add_argument("--observed", required=True)
     import_observed_fills_parser.add_argument("--output", required=True)
     import_observed_fills_parser.add_argument("--format", choices=["text", "csv"], default="text")
+
+    normalize_observed_fills_parser = subparsers.add_parser(
+        "normalize-observed-fills",
+        help="Normalize raw paper/demo fill exports into the observed-fill import CSV schema.",
+    )
+    normalize_observed_fills_parser.add_argument(
+        "--provider",
+        required=True,
+        choices=SUPPORTED_OBSERVED_FILL_PROVIDERS,
+        help="Raw export provider.",
+    )
+    normalize_observed_fills_parser.add_argument(
+        "--input", required=True, help="Raw provider .csv, .json, or .jsonl file."
+    )
+    normalize_observed_fills_parser.add_argument("--output", required=True)
+    normalize_observed_fills_parser.add_argument("--format", choices=["text", "csv"], default="text")
 
     observed_fill_template_parser = subparsers.add_parser(
         "observed-fill-template",
@@ -910,6 +929,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_validate_shadow_fills(args)
     if args.command == "import-observed-fills":
         return _cmd_import_observed_fills(args)
+    if args.command == "normalize-observed-fills":
+        return _cmd_normalize_observed_fills(args)
     if args.command == "observed-fill-template":
         return _cmd_observed_fill_template(args)
     if args.command == "simulate-shadow-fills":
@@ -1332,6 +1353,16 @@ def _cmd_import_observed_fills(args: argparse.Namespace) -> int:
         output_path=Path(args.output),
     )
     print(format_observed_fill_merge_report(report, output_format=args.format))
+    return 0
+
+
+def _cmd_normalize_observed_fills(args: argparse.Namespace) -> int:
+    report = normalize_observed_fills(
+        provider=args.provider,
+        input_path=Path(args.input),
+        output_path=Path(args.output),
+    )
+    print(format_observed_fill_normalization_report(report, output_format=args.format))
     return 0
 
 

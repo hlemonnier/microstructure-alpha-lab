@@ -1,9 +1,12 @@
 import csv
+import json
 from pathlib import Path
 
+from lob_forge.cli import main as cli_main
 from lob_forge.live_validation import (
     ShadowDecision,
     SimulatedFillPrediction,
+    normalize_observed_fills,
     append_shadow_decision,
     format_shadow_fill_validation_report,
     market_events_from_feature_csv,
@@ -365,6 +368,248 @@ def test_observed_fill_import_rejects_positive_size_without_price(tmp_path: Path
         assert "positive fill size but no fill price" in str(exc)
     else:
         raise AssertionError("expected observed fill import validation failure")
+
+
+def test_normalize_bybit_demo_execution_export_merges_into_shadow_decisions(tmp_path: Path) -> None:
+    shadow_path = tmp_path / "shadow.csv"
+    raw_path = tmp_path / "bybit_executions.json"
+    observed_path = tmp_path / "observed.csv"
+    output_path = tmp_path / "shadow_with_observed.csv"
+    append_shadow_decision(
+        shadow_path,
+        ShadowDecision(
+            decision_id="d1",
+            timestamp_ms=1700000000000,
+            venue="bybit",
+            symbol="BTCUSDT",
+            model_name="ridge_expected_edge",
+            predicted_side=1,
+            predicted_edge_bps=0.8,
+            order_type="paper_limit",
+            intended_price=100.0,
+            intended_size=1.0,
+        ),
+    )
+    raw_path.write_text(
+        json.dumps(
+            {
+                "result": {
+                    "list": [
+                        {
+                            "orderLinkId": "d1",
+                            "orderId": "bybit-order-1",
+                            "symbol": "BTCUSDT",
+                            "execPrice": "100.0",
+                            "execQty": "0.25",
+                            "execId": "exec-1",
+                            "isMaker": True,
+                        },
+                        {
+                            "orderLinkId": "d1",
+                            "orderId": "bybit-order-1",
+                            "symbol": "BTCUSDT",
+                            "execPrice": "101.0",
+                            "execQty": "0.75",
+                            "execId": "exec-2",
+                            "isMaker": False,
+                        },
+                    ]
+                }
+            }
+        )
+    )
+
+    normalize_report = normalize_observed_fills(provider="bybit", input_path=raw_path, output_path=observed_path)
+    merge_report = merge_observed_fills_into_shadow_decisions(
+        shadow_path=shadow_path,
+        observed_path=observed_path,
+        output_path=output_path,
+    )
+    decisions = read_shadow_decisions(output_path)
+
+    assert normalize_report.output_rows == 2
+    assert merge_report.matched_decisions == 1
+    assert decisions[0].observed_fill_size == 1.0
+    assert abs((decisions[0].observed_fill_price or 0.0) - 100.75) < 1e-9
+
+
+def test_normalize_okx_demo_transaction_details(tmp_path: Path) -> None:
+    raw_path = tmp_path / "okx_fills.json"
+    observed_path = tmp_path / "observed.csv"
+    raw_path.write_text(
+        json.dumps(
+            {
+                "data": [
+                    {
+                        "clOrdId": "d1",
+                        "ordId": "okx-order-1",
+                        "instId": "BTC-USDT-SWAP",
+                        "fillPx": "51858",
+                        "fillSz": "0.00192834",
+                        "fillPnl": "0.12",
+                        "fillTime": "1708587373361",
+                        "tradeId": "744876980",
+                        "execType": "M",
+                    }
+                ]
+            }
+        )
+    )
+
+    report = normalize_observed_fills(provider="okx", input_path=raw_path, output_path=observed_path)
+    rows = list(csv.DictReader(observed_path.open()))
+
+    assert report.input_rows == 1
+    assert report.output_rows == 1
+    assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["symbol"] == "BTC-USDT-SWAP"
+    assert rows[0]["avgPrice"] == "51858"
+    assert rows[0]["cumExecQty"] == "0.00192834"
+    assert rows[0]["realizedPnl"] == "0.12"
+    assert "execType=M" in rows[0]["notes"]
+
+
+def test_cli_normalize_observed_fills_writes_importable_csv(tmp_path: Path) -> None:
+    raw_path = tmp_path / "okx_fills.json"
+    observed_path = tmp_path / "observed.csv"
+    raw_path.write_text(json.dumps({"data": [{"clOrdId": "d1", "instId": "BTC-USDT", "fillPx": "100", "fillSz": "2"}]}))
+
+    exit_code = cli_main(
+        [
+            "normalize-observed-fills",
+            "--provider",
+            "okx",
+            "--input",
+            str(raw_path),
+            "--output",
+            str(observed_path),
+        ]
+    )
+    rows = list(csv.DictReader(observed_path.open()))
+
+    assert exit_code == 0
+    assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["avgPrice"] == "100"
+    assert rows[0]["cumExecQty"] == "2"
+
+
+def test_normalize_binance_testnet_stream_and_full_order_payloads(tmp_path: Path) -> None:
+    raw_path = tmp_path / "binance_events.jsonl"
+    observed_path = tmp_path / "observed.csv"
+    raw_path.write_text(
+        "\n".join(
+            [
+                json.dumps(
+                    {
+                        "subscriptionId": 0,
+                        "event": {
+                            "e": "executionReport",
+                            "E": 1499405658658,
+                            "s": "BTCUSDT",
+                            "c": "d1",
+                            "x": "TRADE",
+                            "X": "PARTIALLY_FILLED",
+                            "i": 4293153,
+                            "l": "0.25",
+                            "z": "0.25",
+                            "L": "10000",
+                            "T": 1499405658657,
+                            "t": 11,
+                            "I": 8641984,
+                            "m": True,
+                        },
+                    }
+                ),
+                json.dumps(
+                    {
+                        "symbol": "BTCUSDT",
+                        "clientOrderId": "d1",
+                        "status": "FILLED",
+                        "transactTime": 1499405659000,
+                        "orderId": 28,
+                        "fills": [{"price": "10002", "qty": "0.75", "tradeId": 12}],
+                    }
+                ),
+                json.dumps(
+                    {
+                        "event": {
+                            "e": "executionReport",
+                            "s": "BTCUSDT",
+                            "c": "d2",
+                            "x": "CANCELED",
+                            "X": "CANCELED",
+                            "i": 4293154,
+                            "l": "0",
+                            "z": "0",
+                            "L": "0",
+                        }
+                    }
+                ),
+            ]
+        )
+    )
+
+    report = normalize_observed_fills(provider="binance", input_path=raw_path, output_path=observed_path)
+    rows = list(csv.DictReader(observed_path.open()))
+
+    assert report.output_rows == 3
+    assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["avgPrice"] == "10000"
+    assert rows[0]["cumExecQty"] == "0.25"
+    assert rows[1]["decision_id"] == "d1"
+    assert rows[1]["avgPrice"] == "10002"
+    assert rows[1]["cumExecQty"] == "0.75"
+    assert rows[2]["decision_id"] == "d2"
+    assert rows[2]["avgPrice"] == ""
+    assert rows[2]["cumExecQty"] == "0"
+
+
+def test_normalize_alpaca_paper_trade_updates(tmp_path: Path) -> None:
+    raw_path = tmp_path / "alpaca_events.json"
+    observed_path = tmp_path / "observed.csv"
+    raw_path.write_text(
+        json.dumps(
+            [
+                {
+                    "stream": "trade_updates",
+                    "data": {
+                        "event": "partial_fill",
+                        "execution_id": "exec-1",
+                        "price": "105.8988475",
+                        "qty": "1790.86",
+                        "timestamp": "2022-04-19T17:45:05.024916716Z",
+                        "order": {
+                            "client_order_id": "d1",
+                            "symbol": "SOLUSD",
+                            "filled_avg_price": "105.8988475",
+                            "filled_qty": "1790.86",
+                            "status": "partially_filled",
+                        },
+                    },
+                },
+                {
+                    "client_order_id": "d2",
+                    "symbol": "BTCUSD",
+                    "filled_qty": "0",
+                    "filled_avg_price": None,
+                    "status": "canceled",
+                    "id": "alpaca-order-2",
+                },
+            ]
+        )
+    )
+
+    report = normalize_observed_fills(provider="alpaca", input_path=raw_path, output_path=observed_path)
+    rows = list(csv.DictReader(observed_path.open()))
+
+    assert report.output_rows == 2
+    assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["symbol"] == "SOLUSD"
+    assert rows[0]["avgPrice"] == "105.8988475"
+    assert rows[0]["cumExecQty"] == "1790.86"
+    assert rows[1]["decision_id"] == "d2"
+    assert rows[1]["avgPrice"] == ""
+    assert rows[1]["cumExecQty"] == "0"
 
 
 def test_feature_csv_exports_market_events_for_fill_simulation(tmp_path: Path) -> None:
