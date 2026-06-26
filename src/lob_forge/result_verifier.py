@@ -328,6 +328,11 @@ def _verify_experiment_ledger(
                 f"{path.name}:{line_number} {experiment_id}: git_rev {git_rev!r} "
                 f"does not match current HEAD {current_git_head!r}"
             )
+        elif current_git_head is not None and git_root is not None and not _git_rev_has_tag(git_rev, git_root):
+            errors.append(
+                f"{path.name}:{line_number} {experiment_id}: git_rev {git_rev!r} is not tagged; "
+                "clean classical artifacts must come from a tagged commit"
+            )
         if current_git_head is not None:
             dirty_value = row.get("working_tree_dirty")
             dirty_state = _parse_working_tree_dirty(dirty_value)
@@ -414,6 +419,19 @@ def _git_rev_matches_head(git_rev: str, current_git_head: str) -> bool:
     normalized_rev = git_rev.lower()
     normalized_head = current_git_head.lower()
     return normalized_rev == normalized_head or normalized_head.startswith(normalized_rev)
+
+
+def _git_rev_has_tag(git_rev: str, git_root: Path) -> bool:
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(git_root), "tag", "--points-at", git_rev],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return False
+    return completed.returncode == 0 and bool(completed.stdout.strip())
 
 
 def _git_root(path: Path) -> Path | None:

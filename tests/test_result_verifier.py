@@ -133,6 +133,20 @@ def test_result_verifier_accepts_in_repo_ledger_from_current_head(tmp_path: Path
     assert report.passed
 
 
+def test_result_verifier_rejects_in_repo_ledger_from_untagged_head(tmp_path: Path) -> None:
+    repo = _init_git_repo(tmp_path / "repo", tag_head=False)
+    head = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+    result_dir = repo / "results"
+    result_dir.mkdir()
+    _write_minimal_result_dir(result_dir, git_rev=head)
+    (result_dir / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
+
+    report = verify_result_artifacts(result_dir)
+
+    assert not report.passed
+    assert any("is not tagged" in error for error in report.errors)
+
+
 def test_result_verifier_rejects_in_repo_ledger_without_worktree_provenance(tmp_path: Path) -> None:
     repo = _init_git_repo(tmp_path / "repo")
     head = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
@@ -278,7 +292,7 @@ def _write_pvalue_files(tmp_path: Path, *, hypothesis_id: str = "sample", config
     (tmp_path / "pvalue_corrections.csv").write_text(f"{correction_header}\n{correction_row}\n")
 
 
-def _init_git_repo(path: Path) -> Path:
+def _init_git_repo(path: Path, *, tag_head: bool = True) -> Path:
     path.mkdir()
     subprocess.run(["git", "-C", str(path), "init"], check=True, capture_output=True, text=True)
     subprocess.run(["git", "-C", str(path), "config", "user.email", "test@example.com"], check=True)
@@ -286,6 +300,8 @@ def _init_git_repo(path: Path) -> Path:
     (path / "README.md").write_text("fixture\n")
     subprocess.run(["git", "-C", str(path), "add", "README.md"], check=True)
     subprocess.run(["git", "-C", str(path), "commit", "-m", "fixture"], check=True, capture_output=True, text=True)
+    if tag_head:
+        subprocess.run(["git", "-C", str(path), "tag", "fixture-clean-classical"], check=True)
     return path
 
 
