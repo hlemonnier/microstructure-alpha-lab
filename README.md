@@ -4,7 +4,7 @@ Reproducible crypto microstructure research stack for the question:
 
 > Does public crypto market microstructure data contain short-horizon predictive information that remains executable after causal timing, fees, latency, slippage, available liquidity, inventory constraints, adverse selection, and model-selection bias?
 
-The current evidence should be read conservatively. The repository supports causal feature generation, validation-only model selection, frozen holdout manifests, stateful execution simulation, dependence-aware statistics, true-L2 replay checks, gated neural smoke paths with manifest-filtered development L2 runs, repeated-seed and ablation dry-runs, checkpoints/prediction exports, and a small C++ replay component. It does not claim executable alpha on the available local artifacts.
+The current evidence should be read conservatively. The repository supports causal feature generation, validation-only model selection, frozen holdout manifests, stateful execution simulation, dependence-aware statistics, true-L2 replay checks, gated neural smoke paths with manifest-filtered development L2 runs, repeated-seed and ablation dry-runs, checkpoints/prediction exports, frozen neural sequence candidates, one-way neural final-holdout evaluation, and a small C++ replay component. It does not claim executable alpha on the available local artifacts.
 
 ## What Is Implemented
 
@@ -13,7 +13,7 @@ The current evidence should be read conservatively. The repository supports caus
 - Mandatory holdout manifests for CLI research/evidence commands; development runs materialize a content-hash-checked CSV with declared holdout rows physically removed.
 - Stateful execution simulation with cash, inventory, equity, maker/taker fills, partial liquidity, fees, latency, expiry, position/leverage limits, ledgers, and a kill switch.
 - Dependence-aware inference helpers: HAC/Newey-West, day-level bootstrap, moving/stationary block bootstrap, Sharpe-like and break-even-cost intervals.
-- True-L2 schema, replay validation, normalized tensor path, TCN/Transformer CPU smoke tests with optional holdout-manifest filtering, repeated seeds, named ablations, class weighting, early stopping, checkpoints, calibration metrics, prediction exports, stateful economic smoke fields, and a compact C++ L2 replay equivalence test.
+- True-L2 schema, replay validation, normalized tensor path, TCN/Transformer CPU smoke tests with optional holdout-manifest filtering, repeated seeds, named ablations, class weighting, early stopping, checkpoints, calibration metrics, prediction exports, stateful economic smoke fields, frozen sequence-candidate final holdout hooks, and a compact C++ L2 replay equivalence test.
 
 ## Current Evidence
 

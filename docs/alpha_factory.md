@@ -238,6 +238,29 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-sequence-experiment \
 
 The aggregate evidence gate now inspects these artifact rows; they must report the expected `model_name`, selected `l2_path`, `readiness_passed=1`, `dependency_available=1`, and `pipeline_completed=1`. Sequence artifacts also record holdout manifest path/hash, the filtered development L2 path, holdout row counts, minibatch size, early-stopping patience, best epoch, selected device, class weighting, scheduler gamma, checkpoint path, prediction-export path, Brier/ECE calibration metrics, confusion matrices, and stateful test-set economic smoke fields. `acceptance_passed` remains separate and should only become true when an explicit predictive/economic threshold is defined and met.
 
+Before treating a neural sequence run as a final candidate, freeze the manifest-filtered artifact and checkpoint. The freeze step records the checkpoint hash, development L2 hash, and development-only standardizer values; the final command then loads the frozen checkpoint and evaluates only manifest-selected holdout L2 rows without refitting preprocessing:
+
+```bash
+PYTHONPATH=src python3 -m lob_forge.cli freeze-sequence-candidate \
+  results/model_experiments/sequence_transformer_results.csv \
+  --output results/final_holdout/sequence_transformer_candidate.json
+
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest \
+  data/normalized_l2/bybit/BTCUSDT/2023-05-16.csv \
+  --output results/holdout_manifests/sequence_transformer_final_holdout.json \
+  --split-column exchange_timestamp \
+  --holdout-values <final_holdout_exchange_timestamps_or_session_ids> \
+  --candidate-json results/final_holdout/sequence_transformer_candidate.json
+
+PYTHONPATH=src python3 -m lob_forge.cli final-holdout-sequence \
+  data/normalized_l2/bybit/BTCUSDT/2023-05-16.csv \
+  --holdout-manifest results/holdout_manifests/sequence_transformer_final_holdout.json \
+  --candidate-json results/final_holdout/sequence_transformer_candidate.json \
+  --output results/final_holdout/sequence_transformer_final_holdout_result.json \
+  --predictions-output results/final_holdout/sequence_transformer_final_predictions.csv \
+  --explicit-final-evaluation
+```
+
 The dependency-free self-supervised smoke artifact is generated with:
 
 ```bash

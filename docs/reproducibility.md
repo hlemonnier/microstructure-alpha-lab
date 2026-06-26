@@ -167,6 +167,26 @@ For the ridge expected-edge family, freeze the trained development-only model an
   --explicit-final-evaluation
 ```
 
+For neural L2 sequence candidates, freeze the manifest-filtered artifact after the development run. The candidate JSON includes the checkpoint hash, development L2 hash, and development-only standardizer values, so final evaluation can load the frozen checkpoint and evaluate only manifest-selected holdout L2 rows:
+
+```bash
+.venv/bin/python -m lob_forge.cli freeze-sequence-candidate <sequence_results.csv> \
+  --output <frozen_sequence_candidate.json>
+
+.venv/bin/python -m lob_forge.cli create-holdout-manifest <l2_csv> \
+  --output <final_l2_manifest.json> \
+  --split-column exchange_timestamp \
+  --holdout-values <final_holdout_exchange_timestamps_or_session_ids> \
+  --candidate-json <frozen_sequence_candidate.json>
+
+.venv/bin/python -m lob_forge.cli final-holdout-sequence <l2_csv> \
+  --holdout-manifest <final_l2_manifest.json> \
+  --candidate-json <frozen_sequence_candidate.json> \
+  --output <final_holdout_sequence_result.json> \
+  --predictions-output <final_holdout_sequence_predictions.csv> \
+  --explicit-final-evaluation
+```
+
 ## Heavy Blockers
 
 The full multi-month, multi-asset study and genuine crypto L2 neural experiments require large historical data and/or cloud compute. The local code path is implemented and smoke-tested, but empirical gates remain pending unless corresponding immutable result artifacts are present.

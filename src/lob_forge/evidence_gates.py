@@ -30,6 +30,7 @@ DEFAULT_KELLY_CANDIDATE_GLOBS = (
 )
 DEFAULT_FINAL_HOLDOUT_RESULT_NAME = "final_holdout_result.json"
 DEFAULT_FINAL_HOLDOUT_EDGE_RESULT_NAME = "final_holdout_edge_result.json"
+DEFAULT_FINAL_HOLDOUT_SEQUENCE_RESULT_NAME = "final_holdout_sequence_result.json"
 
 
 @dataclass(frozen=True)
@@ -143,7 +144,12 @@ def evaluate_remaining_evidence_gates(
 def _final_holdout_result_candidates(result_path: Path) -> tuple[Path, ...]:
     paths = [result_path]
     if result_path.name == DEFAULT_FINAL_HOLDOUT_RESULT_NAME:
-        paths.append(result_path.with_name(DEFAULT_FINAL_HOLDOUT_EDGE_RESULT_NAME))
+        paths.extend(
+            [
+                result_path.with_name(DEFAULT_FINAL_HOLDOUT_EDGE_RESULT_NAME),
+                result_path.with_name(DEFAULT_FINAL_HOLDOUT_SEQUENCE_RESULT_NAME),
+            ]
+        )
     seen: set[Path] = set()
     unique_paths: list[Path] = []
     for path in paths:
@@ -179,7 +185,7 @@ def _final_holdout_gate(*, result_paths: Sequence[Path], research_manifest_path:
             "not_ready",
             False,
             evidence,
-            "after the full study selects one frozen candidate, run final-holdout-rule or final-holdout-edge with a pre-registered candidate hash",
+            "after the full study selects one frozen candidate, run final-holdout-rule, final-holdout-edge, or final-holdout-sequence with a pre-registered candidate hash",
         )
     failed_gates: list[EvidenceGate] = []
     for result_path in existing_paths:
@@ -196,7 +202,7 @@ def _final_holdout_gate(*, result_paths: Sequence[Path], research_manifest_path:
         "failed",
         False,
         evidence,
-        "rerun final-holdout-rule or final-holdout-edge from the verified manifest and frozen candidate, preserving the immutable result",
+        "rerun final-holdout-rule, final-holdout-edge, or final-holdout-sequence from the verified manifest and frozen candidate, preserving the immutable result",
     )
 
 
@@ -247,7 +253,7 @@ def _final_holdout_result_gate_for_path(*, result_path: Path, todo: str) -> Evid
         "failed",
         False,
         f"{evidence} failed_checks={failed}",
-        "rerun final-holdout-rule or final-holdout-edge from the verified manifest and frozen candidate, preserving the immutable result",
+        "rerun final-holdout-rule, final-holdout-edge, or final-holdout-sequence from the verified manifest and frozen candidate, preserving the immutable result",
     )
 
 

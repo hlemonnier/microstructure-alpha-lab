@@ -9,7 +9,14 @@ from pathlib import Path
 from typing import Any
 
 from lob_forge.execution_sim import MarketEvent, SignalEvent, StatefulExecutionConfig, simulate_stateful_execution
-from lob_forge.holdout import read_holdout_manifest, sha256_file, verify_holdout_manifest_file, write_development_csv
+from lob_forge.holdout import (
+    HoldoutManifest,
+    read_holdout_manifest,
+    read_holdout_rows,
+    sha256_file,
+    verify_holdout_manifest_file,
+    write_development_csv,
+)
 
 
 SKLEARN_MODELS = {
@@ -188,6 +195,27 @@ class L2SequenceExperimentReport:
     @property
     def passed(self) -> bool:
         return self.pipeline_completed
+
+
+@dataclass(frozen=True)
+class L2SequenceFinalHoldoutReport:
+    model_name: str
+    l2_path: Path
+    rows_checked: int
+    snapshots: int
+    sequence_count: int
+    feature_count: int
+    accuracy: float
+    macro_f1: float
+    balanced_accuracy: float
+    brier_score: float
+    expected_calibration_error: float
+    confusion_matrix_json: str
+    stateful_trades: int
+    stateful_turnover: float
+    stateful_net_pnl: float
+    stateful_break_even_fee_bps: float
+    predictions_output_path: str
 
 
 @dataclass(frozen=True)
@@ -1138,6 +1166,224 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
     return output_path
 
 
+def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]:
+    artifact = Path(artifact_path)
+    with artifact.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    if len(rows) != 1:
+        raise ValueError(f"sequence artifact must contain exactly one row: {artifact}")
+    row = rows[0]
+    if not _csv_bool(row.get("pipeline_completed")):
+        raise ValueError("cannot freeze sequence candidate whose pipeline_completed flag is not true")
+    model_name = row.get("model_name", "")
+    if model_name not in {"sequence_tcn", "sequence_transformer"}:
+        raise ValueError("sequence candidate model_name must be sequence_tcn or sequence_transformer")
+    checkpoint_value = row.get("checkpoint_path", "")
+    if not checkpoint_value:
+        raise ValueError("freeze-sequence-candidate requires a checkpoint_path")
+    checkpoint_path = Path(checkpoint_value)
+    if not checkpoint_path.is_file():
+        raise FileNotFoundError(f"sequence checkpoint not found: {checkpoint_path}")
+    development_l2_value = row.get("development_l2_path", "")
+    if not development_l2_value:
+        raise ValueError("freeze-sequence-candidate requires a development_l2_path")
+    development_l2_path = Path(development_l2_value)
+    if not development_l2_path.is_file():
+        raise FileNotFoundError(
+            "freeze-sequence-candidate requires a manifest-filtered development_l2_path that exists"
+        )
+    if not _csv_bool(row.get("holdout_manifest_verified")):
+        raise ValueError("freeze-sequence-candidate requires holdout_manifest_verified=1")
+    depth = _csv_int(row.get("depth"))
+    window = _csv_int(row.get("window"))
+    label_horizon = _csv_int(row.get("label_horizon"))
+    flat_threshold_bps = _csv_float(row.get("flat_threshold_bps"))
+    rows_checked_cap = max(1, _csv_int(row.get("rows_checked"), default=100000))
+    snapshots_cap = max(1, _csv_int(row.get("snapshots"), default=2000))
+    snapshots, training_rows_checked = _load_l2_top_n_vectors(
+        development_l2_path,
+        depth=depth,
+        max_rows=rows_checked_cap,
+        max_snapshots=snapshots_cap,
+        include_time_delta=True,
+    )
+    sequences, _, _ = _l2_direction_sequences(
+        snapshots,
+        window=window,
+        label_horizon=label_horizon,
+        flat_threshold_bps=flat_threshold_bps,
+    )
+    sequences = _stationarize_l2_sequences(sequences)
+    feature_count = len(sequences[0][0])
+    train_count, validation_count, test_count, purge_gap = _purged_sequential_split_counts(
+        len(sequences),
+        purge_gap=window + label_horizon - 1,
+    )
+    standardizer = _fit_sequence_standardizer(sequences[:train_count])
+    return {
+        "candidate_type": "l2_sequence_torch_v1",
+        "model_name": model_name,
+        "source_artifact": str(artifact),
+        "source_artifact_sha256": sha256_file(artifact),
+        "l2_path": row.get("l2_path", ""),
+        "baseline_audit_path": row.get("baseline_audit_path", ""),
+        "development_holdout_manifest_path": row.get("holdout_manifest_path", ""),
+        "development_holdout_manifest_sha256": row.get("holdout_manifest_sha256", ""),
+        "development_l2_path": str(development_l2_path),
+        "development_l2_sha256": sha256_file(development_l2_path),
+        "checkpoint_path": str(checkpoint_path),
+        "checkpoint_sha256": sha256_file(checkpoint_path),
+        "depth": depth,
+        "window": window,
+        "label_horizon": label_horizon,
+        "flat_threshold_bps": flat_threshold_bps,
+        "feature_count": feature_count,
+        "standardizer_means": list(standardizer.means),
+        "standardizer_stds": list(standardizer.stds),
+        "training_rows_checked": training_rows_checked,
+        "training_snapshots": len(snapshots),
+        "training_sequence_count": len(sequences),
+        "purge_gap": purge_gap,
+        "train_rows": train_count,
+        "validation_rows": validation_count,
+        "test_rows": test_count,
+        "seed": _csv_int(row.get("seed"), default=0),
+        "class_weighting": row.get("class_weighting", ""),
+        "best_epoch": _csv_int(row.get("best_epoch"), default=0),
+        "validation_macro_f1": _csv_float(row.get("validation_macro_f1")),
+        "validation_balanced_accuracy": _csv_float(row.get("validation_balanced_accuracy")),
+        "test_macro_f1": _csv_float(row.get("test_macro_f1")),
+        "test_balanced_accuracy": _csv_float(row.get("test_balanced_accuracy")),
+        "test_brier_score": _csv_float(row.get("test_brier_score")),
+        "test_expected_calibration_error": _csv_float(row.get("test_expected_calibration_error")),
+        "selection_grain": "manifest_filtered_development_l2",
+        "selection_method": "frozen_checkpoint_from_sequence_artifact",
+    }
+
+
+def evaluate_l2_sequence_final_holdout(
+    *,
+    l2_path: Path | str,
+    manifest: HoldoutManifest,
+    candidate: dict[str, object],
+    predictions_output_path: Path | str | None = None,
+    device: str = "auto",
+    max_rows: int = 100000,
+    max_snapshots: int = 2000,
+    economic_target_notional: float = 100.0,
+    economic_taker_fee_bps: float = 1.0,
+    economic_slippage_bps: float = 0.0,
+) -> L2SequenceFinalHoldoutReport:
+    model_name = _candidate_string(candidate, "model_name")
+    if candidate.get("candidate_type") != "l2_sequence_torch_v1":
+        raise ValueError("frozen sequence candidate candidate_type must be l2_sequence_torch_v1")
+    if model_name not in {"sequence_tcn", "sequence_transformer"}:
+        raise ValueError("frozen sequence candidate model_name must be sequence_tcn or sequence_transformer")
+    if device not in {"auto", "cpu", "cuda"}:
+        raise ValueError("device must be auto, cpu, or cuda")
+    depth = _candidate_positive_int(candidate, "depth")
+    window = _candidate_positive_int(candidate, "window")
+    label_horizon = _candidate_positive_int(candidate, "label_horizon")
+    feature_count = _candidate_positive_int(candidate, "feature_count")
+    checkpoint_path = Path(_candidate_string(candidate, "checkpoint_path"))
+    if sha256_file(checkpoint_path) != _candidate_string(candidate, "checkpoint_sha256"):
+        raise ValueError("frozen sequence checkpoint hash does not match candidate checkpoint_sha256")
+    development_l2_path = Path(_candidate_string(candidate, "development_l2_path"))
+    if sha256_file(development_l2_path) != _candidate_string(candidate, "development_l2_sha256"):
+        raise ValueError("frozen sequence development L2 hash does not match candidate development_l2_sha256")
+    means = _candidate_float_list(candidate, "standardizer_means")
+    stds = _candidate_float_list(candidate, "standardizer_stds")
+    if len(means) != feature_count or len(stds) != feature_count:
+        raise ValueError("frozen sequence standardizer dimensions do not match feature_count")
+    if any(value <= 0.0 for value in stds):
+        raise ValueError("frozen sequence standardizer_stds must be positive")
+
+    rows = read_holdout_rows(l2_path, manifest)
+    snapshots, rows_checked = _load_l2_top_n_vectors_from_rows(
+        rows,
+        depth=depth,
+        max_rows=max_rows,
+        max_snapshots=max_snapshots,
+        include_time_delta=True,
+    )
+    sequences, labels, end_indices = _l2_direction_sequences(
+        snapshots,
+        window=window,
+        label_horizon=label_horizon,
+        flat_threshold_bps=_candidate_float(candidate, "flat_threshold_bps"),
+    )
+    sequences = _apply_sequence_standardizer(
+        _stationarize_l2_sequences(sequences),
+        SequenceStandardizer(means=tuple(means), stds=tuple(stds)),
+    )
+    if len(sequences[0][0]) != feature_count:
+        raise ValueError("holdout sequence feature_count does not match frozen candidate")
+
+    try:
+        import torch
+    except ImportError as exc:
+        raise RuntimeError("torch is required for sequence final holdout evaluation") from exc
+
+    selected_device = _select_torch_device(torch, device)
+    torch_device = torch.device(selected_device)
+    model = build_torch_sequence_classifier(
+        window=window,
+        feature_count=feature_count,
+        model_name=model_name,
+        class_count=3,
+    ).to(torch_device)
+    checkpoint = torch.load(checkpoint_path, map_location=torch_device)
+    state = checkpoint.get("best_model_state") or checkpoint.get("model_state")
+    if state is None:
+        raise ValueError("sequence checkpoint missing model_state/best_model_state")
+    model.load_state_dict(state)
+    model.eval()
+    x_holdout = torch.tensor(sequences, dtype=torch.float32, device=torch_device)
+    with torch.no_grad():
+        logits = model(x_holdout)
+        probabilities = torch.softmax(logits, dim=1).detach().cpu().tolist()
+        predictions = logits.argmax(dim=1).detach().cpu().tolist()
+    accuracy, macro_f1, balanced_accuracy, confusion = _classification_report(labels, predictions)
+    brier_score, ece = _classification_probability_report(labels, predictions, probabilities)
+    prediction_path = Path(predictions_output_path) if predictions_output_path is not None else None
+    if prediction_path is not None:
+        _write_sequence_holdout_predictions(
+            prediction_path,
+            labels=labels,
+            predictions=predictions,
+            probabilities=probabilities,
+            end_indices=end_indices,
+        )
+    economic = _sequence_stateful_economics(
+        snapshots,
+        end_indices,
+        predictions,
+        label_horizon=label_horizon,
+        target_notional=economic_target_notional,
+        taker_fee_bps=economic_taker_fee_bps,
+        slippage_bps=economic_slippage_bps,
+    )
+    return L2SequenceFinalHoldoutReport(
+        model_name=model_name,
+        l2_path=Path(l2_path),
+        rows_checked=rows_checked,
+        snapshots=len(snapshots),
+        sequence_count=len(sequences),
+        feature_count=feature_count,
+        accuracy=accuracy,
+        macro_f1=macro_f1,
+        balanced_accuracy=balanced_accuracy,
+        brier_score=brier_score,
+        expected_calibration_error=ece,
+        confusion_matrix_json=json.dumps(confusion, sort_keys=True),
+        stateful_trades=int(economic["trades"]),
+        stateful_turnover=float(economic["turnover"]),
+        stateful_net_pnl=float(economic["net_pnl"]),
+        stateful_break_even_fee_bps=float(economic["break_even_fee_bps"]),
+        predictions_output_path=str(prediction_path) if prediction_path is not None else "",
+    )
+
+
 def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, output_format: str = "text") -> str:
     if output_format == "csv":
         fields = [
@@ -1672,6 +1918,81 @@ def _load_l2_top_n_vectors(
     return snapshots, rows_checked
 
 
+def _load_l2_top_n_vectors_from_rows(
+    rows: list[dict[str, str]],
+    *,
+    depth: int,
+    max_rows: int,
+    max_snapshots: int,
+    include_time_delta: bool = False,
+) -> tuple[list[list[float]], int]:
+    snapshots: list[list[float]] = []
+    rows_checked = 0
+    bids: dict[float, float] = {}
+    asks: dict[float, float] = {}
+    current_event_key: tuple[str, int | None, str, str] | None = None
+    current_event_type = ""
+    current_exchange_timestamp = ""
+    previous_snapshot_timestamp: int | None = None
+    pending_levels: list[tuple[str, float, float]] = []
+
+    def flush_event() -> None:
+        nonlocal pending_levels, previous_snapshot_timestamp
+        if not pending_levels:
+            return
+        if current_event_type == "snapshot":
+            bids.clear()
+            asks.clear()
+        for side, price, size in pending_levels:
+            levels = bids if side == "bid" else asks if side == "ask" else None
+            if levels is None:
+                continue
+            if size <= 0.0:
+                levels.pop(price, None)
+            else:
+                levels[price] = size
+        pending_levels = []
+        if not bids or not asks:
+            return
+        if max(bids) >= min(asks):
+            return
+        vector = _book_vector(bids, asks, depth=depth)
+        if include_time_delta:
+            timestamp = _optional_int(current_exchange_timestamp) or previous_snapshot_timestamp or 0
+            delta_ms = 0 if previous_snapshot_timestamp is None else max(0, timestamp - previous_snapshot_timestamp)
+            vector.append(math.log1p(delta_ms))
+            previous_snapshot_timestamp = timestamp
+        snapshots.append(vector)
+
+    for row in rows:
+        if rows_checked >= max_rows or len(snapshots) >= max_snapshots:
+            break
+        rows_checked += 1
+        event_type = row.get("event_type", "")
+        sequence = _optional_int(row.get("update_id") or row.get("sequence"))
+        event_key = (
+            event_type,
+            sequence,
+            row.get("exchange_timestamp", ""),
+            row.get("local_timestamp", ""),
+        )
+        if current_event_key is not None and event_key != current_event_key:
+            flush_event()
+        current_event_key = event_key
+        current_event_type = event_type
+        current_exchange_timestamp = row.get("exchange_timestamp", "")
+        pending_levels.append(
+            (
+                row.get("side", ""),
+                float(row.get("price", "0") or 0.0),
+                float(row.get("size", "0") or 0.0),
+            )
+        )
+    if len(snapshots) < max_snapshots:
+        flush_event()
+    return snapshots, rows_checked
+
+
 def _book_vector(bids: dict[float, float], asks: dict[float, float], *, depth: int) -> list[float]:
     bid_levels = sorted(bids.items(), key=lambda item: item[0], reverse=True)[:depth]
     ask_levels = sorted(asks.items(), key=lambda item: item[0])[:depth]
@@ -1932,6 +2253,47 @@ def _write_sequence_predictions(
                 )
 
 
+def _write_sequence_holdout_predictions(
+    path: Path,
+    *,
+    labels: list[int],
+    predictions: list[int],
+    probabilities: list[list[float]],
+    end_indices: list[int],
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = [
+        "split",
+        "row",
+        "sequence_end_index",
+        "true_label",
+        "predicted_label",
+        "prob_down",
+        "prob_flat",
+        "prob_up",
+    ]
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row_number, (label, prediction, probability, end_index) in enumerate(
+            zip(labels, predictions, probabilities, end_indices),
+            start=1,
+        ):
+            padded = (probability + [0.0, 0.0, 0.0])[:3]
+            writer.writerow(
+                {
+                    "split": "holdout",
+                    "row": row_number,
+                    "sequence_end_index": end_index,
+                    "true_label": label,
+                    "predicted_label": prediction,
+                    "prob_down": f"{padded[0]:.12g}",
+                    "prob_flat": f"{padded[1]:.12g}",
+                    "prob_up": f"{padded[2]:.12g}",
+                }
+            )
+
+
 def _sequence_stateful_economics(
     snapshots: list[list[float]],
     end_indices: list[int],
@@ -2083,3 +2445,47 @@ def _optional_int(value: object) -> int | None:
             return int(float(str(value)))
         except ValueError:
             return None
+
+
+def _csv_bool(value: str | None) -> bool:
+    return value in {"1", "true", "True", "yes", "YES"}
+
+
+def _csv_int(value: str | None, *, default: int = 0) -> int:
+    if value is None or value == "":
+        return default
+    return int(float(value))
+
+
+def _csv_float(value: str | None, *, default: float = 0.0) -> float:
+    if value is None or value == "":
+        return default
+    return float(value)
+
+
+def _candidate_string(candidate: dict[str, object], field: str) -> str:
+    value = candidate.get(field)
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"frozen sequence candidate {field} must be a non-empty string")
+    return value
+
+
+def _candidate_positive_int(candidate: dict[str, object], field: str) -> int:
+    value = candidate.get(field)
+    if not isinstance(value, int) or value <= 0:
+        raise ValueError(f"frozen sequence candidate {field} must be a positive integer")
+    return value
+
+
+def _candidate_float(candidate: dict[str, object], field: str) -> float:
+    value = candidate.get(field)
+    if not isinstance(value, (int, float)):
+        raise ValueError(f"frozen sequence candidate {field} must be numeric")
+    return float(value)
+
+
+def _candidate_float_list(candidate: dict[str, object], field: str) -> list[float]:
+    values = candidate.get(field)
+    if not isinstance(values, list) or not values or not all(isinstance(value, (int, float)) for value in values):
+        raise ValueError(f"frozen sequence candidate {field} must be a non-empty numeric list")
+    return [float(value) for value in values]

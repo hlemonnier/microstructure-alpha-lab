@@ -127,10 +127,12 @@ from lob_forge.local_api_sources import (
 from lob_forge.logistic import Standardizer, format_logistic_walk_forward_results, run_logistic_walk_forward
 from lob_forge.memory_guard import apply_process_memory_limit, assert_csv_load_budget
 from lob_forge.ml_models import (
+    evaluate_l2_sequence_final_holdout,
     evaluate_model_readiness,
     format_l2_masked_pretraining_report,
     format_l2_sequence_experiment_report,
     format_model_readiness_report,
+    freeze_l2_sequence_candidate,
     run_l2_masked_pretraining_smoke,
     run_l2_torch_sequence_experiment,
 )
@@ -902,6 +904,31 @@ def main(argv: list[str] | None = None) -> int:
     final_holdout_edge_parser.add_argument("--lock-dir", default="artifacts/final_holdout_locks")
     final_holdout_edge_parser.add_argument("--explicit-final-evaluation", action="store_true")
 
+    freeze_sequence_candidate_parser = subparsers.add_parser(
+        "freeze-sequence-candidate",
+        help="Freeze one manifest-filtered L2 TCN/Transformer checkpoint candidate for final holdout use.",
+    )
+    freeze_sequence_candidate_parser.add_argument("artifact")
+    freeze_sequence_candidate_parser.add_argument("--output", required=True)
+
+    final_holdout_sequence_parser = subparsers.add_parser(
+        "final-holdout-sequence",
+        help="Evaluate one frozen L2 sequence checkpoint on the declared holdout exactly once.",
+    )
+    final_holdout_sequence_parser.add_argument("path")
+    final_holdout_sequence_parser.add_argument("--holdout-manifest", required=True)
+    final_holdout_sequence_parser.add_argument("--candidate-json", required=True)
+    final_holdout_sequence_parser.add_argument("--output", required=True)
+    final_holdout_sequence_parser.add_argument("--lock-dir", default="artifacts/final_holdout_locks")
+    final_holdout_sequence_parser.add_argument("--explicit-final-evaluation", action="store_true")
+    final_holdout_sequence_parser.add_argument("--predictions-output")
+    final_holdout_sequence_parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
+    final_holdout_sequence_parser.add_argument("--max-rows", type=int, default=100000)
+    final_holdout_sequence_parser.add_argument("--max-snapshots", type=int, default=2000)
+    final_holdout_sequence_parser.add_argument("--economic-target-notional", type=float, default=100.0)
+    final_holdout_sequence_parser.add_argument("--economic-taker-fee-bps", type=float, default=1.0)
+    final_holdout_sequence_parser.add_argument("--economic-slippage-bps", type=float, default=0.0)
+
     fill_parser = subparsers.add_parser(
         "fill-diagnostics",
         help="Analyze conservative passive-entry fills and adverse selection for one threshold rule.",
@@ -1132,6 +1159,10 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_freeze_edge_candidate(args)
     if args.command == "final-holdout-edge":
         return _cmd_final_holdout_edge(args)
+    if args.command == "freeze-sequence-candidate":
+        return _cmd_freeze_sequence_candidate(args)
+    if args.command == "final-holdout-sequence":
+        return _cmd_final_holdout_sequence(args)
     if args.command == "fill-diagnostics":
         return _cmd_fill_diagnostics(args)
     if args.command == "fill-regime":
@@ -2198,6 +2229,80 @@ def _cmd_final_holdout_edge(args: argparse.Namespace) -> int:
             "break_even_taker_fee_bps": break_even_fee_bps,
             "stateful_simulator": True,
             "kill_switch_triggered": simulation.kill_switch_triggered,
+        },
+        output_path=Path(args.output),
+        explicit_final_evaluation=args.explicit_final_evaluation,
+        candidate_sha256=candidate_sha256,
+        lock_dir=Path(args.lock_dir),
+        source_root=source_root,
+    )
+    print(f"final_holdout_result={output}")
+    return 0
+
+
+def _cmd_freeze_sequence_candidate(args: argparse.Namespace) -> int:
+    candidate = freeze_l2_sequence_candidate(Path(args.artifact))
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(candidate, indent=2, sort_keys=True) + "\n")
+    print(f"candidate_json={output_path}")
+    print(f"candidate_sha256={canonical_json_sha256(candidate)}")
+    print(f"model_name={candidate['model_name']}")
+    print(f"checkpoint_sha256={candidate['checkpoint_sha256']}")
+    return 0
+
+
+def _cmd_final_holdout_sequence(args: argparse.Namespace) -> int:
+    source_root = holdout_manifest_source_root(args.holdout_manifest)
+    if source_root is None:
+        raise ValueError("holdout manifest verification failed; create an official manifest from a Git checkout")
+    manifest = read_holdout_manifest(args.holdout_manifest)
+    candidate_path = Path(args.candidate_json)
+    candidate = json.loads(candidate_path.read_text())
+    candidate_sha256 = canonical_json_sha256(candidate)
+    if not manifest.candidate_sha256:
+        raise ValueError(
+            "holdout manifest missing pre-registered candidate_sha256; "
+            "create it with create-holdout-manifest --candidate-json"
+        )
+    if candidate_sha256 != manifest.candidate_sha256:
+        raise ValueError("frozen candidate hash does not match holdout manifest candidate_sha256")
+    report = evaluate_l2_sequence_final_holdout(
+        l2_path=Path(args.path),
+        manifest=manifest,
+        candidate=candidate,
+        predictions_output_path=args.predictions_output,
+        device=args.device,
+        max_rows=args.max_rows,
+        max_snapshots=args.max_snapshots,
+        economic_target_notional=args.economic_target_notional,
+        economic_taker_fee_bps=args.economic_taker_fee_bps,
+        economic_slippage_bps=args.economic_slippage_bps,
+    )
+    output = write_final_holdout_result(
+        manifest=manifest,
+        metrics={
+            "candidate": candidate,
+            "candidate_sha256": candidate_sha256,
+            "candidate_type": candidate["candidate_type"],
+            "model_name": report.model_name,
+            "rows": report.sequence_count,
+            "rows_checked": report.rows_checked,
+            "snapshots": report.snapshots,
+            "sequence_count": report.sequence_count,
+            "feature_count": report.feature_count,
+            "accuracy": report.accuracy,
+            "balanced_accuracy": report.balanced_accuracy,
+            "macro_f1": report.macro_f1,
+            "brier_score": report.brier_score,
+            "expected_calibration_error": report.expected_calibration_error,
+            "confusion_matrix_json": report.confusion_matrix_json,
+            "stateful_trades": report.stateful_trades,
+            "stateful_turnover": report.stateful_turnover,
+            "stateful_net_pnl": report.stateful_net_pnl,
+            "stateful_break_even_fee_bps": report.stateful_break_even_fee_bps,
+            "predictions_output_path": report.predictions_output_path,
+            "stateful_simulator": True,
         },
         output_path=Path(args.output),
         explicit_final_evaluation=args.explicit_final_evaluation,

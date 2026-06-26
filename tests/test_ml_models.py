@@ -1,7 +1,7 @@
 import csv
 from pathlib import Path
 
-from lob_forge.holdout import build_holdout_manifest, sha256_file, write_holdout_manifest
+from lob_forge.holdout import build_holdout_manifest, canonical_json_sha256, sha256_file, write_holdout_manifest
 from lob_forge.ml_models import (
     _apply_sequence_standardizer,
     _fit_sequence_standardizer,
@@ -10,6 +10,7 @@ from lob_forge.ml_models import (
     available_model_specs,
     build_sequence_dataset,
     build_torch_sequence_classifier,
+    evaluate_l2_sequence_final_holdout,
     build_masked_pretraining_batch,
     evaluate_l2_tensor_readiness,
     evaluate_model_readiness,
@@ -18,6 +19,7 @@ from lob_forge.ml_models import (
     format_model_readiness_report,
     fit_sklearn_regressor,
     fit_xgboost_classifier,
+    freeze_l2_sequence_candidate,
     require_model_dependency,
     run_l2_masked_pretraining_smoke,
     run_l2_torch_sequence_experiment,
@@ -403,6 +405,95 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
         assert resumed.pipeline_completed
 
 
+def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing(tmp_path: Path) -> None:
+    audit_path = tmp_path / "audit.csv"
+    l2_path = tmp_path / "bybit_l2.csv"
+    development_manifest_path = tmp_path / "development_l2_holdout_manifest.json"
+    final_manifest_path = tmp_path / "final_l2_holdout_manifest.json"
+    output_path = tmp_path / "sequence_tcn_results.csv"
+    checkpoint_path = tmp_path / "sequence_tcn.pt"
+    prediction_path = tmp_path / "sequence_tcn_predictions.csv"
+    final_prediction_path = tmp_path / "sequence_tcn_final_predictions.csv"
+    _write_audit(audit_path, fold_count=20, acceptance_passed=1, rejection_reasons="")
+    _write_many_l2_snapshots_and_deltas(l2_path, snapshot_count=30)
+    holdout_values = [str(1684195200000 + index) for index in range(20, 30)]
+    development_manifest = build_holdout_manifest(
+        l2_path,
+        split_column="exchange_timestamp",
+        holdout_values=holdout_values,
+        created_at_utc="2026-06-26T00:00:00Z",
+        git_commit="a" * 40,
+    )
+    write_holdout_manifest(development_manifest, development_manifest_path)
+
+    try:
+        report = run_l2_torch_sequence_experiment(
+            model_name="sequence_tcn",
+            l2_path=l2_path,
+            baseline_audit_path=audit_path,
+            output_path=output_path,
+            depth=1,
+            window=3,
+            label_horizon=1,
+            epochs=1,
+            min_l2_rows=20,
+            max_rows=100,
+            max_snapshots=30,
+            batch_size=2,
+            checkpoint_path=checkpoint_path,
+            prediction_output_path=prediction_path,
+            holdout_manifest_path=development_manifest_path,
+            development_l2_output_path=tmp_path / "development_l2.csv",
+        )
+    except RuntimeError as exc:
+        assert "torch" in str(exc) or "model readiness gate failed" in str(exc)
+        return
+    assert report.pipeline_completed
+
+    candidate = freeze_l2_sequence_candidate(output_path)
+    assert candidate["candidate_type"] == "l2_sequence_torch_v1"
+    assert candidate["checkpoint_sha256"] == sha256_file(checkpoint_path)
+    assert candidate["development_l2_sha256"] == sha256_file(tmp_path / "development_l2.csv")
+    assert candidate["standardizer_means"]
+    final_manifest = build_holdout_manifest(
+        l2_path,
+        split_column="exchange_timestamp",
+        holdout_values=holdout_values,
+        created_at_utc="2026-06-26T00:00:00Z",
+        git_commit="a" * 40,
+        candidate_sha256=canonical_json_sha256(candidate),
+    )
+    write_holdout_manifest(final_manifest, final_manifest_path)
+
+    final_report = evaluate_l2_sequence_final_holdout(
+        l2_path=l2_path,
+        manifest=final_manifest,
+        candidate=candidate,
+        predictions_output_path=final_prediction_path,
+        device="cpu",
+        max_rows=100,
+        max_snapshots=30,
+    )
+
+    assert final_report.sequence_count > 0
+    assert final_report.predictions_output_path == str(final_prediction_path)
+    assert final_prediction_path.read_text().splitlines()[1].startswith("holdout,")
+
+    tampered = dict(candidate)
+    tampered["checkpoint_sha256"] = "0" * 64
+    try:
+        evaluate_l2_sequence_final_holdout(
+            l2_path=l2_path,
+            manifest=final_manifest,
+            candidate=tampered,
+            device="cpu",
+        )
+    except ValueError as exc:
+        assert "checkpoint hash" in str(exc)
+    else:
+        raise AssertionError("expected tampered checkpoint hash to be rejected")
+
+
 def _write_audit(path: Path, *, fold_count: int, acceptance_passed: int, rejection_reasons: str) -> None:
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=["fold_count", "acceptance_passed", "rejection_reasons"])
@@ -494,7 +585,7 @@ def _write_bybit_row_expanded_l2(path: Path) -> None:
             )
 
 
-def _write_many_l2_snapshots_and_deltas(path: Path) -> None:
+def _write_many_l2_snapshots_and_deltas(path: Path, *, snapshot_count: int = 12) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(
@@ -514,7 +605,7 @@ def _write_many_l2_snapshots_and_deltas(path: Path) -> None:
         )
         writer.writeheader()
         sequence = 1
-        for index in range(12):
+        for index in range(snapshot_count):
             bid = 100.0 + index * 0.1
             ask = 101.0 + index * 0.1
             event_type = "snapshot" if index == 0 else "delta"
