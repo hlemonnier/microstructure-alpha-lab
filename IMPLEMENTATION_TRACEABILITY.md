@@ -20,10 +20,11 @@ Authoritative scope: local implementation specification supplied outside the rep
 ## Verification Log
 
 - Baseline direct tests before edits: `passed 160 direct test functions`.
-- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 300 direct test functions`.
-- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `300 passed`.
+- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 301 direct test functions`.
+- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `301 passed`.
 - Current static checks after implementation: `.venv/bin/python -m ruff check .` passed, `.venv/bin/python -m ruff format --check .` found `90 files already formatted`, and `.venv/bin/python -m mypy src/lob_forge` found no issues in `43 source files`.
 - C++ replay equivalence is included in the direct suite when a local C++ compiler is present.
+- Runbook holdout enforcement covers both Markdown code blocks and shell scripts, including multi-line Bash arrays that invoke gated research CLI commands.
 - Reduced E2E fixture artifacts generated under `artifacts/reduced_e2e/`.
 - Reduced E2E fixture regenerated from the clean current Git checkout; `artifacts/research_manifest.json` records `working_tree_dirty=false`.
 - Cloud handoff archive smoke-tested from an unpacked source-only ZIP without `.git`; `scripts/run_reduced_e2e.py` reads `.source-git-commit` and records `working_tree_dirty=null` instead of crashing.
@@ -39,7 +40,7 @@ This table maps the final "must be fixed before sending it" review items from `/
 | Review item | Current status | Evidence | Remaining blocker |
 |---|---:|---|---|
 | Rewrite `simulate_stateful_execution()` as a chronological event loop with globally consumed liquidity and adversarial tests | implemented-smoke-tested | `src/lob_forge/execution_sim.py`; `tests/test_execution_sim.py` covers passive fill chronology, same-timestamp taker liquidity, same-timestamp passive trade-flow consumption, cancellation, expiry, position timestamps, rate limits, and kill switch behavior | Paper/live fill calibration remains external |
-| Add `create-holdout-manifest` and propagate manifests through full-study scripts/runbooks | implemented-smoke-tested | `src/lob_forge/cli.py`; `scripts/holdout_manifest.sh`; `scripts/reproduce_core_results.sh`; `scripts/reproduce_multiday_results.sh`; `scripts/reproduce_result_artifacts.sh`; `scripts/run_60day_expected_edge_study.sh`; dry-run/plan commands listed above | Full cloud study still needs high-RAM execution |
+| Add `create-holdout-manifest` and propagate manifests through full-study scripts/runbooks | implemented-smoke-tested | `src/lob_forge/cli.py`; `scripts/holdout_manifest.sh`; `scripts/reproduce_core_results.sh`; `scripts/reproduce_multiday_results.sh`; `scripts/reproduce_result_artifacts.sh`; `scripts/run_60day_expected_edge_study.sh`; shell and Markdown runbook regressions in `tests/test_runbook_holdout_examples.py`; dry-run/plan commands listed above | Full cloud study still needs high-RAM execution |
 | Replace reduced E2E placeholder statistics with OOS-only signals and ledger-derived statistics | implemented-smoke-tested | `scripts/run_reduced_e2e.py`; `_signals_from_walk_forward()` emits selected-rule test-window signals only; `_ledger_statistics_inputs()` derives net/gross PnL, returns, turnover, fees, and days from simulator ledgers | Synthetic fixture only; not empirical market evidence |
 | Make final holdout use the stateful simulator and pre-register candidate hashes | implemented-smoke-tested | `final-holdout-rule`, `final-holdout-edge`, `final-holdout-sequence`, and `scripts/prepare_final_holdout_from_expected_edge_study.sh`; `tests/test_holdout.py` asserts pre-registered candidate hashes, duplicate-evaluation locks, and `stateful_simulator=true` for rule/edge results; `tests/test_run_profiles.py` asserts the full-study helper derives the development manifest, frozen edge candidate, candidate-locked final manifest, and final-holdout command | Full selected candidate final-holdout artifact has not been run |
 | Expand the experiment registry beyond planned rows and record results/failures/selection | implemented-smoke-tested | `src/lob_forge/experiment_registry.py`, `src/lob_forge/study_registry.py`, `artifacts/reduced_e2e/experiment_registry.jsonl`; expected-edge study status rejects stale planned registries | Full cloud study registry/result matrix still pending |
