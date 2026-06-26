@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from lob_forge.result_verifier import verify_result_artifacts
-from lob_forge.study_registry import read_expected_edge_candidate_registry
+from lob_forge.study_registry import build_expected_edge_candidate_registry, read_expected_edge_candidate_registry
 
 
 @dataclass(frozen=True)
@@ -80,7 +80,9 @@ def evaluate_expected_edge_study_status(
     )
     registry_path = result_dir_path / "candidate_registry.jsonl"
     if registry_path.exists() and registry_path.stat().st_size > 0:
-        verifier_errors = tuple(verifier_errors) + tuple(_candidate_registry_errors(registry_path))
+        verifier_errors = tuple(verifier_errors) + tuple(
+            _candidate_registry_errors(registry_path, plan_path=plan_path, result_dir=result_dir_path)
+        )
         pvalues_path = result_dir_path / "pvalues.csv"
         if require_pvalues and pvalues_path.exists() and pvalues_path.stat().st_size > 0:
             verifier_errors = tuple(verifier_errors) + tuple(_candidate_pvalue_errors(registry_path, pvalues_path))
@@ -246,7 +248,7 @@ def _audit_fold_count_errors(
     return errors
 
 
-def _candidate_registry_errors(path: Path) -> list[str]:
+def _candidate_registry_errors(path: Path, *, plan_path: Path, result_dir: Path) -> list[str]:
     errors: list[str] = []
     try:
         attempts = read_expected_edge_candidate_registry(path)
@@ -254,6 +256,60 @@ def _candidate_registry_errors(path: Path) -> list[str]:
         return [f"{path.name}: candidate registry parse failed: {exc!r}"]
     if not attempts:
         return [f"{path.name}: no candidate attempts"]
+    expected_attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
+    actual_by_config = {attempt.config_sha256: attempt for attempt in attempts if attempt.config_sha256}
+    expected_by_config = {attempt.config_sha256: attempt for attempt in expected_attempts if attempt.config_sha256}
+    missing_configs = sorted(set(expected_by_config).difference(actual_by_config))
+    unexpected_configs = sorted(set(actual_by_config).difference(expected_by_config))
+    if missing_configs:
+        preview = ", ".join(config[:12] for config in missing_configs[:10])
+        suffix = "" if len(missing_configs) <= 10 else f", +{len(missing_configs) - 10} more"
+        errors.append(f"{path.name}: missing expected candidate config_sha256 rows: {preview}{suffix}")
+    if unexpected_configs:
+        preview = ", ".join(config[:12] for config in unexpected_configs[:10])
+        suffix = "" if len(unexpected_configs) <= 10 else f", +{len(unexpected_configs) - 10} more"
+        errors.append(f"{path.name}: unexpected candidate config_sha256 rows: {preview}{suffix}")
+    compared_fields = (
+        "run_id",
+        "family",
+        "symbol",
+        "horizon_ms",
+        "taker_fee_bps",
+        "latency_ms",
+        "edge_threshold_bps",
+        "model_class",
+        "feature_set",
+        "selection_metric",
+        "train_size",
+        "validation_size",
+        "test_size",
+        "step_size",
+        "status",
+        "selected",
+        "selected_fold_count",
+        "fold_count",
+        "validation_net_pnl",
+        "test_net_pnl",
+        "audit_acceptance_passed",
+        "audit_rejection_reasons",
+        "artifact_path",
+        "audit_path",
+        "failure_reason",
+        "config_json",
+        "audit_p_value",
+    )
+    for config_sha256, expected in expected_by_config.items():
+        actual = actual_by_config.get(config_sha256)
+        if actual is None:
+            continue
+        for field in compared_fields:
+            actual_value = getattr(actual, field)
+            expected_value = getattr(expected, field)
+            if actual_value != expected_value:
+                errors.append(
+                    f"{path.name}: {field} mismatch for {config_sha256[:12]}: "
+                    f"{actual_value!r} != {expected_value!r}"
+                )
     invalid_statuses = {"planned", "incomplete_artifact", "artifact_error"}
     invalid_counts = {status: 0 for status in invalid_statuses}
     selected_count = 0

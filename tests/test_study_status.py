@@ -194,6 +194,92 @@ def test_expected_edge_study_status_rejects_stale_planned_candidate_registry(tmp
     assert "candidate_registry.jsonl: selected_candidates=0" in formatted
 
 
+def test_expected_edge_study_status_rejects_registry_missing_plan_candidates(tmp_path: Path) -> None:
+    result_dir = tmp_path / "results"
+    result_dir.mkdir()
+    plan_path = _write_plan(
+        result_dir,
+        symbols=["BTCUSDT"],
+        horizons_ms=[5000],
+        fees_bps=[0.0],
+    )
+    _write_edge_result(result_dir / "BTCUSDT_5000ms_fee_0_edge.csv")
+    _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0_edge_audit.csv")
+    attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
+    write_expected_edge_candidate_registry(attempts[:1], result_dir / "candidate_registry.jsonl")
+    write_expected_edge_candidate_pvalues(attempts[:1], result_dir / "pvalues.csv")
+    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv", result_dir / "pvalues.csv")
+
+    status = evaluate_expected_edge_study_status(plan_path=plan_path)
+    formatted = format_expected_edge_study_status(status)
+
+    assert not status.complete
+    assert not status.artifact_verifier_passed
+    assert "candidate_registry.jsonl: missing expected candidate config_sha256 rows" in formatted
+
+
+def test_expected_edge_study_status_rejects_registry_stale_artifact_references(tmp_path: Path) -> None:
+    result_dir = tmp_path / "results"
+    result_dir.mkdir()
+    plan_path = _write_plan(
+        result_dir,
+        symbols=["BTCUSDT"],
+        horizons_ms=[5000],
+        fees_bps=[0.0],
+    )
+    _write_edge_result(result_dir / "BTCUSDT_5000ms_fee_0_edge.csv")
+    _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0_edge_audit.csv")
+    attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
+    payload = attempts[0].__dict__.copy()
+    payload["artifact_path"] = "results/stale.csv"
+    with (result_dir / "candidate_registry.jsonl").open("w") as handle:
+        handle.write(json.dumps(payload, sort_keys=True) + "\n")
+        for attempt in attempts[1:]:
+            handle.write(json.dumps(attempt.__dict__, sort_keys=True) + "\n")
+    _write_pvalues_from_registry(plan_path, result_dir)
+    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv", result_dir / "pvalues.csv")
+
+    status = evaluate_expected_edge_study_status(plan_path=plan_path)
+    formatted = format_expected_edge_study_status(status)
+
+    assert not status.complete
+    assert not status.artifact_verifier_passed
+    assert "candidate_registry.jsonl: artifact_path mismatch" in formatted
+
+
+def test_expected_edge_study_status_rejects_registry_stale_derived_fields(tmp_path: Path) -> None:
+    result_dir = tmp_path / "results"
+    result_dir.mkdir()
+    plan_path = _write_plan(
+        result_dir,
+        symbols=["BTCUSDT"],
+        horizons_ms=[5000],
+        fees_bps=[0.0],
+    )
+    _write_edge_result(result_dir / "BTCUSDT_5000ms_fee_0_edge.csv")
+    _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0_edge_audit.csv")
+    attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
+    payload = attempts[0].__dict__.copy()
+    payload["selected_fold_count"] = 99
+    payload["validation_net_pnl"] = -123.0
+    payload["audit_p_value"] = 0.99
+    with (result_dir / "candidate_registry.jsonl").open("w") as handle:
+        handle.write(json.dumps(payload, sort_keys=True) + "\n")
+        for attempt in attempts[1:]:
+            handle.write(json.dumps(attempt.__dict__, sort_keys=True) + "\n")
+    _write_pvalues_from_registry(plan_path, result_dir)
+    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv", result_dir / "pvalues.csv")
+
+    status = evaluate_expected_edge_study_status(plan_path=plan_path)
+    formatted = format_expected_edge_study_status(status)
+
+    assert not status.complete
+    assert not status.artifact_verifier_passed
+    assert "candidate_registry.jsonl: selected_fold_count mismatch" in formatted
+    assert "candidate_registry.jsonl: validation_net_pnl mismatch" in formatted
+    assert "candidate_registry.jsonl: audit_p_value mismatch" in formatted
+
+
 def _write_plan(
     result_dir: Path,
     *,
