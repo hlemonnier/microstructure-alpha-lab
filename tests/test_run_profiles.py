@@ -149,3 +149,14 @@ def test_l2_sequence_runner_rejects_unknown_ablation(tmp_path: Path) -> None:
 
     assert result.returncode == 2
     assert "unknown ablation=unknown_variant" in result.stderr
+
+
+def test_expected_edge_helper_scripts_refresh_candidate_registry() -> None:
+    helper_scripts = [
+        ROOT / "scripts" / "run_complete_feature_edge_jobs.sh",
+        ROOT / "scripts" / "run_local16_existing_feature_edge_jobs.sh",
+    ]
+    for script in helper_scripts:
+        text = script.read_text()
+        assert "lob_forge.study_registry" in text
+        assert 'candidate_registry.jsonl"' in text

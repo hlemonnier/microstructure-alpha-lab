@@ -322,7 +322,8 @@ def _study_gate(
         evidence = (
             f"profile={status.profile} result_dir={status.result_dir} "
             f"present_results={status.present_result_files}/{status.expected_edge_jobs} "
-            f"present_audits={status.present_audit_files}/{status.expected_edge_jobs}"
+            f"present_audits={status.present_audit_files}/{status.expected_edge_jobs} "
+            "candidate_registry=1"
         )
         return EvidenceGate(gate_id, todo_text, "passed", True, evidence, "checkbox can be marked complete")
     evidence = (

@@ -469,6 +469,11 @@ PY
 python3 -m lob_forge.cli pvalue-correction "$OUT_DIR/pvalues.csv" > "$OUT_DIR/pvalue_corrections.csv"
 fi
 
+python3 -m lob_forge.study_registry \
+  --plan "$PLAN_PATH" \
+  --result-dir "$OUT_DIR" \
+  --output "$OUT_DIR/candidate_registry.jsonl"
+
 study_status_pvalue_args=()
 if [[ "$WRITE_PVALUES" != "1" ]]; then
   study_status_pvalue_args+=(--no-pvalues)
@@ -480,10 +485,5 @@ python3 -m lob_forge.study_status \
   --output "$OUT_DIR/study_status.json" \
   --min-audit-fold-count "$MIN_AUDIT_FOLD_COUNT" \
   "${study_status_pvalue_args[@]}"
-
-python3 -m lob_forge.study_registry \
-  --plan "$PLAN_PATH" \
-  --result-dir "$OUT_DIR" \
-  --output "$OUT_DIR/candidate_registry.jsonl"
 
 printf 'wrote %s expected-edge study artifacts to %s\n' "$STUDY_PROFILE" "$OUT_DIR"

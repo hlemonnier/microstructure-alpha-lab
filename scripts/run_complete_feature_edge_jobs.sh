@@ -168,5 +168,9 @@ with (out_dir / "pvalues.csv").open("w", newline="") as handle:
         )
 PY
   python3 -m lob_forge.cli pvalue-correction "$RESULT_DIR/pvalues.csv" > "$RESULT_DIR/pvalue_corrections.csv"
+  python3 -m lob_forge.study_registry \
+    --plan "$PLAN_PATH" \
+    --result-dir "$RESULT_DIR" \
+    --output "$RESULT_DIR/candidate_registry.jsonl"
   MIN_AUDIT_FOLD_COUNT="$MIN_AUDIT_FOLD_COUNT" bash scripts/verify_expected_edge_study.sh "$RESULT_DIR" || true
 fi

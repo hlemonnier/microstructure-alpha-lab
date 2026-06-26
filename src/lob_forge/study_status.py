@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from lob_forge.result_verifier import verify_result_artifacts
+from lob_forge.study_registry import read_expected_edge_candidate_registry
 
 
 @dataclass(frozen=True)
@@ -57,11 +58,13 @@ def evaluate_expected_edge_study_status(
             missing_audits.append(audit_name)
 
     missing_required: list[str] = []
+    required_files = ["candidate_registry.jsonl"]
     if require_pvalues:
-        for filename in ("pvalues.csv", "pvalue_corrections.csv"):
-            path = result_dir_path / filename
-            if not path.exists() or path.stat().st_size == 0:
-                missing_required.append(filename)
+        required_files.extend(["pvalues.csv", "pvalue_corrections.csv"])
+    for filename in required_files:
+        path = result_dir_path / filename
+        if not path.exists() or path.stat().st_size == 0:
+            missing_required.append(filename)
 
     if min_audit_fold_count <= 0:
         raise ValueError("min_audit_fold_count must be positive")
@@ -75,6 +78,9 @@ def evaluate_expected_edge_study_status(
             min_audit_fold_count=min_audit_fold_count,
         )
     )
+    registry_path = result_dir_path / "candidate_registry.jsonl"
+    if registry_path.exists() and registry_path.stat().st_size > 0:
+        verifier_errors = tuple(verifier_errors) + tuple(_candidate_registry_errors(registry_path))
     verifier_passed = not verifier_errors
     complete = (
         not missing_results
@@ -229,6 +235,33 @@ def _audit_fold_count_errors(
             continue
         if fold_count < min_audit_fold_count:
             errors.append(f"{audit_name}: fold_count {fold_count} < required {min_audit_fold_count}")
+    return errors
+
+
+def _candidate_registry_errors(path: Path) -> list[str]:
+    errors: list[str] = []
+    try:
+        attempts = read_expected_edge_candidate_registry(path)
+    except Exception as exc:
+        return [f"{path.name}: candidate registry parse failed: {exc!r}"]
+    if not attempts:
+        return [f"{path.name}: no candidate attempts"]
+    invalid_statuses = {"planned", "incomplete_artifact", "artifact_error"}
+    invalid_counts = {status: 0 for status in invalid_statuses}
+    selected_count = 0
+    for attempt in attempts:
+        if attempt.status in invalid_counts:
+            invalid_counts[attempt.status] += 1
+        if attempt.selected:
+            selected_count += 1
+        if not attempt.config_sha256:
+            errors.append(f"{path.name}: candidate attempt missing config_sha256")
+            break
+    for status, count in sorted(invalid_counts.items()):
+        if count:
+            errors.append(f"{path.name}: status_{status}={count}")
+    if selected_count == 0:
+        errors.append(f"{path.name}: selected_candidates=0")
     return errors
 
 
