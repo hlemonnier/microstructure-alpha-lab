@@ -51,6 +51,8 @@ def test_evidence_gates_report_missing_remaining_artifacts(tmp_path: Path) -> No
     final_gate = next(gate for gate in report.gates if gate.gate_id == "immutable_final_holdout")
     assert final_gate.status == "not_ready"
     assert "result_exists=0" in final_gate.evidence
+    assert "final-holdout-rule" in final_gate.next_action
+    assert "final-holdout-edge" in final_gate.next_action
 
 
 def test_evidence_gate_csv_format_quotes_commas(tmp_path: Path) -> None:

@@ -493,6 +493,141 @@ def test_freeze_threshold_candidate_cli_rejects_edge_model_artifact(tmp_path: Pa
         raise AssertionError("expected edge-model artifacts without feature/threshold columns to be rejected")
 
 
+def test_freeze_edge_candidate_cli_selects_artifact_threshold_for_final_holdout(tmp_path: Path) -> None:
+    data = tmp_path / "features.csv"
+    development_manifest_path = tmp_path / "development_holdout.json"
+    final_manifest_path = tmp_path / "final_holdout_manifest.json"
+    artifact_path = tmp_path / "edge_walk_forward.csv"
+    candidate_path = tmp_path / "edge_candidate.json"
+    output_path = tmp_path / "edge_final_holdout.json"
+    data.write_text(
+        "source_date,event_time,future_event_time,label,microprice_deviation,bid,ask,future_bid,future_ask\n"
+        "2026-06-01,1000,1100,1,1.0,100.0,100.1,101.0,101.1\n"
+        "2026-06-01,2000,2100,-1,-1.0,100.0,100.1,99.0,99.1\n"
+        "2026-06-02,3000,3100,1,0.8,100.0,100.1,100.8,100.9\n"
+        "2026-06-03,4000,4100,1,1.2,100.0,100.1,101.2,101.3\n"
+    )
+    artifact_path.write_text(
+        "fold,name,edge_threshold_bps,val_net_pnl,test_net_pnl,val_break_even_fee_bps,test_break_even_fee_bps\n"
+        "1,ridge_expected_edge,0.0,1.0,0.5,0.2,0.1\n"
+        "2,ridge_expected_edge,0.5,3.0,0.1,0.4,0.1\n"
+        "3,ridge_expected_edge,0.5,2.0,0.2,0.3,0.1\n"
+        "summary,,,,,,\n"
+    )
+    development_manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-03"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+    )
+    write_holdout_manifest(development_manifest, development_manifest_path)
+
+    output = io.StringIO()
+    with redirect_stdout(output):
+        code = cli_main(
+            [
+                "freeze-edge-candidate",
+                str(data),
+                "--holdout-manifest",
+                str(development_manifest_path),
+                "--output",
+                str(candidate_path),
+                "--features",
+                "microprice_deviation",
+                "--walk-forward-artifact",
+                str(artifact_path),
+                "--taker-fee-bps",
+                "0",
+                "--target-notional",
+                "100",
+            ]
+        )
+
+    candidate = json.loads(candidate_path.read_text())
+    assert code == 0
+    assert output.getvalue().startswith("candidate_json=")
+    assert candidate["candidate_type"] == "ridge_expected_edge_v1"
+    assert candidate["features"] == ["microprice_deviation"]
+    assert candidate["edge_threshold_bps"] == 0.5
+    assert candidate["selection_score"] == 5.0
+    assert candidate["selected_rows"] == 2
+    assert len(candidate["long_weights"]) == 2
+    assert len(candidate["short_weights"]) == 2
+
+    final_manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-03"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+        candidate_sha256=canonical_json_sha256(candidate),
+    )
+    write_holdout_manifest(final_manifest, final_manifest_path)
+
+    with redirect_stdout(io.StringIO()):
+        code = cli_main(
+            [
+                "final-holdout-edge",
+                str(data),
+                "--holdout-manifest",
+                str(final_manifest_path),
+                "--candidate-json",
+                str(candidate_path),
+                "--output",
+                str(output_path),
+                "--lock-dir",
+                str(tmp_path / "locks"),
+                "--explicit-final-evaluation",
+            ]
+        )
+
+    payload = json.loads(output_path.read_text())
+    assert code == 0
+    assert payload["candidate_sha256"] == canonical_json_sha256(candidate)
+    assert payload["metrics"]["candidate_type"] == "ridge_expected_edge_v1"
+    assert payload["metrics"]["candidate"]["edge_threshold_bps"] == 0.5
+    assert payload["metrics"]["rows"] == 1
+    assert payload["metrics"]["stateful_simulator"] is True
+
+
+def test_freeze_edge_candidate_cli_requires_threshold_or_artifact(tmp_path: Path) -> None:
+    data = tmp_path / "features.csv"
+    manifest_path = tmp_path / "holdout.json"
+    candidate_path = tmp_path / "edge_candidate.json"
+    data.write_text(
+        "source_date,label,microprice_deviation,bid,ask,future_bid,future_ask\n"
+        "2026-06-01,1,1.0,100.0,100.1,101.0,101.1\n"
+        "2026-06-02,-1,-1.0,100.0,100.1,99.0,99.1\n"
+    )
+    manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-02"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+    )
+    write_holdout_manifest(manifest, manifest_path)
+
+    try:
+        cli_main(
+            [
+                "freeze-edge-candidate",
+                str(data),
+                "--holdout-manifest",
+                str(manifest_path),
+                "--output",
+                str(candidate_path),
+                "--features",
+                "microprice_deviation",
+            ]
+        )
+    except ValueError as exc:
+        assert "--edge-threshold-bps or --walk-forward-artifact" in str(exc)
+    else:
+        raise AssertionError("expected edge candidate freezing to require a threshold source")
+
+
 def test_final_holdout_rule_cli_requires_pre_registered_candidate_hash(tmp_path: Path) -> None:
     data = tmp_path / "features.csv"
     manifest_path = tmp_path / "holdout.json"

@@ -90,7 +90,30 @@ PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest data/processed/<
   --candidate-json results/final_holdout/<candidate>.json
 ```
 
-`freeze-threshold-candidate` is only for threshold-rule artifacts with `feature` and `threshold` columns. Expected-edge model artifacts require their own frozen model contract before final holdout evaluation.
+For the expected-edge ridge model, freeze the model weights from manifest-filtered development rows and use an edge threshold selected from the walk-forward artifact:
+
+```bash
+PYTHONPATH=src python3 -m lob_forge.cli freeze-edge-candidate data/processed/<feature-source>.csv \
+  --holdout-manifest results/holdout_manifests/<development>.json \
+  --output results/final_holdout/<edge_candidate>.json \
+  --walk-forward-artifact results/current/<edge_walk_forward_result.csv> \
+  --sort-by validation_net_pnl \
+  --taker-fee-bps 0
+
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest data/processed/<feature-source>.csv \
+  --output results/holdout_manifests/<edge_candidate>.json \
+  --split-column source_date \
+  --holdout-values <final_holdout_dates> \
+  --candidate-json results/final_holdout/<edge_candidate>.json
+
+PYTHONPATH=src python3 -m lob_forge.cli final-holdout-edge data/processed/<feature-source>.csv \
+  --holdout-manifest results/holdout_manifests/<edge_candidate>.json \
+  --candidate-json results/final_holdout/<edge_candidate>.json \
+  --output results/final_holdout/<edge_result>.json \
+  --explicit-final-evaluation
+```
+
+The frozen edge candidate stores the selected threshold, feature list, standardizer, ridge weights, cost assumptions, source data path, and development manifest hash. The final command refuses to run unless the holdout manifest pre-registers the candidate hash.
 
 ## Multiple Testing
 

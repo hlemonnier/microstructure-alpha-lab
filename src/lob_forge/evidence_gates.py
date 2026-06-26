@@ -162,7 +162,7 @@ def _final_holdout_gate(*, result_path: Path, research_manifest_path: Path) -> E
             "not_ready",
             False,
             evidence,
-            "after the full study selects one frozen candidate, run final-holdout-rule with a pre-registered candidate hash",
+            "after the full study selects one frozen candidate, run final-holdout-rule or final-holdout-edge with a pre-registered candidate hash",
         )
     try:
         payload = json.loads(result_path.read_text())
@@ -210,7 +210,7 @@ def _final_holdout_gate(*, result_path: Path, research_manifest_path: Path) -> E
         "failed",
         False,
         f"{evidence} failed_checks={failed}",
-        "rerun final-holdout-rule from the verified manifest and frozen candidate, preserving the immutable result",
+        "rerun final-holdout-rule or final-holdout-edge from the verified manifest and frozen candidate, preserving the immutable result",
     )
 
 

@@ -7,9 +7,10 @@ import json
 import sys
 import tempfile
 from contextlib import contextmanager
+from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Callable, Iterator
+from typing import Any, Callable, Iterator
 
 from lob_forge.alpha_factory import (
     AcceptanceCriteria,
@@ -50,7 +51,12 @@ from lob_forge.binance_vision import (
     list_objects,
 )
 from lob_forge.edge_model import (
+    EdgeModel,
+    available_edge_features,
+    fit_edge_model,
     format_edge_walk_forward_results,
+    predict_net_edges_bps,
+    predict_side,
     run_edge_walk_forward,
     run_edge_walk_forward_streaming,
     write_edge_shadow_decisions_streaming,
@@ -72,6 +78,7 @@ from lob_forge.holdout import (
     build_holdout_manifest,
     canonical_json_sha256,
     holdout_manifest_source_root,
+    read_development_rows,
     read_holdout_manifest,
     read_holdout_rows,
     verify_holdout_manifest_file,
@@ -117,7 +124,7 @@ from lob_forge.local_api_sources import (
     format_local_api_sources_markdown,
     list_local_api_sources,
 )
-from lob_forge.logistic import format_logistic_walk_forward_results, run_logistic_walk_forward
+from lob_forge.logistic import Standardizer, format_logistic_walk_forward_results, run_logistic_walk_forward
 from lob_forge.memory_guard import apply_process_memory_limit, assert_csv_load_budget
 from lob_forge.ml_models import (
     evaluate_model_readiness,
@@ -857,6 +864,44 @@ def main(argv: list[str] | None = None) -> int:
     freeze_threshold_candidate_parser.add_argument("--cancellation-rate-per-second", type=float)
     freeze_threshold_candidate_parser.add_argument("--cancel-replace-edge-bps", type=float)
 
+    freeze_edge_candidate_parser = subparsers.add_parser(
+        "freeze-edge-candidate",
+        help="Freeze a ridge expected-edge model candidate from manifest-filtered development rows.",
+    )
+    freeze_edge_candidate_parser.add_argument("path")
+    freeze_edge_candidate_parser.add_argument("--holdout-manifest", required=True)
+    freeze_edge_candidate_parser.add_argument("--output", required=True)
+    freeze_edge_candidate_parser.add_argument("--features")
+    freeze_edge_candidate_parser.add_argument("--edge-threshold-bps", type=float)
+    freeze_edge_candidate_parser.add_argument("--walk-forward-artifact")
+    freeze_edge_candidate_parser.add_argument(
+        "--sort-by",
+        choices=["validation_net_pnl", "test_net_pnl", "validation_break_even_fee_bps", "test_break_even_fee_bps"],
+        default="validation_net_pnl",
+    )
+    freeze_edge_candidate_parser.add_argument("--l2", type=float, default=1.0)
+    freeze_edge_candidate_parser.add_argument("--taker-fee-bps", type=float, default=5.0)
+    freeze_edge_candidate_parser.add_argument("--slippage-bps", type=float, default=0.0)
+    freeze_edge_candidate_parser.add_argument("--target-notional", type=float)
+    freeze_edge_candidate_parser.add_argument("--initial-cash", type=float)
+    freeze_edge_candidate_parser.add_argument("--max-position-notional", type=float)
+    freeze_edge_candidate_parser.add_argument("--max-leverage", type=float)
+    freeze_edge_candidate_parser.add_argument("--latency-ms", type=int)
+    freeze_edge_candidate_parser.add_argument("--max-order-age-ms", type=int)
+    freeze_edge_candidate_parser.add_argument("--kill-switch-loss", type=float)
+    freeze_edge_candidate_parser.add_argument("--rate-limit-interval-ms", type=int)
+
+    final_holdout_edge_parser = subparsers.add_parser(
+        "final-holdout-edge",
+        help="Evaluate one frozen ridge expected-edge candidate on the declared holdout exactly once.",
+    )
+    final_holdout_edge_parser.add_argument("path")
+    final_holdout_edge_parser.add_argument("--holdout-manifest", required=True)
+    final_holdout_edge_parser.add_argument("--candidate-json", required=True)
+    final_holdout_edge_parser.add_argument("--output", required=True)
+    final_holdout_edge_parser.add_argument("--lock-dir", default="artifacts/final_holdout_locks")
+    final_holdout_edge_parser.add_argument("--explicit-final-evaluation", action="store_true")
+
     fill_parser = subparsers.add_parser(
         "fill-diagnostics",
         help="Analyze conservative passive-entry fills and adverse selection for one threshold rule.",
@@ -1083,6 +1128,10 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_final_holdout_rule(args)
     if args.command == "freeze-threshold-candidate":
         return _cmd_freeze_threshold_candidate(args)
+    if args.command == "freeze-edge-candidate":
+        return _cmd_freeze_edge_candidate(args)
+    if args.command == "final-holdout-edge":
+        return _cmd_final_holdout_edge(args)
     if args.command == "fill-diagnostics":
         return _cmd_fill_diagnostics(args)
     if args.command == "fill-regime":
@@ -2028,6 +2077,340 @@ def _csv_float(value: str | None) -> float:
     if value is None or value == "":
         return 0.0
     return float(value)
+
+
+def _cmd_freeze_edge_candidate(args: argparse.Namespace) -> int:
+    source_root = holdout_manifest_source_root(args.holdout_manifest)
+    if source_root is None:
+        raise ValueError("holdout manifest verification failed; create an official manifest from a Git checkout")
+    manifest = read_holdout_manifest(args.holdout_manifest)
+    development_rows = read_development_rows(Path(args.path), manifest)
+    feature_names = available_edge_features(
+        development_rows,
+        _parse_string_list(args.features) if args.features else None,
+    )
+    edge_threshold_bps, selection_metadata = _edge_candidate_selection(args)
+    model = fit_edge_model(development_rows, feature_names, l2=args.l2)
+    candidate = _edge_candidate_payload(
+        args=args,
+        manifest=manifest,
+        model=model,
+        edge_threshold_bps=edge_threshold_bps,
+        development_rows=len(development_rows),
+        selection_metadata=selection_metadata,
+    )
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(candidate, indent=2, sort_keys=True) + "\n")
+    print(f"candidate_json={output_path}")
+    print(f"candidate_sha256={canonical_json_sha256(candidate)}")
+    print(f"model_name={candidate['model_name']} edge_threshold_bps={candidate['edge_threshold_bps']}")
+    print(f"features={','.join(feature_names)}")
+    return 0
+
+
+def _cmd_final_holdout_edge(args: argparse.Namespace) -> int:
+    source_root = holdout_manifest_source_root(args.holdout_manifest)
+    if source_root is None:
+        raise ValueError("holdout manifest verification failed; create an official manifest from a Git checkout")
+    manifest = read_holdout_manifest(args.holdout_manifest)
+    candidate_path = Path(args.candidate_json)
+    candidate = json.loads(candidate_path.read_text())
+    candidate_sha256 = canonical_json_sha256(candidate)
+    if not manifest.candidate_sha256:
+        raise ValueError(
+            "holdout manifest missing pre-registered candidate_sha256; "
+            "create it with create-holdout-manifest --candidate-json"
+        )
+    if candidate_sha256 != manifest.candidate_sha256:
+        raise ValueError("frozen candidate hash does not match holdout manifest candidate_sha256")
+    model = _edge_model_from_candidate(candidate)
+    edge_threshold_bps = float(candidate["edge_threshold_bps"])
+    taker_fee_bps = float(candidate.get("taker_fee_bps", 5.0))
+    slippage_bps = float(candidate.get("slippage_bps", 0.0))
+    initial_cash = float(candidate.get("initial_cash", 1000.0))
+    target_notional = float(candidate.get("target_notional", min(100.0, initial_cash * 0.1)))
+    rows = read_holdout_rows(Path(args.path), manifest)
+
+    def predictor(row: dict[str, str]) -> int:
+        return predict_side(
+            model,
+            row,
+            edge_threshold_bps=edge_threshold_bps,
+            taker_fee_bps=taker_fee_bps,
+            slippage_bps=slippage_bps,
+        )
+
+    labels = [int(float(row["label"])) for row in rows]
+    predictions = [predictor(row) for row in rows]
+    metrics = compute_metrics(labels, predictions)
+    simulation = simulate_stateful_execution(
+        _market_events_from_feature_rows(rows, target_notional=target_notional),
+        _signals_from_edge_candidate_rows(
+            rows,
+            model=model,
+            edge_threshold_bps=edge_threshold_bps,
+            taker_fee_bps=taker_fee_bps,
+            slippage_bps=slippage_bps,
+            target_notional=target_notional,
+        ),
+        config=StatefulExecutionConfig(
+            initial_cash=initial_cash,
+            max_position_notional=float(
+                candidate.get("max_position_notional", max(target_notional * 2.0, target_notional))
+            ),
+            max_leverage=float(candidate.get("max_leverage", 1.0)),
+            taker_fee_bps=taker_fee_bps,
+            maker_fee_bps=0.0,
+            slippage_bps=slippage_bps,
+            latency_ms=int(candidate.get("latency_ms", 0)),
+            max_order_age_ms=int(candidate.get("max_order_age_ms", 1000)),
+            kill_switch_loss=(
+                float(candidate["kill_switch_loss"]) if candidate.get("kill_switch_loss") is not None else None
+            ),
+            rate_limit_interval_ms=int(candidate.get("rate_limit_interval_ms", 0)),
+        ),
+    )
+    signal_count = sum(1 for prediction in predictions if prediction != 0)
+    total_fees = sum(fill.fee for fill in simulation.fills)
+    net_pnl = simulation.final_equity - initial_cash
+    gross_pnl = net_pnl + total_fees
+    break_even_fee_bps = gross_pnl / simulation.turnover * 10_000.0 if simulation.turnover else 0.0
+    output = write_final_holdout_result(
+        manifest=manifest,
+        metrics={
+            "candidate": candidate,
+            "candidate_sha256": candidate_sha256,
+            "candidate_type": candidate["candidate_type"],
+            "rows": metrics.n,
+            "accuracy": metrics.accuracy,
+            "balanced_accuracy": metrics.balanced_accuracy,
+            "macro_f1": metrics.macro_f1,
+            "coverage": metrics.coverage,
+            "signals": signal_count,
+            "trades": len(simulation.fills),
+            "fill_rate": len(simulation.fills) / signal_count if signal_count else 0.0,
+            "gross_pnl": gross_pnl,
+            "net_pnl": net_pnl,
+            "final_equity": simulation.final_equity,
+            "turnover": simulation.turnover,
+            "fees": total_fees,
+            "break_even_taker_fee_bps": break_even_fee_bps,
+            "stateful_simulator": True,
+            "kill_switch_triggered": simulation.kill_switch_triggered,
+        },
+        output_path=Path(args.output),
+        explicit_final_evaluation=args.explicit_final_evaluation,
+        candidate_sha256=candidate_sha256,
+        lock_dir=Path(args.lock_dir),
+        source_root=source_root,
+    )
+    print(f"final_holdout_result={output}")
+    return 0
+
+
+def _edge_candidate_selection(args: argparse.Namespace) -> tuple[float, dict[str, object]]:
+    if args.edge_threshold_bps is not None and args.walk_forward_artifact:
+        raise ValueError("provide either --edge-threshold-bps or --walk-forward-artifact, not both")
+    if args.edge_threshold_bps is not None:
+        if args.edge_threshold_bps < 0.0:
+            raise ValueError("--edge-threshold-bps must be non-negative")
+        return args.edge_threshold_bps, {
+            "selection_method": "manual_pre_registered_threshold",
+            "selection_metric": "manual",
+            "selection_score": 0.0,
+            "selected_rows": 0,
+        }
+    if not args.walk_forward_artifact:
+        raise ValueError("freeze-edge-candidate requires --edge-threshold-bps or --walk-forward-artifact")
+    threshold, metadata = _edge_threshold_from_walk_forward_artifact(
+        Path(args.walk_forward_artifact),
+        sort_by=args.sort_by,
+    )
+    return threshold, metadata
+
+
+def _edge_threshold_from_walk_forward_artifact(path: Path, *, sort_by: str) -> tuple[float, dict[str, object]]:
+    metric_columns = {
+        "validation_net_pnl": "val_net_pnl",
+        "test_net_pnl": "test_net_pnl",
+        "validation_break_even_fee_bps": "val_break_even_fee_bps",
+        "test_break_even_fee_bps": "test_break_even_fee_bps",
+    }
+    metric_column = metric_columns[sort_by]
+    groups: dict[float, dict[str, float | int]] = {}
+    with path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = set(reader.fieldnames or [])
+        missing = {"edge_threshold_bps", metric_column} - fieldnames
+        if missing:
+            raise ValueError(
+                "freeze-edge-candidate requires an expected-edge artifact with columns: " + ", ".join(sorted(missing))
+            )
+        for row in reader:
+            raw_fold = str(row.get("fold", "")).strip()
+            name = str(row.get("name", "")).strip()
+            if raw_fold == "summary" or not raw_fold or name == "always_flat":
+                continue
+            threshold = float(row["edge_threshold_bps"])
+            bucket = groups.setdefault(
+                threshold,
+                {
+                    "rows": 0,
+                    "selection_score": 0.0,
+                    "validation_net_pnl": 0.0,
+                    "test_net_pnl": 0.0,
+                    "validation_break_even_fee_bps": 0.0,
+                    "test_break_even_fee_bps": 0.0,
+                },
+            )
+            bucket["rows"] = int(bucket["rows"]) + 1
+            bucket["selection_score"] = float(bucket["selection_score"]) + _csv_float(row.get(metric_column))
+            bucket["validation_net_pnl"] = float(bucket["validation_net_pnl"]) + _csv_float(row.get("val_net_pnl"))
+            bucket["test_net_pnl"] = float(bucket["test_net_pnl"]) + _csv_float(row.get("test_net_pnl"))
+            bucket["validation_break_even_fee_bps"] = float(bucket["validation_break_even_fee_bps"]) + _csv_float(
+                row.get("val_break_even_fee_bps")
+            )
+            bucket["test_break_even_fee_bps"] = float(bucket["test_break_even_fee_bps"]) + _csv_float(
+                row.get("test_break_even_fee_bps")
+            )
+    if not groups:
+        raise ValueError("no non-flat expected-edge thresholds found to freeze")
+    threshold = max(groups, key=lambda key: (float(groups[key]["selection_score"]), int(groups[key]["rows"]), -key))
+    selected = groups[threshold]
+    return threshold, {
+        "source_artifact": str(path),
+        "selection_method": "max_aggregate_metric",
+        "selection_metric": sort_by,
+        "selection_score": float(selected["selection_score"]),
+        "selected_rows": int(selected["rows"]),
+        "selection_grain": "fold_rows_aggregated_by_edge_threshold",
+        "validation_net_pnl": float(selected["validation_net_pnl"]),
+        "test_net_pnl": float(selected["test_net_pnl"]),
+        "validation_break_even_fee_bps": float(selected["validation_break_even_fee_bps"]),
+        "test_break_even_fee_bps": float(selected["test_break_even_fee_bps"]),
+    }
+
+
+def _edge_candidate_payload(
+    *,
+    args: argparse.Namespace,
+    manifest: Any,
+    model: EdgeModel,
+    edge_threshold_bps: float,
+    development_rows: int,
+    selection_metadata: dict[str, object],
+) -> dict[str, object]:
+    candidate: dict[str, object] = {
+        "candidate_type": "ridge_expected_edge_v1",
+        "model_name": "ridge_expected_edge",
+        "features": model.features,
+        "standardizer_means": model.standardizer.means,
+        "standardizer_scales": model.standardizer.scales,
+        "long_weights": model.long_weights,
+        "short_weights": model.short_weights,
+        "edge_threshold_bps": edge_threshold_bps,
+        "l2": args.l2,
+        "execution_model": "taker",
+        "order_type": "market",
+        "taker_fee_bps": args.taker_fee_bps,
+        "slippage_bps": args.slippage_bps,
+        "source_data": str(Path(args.path)),
+        "holdout_manifest": str(Path(args.holdout_manifest)),
+        "holdout_manifest_sha256": canonical_json_sha256(asdict(manifest)),
+        "development_rows": development_rows,
+        **selection_metadata,
+    }
+    optional_fields = {
+        "target_notional": args.target_notional,
+        "initial_cash": args.initial_cash,
+        "max_position_notional": args.max_position_notional,
+        "max_leverage": args.max_leverage,
+        "latency_ms": args.latency_ms,
+        "max_order_age_ms": args.max_order_age_ms,
+        "kill_switch_loss": args.kill_switch_loss,
+        "rate_limit_interval_ms": args.rate_limit_interval_ms,
+    }
+    candidate.update({key: value for key, value in optional_fields.items() if value is not None})
+    return candidate
+
+
+def _edge_model_from_candidate(candidate: dict[str, object]) -> EdgeModel:
+    if candidate.get("candidate_type") != "ridge_expected_edge_v1":
+        raise ValueError("frozen edge candidate candidate_type must be ridge_expected_edge_v1")
+    features = candidate.get("features")
+    means = candidate.get("standardizer_means")
+    scales = candidate.get("standardizer_scales")
+    long_weights = candidate.get("long_weights")
+    short_weights = candidate.get("short_weights")
+    if not isinstance(features, list) or not features or not all(isinstance(value, str) for value in features):
+        raise ValueError("frozen edge candidate features must be a non-empty string list")
+    float_fields = {
+        "standardizer_means": means,
+        "standardizer_scales": scales,
+        "long_weights": long_weights,
+        "short_weights": short_weights,
+    }
+    parsed: dict[str, list[float]] = {}
+    for field, values in float_fields.items():
+        if not isinstance(values, list) or not all(isinstance(value, (int, float)) for value in values):
+            raise ValueError(f"frozen edge candidate {field} must be a numeric list")
+        parsed[field] = [float(value) for value in values]
+    feature_count = len(features)
+    if len(parsed["standardizer_means"]) != feature_count or len(parsed["standardizer_scales"]) != feature_count:
+        raise ValueError("frozen edge candidate standardizer dimensions do not match features")
+    expected_weight_count = feature_count + 1
+    if len(parsed["long_weights"]) != expected_weight_count or len(parsed["short_weights"]) != expected_weight_count:
+        raise ValueError("frozen edge candidate weight dimensions do not match features")
+    return EdgeModel(
+        features=[str(feature) for feature in features],
+        standardizer=Standardizer(
+            means=parsed["standardizer_means"],
+            scales=parsed["standardizer_scales"],
+        ),
+        long_weights=parsed["long_weights"],
+        short_weights=parsed["short_weights"],
+    )
+
+
+def _signals_from_edge_candidate_rows(
+    rows: list[dict[str, str]],
+    *,
+    model: EdgeModel,
+    edge_threshold_bps: float,
+    taker_fee_bps: float,
+    slippage_bps: float,
+    target_notional: float,
+) -> list[SignalEvent]:
+    signals: list[SignalEvent] = []
+    for index, row in enumerate(rows, start=1):
+        side = predict_side(
+            model,
+            row,
+            edge_threshold_bps=edge_threshold_bps,
+            taker_fee_bps=taker_fee_bps,
+            slippage_bps=slippage_bps,
+        )
+        long_net_bps, short_net_bps = predict_net_edges_bps(
+            model,
+            row,
+            taker_fee_bps=taker_fee_bps,
+            slippage_bps=slippage_bps,
+        )
+        predicted_edge_bps = (
+            long_net_bps if side == 1 else short_net_bps if side == -1 else max(long_net_bps, short_net_bps, 0.0)
+        )
+        signals.append(
+            SignalEvent(
+                _row_time(row, "event_time", fallback=index * 1000),
+                target_side=side,
+                target_notional=target_notional if side else 0.0,
+                order_type="market",
+                signal_id=f"final-holdout-edge-{index}",
+                predicted_edge_bps=predicted_edge_bps,
+            )
+        )
+    return signals
 
 
 def _market_events_from_feature_rows(rows: list[dict[str, str]], *, target_notional: float) -> list[MarketEvent]:

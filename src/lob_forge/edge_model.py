@@ -59,6 +59,10 @@ class EdgeFoldFit:
     test_window_rows: list[dict[str, str]]
 
 
+def available_edge_features(rows: list[dict[str, str]], features: list[str] | None = None) -> list[str]:
+    return _available_features(rows, features)
+
+
 def run_edge_walk_forward(
     feature_csv: Path | str,
     *,

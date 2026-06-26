@@ -139,6 +139,34 @@ For the fixed threshold-rule family, the CLI exposes that one-way path:
   --explicit-final-evaluation
 ```
 
+For the ridge expected-edge family, freeze the trained development-only model and selected edge threshold before creating the candidate-locked final manifest:
+
+```bash
+.venv/bin/python -m lob_forge.cli create-holdout-manifest <feature_csv> \
+  --output <development_manifest.json> \
+  --split-column source_date \
+  --holdout-values <final_holdout_dates>
+
+.venv/bin/python -m lob_forge.cli freeze-edge-candidate <feature_csv> \
+  --holdout-manifest <development_manifest.json> \
+  --output <frozen_edge_candidate.json> \
+  --walk-forward-artifact <edge_walk_forward_result.csv> \
+  --sort-by validation_net_pnl \
+  --taker-fee-bps 0
+
+.venv/bin/python -m lob_forge.cli create-holdout-manifest <feature_csv> \
+  --output <final_manifest.json> \
+  --split-column source_date \
+  --holdout-values <final_holdout_dates> \
+  --candidate-json <frozen_edge_candidate.json>
+
+.venv/bin/python -m lob_forge.cli final-holdout-edge <feature_csv> \
+  --holdout-manifest <final_manifest.json> \
+  --candidate-json <frozen_edge_candidate.json> \
+  --output <final_holdout_edge_result.json> \
+  --explicit-final-evaluation
+```
+
 ## Heavy Blockers
 
 The full multi-month, multi-asset study and genuine crypto L2 neural experiments require large historical data and/or cloud compute. The local code path is implemented and smoke-tested, but empirical gates remain pending unless corresponding immutable result artifacts are present.
