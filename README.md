@@ -19,7 +19,7 @@ The current evidence should be read conservatively. The repository supports caus
 
 Tracked docs and smoke artifacts support the cautious conclusion that local Binance quote/trade/depth-band samples show preliminary pre-cost predictability, but ordinary taker costs and adverse-selection assumptions dominate simple strategies. Full multi-month, multi-asset confirmatory runs and large repeated-seed crypto L2 neural experiments remain external-data/cloud-compute work.
 
-The reduced E2E fixture declares the Jan 3 holdout before selection, runs walk-forward only on Jan 1-2 development rows, records the full threshold search family in `artifacts/reduced_e2e/experiment_registry.jsonl`, and feeds the validation-selected rule into the stateful simulator.
+The reduced E2E fixture declares the Jan 3 holdout before selection, runs walk-forward only on Jan 1-2 development rows, records the full threshold search family in `artifacts/reduced_e2e/experiment_registry.jsonl`, and feeds the validation-selected rule into the stateful simulator. Full expected-edge study plans now also write `candidate_registry.jsonl`, expanding the symbol/horizon/fee/threshold grid and refreshing planned, selected, evaluated, or incomplete statuses from result and audit artifacts.
 
 ## Verify Locally
 
@@ -39,7 +39,7 @@ dependencies:
 Current fast verification in this checkout:
 
 ```text
-passed 252 direct test functions
+passed 255 direct test functions
 ```
 
 Reduced fixture-only artifacts:

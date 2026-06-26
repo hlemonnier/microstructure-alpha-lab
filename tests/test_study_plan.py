@@ -1,3 +1,4 @@
+from lob_forge.edge_model import DEFAULT_EDGE_THRESHOLDS_BPS
 from lob_forge.study_plan import build_expected_edge_run_plan, format_expected_edge_run_plan
 
 
@@ -30,6 +31,11 @@ def test_laptop_tiny_plan_disables_depth_and_reduces_archives() -> None:
     assert plan.total_days == 2
     assert plan.binance_daily_archives == 4
     assert plan.edge_eval_jobs == 3
+    assert plan.edge_thresholds_bps == list(DEFAULT_EDGE_THRESHOLDS_BPS)
+    assert plan.threshold_candidate_attempts == plan.edge_eval_jobs * len(DEFAULT_EDGE_THRESHOLDS_BPS)
+    assert plan.model_classes == ["ridge_expected_edge"]
+    assert plan.feature_sets == ["default_microstructure"]
+    assert plan.selection_metric == "validation_net_pnl"
     assert plan.max_combined_rows_per_symbol_horizon == 2400
     assert not plan.with_book_depth
     assert any("proof-of-pipeline" in recommendation for recommendation in plan.recommendations)
@@ -56,6 +62,9 @@ def test_laptop_quick_plan_counts_archives_and_jobs() -> None:
         processed_root="data/processed/quick",
         raw_root="data/raw",
         physical_ram_gb_value=16,
+        edge_thresholds_bps=[0.0, 0.25],
+        model_classes=["ridge_expected_edge", "lasso_expected_edge"],
+        feature_sets=["default_microstructure", "depth_bands"],
     )
 
     assert plan.risk_level == "laptop_safe"
@@ -63,6 +72,7 @@ def test_laptop_quick_plan_counts_archives_and_jobs() -> None:
     assert plan.binance_daily_archives == 42
     assert plan.feature_build_jobs == 2
     assert plan.edge_eval_jobs == 10
+    assert plan.threshold_candidate_attempts == 10 * 2 * 2 * 2
     assert plan.max_combined_rows_per_symbol_horizon == 25_200
     assert plan.can_start_on_current_machine
 
@@ -128,5 +138,7 @@ def test_study_plan_text_surfaces_risk_and_uncapped_state() -> None:
 
     assert "profile=cloud_full" in formatted
     assert "risk=cloud_full_heavy" in formatted
+    assert "threshold_candidate_attempts=" in formatted
+    assert "edge_thresholds_bps=" in formatted
     assert "max_combined_rows_per_symbol_horizon=uncapped" in formatted
     assert "EDGE_STREAMING=0" in formatted

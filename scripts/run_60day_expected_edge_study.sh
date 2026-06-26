@@ -177,6 +177,10 @@ python3 -m lob_forge.study_plan \
   --test-size "$TEST_SIZE" \
   --step-size "$STEP_SIZE" \
   --edge-streaming "$EDGE_STREAMING" \
+  --edge-thresholds-bps "$EDGE_THRESHOLDS_BPS" \
+  --model-classes ridge_expected_edge \
+  --feature-sets default_microstructure \
+  --selection-metric validation_net_pnl \
   --min-ram-gb "$MIN_RAM_GB" \
   --max-load-memory-gb "$MAX_LOAD_MEMORY_GB" \
   --max-feature-build-memory-gb "$MAX_FEATURE_BUILD_MEMORY_GB" \
@@ -184,6 +188,11 @@ python3 -m lob_forge.study_plan \
   --processed-root "$PROCESSED_ROOT" \
   --raw-root "$RAW_ROOT" \
   --output "$PLAN_PATH"
+
+python3 -m lob_forge.study_registry \
+  --plan "$PLAN_PATH" \
+  --result-dir "$OUT_DIR" \
+  --output "$OUT_DIR/candidate_registry.jsonl"
 
 if [[ "$PLAN_ONLY" == "1" ]]; then
   printf 'plan_only=1; not starting downloads or edge evaluation\n'
@@ -471,5 +480,10 @@ python3 -m lob_forge.study_status \
   --output "$OUT_DIR/study_status.json" \
   --min-audit-fold-count "$MIN_AUDIT_FOLD_COUNT" \
   "${study_status_pvalue_args[@]}"
+
+python3 -m lob_forge.study_registry \
+  --plan "$PLAN_PATH" \
+  --result-dir "$OUT_DIR" \
+  --output "$OUT_DIR/candidate_registry.jsonl"
 
 printf 'wrote %s expected-edge study artifacts to %s\n' "$STUDY_PROFILE" "$OUT_DIR"

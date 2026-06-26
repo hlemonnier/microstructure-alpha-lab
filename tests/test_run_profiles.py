@@ -58,6 +58,9 @@ def test_local16_plan_only_stays_memory_scaled_without_confirmation(tmp_path: Pa
     assert "runtime_memory_limit_gb=8" in result.stdout
     assert "with_book_depth=0" in result.stdout
     assert 'max_quote_buckets="3600"' in result.stdout
+    assert "threshold_candidate_attempts=50" in result.stdout
+    assert "candidate_registry=" in result.stdout
+    assert (tmp_path / "results" / "candidate_registry.jsonl").exists()
 
 
 def test_l2_sequence_runner_dry_run_propagates_holdout_manifest(tmp_path: Path) -> None:

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Sequence
 
 from lob_forge.binance_vision import iter_dates
+from lob_forge.edge_model import DEFAULT_EDGE_THRESHOLDS_BPS
 from lob_forge.memory_guard import physical_memory_gb
 
 
@@ -32,6 +33,11 @@ class ExpectedEdgeRunPlan:
     test_size: int
     step_size: int
     edge_streaming: bool
+    edge_thresholds_bps: list[float]
+    threshold_candidate_attempts: int
+    model_classes: list[str]
+    feature_sets: list[str]
+    selection_metric: str
     min_ram_gb: float
     max_csv_load_memory_gb: float
     max_feature_build_memory_gb: float
@@ -68,6 +74,10 @@ def build_expected_edge_run_plan(
     physical_ram_gb_value: float | None = None,
     with_book_depth: bool = True,
     max_feature_build_memory_gb: float = 0.0,
+    edge_thresholds_bps: Sequence[float] | None = None,
+    model_classes: Sequence[str] = ("ridge_expected_edge",),
+    feature_sets: Sequence[str] = ("default_microstructure",),
+    selection_metric: str = "validation_net_pnl",
 ) -> ExpectedEdgeRunPlan:
     normalized_profile = _normalize_profile(profile)
     clean_symbols = [symbol.strip().upper() for symbol in symbols if symbol.strip()]
@@ -77,11 +87,25 @@ def build_expected_edge_run_plan(
         raise ValueError("study plan needs at least one horizon")
     if not fees_bps:
         raise ValueError("study plan needs at least one fee level")
+    clean_edge_thresholds = (
+        list(edge_thresholds_bps) if edge_thresholds_bps is not None else list(DEFAULT_EDGE_THRESHOLDS_BPS)
+    )
+    if not clean_edge_thresholds:
+        raise ValueError("study plan needs at least one edge threshold")
+    clean_model_classes = [value.strip() for value in model_classes if value.strip()]
+    clean_feature_sets = [value.strip() for value in feature_sets if value.strip()]
+    if not clean_model_classes:
+        raise ValueError("study plan needs at least one model class")
+    if not clean_feature_sets:
+        raise ValueError("study plan needs at least one feature set")
 
     dates = list(iter_dates(start_date, end_date))
     total_days = len(dates)
     feature_build_jobs = len(clean_symbols) * len(horizons_ms)
     edge_eval_jobs = feature_build_jobs * len(fees_bps)
+    threshold_candidate_attempts = (
+        edge_eval_jobs * len(clean_edge_thresholds) * len(clean_model_classes) * len(clean_feature_sets)
+    )
     datasets_per_day = 3 if with_book_depth else 2
     binance_daily_archives = total_days * len(clean_symbols) * datasets_per_day
     physical_ram = physical_memory_gb() if physical_ram_gb_value is None else physical_ram_gb_value
@@ -122,6 +146,11 @@ def build_expected_edge_run_plan(
         test_size=test_size,
         step_size=step_size,
         edge_streaming=edge_streaming,
+        edge_thresholds_bps=clean_edge_thresholds,
+        threshold_candidate_attempts=threshold_candidate_attempts,
+        model_classes=clean_model_classes,
+        feature_sets=clean_feature_sets,
+        selection_metric=selection_metric,
         min_ram_gb=min_ram_gb,
         max_csv_load_memory_gb=max_csv_load_memory_gb,
         max_feature_build_memory_gb=max_feature_build_memory_gb,
@@ -155,7 +184,8 @@ def format_expected_edge_run_plan(plan: ExpectedEdgeRunPlan) -> str:
     lines = [
         f"profile={plan.profile} risk={plan.risk_level} dates={plan.start_date}..{plan.end_date} days={plan.total_days}",
         f"symbols={','.join(plan.symbols)} horizons_ms={','.join(str(value) for value in plan.horizons_ms)} latency_ms={plan.latency_ms} fees={len(plan.fees_bps)}",
-        f"archives={plan.binance_daily_archives} feature_jobs={plan.feature_build_jobs} edge_jobs={plan.edge_eval_jobs}",
+        f"archives={plan.binance_daily_archives} feature_jobs={plan.feature_build_jobs} edge_jobs={plan.edge_eval_jobs} threshold_candidate_attempts={plan.threshold_candidate_attempts}",
+        f"edge_thresholds_bps={','.join(format(value, 'g') for value in plan.edge_thresholds_bps)} selection_metric={plan.selection_metric}",
         f"with_book_depth={int(plan.with_book_depth)} edge_streaming={int(plan.edge_streaming)} max_combined_rows_per_symbol_horizon={combined_rows}",
         f"physical_ram={ram} min_ram_gb={plan.min_ram_gb:.1f} can_start={int(plan.can_start_on_current_machine)}",
     ]
@@ -180,6 +210,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--test-size", type=int, required=True)
     parser.add_argument("--step-size", type=int, required=True)
     parser.add_argument("--edge-streaming", choices=["0", "1"], required=True)
+    parser.add_argument("--edge-thresholds-bps", default="")
+    parser.add_argument("--model-classes", default="ridge_expected_edge")
+    parser.add_argument("--feature-sets", default="default_microstructure")
+    parser.add_argument("--selection-metric", default="validation_net_pnl")
     parser.add_argument("--min-ram-gb", type=float, required=True)
     parser.add_argument("--max-load-memory-gb", type=float, required=True)
     parser.add_argument("--max-feature-build-memory-gb", type=float, default=0.0)
@@ -210,6 +244,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         out_dir=args.out_dir,
         processed_root=args.processed_root,
         raw_root=args.raw_root,
+        edge_thresholds_bps=_parse_number_list(args.edge_thresholds_bps, default=DEFAULT_EDGE_THRESHOLDS_BPS),
+        model_classes=_parse_string_list(args.model_classes),
+        feature_sets=_parse_string_list(args.feature_sets),
+        selection_metric=args.selection_metric,
     )
     if args.output:
         output_path = write_expected_edge_run_plan(plan, args.output)
@@ -233,6 +271,16 @@ def _risk_level(profile: str) -> str:
     if profile == "cloud_full":
         return "cloud_full_heavy"
     return "custom"
+
+
+def _parse_number_list(value: str, *, default: Sequence[float]) -> list[float]:
+    if not value.strip():
+        return list(default)
+    return [float(item) for item in value.replace(",", " ").split() if item]
+
+
+def _parse_string_list(value: str) -> list[str]:
+    return [item for item in value.replace(",", " ").split() if item]
 
 
 def _recommendations(
