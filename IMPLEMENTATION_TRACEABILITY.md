@@ -20,8 +20,8 @@ Authoritative scope: local implementation specification supplied outside the rep
 ## Verification Log
 
 - Baseline direct tests before edits: `passed 160 direct test functions`.
-- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 310 direct test functions`.
-- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `310 passed`.
+- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 312 direct test functions`.
+- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `312 passed`.
 - Current static checks after implementation: `.venv/bin/python -m ruff format --check .`, `.venv/bin/python -m ruff check .`, and `.venv/bin/python -m mypy src/lob_forge` all passed.
 - C++ replay equivalence is included in the direct suite when a local C++ compiler is present.
 - Runbook holdout enforcement covers both Markdown code blocks and shell scripts, including multi-line Bash arrays that invoke gated research CLI commands.
@@ -32,7 +32,7 @@ Authoritative scope: local implementation specification supplied outside the rep
 - CPU neural fixture smokes generated `sequence_tcn_smoke.csv` and `sequence_transformer_smoke.csv`; sequence runs now expose optional holdout-manifest filtering, checkpoint/resume, repeated-seed and ablation runner support, prediction CSV export, calibration metrics, confusion matrices, stateful economic smoke fields, frozen sequence candidates, and final holdout evaluation against a pre-registered candidate hash.
 - Safe full-study and live-validation script checks passed in plan/dry-run mode: `PLAN_ONLY=1 STUDY_PROFILE=local16_60day bash scripts/run_60day_expected_edge_study.sh`, `DRY_RUN=1 bash scripts/run_complete_feature_edge_jobs.sh`, `DRY_RUN=1 bash scripts/run_local16_existing_feature_edge_jobs.sh`, `DRY_RUN=1 bash scripts/run_kelly_candidate_search.sh`, and `DRY_RUN=1 SUBMIT_ORDERS=1 PROVIDER=bybit bash scripts/run_shadow_fill_observation_session.sh`. The final-holdout preparation helper passes shell syntax/focused tests and correctly refuses the current checkout because the full study is incomplete.
 - `make verify-results` passed against `results/current`; `make verify-evidence-gates` still fails by design only for `full_60_90day_cloud`, `immutable_final_holdout`, and `real_shadow_fill_validation`.
-- `verify-results` now rejects unsupported audit `inference_grain` labels, requires present ledger artifacts before accepting trade/day/position ledger-grain inference claims, and requires ordinary non-config-hash `pvalues.csv` files to cover the audit artifact family exactly.
+- `verify-results` now rejects unsupported audit `inference_grain` labels, requires present ledger artifacts before accepting trade/day/position ledger-grain inference claims, requires ordinary non-config-hash `pvalues.csv` files to cover the audit artifact family exactly, and rejects in-repository experiment ledgers whose `git_rev` does not match the current checkout `HEAD`.
 
 ## Review Gap Status
 

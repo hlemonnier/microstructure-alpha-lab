@@ -81,6 +81,8 @@ def verify_result_artifacts(result_dir: Path | str, *, strict_metadata: bool = T
     checked = 0
     if not result_dir.exists():
         return ResultVerification(result_dir, 0, 0, False, (f"missing result dir: {result_dir}",))
+    git_root = _git_root(result_dir) if strict_metadata else None
+    current_git_head = _current_git_head(git_root) if git_root is not None else None
 
     required_files = REQUIRED_RESULT_FILES if strict_metadata else REQUIRED_STUDY_FILES
     for filename in required_files:
@@ -89,7 +91,7 @@ def verify_result_artifacts(result_dir: Path | str, *, strict_metadata: bool = T
         if not path.exists() or path.stat().st_size == 0:
             errors.append(f"missing or empty required artifact: {filename}")
         elif strict_metadata and filename == "experiment_ledger.jsonl":
-            errors.extend(_verify_experiment_ledger(path))
+            errors.extend(_verify_experiment_ledger(path, git_root=git_root, current_git_head=current_git_head))
 
     audit_files = sorted(result_dir.glob("*_audit.csv"))
     if not audit_files:
@@ -301,7 +303,12 @@ def _verify_pvalue_corrections(path: Path, *, pvalues_path: Path | None = None) 
     return errors
 
 
-def _verify_experiment_ledger(path: Path) -> list[str]:
+def _verify_experiment_ledger(
+    path: Path,
+    *,
+    git_root: Path | None = None,
+    current_git_head: str | None = None,
+) -> list[str]:
     errors: list[str] = []
     rows = list(_read_jsonl(path, errors))
     if not rows:
@@ -314,8 +321,13 @@ def _verify_experiment_ledger(path: Path) -> list[str]:
             errors.append(f"{path.name}:{line_number} {experiment_id}: duplicate experiment_id")
         seen_experiment_ids.add(experiment_id)
         git_rev = str(row.get("git_rev") or "").strip()
-        if not _is_valid_git_rev(git_rev):
+        if not _is_valid_git_rev(git_rev, git_root=git_root):
             errors.append(f"{path.name}:{line_number} {experiment_id}: invalid git_rev {git_rev!r}")
+        elif current_git_head is not None and not _git_rev_matches_head(git_rev, current_git_head):
+            errors.append(
+                f"{path.name}:{line_number} {experiment_id}: git_rev {git_rev!r} "
+                f"does not match current HEAD {current_git_head!r}"
+            )
         command = str(row.get("command") or "")
         if not _uses_gated_cli_command(command):
             continue
@@ -364,20 +376,62 @@ def _is_sha256(value: str) -> bool:
     return len(value) == 64 and all(char in "0123456789abcdefABCDEF" for char in value)
 
 
-def _is_valid_git_rev(value: str) -> bool:
+def _is_valid_git_rev(value: str, *, git_root: Path | None = None) -> bool:
     if value.lower() in INVALID_GIT_REVS:
         return False
     if not GIT_REV_RE.fullmatch(value):
         return False
     if len(value) >= 40:
         return True
-    return _git_rev_resolves(value)
+    return _git_rev_resolves(value, git_root=git_root)
 
 
-def _git_rev_resolves(value: str) -> bool:
+def _git_rev_matches_head(git_rev: str, current_git_head: str) -> bool:
+    normalized_rev = git_rev.lower()
+    normalized_head = current_git_head.lower()
+    return normalized_rev == normalized_head or normalized_head.startswith(normalized_rev)
+
+
+def _git_root(path: Path) -> Path | None:
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(path), "rev-parse", "--show-toplevel"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return None
+    if completed.returncode != 0:
+        return None
+    root = completed.stdout.strip()
+    return Path(root) if root else None
+
+
+def _current_git_head(git_root: Path) -> str | None:
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(git_root), "rev-parse", "HEAD"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return None
+    if completed.returncode != 0:
+        return None
+    head = completed.stdout.strip()
+    return head if GIT_REV_RE.fullmatch(head) else None
+
+
+def _git_rev_resolves(value: str, *, git_root: Path | None = None) -> bool:
+    command = ["git"]
+    if git_root is not None:
+        command.extend(["-C", str(git_root)])
+    command.extend(["cat-file", "-e", f"{value}^{{commit}}"])
     try:
         subprocess.run(
-            ["git", "cat-file", "-e", f"{value}^{{commit}}"],
+            command,
             check=True,
             capture_output=True,
             text=True,

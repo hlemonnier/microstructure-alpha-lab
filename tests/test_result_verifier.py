@@ -1,3 +1,4 @@
+import subprocess
 from pathlib import Path
 
 from lob_forge.result_verifier import verify_result_artifacts
@@ -104,6 +105,32 @@ def test_result_verifier_defers_config_hash_pvalue_join_to_study_registry(tmp_pa
     assert report.passed
 
 
+def test_result_verifier_rejects_in_repo_ledger_from_different_head(tmp_path: Path) -> None:
+    repo = _init_git_repo(tmp_path / "repo")
+    result_dir = repo / "results"
+    result_dir.mkdir()
+    _write_minimal_result_dir(result_dir, git_rev="a" * 40)
+    (result_dir / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
+
+    report = verify_result_artifacts(result_dir)
+
+    assert not report.passed
+    assert any("does not match current HEAD" in error for error in report.errors)
+
+
+def test_result_verifier_accepts_in_repo_ledger_from_current_head(tmp_path: Path) -> None:
+    repo = _init_git_repo(tmp_path / "repo")
+    head = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+    result_dir = repo / "results"
+    result_dir.mkdir()
+    _write_minimal_result_dir(result_dir, git_rev=head)
+    (result_dir / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
+
+    report = verify_result_artifacts(result_dir)
+
+    assert report.passed
+
+
 def test_result_verifier_rejects_stale_protocol_ledger_metadata(tmp_path: Path) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
@@ -192,11 +219,12 @@ def _write_minimal_result_dir(
     *,
     pvalue_id: str = "sample",
     config_sha256: str = "",
+    git_rev: str = FIXTURE_GIT_REV,
 ) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
         tmp_path / "experiment_ledger.jsonl",
-        git_rev=FIXTURE_GIT_REV,
+        git_rev=git_rev,
         command="python3 -m lob_forge.cli walk-forward data.csv --holdout-manifest manifest.json",
         holdout_manifest_path="manifest.json",
         holdout_manifest_sha256="a" * 64,
@@ -216,6 +244,17 @@ def _write_pvalue_files(tmp_path: Path, *, hypothesis_id: str = "sample", config
         correction_row += f",{config_sha256}"
     (tmp_path / "pvalues.csv").write_text(f"{pvalue_header}\n{pvalue_row}\n")
     (tmp_path / "pvalue_corrections.csv").write_text(f"{correction_header}\n{correction_row}\n")
+
+
+def _init_git_repo(path: Path) -> Path:
+    path.mkdir()
+    subprocess.run(["git", "-C", str(path), "init"], check=True, capture_output=True, text=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.email", "test@example.com"], check=True)
+    subprocess.run(["git", "-C", str(path), "config", "user.name", "Test User"], check=True)
+    (path / "README.md").write_text("fixture\n")
+    subprocess.run(["git", "-C", str(path), "add", "README.md"], check=True)
+    subprocess.run(["git", "-C", str(path), "commit", "-m", "fixture"], check=True, capture_output=True, text=True)
+    return path
 
 
 def _write_ledger(
