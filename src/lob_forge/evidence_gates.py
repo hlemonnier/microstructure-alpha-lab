@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Sequence
 
-from lob_forge.live_validation import read_shadow_decisions, validate_shadow_fill_predictions
+from lob_forge.live_validation import has_observed_fill, read_shadow_decisions, validate_shadow_fill_predictions
 from lob_forge.ml_models import (
     L2TensorReadiness,
     ModelReadinessReport,
@@ -389,20 +389,12 @@ def _shadow_gate(
             f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names}",
             "run edge-shadow-decisions, generate paper-order-plan, submit-paper-orders with --execute on demo/testnet, fetch order/fill history, normalize/import observations, then validate",
         )
+    existing_order_plans, nonempty_order_plans, order_plan_rows, missing_order_plan_names = _order_plan_evidence(
+        order_plan_paths
+    )
     try:
         decisions = read_shadow_decisions(shadow_path)
-        observed = [
-            decision
-            for decision in decisions
-            if decision.observed_fill_price is not None or decision.observed_fill_size is not None
-        ]
-        report = validate_shadow_fill_predictions(
-            simulated_path=simulated_path,
-            shadow_path=shadow_path,
-            max_price_error=max_price_error,
-            max_size_error=max_size_error,
-            max_fill_rate_error=max_fill_rate_error,
-        )
+        observed = [decision for decision in decisions if has_observed_fill(decision)]
     except Exception as exc:
         return EvidenceGate(
             "real_shadow_fill_validation",
@@ -410,15 +402,12 @@ def _shadow_gate(
             "failed",
             False,
             repr(exc),
-            "fix shadow/simulated files, fetch order/fill history, normalize/import demo observations, and rerun validate-shadow-fills",
+            "fix shadow decision files, fetch order/fill history, normalize/import demo observations, and rerun validate-shadow-fills",
         )
-    existing_order_plans, nonempty_order_plans, order_plan_rows, missing_order_plan_names = _order_plan_evidence(
-        order_plan_paths
-    )
     if len(observed) < min_shadow_observations:
         evidence = (
             f"observed_shadow_rows={len(observed)} required={min_shadow_observations} "
-            f"matched={report.matched_observations} validation_passed={int(report.passed)} "
+            "matched=0 validation_passed=0 "
             f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
             f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
             f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names}"
@@ -435,6 +424,23 @@ def _shadow_gate(
             False,
             evidence,
             next_action,
+        )
+    try:
+        report = validate_shadow_fill_predictions(
+            simulated_path=simulated_path,
+            shadow_path=shadow_path,
+            max_price_error=max_price_error,
+            max_size_error=max_size_error,
+            max_fill_rate_error=max_fill_rate_error,
+        )
+    except Exception as exc:
+        return EvidenceGate(
+            "real_shadow_fill_validation",
+            todo,
+            "failed",
+            False,
+            repr(exc),
+            "fix shadow/simulated files, fetch order/fill history, normalize/import demo observations, and rerun validate-shadow-fills",
         )
     evidence = (
         f"observed_shadow_rows={len(observed)} matched={report.matched_observations} "

@@ -334,6 +334,80 @@ def test_shadow_evidence_gate_uses_default_error_thresholds(tmp_path: Path) -> N
     assert "max_fill_rate_error=0.05" in gate.evidence
 
 
+def test_shadow_evidence_gate_validates_only_explicit_observations(tmp_path: Path) -> None:
+    capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
+    full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")
+    audit = tmp_path / "audit.csv"
+    kelly = tmp_path / "kelly.csv"
+    simulated = tmp_path / "simulated.csv"
+    shadow = tmp_path / "shadow.csv"
+    _write_audit(audit, fold_count=4, acceptance_passed=0, rejection_reasons="fold count too low")
+    _write_kelly(kelly, [1.0, -10.0, 2.0, 0.0])
+    _write_simulated_fills(
+        simulated,
+        [
+            {"decision_id": "observed", "simulated_fill_price": "100.0", "simulated_fill_size": "1.0"},
+            {"decision_id": "shadow_only", "simulated_fill_price": "", "simulated_fill_size": "0.0"},
+        ],
+    )
+    _write_shadow_decisions(
+        shadow,
+        [
+            {
+                "decision_id": "observed",
+                "timestamp_ms": "1700000000000",
+                "venue": "bybit",
+                "symbol": "BTCUSDT",
+                "model_name": "ridge_expected_edge",
+                "predicted_side": "1",
+                "predicted_edge_bps": "0.8",
+                "order_type": "paper_limit",
+                "intended_price": "100.0",
+                "intended_size": "1.0",
+                "observed_fill_price": "100.0",
+                "observed_fill_size": "1.0",
+                "realized_pnl": "",
+                "notes": "",
+            },
+            {
+                "decision_id": "shadow_only",
+                "timestamp_ms": "1700000000100",
+                "venue": "bybit",
+                "symbol": "BTCUSDT",
+                "model_name": "ridge_expected_edge",
+                "predicted_side": "1",
+                "predicted_edge_bps": "0.2",
+                "order_type": "paper_limit",
+                "intended_price": "100.0",
+                "intended_size": "1.0",
+                "observed_fill_price": "",
+                "observed_fill_size": "",
+                "realized_pnl": "",
+                "notes": "",
+            },
+        ],
+    )
+
+    report = evaluate_remaining_evidence_gates(
+        capped_plan=capped_plan,
+        capped_result_dir=capped_plan.parent,
+        full_plan=full_plan,
+        full_result_dir=full_plan.parent,
+        simulated_fills=simulated,
+        shadow_decisions=shadow,
+        min_shadow_observations=1,
+        kelly_artifact=kelly,
+        kelly_min_observations=4,
+        kelly_window_size=2,
+        baseline_audit=audit,
+        l2_path=tmp_path / "missing_l2.csv",
+    )
+
+    gate = next(gate for gate in report.gates if gate.gate_id == "real_shadow_fill_validation")
+    assert gate.passed
+    assert "observed_shadow_rows=1 matched=1" in gate.evidence
+
+
 def test_evidence_gates_pass_pretraining_when_artifact_matches_l2(tmp_path: Path) -> None:
     capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
     full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")

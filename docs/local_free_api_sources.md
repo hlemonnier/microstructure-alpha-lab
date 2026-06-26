@@ -97,6 +97,8 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli submit-paper-orders \
 
 For OKX demo, the submitter includes `x-simulated-trading: 1` on REST requests. Bybit uses the demo trading base URL and Binance uses the USD-M Futures Testnet base URL.
 
+The validation gate counts only explicit provider-normalized observations: positive fills or terminal zero-fill order states. Blank template rows and untouched shadow decisions stay out of the error calculation.
+
 4. Submit demo/paper orders from the plan, then save the raw provider response under `results/shadow_validation/`.
    The Bybit, OKX, and Binance USD-M testnet REST pulls are executable:
 

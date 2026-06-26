@@ -188,6 +188,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli validate-shadow-fills \
 ## Evidence Rules
 
 - Do not count a blank template as an observation.
+- Validation uses only explicit provider-normalized observations: positive fills or terminal zero-fill rows. Blank shadow-only rows are ignored rather than treated as live no-fills.
 - Do not hand-edit fills into existence. Keep the raw provider response next to the normalized CSV.
 - Positive fill size requires a fill price.
 - Bybit and OKX transaction-history exports usually contain only actual fills; unfilled paper orders require an explicit terminal no-fill row if they should count as observed no-fill evidence.

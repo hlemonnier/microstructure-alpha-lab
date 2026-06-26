@@ -494,28 +494,35 @@ def validate_shadow_fill_predictions(
 ) -> ShadowFillValidationReport:
     predictions = _index_by_decision_id(read_simulated_fill_predictions(simulated_path), label="simulated")
     shadows = _index_by_decision_id(read_shadow_decisions(shadow_path), label="shadow")
-    matched_ids = sorted(set(predictions).intersection(shadows))
+    observed_shadows = {
+        decision_id: decision for decision_id, decision in shadows.items() if has_observed_fill(decision)
+    }
+    matched_ids = sorted(set(predictions).intersection(observed_shadows))
     if not matched_ids:
-        raise ValueError("no matching decision_id values between simulated and shadow fill files")
+        raise ValueError("no matching observed decision_id values between simulated and shadow fill files")
 
     simulated: list[tuple[float | None, float]] = []
     live: list[tuple[float | None, float]] = []
     for decision_id in matched_ids:
         prediction = predictions[decision_id]
-        decision = shadows[decision_id]
+        decision = observed_shadows[decision_id]
         simulated.append((prediction.simulated_fill_price, prediction.simulated_fill_size))
         live.append((decision.observed_fill_price, decision.observed_fill_size or 0.0))
 
     validation = validate_simulated_vs_live_fills(simulated, live)
     return ShadowFillValidationReport(
         matched_observations=len(matched_ids),
-        missing_simulated_decisions=tuple(sorted(set(shadows).difference(predictions))),
+        missing_simulated_decisions=tuple(sorted(set(observed_shadows).difference(predictions))),
         missing_shadow_decisions=tuple(sorted(set(predictions).difference(shadows))),
         validation=validation,
         max_price_error=max_price_error,
         max_size_error=max_size_error,
         max_fill_rate_error=max_fill_rate_error,
     )
+
+
+def has_observed_fill(decision: ShadowDecision) -> bool:
+    return decision.observed_fill_price is not None or decision.observed_fill_size is not None
 
 
 def format_shadow_fill_validation_report(report: ShadowFillValidationReport, *, output_format: str = "text") -> str:

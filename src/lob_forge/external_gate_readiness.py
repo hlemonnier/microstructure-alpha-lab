@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Sequence
 
 from lob_forge.evidence_gates import format_evidence_gate_report
-from lob_forge.live_validation import read_shadow_decisions, validate_shadow_fill_predictions
+from lob_forge.live_validation import has_observed_fill, read_shadow_decisions, validate_shadow_fill_predictions
 from lob_forge.study_status import evaluate_expected_edge_study_status
 
 
@@ -160,9 +160,15 @@ def write_external_gate_readiness(
 
 
 def _resolve_modal_binary(*, root: Path, modal_binary: str | None) -> str | None:
-    candidates = []
     if modal_binary:
-        candidates.append(modal_binary)
+        return (
+            shutil.which(modal_binary)
+            if "/" not in modal_binary
+            else modal_binary
+            if os.access(modal_binary, os.X_OK)
+            else None
+        )
+    candidates = []
     venv_modal = root / ".venv" / "bin" / "modal"
     if venv_modal.exists():
         candidates.append(str(venv_modal))
@@ -411,11 +417,37 @@ def _shadow_fill_readiness_check(
         )
     try:
         decisions = read_shadow_decisions(shadow_path)
-        observed = [
-            decision
-            for decision in decisions
-            if decision.observed_fill_price is not None or decision.observed_fill_size is not None
-        ]
+        observed = [decision for decision in decisions if has_observed_fill(decision)]
+    except Exception as exc:
+        return ReadinessCheck(
+            "paper_live_fill_validation",
+            "failed",
+            False,
+            f"shadow={shadow_path} simulated={simulated_path} error={type(exc).__name__}",
+            "fix shadow decision files and import observed fills",
+        )
+    order_plan_rows = tuple(_count_order_plan_rows(path) for path in order_plan_paths)
+    existing_order_plans = sum(1 for path in order_plan_paths if path.exists())
+    nonempty_order_plans = sum(1 for rows in order_plan_rows if rows > 0)
+    missing_order_plan_names = ",".join(path.name for path in order_plan_paths if not path.exists()) or "none"
+    if len(observed) < min_shadow_observations:
+        evidence = (
+            f"observed_shadow_rows={len(observed)} required={min_shadow_observations} "
+            "matched=0 validation_passed=0 "
+            f"template_exists={int(observed_template_path.exists())} "
+            f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
+            f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
+            f"order_plan_rows={sum(order_plan_rows)} missing_order_plans={missing_order_plan_names}"
+        )
+        next_action = (
+            "generate observed-fill-template and paper-order-plan, run submit-paper-orders with --execute on demo/testnet, fetch order/fill history with fetch-observed-fills, then import observations"
+            if not observed_template_path.exists()
+            else "generate paper-order-plan, run submit-paper-orders with --execute on demo/testnet, fetch order/fill history with fetch-observed-fills, normalize/import observations; blank templates do not count"
+            if existing_order_plans < len(order_plan_paths) or nonempty_order_plans == 0
+            else "run submit-paper-orders with --execute on demo/testnet, fetch order/fill history with fetch-observed-fills, normalize/import observations; blank templates do not count"
+        )
+        return ReadinessCheck("paper_live_fill_validation", "not_ready", False, evidence, next_action)
+    try:
         report = validate_shadow_fill_predictions(
             simulated_path=simulated_path,
             shadow_path=shadow_path,
@@ -431,10 +463,6 @@ def _shadow_fill_readiness_check(
             f"shadow={shadow_path} simulated={simulated_path} error={type(exc).__name__}",
             "fix shadow/simulated fill files and import observed fills",
         )
-    order_plan_rows = tuple(_count_order_plan_rows(path) for path in order_plan_paths)
-    existing_order_plans = sum(1 for path in order_plan_paths if path.exists())
-    nonempty_order_plans = sum(1 for rows in order_plan_rows if rows > 0)
-    missing_order_plan_names = ",".join(path.name for path in order_plan_paths if not path.exists()) or "none"
     evidence = (
         f"observed_shadow_rows={len(observed)} required={min_shadow_observations} "
         f"matched={report.matched_observations} validation_passed={int(report.passed)} "
@@ -443,15 +471,6 @@ def _shadow_fill_readiness_check(
         f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
         f"order_plan_rows={sum(order_plan_rows)} missing_order_plans={missing_order_plan_names}"
     )
-    if len(observed) < min_shadow_observations:
-        next_action = (
-            "generate observed-fill-template and paper-order-plan, run submit-paper-orders with --execute on demo/testnet, fetch order/fill history with fetch-observed-fills, then import observations"
-            if not observed_template_path.exists()
-            else "generate paper-order-plan, run submit-paper-orders with --execute on demo/testnet, fetch order/fill history with fetch-observed-fills, normalize/import observations; blank templates do not count"
-            if existing_order_plans < len(order_plan_paths) or nonempty_order_plans == 0
-            else "run submit-paper-orders with --execute on demo/testnet, fetch order/fill history with fetch-observed-fills, normalize/import observations; blank templates do not count"
-        )
-        return ReadinessCheck("paper_live_fill_validation", "not_ready", False, evidence, next_action)
     if report.passed:
         return ReadinessCheck("paper_live_fill_validation", "passed", True, evidence, "run make verify-evidence-gates")
     return ReadinessCheck(

@@ -76,6 +76,7 @@ def test_shadow_fill_validation_passes_when_errors_are_inside_thresholds(tmp_pat
             order_type="paper_limit",
             intended_price=100.0,
             intended_size=1.0,
+            observed_fill_size=0.0,
         ),
     )
     write_simulated_fill_predictions(
@@ -101,6 +102,91 @@ def test_shadow_fill_validation_passes_when_errors_are_inside_thresholds(tmp_pat
     assert report.validation.fill_rate_error == 0.0
     assert "passed=1" in text
     assert csv_text.splitlines()[1].endswith(",1")
+
+
+def test_shadow_fill_validation_ignores_unobserved_shadow_rows(tmp_path: Path) -> None:
+    shadow_path = tmp_path / "shadow.csv"
+    simulated_path = tmp_path / "simulated.csv"
+    append_shadow_decision(
+        shadow_path,
+        ShadowDecision(
+            decision_id="observed",
+            timestamp_ms=1700000000000,
+            venue="bybit",
+            symbol="BTCUSDT",
+            model_name="ridge_expected_edge",
+            predicted_side=1,
+            predicted_edge_bps=0.8,
+            order_type="paper_limit",
+            intended_price=100.0,
+            intended_size=1.0,
+            observed_fill_price=100.0,
+            observed_fill_size=1.0,
+        ),
+    )
+    append_shadow_decision(
+        shadow_path,
+        ShadowDecision(
+            decision_id="shadow_only",
+            timestamp_ms=1700000000100,
+            venue="bybit",
+            symbol="BTCUSDT",
+            model_name="ridge_expected_edge",
+            predicted_side=1,
+            predicted_edge_bps=0.2,
+            order_type="paper_limit",
+            intended_price=100.0,
+            intended_size=1.0,
+        ),
+    )
+    write_simulated_fill_predictions(
+        simulated_path,
+        [
+            SimulatedFillPrediction("observed", 100.0, 1.0),
+            SimulatedFillPrediction("shadow_only", None, 0.0),
+        ],
+    )
+
+    report = validate_shadow_fill_predictions(
+        simulated_path=simulated_path,
+        shadow_path=shadow_path,
+        max_price_error=0.0,
+        max_size_error=0.0,
+        max_fill_rate_error=0.0,
+    )
+
+    assert report.passed
+    assert report.matched_observations == 1
+    assert report.missing_simulated_decisions == ()
+    assert report.missing_shadow_decisions == ()
+
+
+def test_shadow_fill_validation_requires_explicit_observations(tmp_path: Path) -> None:
+    shadow_path = tmp_path / "shadow.csv"
+    simulated_path = tmp_path / "simulated.csv"
+    append_shadow_decision(
+        shadow_path,
+        ShadowDecision(
+            decision_id="shadow_only",
+            timestamp_ms=1700000000000,
+            venue="bybit",
+            symbol="BTCUSDT",
+            model_name="ridge_expected_edge",
+            predicted_side=1,
+            predicted_edge_bps=0.8,
+            order_type="paper_limit",
+            intended_price=100.0,
+            intended_size=1.0,
+        ),
+    )
+    write_simulated_fill_predictions(simulated_path, [SimulatedFillPrediction("shadow_only", None, 0.0)])
+
+    try:
+        validate_shadow_fill_predictions(simulated_path=simulated_path, shadow_path=shadow_path)
+    except ValueError as exc:
+        assert "no matching observed decision_id values" in str(exc)
+    else:
+        raise AssertionError("expected missing observed decision validation failure")
 
 
 def test_shadow_fill_validation_fails_on_missing_decisions(tmp_path: Path) -> None:
