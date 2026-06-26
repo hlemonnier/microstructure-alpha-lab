@@ -369,9 +369,9 @@ def _shadow_fill_readiness_check(
     )
     if len(observed) < min_shadow_observations:
         next_action = (
-            "generate observed-fill-template, then fetch Bybit/OKX demo or Binance USD-M testnet fills with fetch-observed-fills and import them"
+            "generate observed-fill-template and paper-order-plan, submit demo orders, fetch fills with fetch-observed-fills, then import them"
             if not observed_template_path.exists()
-            else "fetch Bybit/OKX demo or Binance USD-M testnet fills with fetch-observed-fills, normalize/import them; blank templates do not count"
+            else "generate paper-order-plan, submit demo orders, fetch fills with fetch-observed-fills, normalize/import them; blank templates do not count"
         )
         return ReadinessCheck("paper_live_fill_validation", "not_ready", False, evidence, next_action)
     if report.passed:

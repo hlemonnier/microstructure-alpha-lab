@@ -367,7 +367,7 @@ def _shadow_gate(
             "missing",
             False,
             f"simulated_exists={int(simulated_path.exists())} shadow_exists={int(shadow_path.exists())}",
-            "run a shadow/paper session, fetch Bybit/OKX demo or Binance USD-M testnet fills with fetch-observed-fills, import them, then validate",
+            "run edge-shadow-decisions, generate paper-order-plan, submit demo orders, fetch/normalize/import fills, then validate",
         )
     try:
         decisions = read_shadow_decisions(shadow_path)
@@ -400,7 +400,7 @@ def _shadow_gate(
             "not_ready",
             False,
             evidence,
-            "fetch Bybit/OKX demo or Binance USD-M testnet fills with fetch-observed-fills, normalize/import them, then rerun validate-shadow-fills",
+            "generate paper-order-plan, submit Bybit/OKX demo or Binance USD-M testnet orders, fetch/normalize/import fills, then rerun validate-shadow-fills",
         )
     evidence = (
         f"observed_shadow_rows={len(observed)} matched={report.matched_observations} "

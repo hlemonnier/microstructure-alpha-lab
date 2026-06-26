@@ -151,6 +151,43 @@ def test_l2_sequence_runner_rejects_unknown_ablation(tmp_path: Path) -> None:
     assert "unknown ablation=unknown_variant" in result.stderr
 
 
+def test_shadow_fill_session_helper_dry_run_emits_order_plans(tmp_path: Path) -> None:
+    shadow = tmp_path / "shadow.csv"
+    shadow.write_text(
+        "decision_id,timestamp_ms,venue,symbol,model_name,predicted_side,predicted_edge_bps,"
+        "order_type,intended_price,intended_size,observed_fill_price,observed_fill_size,realized_pnl,notes\n"
+        "d1,1700000000000,bybit,BTCUSDT,edge,1,0.8,paper_taker,100.0,1.0,,,,\n"
+    )
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": "src",
+            "DRY_RUN": "1",
+            "SHADOW_PATH": str(shadow),
+            "OUTPUT_PATH": str(tmp_path / "observed_fills_template.csv"),
+            "ORDER_PLAN_DIR": str(tmp_path),
+            "ORDER_PLAN_PROVIDERS": "bybit binance",
+            "LIMIT": "7",
+        }
+    )
+
+    result = subprocess.run(
+        ["bash", "scripts/prepare_shadow_fill_validation_session.sh"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 0
+    assert "observed-fill-template" in result.stdout
+    assert "paper-order-plan --shadow" in result.stdout
+    assert "--provider bybit" in result.stdout
+    assert "--provider binance" in result.stdout
+    assert "binance_usdm_order_plan.jsonl" in result.stdout
+
+
 def test_expected_edge_helper_scripts_refresh_candidate_registry() -> None:
     helper_scripts = [
         ROOT / "scripts" / "run_complete_feature_edge_jobs.sh",
