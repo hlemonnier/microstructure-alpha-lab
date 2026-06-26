@@ -999,9 +999,9 @@ def main(argv: list[str] | None = None) -> int:
     final_holdout_sequence_parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     final_holdout_sequence_parser.add_argument("--max-rows", type=int, default=100000)
     final_holdout_sequence_parser.add_argument("--max-snapshots", type=int, default=2000)
-    final_holdout_sequence_parser.add_argument("--economic-target-notional", type=float, default=100.0)
-    final_holdout_sequence_parser.add_argument("--economic-taker-fee-bps", type=float, default=1.0)
-    final_holdout_sequence_parser.add_argument("--economic-slippage-bps", type=float, default=0.0)
+    final_holdout_sequence_parser.add_argument("--economic-target-notional", type=float)
+    final_holdout_sequence_parser.add_argument("--economic-taker-fee-bps", type=float)
+    final_holdout_sequence_parser.add_argument("--economic-slippage-bps", type=float)
 
     fill_parser = subparsers.add_parser(
         "fill-diagnostics",
@@ -2410,6 +2410,9 @@ def _cmd_final_holdout_sequence(args: argparse.Namespace) -> int:
             "brier_score": report.brier_score,
             "expected_calibration_error": report.expected_calibration_error,
             "confusion_matrix_json": report.confusion_matrix_json,
+            "economic_target_notional": candidate["economic_target_notional"],
+            "economic_taker_fee_bps": candidate["economic_taker_fee_bps"],
+            "economic_slippage_bps": candidate["economic_slippage_bps"],
             "stateful_trades": report.stateful_trades,
             "stateful_turnover": report.stateful_turnover,
             "stateful_net_pnl": report.stateful_net_pnl,

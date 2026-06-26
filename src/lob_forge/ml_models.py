@@ -185,6 +185,9 @@ class L2SequenceExperimentReport:
     checkpoint_path: str
     resumed_from_checkpoint: bool
     prediction_output_path: str
+    economic_target_notional: float
+    economic_taker_fee_bps: float
+    economic_slippage_bps: float
     test_stateful_trades: int
     test_stateful_turnover: float
     test_stateful_net_pnl: float
@@ -1030,6 +1033,9 @@ def run_l2_torch_sequence_experiment(
         checkpoint_path=str(checkpoint) if checkpoint is not None else "",
         resumed_from_checkpoint=resumed_from_checkpoint,
         prediction_output_path=str(prediction_path) if prediction_path is not None else "",
+        economic_target_notional=economic_target_notional,
+        economic_taker_fee_bps=economic_taker_fee_bps,
+        economic_slippage_bps=economic_slippage_bps,
         test_stateful_trades=int(economic["trades"]),
         test_stateful_turnover=float(economic["turnover"]),
         test_stateful_net_pnl=float(economic["net_pnl"]),
@@ -1094,6 +1100,9 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         "checkpoint_path",
         "resumed_from_checkpoint",
         "prediction_output_path",
+        "economic_target_notional",
+        "economic_taker_fee_bps",
+        "economic_slippage_bps",
         "test_stateful_trades",
         "test_stateful_turnover",
         "test_stateful_net_pnl",
@@ -1155,6 +1164,9 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
                 "checkpoint_path": report.checkpoint_path,
                 "resumed_from_checkpoint": int(report.resumed_from_checkpoint),
                 "prediction_output_path": report.prediction_output_path,
+                "economic_target_notional": f"{report.economic_target_notional:.12g}",
+                "economic_taker_fee_bps": f"{report.economic_taker_fee_bps:.12g}",
+                "economic_slippage_bps": f"{report.economic_slippage_bps:.12g}",
                 "test_stateful_trades": report.test_stateful_trades,
                 "test_stateful_turnover": f"{report.test_stateful_turnover:.12g}",
                 "test_stateful_net_pnl": f"{report.test_stateful_net_pnl:.12g}",
@@ -1256,6 +1268,9 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
         "test_balanced_accuracy": _csv_float(row.get("test_balanced_accuracy")),
         "test_brier_score": _csv_float(row.get("test_brier_score")),
         "test_expected_calibration_error": _csv_float(row.get("test_expected_calibration_error")),
+        "economic_target_notional": _csv_float(row.get("economic_target_notional"), default=100.0),
+        "economic_taker_fee_bps": _csv_float(row.get("economic_taker_fee_bps"), default=1.0),
+        "economic_slippage_bps": _csv_float(row.get("economic_slippage_bps"), default=0.0),
         "selection_grain": "manifest_filtered_development_l2",
         "selection_method": "frozen_checkpoint_from_sequence_artifact",
     }
@@ -1270,9 +1285,9 @@ def evaluate_l2_sequence_final_holdout(
     device: str = "auto",
     max_rows: int = 100000,
     max_snapshots: int = 2000,
-    economic_target_notional: float = 100.0,
-    economic_taker_fee_bps: float = 1.0,
-    economic_slippage_bps: float = 0.0,
+    economic_target_notional: float | None = None,
+    economic_taker_fee_bps: float | None = None,
+    economic_slippage_bps: float | None = None,
 ) -> L2SequenceFinalHoldoutReport:
     model_name = _candidate_string(candidate, "model_name")
     if candidate.get("candidate_type") != "l2_sequence_torch_v1":
@@ -1297,6 +1312,30 @@ def evaluate_l2_sequence_final_holdout(
         raise ValueError("frozen sequence standardizer dimensions do not match feature_count")
     if any(value <= 0.0 for value in stds):
         raise ValueError("frozen sequence standardizer_stds must be positive")
+    frozen_target_notional = _candidate_float(candidate, "economic_target_notional")
+    frozen_taker_fee_bps = _candidate_float(candidate, "economic_taker_fee_bps")
+    frozen_slippage_bps = _candidate_float(candidate, "economic_slippage_bps")
+    if frozen_target_notional <= 0.0:
+        raise ValueError("frozen sequence candidate economic_target_notional must be positive")
+    if frozen_taker_fee_bps < 0.0:
+        raise ValueError("frozen sequence candidate economic_taker_fee_bps must be non-negative")
+    if frozen_slippage_bps < 0.0:
+        raise ValueError("frozen sequence candidate economic_slippage_bps must be non-negative")
+    _assert_frozen_float_override(
+        "economic_target_notional",
+        override=economic_target_notional,
+        frozen_value=frozen_target_notional,
+    )
+    _assert_frozen_float_override(
+        "economic_taker_fee_bps",
+        override=economic_taker_fee_bps,
+        frozen_value=frozen_taker_fee_bps,
+    )
+    _assert_frozen_float_override(
+        "economic_slippage_bps",
+        override=economic_slippage_bps,
+        frozen_value=frozen_slippage_bps,
+    )
 
     rows = read_holdout_rows(l2_path, manifest)
     snapshots, rows_checked = _load_l2_top_n_vectors_from_rows(
@@ -1359,9 +1398,9 @@ def evaluate_l2_sequence_final_holdout(
         end_indices,
         predictions,
         label_horizon=label_horizon,
-        target_notional=economic_target_notional,
-        taker_fee_bps=economic_taker_fee_bps,
-        slippage_bps=economic_slippage_bps,
+        target_notional=frozen_target_notional,
+        taker_fee_bps=frozen_taker_fee_bps,
+        slippage_bps=frozen_slippage_bps,
     )
     return L2SequenceFinalHoldoutReport(
         model_name=model_name,
@@ -1408,6 +1447,9 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             "test_balanced_accuracy",
             "test_brier_score",
             "test_expected_calibration_error",
+            "economic_target_notional",
+            "economic_taker_fee_bps",
+            "economic_slippage_bps",
             "test_stateful_net_pnl",
             "test_stateful_break_even_fee_bps",
             "pipeline_completed",
@@ -1435,6 +1477,9 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"{report.test_balanced_accuracy:.12g}",
             f"{report.test_brier_score:.12g}",
             f"{report.test_expected_calibration_error:.12g}",
+            f"{report.economic_target_notional:.12g}",
+            f"{report.economic_taker_fee_bps:.12g}",
+            f"{report.economic_slippage_bps:.12g}",
             f"{report.test_stateful_net_pnl:.12g}",
             f"{report.test_stateful_break_even_fee_bps:.12g}",
             str(int(report.pipeline_completed)),
@@ -1495,6 +1540,9 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"checkpoint_path={report.checkpoint_path}",
             f"resumed_from_checkpoint={int(report.resumed_from_checkpoint)}",
             f"prediction_output_path={report.prediction_output_path}",
+            f"economic_target_notional={report.economic_target_notional:.12g}",
+            f"economic_taker_fee_bps={report.economic_taker_fee_bps:.12g}",
+            f"economic_slippage_bps={report.economic_slippage_bps:.12g}",
             f"test_stateful_trades={report.test_stateful_trades}",
             f"test_stateful_turnover={report.test_stateful_turnover:.12g}",
             f"test_stateful_net_pnl={report.test_stateful_net_pnl:.12g}",
@@ -2482,6 +2530,13 @@ def _candidate_float(candidate: dict[str, object], field: str) -> float:
     if not isinstance(value, (int, float)):
         raise ValueError(f"frozen sequence candidate {field} must be numeric")
     return float(value)
+
+
+def _assert_frozen_float_override(field: str, *, override: float | None, frozen_value: float) -> None:
+    if override is None:
+        return
+    if not math.isclose(float(override), frozen_value, rel_tol=0.0, abs_tol=1e-12):
+        raise ValueError(f"final sequence holdout {field} must match frozen candidate")
 
 
 def _candidate_float_list(candidate: dict[str, object], field: str) -> list[float]:

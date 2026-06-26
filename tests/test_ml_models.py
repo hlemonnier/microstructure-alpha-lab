@@ -444,6 +444,9 @@ def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing
             prediction_output_path=prediction_path,
             holdout_manifest_path=development_manifest_path,
             development_l2_output_path=tmp_path / "development_l2.csv",
+            economic_target_notional=125.0,
+            economic_taker_fee_bps=0.25,
+            economic_slippage_bps=0.05,
         )
     except RuntimeError as exc:
         assert "torch" in str(exc) or "model readiness gate failed" in str(exc)
@@ -455,6 +458,9 @@ def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing
     assert candidate["checkpoint_sha256"] == sha256_file(checkpoint_path)
     assert candidate["development_l2_sha256"] == sha256_file(tmp_path / "development_l2.csv")
     assert candidate["standardizer_means"]
+    assert candidate["economic_target_notional"] == 125.0
+    assert candidate["economic_taker_fee_bps"] == 0.25
+    assert candidate["economic_slippage_bps"] == 0.05
     final_manifest = build_holdout_manifest(
         l2_path,
         split_column="exchange_timestamp",
@@ -492,6 +498,113 @@ def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing
         assert "checkpoint hash" in str(exc)
     else:
         raise AssertionError("expected tampered checkpoint hash to be rejected")
+
+
+def test_l2_sequence_candidate_freeze_locks_economic_config_for_final_holdout(tmp_path: Path) -> None:
+    l2_path = tmp_path / "development_l2.csv"
+    artifact_path = tmp_path / "sequence_tcn_results.csv"
+    checkpoint_path = tmp_path / "sequence_tcn.pt"
+    with l2_path.open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "event_type",
+                "exchange_timestamp",
+                "local_timestamp",
+                "side",
+                "price",
+                "size",
+                "sequence",
+                "update_id",
+                "venue",
+                "symbol",
+            ],
+        )
+        writer.writeheader()
+        for index in range(40):
+            timestamp = 1684195200000 + index
+            bid = 100.0 + index * 0.1
+            ask = bid + 1.0
+            for side, price in (("bid", bid), ("ask", ask)):
+                writer.writerow(
+                    {
+                        "event_type": "snapshot",
+                        "exchange_timestamp": timestamp,
+                        "local_timestamp": timestamp,
+                        "side": side,
+                        "price": price,
+                        "size": 1.0,
+                        "sequence": index + 1,
+                        "update_id": index + 1,
+                        "venue": "bybit",
+                        "symbol": "BTCUSDT",
+                    }
+                )
+    checkpoint_path.write_text("not-a-real-checkpoint")
+    with artifact_path.open("w", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "model_name",
+                "pipeline_completed",
+                "checkpoint_path",
+                "development_l2_path",
+                "holdout_manifest_verified",
+                "depth",
+                "window",
+                "label_horizon",
+                "flat_threshold_bps",
+                "rows_checked",
+                "snapshots",
+                "economic_target_notional",
+                "economic_taker_fee_bps",
+                "economic_slippage_bps",
+            ],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "model_name": "sequence_tcn",
+                "pipeline_completed": "1",
+                "checkpoint_path": str(checkpoint_path),
+                "development_l2_path": str(l2_path),
+                "holdout_manifest_verified": "1",
+                "depth": "1",
+                "window": "3",
+                "label_horizon": "1",
+                "flat_threshold_bps": "0",
+                "rows_checked": "200",
+                "snapshots": "80",
+                "economic_target_notional": "125",
+                "economic_taker_fee_bps": "0.25",
+                "economic_slippage_bps": "0.05",
+            }
+        )
+
+    candidate = freeze_l2_sequence_candidate(artifact_path)
+    assert candidate["economic_target_notional"] == 125.0
+    assert candidate["economic_taker_fee_bps"] == 0.25
+    assert candidate["economic_slippage_bps"] == 0.05
+    manifest = build_holdout_manifest(
+        l2_path,
+        split_column="exchange_timestamp",
+        holdout_values=[str(1684195200000 + index) for index in range(20, 30)],
+        created_at_utc="2026-06-26T00:00:00Z",
+        git_commit="a" * 40,
+        candidate_sha256=canonical_json_sha256(candidate),
+    )
+
+    try:
+        evaluate_l2_sequence_final_holdout(
+            l2_path=l2_path,
+            manifest=manifest,
+            candidate=candidate,
+            economic_target_notional=200.0,
+        )
+    except ValueError as exc:
+        assert "economic_target_notional must match frozen candidate" in str(exc)
+    else:
+        raise AssertionError("expected final sequence holdout to reject economic override drift")
 
 
 def _write_audit(path: Path, *, fold_count: int, acceptance_passed: int, rejection_reasons: str) -> None:
