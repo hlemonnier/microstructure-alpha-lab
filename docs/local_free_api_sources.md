@@ -107,6 +107,13 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
 5. Normalize, import, and validate:
 
 ```bash
+DRY_RUN=0 PROVIDER=bybit START_TIME_MS=1700000000000 END_TIME_MS=1700000600000 \
+  bash scripts/run_shadow_fill_observation_session.sh
+```
+
+The wrapper above is the preferred executable path for Bybit, OKX, and Binance USD-M testnet observations. It prints missing credential environment variables in dry-run mode, refuses execution without them, then runs the same command sequence shown below:
+
+```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
   --provider bybit \
   --input results/shadow_validation/raw_bybit_executions.json \

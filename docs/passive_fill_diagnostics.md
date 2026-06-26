@@ -264,6 +264,16 @@ Populate `observed_fills.csv` from a real paper/live order export. Blank templat
 
 The local API source and normalization runbook is [paper_demo_fill_sources.md](paper_demo_fill_sources.md). The recommended order is Bybit Demo Trading first, then OKX Demo Trading, then Binance USD-M Futures Testnet if the demo-account path is blocked. Binance Spot Testnet is only for spot checks, and Alpaca Paper is only a generic simulator/API sanity check. Raw `.json`, `.jsonl`, or `.csv` provider exports can be normalized before import:
 
+For the real Bybit/OKX/Binance demo path, use the dry-run-first wrapper after demo/testnet orders have been submitted from the matching order plan:
+
+```bash
+bash scripts/run_shadow_fill_observation_session.sh
+DRY_RUN=0 PROVIDER=bybit START_TIME_MS=<start> END_TIME_MS=<end> \
+  bash scripts/run_shadow_fill_observation_session.sh
+```
+
+The wrapper fetches provider fills, normalizes them, imports them into `shadow_decisions_observed.csv`, and writes `shadow_fill_validation.txt`. It refuses execution when the provider credential environment variables are missing.
+
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli normalize-observed-fills \
   --provider bybit \

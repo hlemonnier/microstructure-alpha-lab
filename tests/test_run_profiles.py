@@ -188,6 +188,86 @@ def test_shadow_fill_session_helper_dry_run_emits_order_plans(tmp_path: Path) ->
     assert "binance_usdm_order_plan.jsonl" in result.stdout
 
 
+def test_shadow_fill_observation_runner_dry_run_emits_fetch_import_validate(tmp_path: Path) -> None:
+    shadow = tmp_path / "shadow.csv"
+    simulated = tmp_path / "simulated.csv"
+    shadow.write_text(
+        "decision_id,timestamp_ms,venue,symbol,model_name,predicted_side,predicted_edge_bps,"
+        "order_type,intended_price,intended_size,observed_fill_price,observed_fill_size,realized_pnl,notes\n"
+        "d1,1700000000000,bybit,BTCUSDT,edge,1,0.8,paper_taker,100.0,1.0,,,,\n"
+    )
+    simulated.write_text("decision_id,simulated_fill_price,simulated_fill_size\nd1,100.0,1.0\n")
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": "src",
+            "DRY_RUN": "1",
+            "PROVIDER": "okx",
+            "SHADOW_PATH": str(shadow),
+            "SIMULATED_PATH": str(simulated),
+            "OUT_DIR": str(tmp_path),
+            "LIMIT": "5",
+        }
+    )
+
+    result = subprocess.run(
+        ["bash", "scripts/run_shadow_fill_observation_session.sh"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 0
+    assert "provider=okx symbol=BTC-USDT-SWAP" in result.stdout
+    assert "required_env=OKX_DEMO_API_KEY OKX_DEMO_API_SECRET OKX_DEMO_API_PASSPHRASE" in result.stdout
+    assert "missing_env=OKX_DEMO_API_KEY OKX_DEMO_API_SECRET OKX_DEMO_API_PASSPHRASE" in result.stdout
+    assert "fetch-observed-fills" in result.stdout
+    assert "normalize-observed-fills" in result.stdout
+    assert "import-observed-fills" in result.stdout
+    assert "validate-shadow-fills" in result.stdout
+    assert "shadow_fill_validation.txt" in result.stdout
+
+
+def test_shadow_fill_observation_runner_requires_credentials_for_execution(tmp_path: Path) -> None:
+    shadow = tmp_path / "shadow.csv"
+    simulated = tmp_path / "simulated.csv"
+    shadow.write_text(
+        "decision_id,timestamp_ms,venue,symbol,model_name,predicted_side,predicted_edge_bps,"
+        "order_type,intended_price,intended_size,observed_fill_price,observed_fill_size,realized_pnl,notes\n"
+        "d1,1700000000000,bybit,BTCUSDT,edge,1,0.8,paper_taker,100.0,1.0,,,,\n"
+    )
+    simulated.write_text("decision_id,simulated_fill_price,simulated_fill_size\nd1,100.0,1.0\n")
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": "src",
+            "DRY_RUN": "0",
+            "PROVIDER": "binance",
+            "SHADOW_PATH": str(shadow),
+            "SIMULATED_PATH": str(simulated),
+            "OUT_DIR": str(tmp_path),
+        }
+    )
+    env.pop("BINANCE_USDM_TESTNET_API_KEY", None)
+    env.pop("BINANCE_USDM_TESTNET_API_SECRET", None)
+
+    result = subprocess.run(
+        ["bash", "scripts/run_shadow_fill_observation_session.sh"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 2
+    assert "missing provider credentials" in result.stderr
+    assert "BINANCE_USDM_TESTNET_API_KEY" in result.stderr
+    assert "BINANCE_USDM_TESTNET_API_SECRET" in result.stderr
+
+
 def test_expected_edge_helper_scripts_refresh_candidate_registry() -> None:
     helper_scripts = [
         ROOT / "scripts" / "run_complete_feature_edge_jobs.sh",
