@@ -387,7 +387,7 @@ def _shadow_gate(
             f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
             f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
             f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names}",
-            "run edge-shadow-decisions, generate paper-order-plan, submit demo orders, fetch/normalize/import fills, then validate",
+            "run edge-shadow-decisions, generate paper-order-plan, submit-paper-orders with --execute on demo/testnet, fetch/normalize/import fills, then validate",
         )
     try:
         decisions = read_shadow_decisions(shadow_path)
@@ -424,9 +424,9 @@ def _shadow_gate(
             f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names}"
         )
         next_action = (
-            "generate paper-order-plan, submit Bybit/OKX demo or Binance USD-M testnet orders, fetch/normalize/import fills, then rerun validate-shadow-fills"
+            "generate paper-order-plan, run submit-paper-orders with --execute on Bybit/OKX demo or Binance USD-M testnet, fetch/normalize/import fills, then rerun validate-shadow-fills"
             if existing_order_plans < len(order_plan_paths) or nonempty_order_plans == 0
-            else "submit demo orders from paper-order-plan, fetch/normalize/import fills, then rerun validate-shadow-fills"
+            else "run submit-paper-orders with --execute on demo/testnet, fetch/normalize/import fills, then rerun validate-shadow-fills"
         )
         return EvidenceGate(
             "real_shadow_fill_validation",

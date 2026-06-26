@@ -96,10 +96,36 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
 Provider mapping:
 
 - Bybit writes `POST /v5/order/create` payloads with `orderLinkId=decision_id`.
-- OKX writes `POST /api/v5/trade/order` payloads with `clOrdId=decision_id`; Binance-style shadow symbols such as `BTCUSDT` are normalized to OKX swap instruments such as `BTC-USDT-SWAP`, and `--symbol-override` can pin another `instId`; include `x-simulated-trading: 1` when submitting in demo mode.
+- OKX writes `POST /api/v5/trade/order` payloads with `clOrdId=decision_id`; Binance-style shadow symbols such as `BTCUSDT` are normalized to OKX swap instruments such as `BTC-USDT-SWAP`, and `--symbol-override` can pin another `instId`.
 - Binance USD-M Futures Testnet writes `POST /fapi/v1/order` payloads with `newClientOrderId=decision_id`.
 
-For OKX demo REST requests, include `x-simulated-trading: 1`.
+Preview the exact signed-submission target before placing anything. This command writes a local request-preview JSONL and does not touch the network:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli submit-paper-orders \
+  --provider bybit \
+  --plan results/shadow_validation/bybit_order_plan.jsonl \
+  --output results/shadow_validation/submitted_bybit_orders.jsonl
+```
+
+Only add `--execute` after the matching demo/testnet credentials are set and the plan has been reviewed:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli submit-paper-orders \
+  --provider bybit \
+  --plan results/shadow_validation/bybit_order_plan.jsonl \
+  --output results/shadow_validation/submitted_bybit_orders.jsonl \
+  --execute
+```
+
+For OKX demo REST requests, the submitter includes `x-simulated-trading: 1`. Bybit submissions use the demo trading base URL, and Binance submissions use the USD-M Futures Testnet base URL.
+
+The one-command wrapper can submit, fetch, normalize, import, and validate when `SUBMIT_ORDERS=1` and `DRY_RUN=0`:
+
+```bash
+SUBMIT_ORDERS=1 DRY_RUN=0 PROVIDER=bybit \
+  bash scripts/run_shadow_fill_observation_session.sh
+```
 
 After a paper/demo session, save the raw API response as `.json`, `.jsonl`, or `.csv`, then normalize it:
 

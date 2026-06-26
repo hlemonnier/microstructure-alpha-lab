@@ -68,6 +68,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         endpoints=("/v5/order/create", "/v5/execution/list", "wss://stream-demo.bybit.com/v5/private"),
         local_commands=(
             "paper-order-plan --provider bybit",
+            "submit-paper-orders --provider bybit --execute",
             "fetch-observed-fills --provider bybit",
             "normalize-observed-fills --provider bybit",
         ),
@@ -107,6 +108,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         ),
         local_commands=(
             "paper-order-plan --provider okx [--symbol-override BTC-USDT-SWAP]",
+            "submit-paper-orders --provider okx --execute",
             "fetch-observed-fills --provider okx",
             "normalize-observed-fills --provider okx",
         ),
@@ -172,6 +174,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         ),
         local_commands=(
             "paper-order-plan --provider binance",
+            "submit-paper-orders --provider binance --execute",
             "fetch-observed-fills --provider binance --symbol BTCUSDT",
             "normalize-observed-fills --provider binance",
         ),

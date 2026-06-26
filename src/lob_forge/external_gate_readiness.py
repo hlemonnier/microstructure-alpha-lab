@@ -392,11 +392,11 @@ def _shadow_fill_readiness_check(
     )
     if len(observed) < min_shadow_observations:
         next_action = (
-            "generate observed-fill-template and paper-order-plan, submit demo orders, fetch fills with fetch-observed-fills, then import them"
+            "generate observed-fill-template and paper-order-plan, run submit-paper-orders with --execute on demo/testnet, fetch fills with fetch-observed-fills, then import them"
             if not observed_template_path.exists()
-            else "generate paper-order-plan, submit demo orders, fetch fills with fetch-observed-fills, normalize/import them; blank templates do not count"
+            else "generate paper-order-plan, run submit-paper-orders with --execute on demo/testnet, fetch fills with fetch-observed-fills, normalize/import them; blank templates do not count"
             if existing_order_plans < len(order_plan_paths) or nonempty_order_plans == 0
-            else "submit demo orders from paper-order-plan, fetch fills with fetch-observed-fills, normalize/import them; blank templates do not count"
+            else "run submit-paper-orders with --execute on demo/testnet, fetch fills with fetch-observed-fills, normalize/import them; blank templates do not count"
         )
         return ReadinessCheck("paper_live_fill_validation", "not_ready", False, evidence, next_action)
     if report.passed:

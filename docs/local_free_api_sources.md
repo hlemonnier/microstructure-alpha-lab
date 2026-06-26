@@ -76,9 +76,28 @@ Binance Spot Testnet: newClientOrderId / executionReport.c
 Alpaca: client_order_id
 ```
 
-For OKX demo, send requests to the documented OKX REST/WebSocket demo URLs and include `x-simulated-trading: 1` on REST requests.
+Preview or submit the generated plan through the dry-run-first submitter. The command below writes a request preview and does not touch the network:
 
-4. Place demo/paper orders from the plan, then save the raw provider response under `results/shadow_validation/`.
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli submit-paper-orders \
+  --provider bybit \
+  --plan results/shadow_validation/bybit_order_plan.jsonl \
+  --output results/shadow_validation/submitted_bybit_orders.jsonl
+```
+
+Only add `--execute` after the matching demo/testnet API credentials are set and the order plan has been reviewed:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli submit-paper-orders \
+  --provider bybit \
+  --plan results/shadow_validation/bybit_order_plan.jsonl \
+  --output results/shadow_validation/submitted_bybit_orders.jsonl \
+  --execute
+```
+
+For OKX demo, the submitter includes `x-simulated-trading: 1` on REST requests. Bybit uses the demo trading base URL and Binance uses the USD-M Futures Testnet base URL.
+
+4. Submit demo/paper orders from the plan, then save the raw provider response under `results/shadow_validation/`.
    The Bybit, OKX, and Binance USD-M testnet REST pulls are executable:
 
 ```bash
@@ -107,11 +126,11 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
 5. Normalize, import, and validate:
 
 ```bash
-DRY_RUN=0 PROVIDER=bybit START_TIME_MS=1700000000000 END_TIME_MS=1700000600000 \
+SUBMIT_ORDERS=1 DRY_RUN=0 PROVIDER=bybit START_TIME_MS=1700000000000 END_TIME_MS=1700000600000 \
   bash scripts/run_shadow_fill_observation_session.sh
 ```
 
-The wrapper above is the preferred executable path for Bybit, OKX, and Binance USD-M testnet observations. It prints missing credential environment variables in dry-run mode, refuses execution without them, then runs the same command sequence shown below:
+The wrapper above is the preferred executable path for Bybit, OKX, and Binance USD-M testnet observations. It prints missing credential environment variables in dry-run mode, refuses execution without them, optionally runs `submit-paper-orders --execute`, then fetches, normalizes, imports, and validates fills:
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \

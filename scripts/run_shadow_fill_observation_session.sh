@@ -22,6 +22,7 @@ START_TIME_MS="${START_TIME_MS:-}"
 END_TIME_MS="${END_TIME_MS:-}"
 DRY_RUN="${DRY_RUN:-1}"
 RUN_VALIDATE="${RUN_VALIDATE:-1}"
+SUBMIT_ORDERS="${SUBMIT_ORDERS:-0}"
 MAX_PRICE_ERROR="${MAX_PRICE_ERROR:-0.5}"
 MAX_SIZE_ERROR="${MAX_SIZE_ERROR:-0.01}"
 MAX_FILL_RATE_ERROR="${MAX_FILL_RATE_ERROR:-0.05}"
@@ -33,6 +34,8 @@ case "$PROVIDER" in
     OBSERVED_OUTPUT="${OBSERVED_OUTPUT:-$OUT_DIR/observed_fills.csv}"
     MERGED_SHADOW_OUTPUT="${MERGED_SHADOW_OUTPUT:-$OUT_DIR/shadow_decisions_observed.csv}"
     VALIDATION_OUTPUT="${VALIDATION_OUTPUT:-$OUT_DIR/shadow_fill_validation.txt}"
+    ORDER_PLAN_PATH="${ORDER_PLAN_PATH:-$OUT_DIR/bybit_order_plan.jsonl}"
+    ORDER_SUBMISSION_OUTPUT="${ORDER_SUBMISSION_OUTPUT:-$OUT_DIR/submitted_bybit_orders.jsonl}"
     REQUIRED_ENV=(BYBIT_DEMO_API_KEY BYBIT_DEMO_API_SECRET)
     ;;
   okx)
@@ -41,6 +44,8 @@ case "$PROVIDER" in
     OBSERVED_OUTPUT="${OBSERVED_OUTPUT:-$OUT_DIR/observed_fills.csv}"
     MERGED_SHADOW_OUTPUT="${MERGED_SHADOW_OUTPUT:-$OUT_DIR/shadow_decisions_observed.csv}"
     VALIDATION_OUTPUT="${VALIDATION_OUTPUT:-$OUT_DIR/shadow_fill_validation.txt}"
+    ORDER_PLAN_PATH="${ORDER_PLAN_PATH:-$OUT_DIR/okx_order_plan.jsonl}"
+    ORDER_SUBMISSION_OUTPUT="${ORDER_SUBMISSION_OUTPUT:-$OUT_DIR/submitted_okx_orders.jsonl}"
     REQUIRED_ENV=(OKX_DEMO_API_KEY OKX_DEMO_API_SECRET OKX_DEMO_API_PASSPHRASE)
     ;;
   binance)
@@ -49,6 +54,8 @@ case "$PROVIDER" in
     OBSERVED_OUTPUT="${OBSERVED_OUTPUT:-$OUT_DIR/observed_fills.csv}"
     MERGED_SHADOW_OUTPUT="${MERGED_SHADOW_OUTPUT:-$OUT_DIR/shadow_decisions_observed.csv}"
     VALIDATION_OUTPUT="${VALIDATION_OUTPUT:-$OUT_DIR/shadow_fill_validation.txt}"
+    ORDER_PLAN_PATH="${ORDER_PLAN_PATH:-$OUT_DIR/binance_usdm_order_plan.jsonl}"
+    ORDER_SUBMISSION_OUTPUT="${ORDER_SUBMISSION_OUTPUT:-$OUT_DIR/submitted_binance_usdm_orders.jsonl}"
     REQUIRED_ENV=(BINANCE_USDM_TESTNET_API_KEY BINANCE_USDM_TESTNET_API_SECRET)
     ;;
   *)
@@ -63,6 +70,10 @@ if [[ ! -s "$SHADOW_PATH" ]]; then
 fi
 if [[ "$RUN_VALIDATE" == "1" && ! -s "$SIMULATED_PATH" ]]; then
   echo "missing simulated fills: $SIMULATED_PATH" >&2
+  exit 2
+fi
+if [[ "$DRY_RUN" == "0" && "$SUBMIT_ORDERS" == "1" && ! -s "$ORDER_PLAN_PATH" ]]; then
+  echo "missing order plan for submission: $ORDER_PLAN_PATH" >&2
   exit 2
 fi
 
@@ -87,6 +98,13 @@ if [[ -n "$END_TIME_MS" ]]; then
   fetch_command+=(--end-time-ms "$END_TIME_MS")
 fi
 
+submit_command=(
+  "$PYTHON_BIN" -m lob_forge.cli submit-paper-orders
+  --provider "$PROVIDER"
+  --plan "$ORDER_PLAN_PATH"
+  --output "$ORDER_SUBMISSION_OUTPUT"
+  --limit "$LIMIT"
+)
 normalize_command=(
   "$PYTHON_BIN" -m lob_forge.cli normalize-observed-fills
   --provider "$PROVIDER"
@@ -112,12 +130,21 @@ printf 'provider=%s symbol=%s shadow=%s simulated=%s dry_run=%s run_validate=%s\
   "$PROVIDER" "$SYMBOL" "$SHADOW_PATH" "$SIMULATED_PATH" "$DRY_RUN" "$RUN_VALIDATE"
 printf 'raw_output=%s observed_output=%s merged_shadow_output=%s validation_output=%s\n' \
   "$RAW_OUTPUT" "$OBSERVED_OUTPUT" "$MERGED_SHADOW_OUTPUT" "$VALIDATION_OUTPUT"
+printf 'submit_orders=%s order_plan=%s order_submission_output=%s\n' \
+  "$SUBMIT_ORDERS" "$ORDER_PLAN_PATH" "$ORDER_SUBMISSION_OUTPUT"
 printf 'required_env=%s\n' "${REQUIRED_ENV[*]}"
 if [[ "${#missing_env[@]}" -gt 0 ]]; then
   printf 'missing_env=%s\n' "${missing_env[*]}"
 fi
 
 if [[ "$DRY_RUN" != "0" ]]; then
+  if [[ "$SUBMIT_ORDERS" == "1" ]]; then
+    printf 'would_run '
+    printf '%q ' "${submit_command[@]}"
+    printf '\n'
+  else
+    printf 'order_submission_skipped=1\n'
+  fi
   printf 'would_run '
   printf '%q ' "${fetch_command[@]}"
   printf '\nwould_run '
@@ -131,7 +158,7 @@ if [[ "$DRY_RUN" != "0" ]]; then
   else
     printf '\nvalidation_skipped=1\n'
   fi
-  printf 'Set DRY_RUN=0 only after demo/testnet orders from the matching paper-order-plan have been submitted.\n'
+  printf 'Set SUBMIT_ORDERS=1 DRY_RUN=0 to submit demo/testnet orders from the matching paper-order-plan before fetching fills.\n'
   exit 0
 fi
 
@@ -141,6 +168,12 @@ if [[ "${#missing_env[@]}" -gt 0 ]]; then
 fi
 
 mkdir -p "$OUT_DIR"
+if [[ "$SUBMIT_ORDERS" == "1" ]]; then
+  "${submit_command[@]}" --execute
+  printf 'order_submission_report=%s\n' "$ORDER_SUBMISSION_OUTPUT"
+else
+  printf 'order_submission_skipped=1\n'
+fi
 "${fetch_command[@]}"
 "${normalize_command[@]}"
 "${import_command[@]}"

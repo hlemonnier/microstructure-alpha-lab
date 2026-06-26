@@ -48,6 +48,7 @@ def test_evidence_gates_report_missing_remaining_artifacts(tmp_path: Path) -> No
     assert any(gate.status in {"missing", "not_ready"} for gate in report.gates)
     shadow_gate = next(gate for gate in report.gates if gate.gate_id == "real_shadow_fill_validation")
     assert "paper-order-plan" in shadow_gate.next_action
+    assert "submit-paper-orders" in shadow_gate.next_action
     assert "fetch/normalize/import" in shadow_gate.next_action
     final_gate = next(gate for gate in report.gates if gate.gate_id == "immutable_final_holdout")
     assert final_gate.status == "not_ready"
@@ -146,6 +147,7 @@ def test_shadow_evidence_gate_reports_order_plan_readiness(tmp_path: Path) -> No
     assert "order_plan_rows=3" in gate.evidence
     assert "missing_order_plans=binance_usdm_order_plan.jsonl" in gate.evidence
     assert gate.next_action.startswith("generate paper-order-plan")
+    assert "submit-paper-orders" in gate.next_action
 
 
 def test_immutable_final_holdout_gate_passes_verified_payload(tmp_path: Path) -> None:

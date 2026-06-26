@@ -223,11 +223,56 @@ def test_shadow_fill_observation_runner_dry_run_emits_fetch_import_validate(tmp_
     assert "provider=okx symbol=BTC-USDT-SWAP" in result.stdout
     assert "required_env=OKX_DEMO_API_KEY OKX_DEMO_API_SECRET OKX_DEMO_API_PASSPHRASE" in result.stdout
     assert "missing_env=OKX_DEMO_API_KEY OKX_DEMO_API_SECRET OKX_DEMO_API_PASSPHRASE" in result.stdout
+    assert "order_submission_skipped=1" in result.stdout
     assert "fetch-observed-fills" in result.stdout
     assert "normalize-observed-fills" in result.stdout
     assert "import-observed-fills" in result.stdout
     assert "validate-shadow-fills" in result.stdout
     assert "shadow_fill_validation.txt" in result.stdout
+
+
+def test_shadow_fill_observation_runner_dry_run_can_preview_order_submission(tmp_path: Path) -> None:
+    shadow = tmp_path / "shadow.csv"
+    simulated = tmp_path / "simulated.csv"
+    order_plan = tmp_path / "bybit_order_plan.jsonl"
+    shadow.write_text(
+        "decision_id,timestamp_ms,venue,symbol,model_name,predicted_side,predicted_edge_bps,"
+        "order_type,intended_price,intended_size,observed_fill_price,observed_fill_size,realized_pnl,notes\n"
+        "d1,1700000000000,bybit,BTCUSDT,edge,1,0.8,paper_taker,100.0,1.0,,,,\n"
+    )
+    simulated.write_text("decision_id,simulated_fill_price,simulated_fill_size\nd1,100.0,1.0\n")
+    order_plan.write_text(
+        '{"decision_id":"d1","endpoint":"/v5/order/create","method":"POST","notes":"","payload":{"category":"linear","orderLinkId":"d1","orderType":"Market","qty":"1","side":"Buy","symbol":"BTCUSDT"},"provider":"bybit","symbol":"BTCUSDT"}\n'
+    )
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": "src",
+            "DRY_RUN": "1",
+            "SUBMIT_ORDERS": "1",
+            "PROVIDER": "bybit",
+            "SHADOW_PATH": str(shadow),
+            "SIMULATED_PATH": str(simulated),
+            "OUT_DIR": str(tmp_path),
+            "ORDER_PLAN_PATH": str(order_plan),
+            "LIMIT": "1",
+        }
+    )
+
+    result = subprocess.run(
+        ["bash", "scripts/run_shadow_fill_observation_session.sh"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 0
+    assert "submit_orders=1" in result.stdout
+    assert "submit-paper-orders" in result.stdout
+    assert "--plan" in result.stdout
+    assert "--execute" not in result.stdout
 
 
 def test_shadow_fill_observation_runner_requires_credentials_for_execution(tmp_path: Path) -> None:

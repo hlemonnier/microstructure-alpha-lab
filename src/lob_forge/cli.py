@@ -119,6 +119,10 @@ from lob_forge.paper_orders import (
     format_paper_order_plan_report,
     write_paper_order_plan,
 )
+from lob_forge.paper_order_submit import (
+    format_paper_order_submission_report,
+    submit_paper_order_plan,
+)
 from lob_forge.local_api_sources import (
     LOCAL_EVIDENCE_GATES,
     PAPER_FILL_GAP,
@@ -515,6 +519,28 @@ def main(argv: list[str] | None = None) -> int:
     )
     paper_order_plan_parser.add_argument("--plan-format", choices=["jsonl", "csv"], default="jsonl")
     paper_order_plan_parser.add_argument("--format", choices=["text", "csv"], default="text")
+
+    submit_paper_orders_parser = subparsers.add_parser(
+        "submit-paper-orders",
+        help="Dry-run or submit a Bybit/OKX/Binance demo order plan. Requires --execute for network writes.",
+    )
+    submit_paper_orders_parser.add_argument("--plan", required=True)
+    submit_paper_orders_parser.add_argument("--provider", required=True, choices=SUPPORTED_PAPER_ORDER_PLAN_PROVIDERS)
+    submit_paper_orders_parser.add_argument("--output", required=True)
+    submit_paper_orders_parser.add_argument("--limit", type=int, default=0)
+    submit_paper_orders_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Actually submit to the configured demo/testnet provider. Omit for dry-run request preview.",
+    )
+    submit_paper_orders_parser.add_argument(
+        "--recv-window",
+        type=int,
+        default=5000,
+        help="Bybit recvWindow or Binance recvWindow.",
+    )
+    submit_paper_orders_parser.add_argument("--timeout-seconds", type=float, default=30.0)
+    submit_paper_orders_parser.add_argument("--format", choices=["text", "csv"], default="text")
 
     observed_fill_template_parser = subparsers.add_parser(
         "observed-fill-template",
@@ -1156,6 +1182,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_fetch_observed_fills(args)
     if args.command == "paper-order-plan":
         return _cmd_paper_order_plan(args)
+    if args.command == "submit-paper-orders":
+        return _cmd_submit_paper_orders(args)
     if args.command == "observed-fill-template":
         return _cmd_observed_fill_template(args)
     if args.command == "simulate-shadow-fills":
@@ -1647,6 +1675,20 @@ def _cmd_paper_order_plan(args: argparse.Namespace) -> int:
         output_format=args.plan_format,
     )
     print(format_paper_order_plan_report(report, output_format=args.format))
+    return 0
+
+
+def _cmd_submit_paper_orders(args: argparse.Namespace) -> int:
+    report = submit_paper_order_plan(
+        provider=args.provider,
+        plan_path=Path(args.plan),
+        output_path=Path(args.output),
+        execute=args.execute,
+        limit=args.limit,
+        recv_window=args.recv_window,
+        timeout_seconds=args.timeout_seconds,
+    )
+    print(format_paper_order_submission_report(report, output_format=args.format))
     return 0
 
 

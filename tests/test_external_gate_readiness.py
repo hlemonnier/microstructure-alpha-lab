@@ -41,6 +41,7 @@ def test_external_readiness_reports_missing_modal_and_external_evidence(tmp_path
         in checks["paper_live_fill_validation"].evidence
     )
     assert "paper-order-plan" in checks["paper_live_fill_validation"].next_action
+    assert "submit-paper-orders" in checks["paper_live_fill_validation"].next_action
     assert "fetch-observed-fills" in checks["paper_live_fill_validation"].next_action
     assert "check=modal_cli" in text
 
