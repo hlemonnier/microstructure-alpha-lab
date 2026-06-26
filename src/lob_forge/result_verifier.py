@@ -101,6 +101,7 @@ def verify_result_artifacts(result_dir: Path | str, *, strict_metadata: bool = T
     pvalues = result_dir / "pvalues.csv"
     if pvalues.exists():
         errors.extend(_verify_pvalues(pvalues))
+        errors.extend(_verify_pvalues_cover_audits(pvalues, audit_files))
 
     corrections = result_dir / "pvalue_corrections.csv"
     if corrections.exists():
@@ -227,6 +228,38 @@ def _verify_pvalues(path: Path) -> list[str]:
         if not 0.0 <= p_value <= 1.0:
             errors.append(f"{path.name}:{index}: p_value outside [0, 1]")
     return errors
+
+
+def _verify_pvalues_cover_audits(path: Path, audit_files: list[Path]) -> list[str]:
+    if not audit_files:
+        return []
+    with path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = set(reader.fieldnames or [])
+        rows = list(reader)
+    if not rows:
+        return []
+    if "config_sha256" in fieldnames:
+        return []
+    expected_ids = {_audit_result_id(audit_path) for audit_path in audit_files}
+    pvalue_ids = {str(row.get("hypothesis_id") or "").strip() for row in rows if row.get("hypothesis_id")}
+    errors: list[str] = []
+    missing_ids = sorted(expected_ids - pvalue_ids)
+    extra_ids = sorted(pvalue_ids - expected_ids)
+    if missing_ids:
+        preview = ", ".join(missing_ids[:10])
+        suffix = "" if len(missing_ids) <= 10 else f", +{len(missing_ids) - 10} more"
+        errors.append(f"{path.name}: missing p-value rows for audit artifacts: {preview}{suffix}")
+    if extra_ids:
+        preview = ", ".join(extra_ids[:10])
+        suffix = "" if len(extra_ids) <= 10 else f", +{len(extra_ids) - 10} more"
+        errors.append(f"{path.name}: p-value IDs without matching audit artifact: {preview}{suffix}")
+    return errors
+
+
+def _audit_result_id(path: Path) -> str:
+    stem = path.stem
+    return stem.removesuffix("_audit") if stem.endswith("_audit") else stem
 
 
 def _verify_pvalue_corrections(path: Path, *, pvalues_path: Path | None = None) -> list[str]:

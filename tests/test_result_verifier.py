@@ -15,10 +15,7 @@ def test_result_verifier_accepts_rejected_audit_with_reason(tmp_path: Path) -> N
         holdout_manifest_path="manifest.json",
         holdout_manifest_sha256="a" * 64,
     )
-    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
-    (tmp_path / "pvalue_corrections.csv").write_text(
-        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
-    )
+    _write_pvalue_files(tmp_path)
     (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=0, rejection_reasons="fold count too low"))
 
     report = verify_result_artifacts(tmp_path)
@@ -36,10 +33,7 @@ def test_result_verifier_rejects_missing_reason(tmp_path: Path) -> None:
         holdout_manifest_path="manifest.json",
         holdout_manifest_sha256="a" * 64,
     )
-    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
-    (tmp_path / "pvalue_corrections.csv").write_text(
-        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
-    )
+    _write_pvalue_files(tmp_path)
     (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=0, rejection_reasons=""))
 
     report = verify_result_artifacts(tmp_path)
@@ -90,6 +84,26 @@ def test_result_verifier_accepts_ledger_grain_with_present_ledger(tmp_path: Path
     assert report.passed
 
 
+def test_result_verifier_rejects_pvalues_missing_audit_artifact_id(tmp_path: Path) -> None:
+    _write_minimal_result_dir(tmp_path, pvalue_id="other_result")
+    (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
+
+    report = verify_result_artifacts(tmp_path)
+
+    assert not report.passed
+    assert any("missing p-value rows for audit artifacts: sample" in error for error in report.errors)
+    assert any("p-value IDs without matching audit artifact: other_result" in error for error in report.errors)
+
+
+def test_result_verifier_defers_config_hash_pvalue_join_to_study_registry(tmp_path: Path) -> None:
+    _write_minimal_result_dir(tmp_path, pvalue_id="grid:config:abc", config_sha256="a" * 64)
+    (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
+
+    report = verify_result_artifacts(tmp_path)
+
+    assert report.passed
+
+
 def test_result_verifier_rejects_stale_protocol_ledger_metadata(tmp_path: Path) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
@@ -99,10 +113,7 @@ def test_result_verifier_rejects_stale_protocol_ledger_metadata(tmp_path: Path) 
         holdout_manifest_path="",
         holdout_manifest_sha256="",
     )
-    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
-    (tmp_path / "pvalue_corrections.csv").write_text(
-        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
-    )
+    _write_pvalue_files(tmp_path)
     (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
 
     report = verify_result_artifacts(tmp_path)
@@ -125,10 +136,7 @@ def test_result_verifier_rejects_duplicate_experiment_ids(tmp_path: Path) -> Non
     )
     with (tmp_path / "experiment_ledger.jsonl").open("a") as handle:
         handle.write((tmp_path / "experiment_ledger.jsonl").read_text())
-    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
-    (tmp_path / "pvalue_corrections.csv").write_text(
-        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
-    )
+    _write_pvalue_files(tmp_path)
     (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
 
     report = verify_result_artifacts(tmp_path)
@@ -146,10 +154,7 @@ def test_result_verifier_rejects_unresolved_short_git_rev(tmp_path: Path) -> Non
         holdout_manifest_path="",
         holdout_manifest_sha256="",
     )
-    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
-    (tmp_path / "pvalue_corrections.csv").write_text(
-        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
-    )
+    _write_pvalue_files(tmp_path)
     (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
 
     report = verify_result_artifacts(tmp_path)
@@ -159,10 +164,7 @@ def test_result_verifier_rejects_unresolved_short_git_rev(tmp_path: Path) -> Non
 
 
 def test_result_verifier_study_mode_does_not_require_ledger(tmp_path: Path) -> None:
-    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
-    (tmp_path / "pvalue_corrections.csv").write_text(
-        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
-    )
+    _write_pvalue_files(tmp_path)
     (tmp_path / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
 
     report = verify_result_artifacts(tmp_path, strict_metadata=False)
@@ -185,7 +187,12 @@ def _audit_csv(
     )
 
 
-def _write_minimal_result_dir(tmp_path: Path) -> None:
+def _write_minimal_result_dir(
+    tmp_path: Path,
+    *,
+    pvalue_id: str = "sample",
+    config_sha256: str = "",
+) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
         tmp_path / "experiment_ledger.jsonl",
@@ -194,10 +201,21 @@ def _write_minimal_result_dir(tmp_path: Path) -> None:
         holdout_manifest_path="manifest.json",
         holdout_manifest_sha256="a" * 64,
     )
-    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
-    (tmp_path / "pvalue_corrections.csv").write_text(
-        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
-    )
+    _write_pvalue_files(tmp_path, hypothesis_id=pvalue_id, config_sha256=config_sha256)
+
+
+def _write_pvalue_files(tmp_path: Path, *, hypothesis_id: str = "sample", config_sha256: str = "") -> None:
+    pvalue_header = "hypothesis_id,metric,p_value"
+    pvalue_row = f"{hypothesis_id},fold_mean_net_pnl,0.1"
+    correction_header = "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept"
+    correction_row = f"{hypothesis_id},0.1,0.1,0.1,0"
+    if config_sha256:
+        pvalue_header += ",config_sha256"
+        pvalue_row += f",{config_sha256}"
+        correction_header += ",config_sha256"
+        correction_row += f",{config_sha256}"
+    (tmp_path / "pvalues.csv").write_text(f"{pvalue_header}\n{pvalue_row}\n")
+    (tmp_path / "pvalue_corrections.csv").write_text(f"{correction_header}\n{correction_row}\n")
 
 
 def _write_ledger(
