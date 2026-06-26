@@ -20,12 +20,13 @@ Authoritative scope: local implementation specification supplied outside the rep
 ## Verification Log
 
 - Baseline direct tests before edits: `passed 160 direct test functions`.
-- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 298 direct test functions`.
-- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `298 passed`.
+- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 299 direct test functions`.
+- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `299 passed`.
 - Current static checks after implementation: `.venv/bin/python -m ruff check .` passed, `.venv/bin/python -m ruff format --check .` found `90 files already formatted`, and `.venv/bin/python -m mypy src/lob_forge` found no issues in `43 source files`.
 - C++ replay equivalence is included in the direct suite when a local C++ compiler is present.
 - Reduced E2E fixture artifacts generated under `artifacts/reduced_e2e/`.
 - Reduced E2E fixture regenerated from the clean current Git checkout; `artifacts/research_manifest.json` records `working_tree_dirty=false`.
+- Cloud handoff archive smoke-tested from an unpacked source-only ZIP without `.git`; `scripts/run_reduced_e2e.py` reads `.source-git-commit` and records `working_tree_dirty=null` instead of crashing.
 - CPU neural fixture smokes generated `sequence_tcn_smoke.csv` and `sequence_transformer_smoke.csv`; sequence runs now expose optional holdout-manifest filtering, checkpoint/resume, repeated-seed and ablation runner support, prediction CSV export, calibration metrics, confusion matrices, stateful economic smoke fields, frozen sequence candidates, and final holdout evaluation against a pre-registered candidate hash.
 - Safe full-study and live-validation script checks passed in plan/dry-run mode: `PLAN_ONLY=1 STUDY_PROFILE=local16_60day bash scripts/run_60day_expected_edge_study.sh`, `DRY_RUN=1 bash scripts/run_complete_feature_edge_jobs.sh`, `DRY_RUN=1 bash scripts/run_local16_existing_feature_edge_jobs.sh`, `DRY_RUN=1 bash scripts/run_kelly_candidate_search.sh`, and `DRY_RUN=1 SUBMIT_ORDERS=1 PROVIDER=bybit bash scripts/run_shadow_fill_observation_session.sh`. The final-holdout preparation helper passes shell syntax/focused tests and correctly refuses the current checkout because the full study is incomplete.
 - `make verify-results` passed against `results/current`; `make verify-evidence-gates` still fails by design only for `full_60_90day_cloud`, `immutable_final_holdout`, and `real_shadow_fill_validation`.
