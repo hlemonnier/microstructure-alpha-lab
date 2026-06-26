@@ -51,6 +51,7 @@ def test_evidence_gates_report_missing_remaining_artifacts(tmp_path: Path) -> No
     final_gate = next(gate for gate in report.gates if gate.gate_id == "immutable_final_holdout")
     assert final_gate.status == "not_ready"
     assert "result_exists=0" in final_gate.evidence
+    assert "final_holdout_edge_result.json" in final_gate.evidence
     assert "final-holdout-rule" in final_gate.next_action
     assert "final-holdout-edge" in final_gate.next_action
 
@@ -111,6 +112,38 @@ def test_immutable_final_holdout_gate_passes_verified_payload(tmp_path: Path) ->
     assert gate.passed
     assert "final_evaluation=1" in gate.evidence
     assert "stateful_simulator=1" in gate.evidence
+
+
+def test_immutable_final_holdout_gate_accepts_default_edge_artifact(tmp_path: Path) -> None:
+    capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
+    full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")
+    audit = tmp_path / "audit.csv"
+    kelly = tmp_path / "kelly.csv"
+    default_threshold_path = tmp_path / "results" / "final_holdout" / "final_holdout_result.json"
+    default_edge_path = tmp_path / "results" / "final_holdout" / "final_holdout_edge_result.json"
+    _write_audit(audit, fold_count=4, acceptance_passed=0, rejection_reasons="fold count too low")
+    _write_kelly(kelly, [1.0, -10.0, 2.0, 0.0])
+    _write_final_holdout_result(default_edge_path)
+
+    report = evaluate_remaining_evidence_gates(
+        capped_plan=capped_plan,
+        capped_result_dir=capped_plan.parent,
+        full_plan=full_plan,
+        full_result_dir=full_plan.parent,
+        final_holdout_result=default_threshold_path,
+        simulated_fills=tmp_path / "simulated.csv",
+        shadow_decisions=tmp_path / "shadow.csv",
+        kelly_artifact=kelly,
+        kelly_min_observations=4,
+        kelly_window_size=2,
+        baseline_audit=audit,
+        l2_path=tmp_path / "missing_l2.csv",
+    )
+
+    gate = next(gate for gate in report.gates if gate.gate_id == "immutable_final_holdout")
+    assert gate.passed
+    assert f"result_path={default_edge_path}" in gate.evidence
+    assert "final_evaluation=1" in gate.evidence
 
 
 def test_evidence_gates_accept_bybit_l2_candidate_when_okx_missing(tmp_path: Path) -> None:

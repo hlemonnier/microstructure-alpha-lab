@@ -28,6 +28,8 @@ DEFAULT_KELLY_CANDIDATE_GLOBS = (
     "results/kelly_candidate_search/*_edge.csv",
     "results/expected_edge_local16_20230516_20230714/*_edge.csv",
 )
+DEFAULT_FINAL_HOLDOUT_RESULT_NAME = "final_holdout_result.json"
+DEFAULT_FINAL_HOLDOUT_EDGE_RESULT_NAME = "final_holdout_edge_result.json"
 
 
 @dataclass(frozen=True)
@@ -100,7 +102,7 @@ def evaluate_remaining_evidence_gates(
             min_audit_fold_count=min_fold_count,
         ),
         _final_holdout_gate(
-            result_path=Path(final_holdout_result),
+            result_paths=_final_holdout_result_candidates(Path(final_holdout_result)),
             research_manifest_path=Path(research_manifest),
         ),
         _shadow_gate(
@@ -138,9 +140,23 @@ def evaluate_remaining_evidence_gates(
     return EvidenceGateReport(gates=gates)
 
 
-def _final_holdout_gate(*, result_path: Path, research_manifest_path: Path) -> EvidenceGate:
+def _final_holdout_result_candidates(result_path: Path) -> tuple[Path, ...]:
+    paths = [result_path]
+    if result_path.name == DEFAULT_FINAL_HOLDOUT_RESULT_NAME:
+        paths.append(result_path.with_name(DEFAULT_FINAL_HOLDOUT_EDGE_RESULT_NAME))
+    seen: set[Path] = set()
+    unique_paths: list[Path] = []
+    for path in paths:
+        if path not in seen:
+            seen.add(path)
+            unique_paths.append(path)
+    return tuple(unique_paths)
+
+
+def _final_holdout_gate(*, result_paths: Sequence[Path], research_manifest_path: Path) -> EvidenceGate:
     todo = "Run and check in the declared immutable final holdout result artifact for the full selected candidate."
-    if not result_path.exists() or result_path.stat().st_size == 0:
+    existing_paths = tuple(path for path in result_paths if path.exists() and path.stat().st_size > 0)
+    if not existing_paths:
         manifest_status = "unknown"
         manifest_reason = ""
         if research_manifest_path.exists():
@@ -152,8 +168,9 @@ def _final_holdout_gate(*, result_path: Path, research_manifest_path: Path) -> E
                     manifest_reason = str(final_holdout.get("reason", ""))
             except Exception as exc:
                 manifest_status = f"research_manifest_error={type(exc).__name__}"
+        result_paths_text = ",".join(str(path) for path in result_paths)
         evidence = (
-            f"result_exists=0 result_path={result_path} research_manifest={research_manifest_path} "
+            f"result_exists=0 result_paths={result_paths_text} research_manifest={research_manifest_path} "
             f"manifest_final_holdout_status={manifest_status} reason={manifest_reason or 'none'}"
         )
         return EvidenceGate(
@@ -164,6 +181,26 @@ def _final_holdout_gate(*, result_path: Path, research_manifest_path: Path) -> E
             evidence,
             "after the full study selects one frozen candidate, run final-holdout-rule or final-holdout-edge with a pre-registered candidate hash",
         )
+    failed_gates: list[EvidenceGate] = []
+    for result_path in existing_paths:
+        gate = _final_holdout_result_gate_for_path(result_path=result_path, todo=todo)
+        if gate.passed:
+            return gate
+        failed_gates.append(gate)
+    evidence = f"result_candidates={','.join(str(path) for path in result_paths)} " + " | ".join(
+        gate.evidence for gate in failed_gates
+    )
+    return EvidenceGate(
+        "immutable_final_holdout",
+        todo,
+        "failed",
+        False,
+        evidence,
+        "rerun final-holdout-rule or final-holdout-edge from the verified manifest and frozen candidate, preserving the immutable result",
+    )
+
+
+def _final_holdout_result_gate_for_path(*, result_path: Path, todo: str) -> EvidenceGate:
     try:
         payload = json.loads(result_path.read_text())
     except Exception as exc:
