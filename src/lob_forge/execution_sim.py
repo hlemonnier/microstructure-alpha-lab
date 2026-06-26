@@ -329,14 +329,22 @@ def simulate_stateful_execution(
             if kill_switch:
                 orders.append(_order_row(order_id, signal, submit_time, 0, 0.0, "rejected", "kill_switch"))
                 continue
+
+            mark = event.mid
+            target_inventory = 0.0 if signal.target_side == 0 else signal.target_side * signal.target_notional / mark
+            _reconcile_pending_orders_for_signal(
+                pending,
+                orders,
+                signal=signal,
+                inventory=inventory,
+                target_inventory=target_inventory,
+            )
             if not rate_limiter.allow(submit_time):
                 orders.append(_order_row(order_id, signal, submit_time, 0, 0.0, "rejected", "rate_limited"))
                 continue
 
-            _cancel_replaced_orders(pending, orders, signal)
-            mark = event.mid
-            target_inventory = 0.0 if signal.target_side == 0 else signal.target_side * signal.target_notional / mark
-            delta_qty = target_inventory - inventory
+            pending_inventory = _pending_inventory(pending)
+            delta_qty = target_inventory - inventory - pending_inventory
             side = 1 if delta_qty > 0 else -1 if delta_qty < 0 else 0
             requested_qty = abs(delta_qty)
             if side == 0 or requested_qty <= 1e-12:
@@ -357,7 +365,7 @@ def simulate_stateful_execution(
                 continue
             requested_qty = check.quantity
 
-            projected_inventory = inventory + side * requested_qty
+            projected_inventory = inventory + pending_inventory + side * requested_qty
             projected_notional = abs(projected_inventory) * mark
             current_equity = cash + inventory * mark
             if projected_notional > config.max_position_notional:
@@ -769,22 +777,29 @@ def _cancel_pending_orders(
     pending.clear()
 
 
-def _cancel_replaced_orders(
+def _reconcile_pending_orders_for_signal(
     pending: list[_PendingPassiveOrder],
     orders: list[OrderLedgerRow],
+    *,
     signal: SignalEvent,
+    inventory: float,
+    target_inventory: float,
 ) -> None:
     if not pending:
         return
-    remaining: list[_PendingPassiveOrder] = []
-    for order in pending:
-        should_cancel = signal.target_side == 0 or order.signal.target_side != signal.target_side
-        if should_cancel:
-            order.canceled = True
-            _replace_order_status(orders, order.row_index, "canceled", "replaced_by_later_signal")
-        else:
-            remaining.append(order)
-    pending[:] = remaining
+    pending_inventory = _pending_inventory(pending)
+    if abs(pending_inventory) <= 1e-12:
+        return
+    target_side = 1 if target_inventory > 0.0 else -1 if target_inventory < 0.0 else 0
+    pending_side = 1 if pending_inventory > 0.0 else -1
+    projected_inventory = inventory + pending_inventory
+    projected_overshoot = target_side != 0 and projected_inventory * target_side > abs(target_inventory) + 1e-12
+    if target_side == 0 or pending_side != target_side or projected_overshoot:
+        _cancel_pending_orders(pending, orders, "replaced_by_later_signal")
+
+
+def _pending_inventory(pending: list[_PendingPassiveOrder]) -> float:
+    return sum(order.side * order.remaining_quantity for order in pending if not order.canceled)
 
 
 def _apply_fill(

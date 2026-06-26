@@ -255,7 +255,8 @@ def test_stateful_execution_does_not_apply_future_passive_fill_to_earlier_signal
 
     assert [fill.fill_time_ms for fill in result.fills] == [1100, 1200]
     assert [fill.liquidity for fill in result.fills] == ["taker", "maker"]
-    assert result.fills[0].quantity > 1.9
+    assert 0.9 < result.fills[0].quantity < 1.1
+    assert 1.9 < sum(fill.quantity for fill in result.fills) < 2.1
 
 
 def test_stateful_execution_consumes_displayed_liquidity_globally_for_same_timestamp_orders() -> None:
@@ -460,6 +461,80 @@ def test_stateful_execution_cancels_pending_passive_before_later_signal() -> Non
     assert result.orders[0].reason == "replaced_by_later_signal"
     assert [fill.fill_time_ms for fill in result.fills] == sorted(fill.fill_time_ms for fill in result.fills)
     assert all(fill.order_id != result.orders[0].order_id for fill in result.fills)
+
+
+def test_stateful_execution_sizes_same_side_signal_against_pending_passive_exposure() -> None:
+    events = [
+        MarketEvent(1000, bid=100.0, ask=100.2, bid_size=5.0, ask_size=5.0),
+        MarketEvent(1100, bid=100.0, ask=100.2, bid_size=5.0, ask_size=5.0),
+        MarketEvent(1200, bid=100.0, ask=100.2, bid_size=5.0, ask_size=5.0, trade_side="sell", trade_size=5.0),
+    ]
+    signals = [
+        SignalEvent(
+            1000,
+            target_side=1,
+            target_notional=100.0,
+            order_type="passive",
+            limit_price=100.0,
+            signal_id="resting-bid",
+            predicted_edge_bps=1.0,
+        ),
+        SignalEvent(1100, target_side=1, target_notional=200.0, signal_id="increase-long"),
+    ]
+
+    result = simulate_stateful_execution(
+        events,
+        signals,
+        config=StatefulExecutionConfig(
+            initial_cash=1000.0,
+            max_position_notional=500.0,
+            max_leverage=1.0,
+            max_order_age_ms=500,
+        ),
+    )
+
+    assert result.orders[0].status == "filled"
+    assert result.orders[1].status == "filled"
+    assert [fill.liquidity for fill in result.fills] == ["taker", "maker"]
+    assert 1.9 < sum(fill.quantity for fill in result.fills) < 2.1
+    assert all(fill.quantity < 1.1 for fill in result.fills)
+
+
+def test_stateful_execution_cancels_same_side_pending_when_revised_target_would_overshoot() -> None:
+    events = [
+        MarketEvent(1000, bid=100.0, ask=100.2, bid_size=5.0, ask_size=5.0),
+        MarketEvent(1100, bid=100.0, ask=100.2, bid_size=5.0, ask_size=5.0),
+        MarketEvent(1200, bid=100.0, ask=100.2, bid_size=5.0, ask_size=5.0, trade_side="sell", trade_size=5.0),
+    ]
+    signals = [
+        SignalEvent(
+            1000,
+            target_side=1,
+            target_notional=200.0,
+            order_type="passive",
+            limit_price=100.0,
+            signal_id="oversized-resting-bid",
+            predicted_edge_bps=1.0,
+        ),
+        SignalEvent(1100, target_side=1, target_notional=100.0, signal_id="reduce-long"),
+    ]
+
+    result = simulate_stateful_execution(
+        events,
+        signals,
+        config=StatefulExecutionConfig(
+            initial_cash=1000.0,
+            max_position_notional=500.0,
+            max_leverage=1.0,
+            max_order_age_ms=500,
+        ),
+    )
+
+    assert result.orders[0].status == "canceled"
+    assert result.orders[0].reason == "replaced_by_later_signal"
+    assert len(result.fills) == 1
+    assert result.fills[0].liquidity == "taker"
+    assert 0.9 < result.fills[0].quantity < 1.1
 
 
 def test_stateful_execution_consumes_same_timestamp_taker_liquidity_once() -> None:
