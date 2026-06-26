@@ -48,6 +48,48 @@ def test_result_verifier_rejects_missing_reason(tmp_path: Path) -> None:
     assert "rejection_reasons" in report.errors[0]
 
 
+def test_result_verifier_rejects_unknown_inference_grain(tmp_path: Path) -> None:
+    _write_minimal_result_dir(tmp_path)
+    (tmp_path / "sample_audit.csv").write_text(
+        _audit_csv(acceptance_passed=1, rejection_reasons="", inference_grain="normal_pvalue_trade_claim")
+    )
+
+    report = verify_result_artifacts(tmp_path)
+
+    assert not report.passed
+    assert any("unsupported inference_grain" in error for error in report.errors)
+
+
+def test_result_verifier_requires_ledger_artifact_for_ledger_grain(tmp_path: Path) -> None:
+    _write_minimal_result_dir(tmp_path)
+    (tmp_path / "sample_audit.csv").write_text(
+        _audit_csv(acceptance_passed=1, rejection_reasons="", inference_grain="trade_ledger")
+    )
+
+    report = verify_result_artifacts(tmp_path)
+
+    assert not report.passed
+    assert any("trade_ledger inference requires" in error for error in report.errors)
+
+
+def test_result_verifier_accepts_ledger_grain_with_present_ledger(tmp_path: Path) -> None:
+    _write_minimal_result_dir(tmp_path)
+    (tmp_path / "fills.csv").write_text("fill_time,price,quantity\n1000,100.0,1.0\n")
+    (tmp_path / "sample_audit.csv").write_text(
+        _audit_csv(
+            acceptance_passed=1,
+            rejection_reasons="",
+            inference_grain="trade_ledger",
+            extra_header=",trade_ledger_path",
+            extra_values=",fills.csv",
+        )
+    )
+
+    report = verify_result_artifacts(tmp_path)
+
+    assert report.passed
+
+
 def test_result_verifier_rejects_stale_protocol_ledger_metadata(tmp_path: Path) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
@@ -128,11 +170,33 @@ def test_result_verifier_study_mode_does_not_require_ledger(tmp_path: Path) -> N
     assert report.passed
 
 
-def _audit_csv(*, acceptance_passed: int, rejection_reasons: str, inference_grain: str = "fold_summary") -> str:
+def _audit_csv(
+    *,
+    acceptance_passed: int,
+    rejection_reasons: str,
+    inference_grain: str = "fold_summary",
+    extra_header: str = "",
+    extra_values: str = "",
+) -> str:
     return (
         "inference_grain,fold_count,total_test_rows,total_test_trades,total_test_net_pnl,"
-        "acceptance_passed,rejection_reasons\n"
-        f"{inference_grain},4,100,10,1.0,{acceptance_passed},{rejection_reasons}\n"
+        f"acceptance_passed,rejection_reasons{extra_header}\n"
+        f"{inference_grain},4,100,10,1.0,{acceptance_passed},{rejection_reasons}{extra_values}\n"
+    )
+
+
+def _write_minimal_result_dir(tmp_path: Path) -> None:
+    (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
+    _write_ledger(
+        tmp_path / "experiment_ledger.jsonl",
+        git_rev=FIXTURE_GIT_REV,
+        command="python3 -m lob_forge.cli walk-forward data.csv --holdout-manifest manifest.json",
+        holdout_manifest_path="manifest.json",
+        holdout_manifest_sha256="a" * 64,
+    )
+    (tmp_path / "pvalues.csv").write_text("hypothesis_id,metric,p_value\nh1,fold_mean_net_pnl,0.1\n")
+    (tmp_path / "pvalue_corrections.csv").write_text(
+        "hypothesis_id,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept\nh1,0.1,0.1,0.1,0\n"
     )
 
 

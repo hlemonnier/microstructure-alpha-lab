@@ -46,6 +46,25 @@ REQUIRED_STUDY_FILES = (
     "pvalue_corrections.csv",
 )
 
+ALLOWED_INFERENCE_GRAINS = {
+    "fold_summary",
+    "trade_ledger",
+    "day_ledger",
+    "position_ledger",
+}
+
+LEDGER_BACKED_INFERENCE_GRAINS = {
+    "trade_ledger",
+    "day_ledger",
+    "position_ledger",
+}
+
+LEDGER_PATH_FIELDS_BY_GRAIN = {
+    "trade_ledger": ("ledger_path", "trade_ledger_path", "fills_path"),
+    "day_ledger": ("ledger_path", "day_ledger_path", "positions_path"),
+    "position_ledger": ("ledger_path", "position_ledger_path", "positions_path"),
+}
+
 
 @dataclass(frozen=True)
 class ResultVerification:
@@ -152,11 +171,33 @@ def _verify_audit_csv(path: Path) -> list[str]:
         errors.append(f"{path.name}: total_test_rows must be positive")
     if test_trades < 0:
         errors.append(f"{path.name}: total_test_trades must be non-negative")
-    if not row["inference_grain"].strip():
+    inference_grain = row["inference_grain"].strip()
+    if not inference_grain:
         errors.append(f"{path.name}: inference_grain must be non-empty")
+    elif inference_grain not in ALLOWED_INFERENCE_GRAINS:
+        allowed = ", ".join(sorted(ALLOWED_INFERENCE_GRAINS))
+        errors.append(f"{path.name}: unsupported inference_grain {inference_grain!r}; allowed values: {allowed}")
+    elif inference_grain in LEDGER_BACKED_INFERENCE_GRAINS:
+        errors.extend(_verify_ledger_backed_inference(path, row, inference_grain))
     if row["acceptance_passed"] in {"0", "0.0"} and not row["rejection_reasons"].strip():
         errors.append(f"{path.name}: rejected audit needs rejection_reasons")
     return errors
+
+
+def _verify_ledger_backed_inference(path: Path, row: dict[str, str], inference_grain: str) -> list[str]:
+    ledger_fields = LEDGER_PATH_FIELDS_BY_GRAIN[inference_grain]
+    ledger_path_text = next((row.get(field, "").strip() for field in ledger_fields if row.get(field, "").strip()), "")
+    if not ledger_path_text:
+        fields = ", ".join(ledger_fields)
+        return [f"{path.name}: {inference_grain} inference requires one of these ledger path columns: {fields}"]
+    ledger_path = Path(ledger_path_text)
+    if not ledger_path.is_absolute():
+        ledger_path = path.parent / ledger_path
+    if not ledger_path.exists():
+        return [f"{path.name}: {inference_grain} ledger artifact is missing: {ledger_path_text}"]
+    if ledger_path.stat().st_size == 0:
+        return [f"{path.name}: {inference_grain} ledger artifact is empty: {ledger_path_text}"]
+    return []
 
 
 def _verify_pvalues(path: Path) -> list[str]:
