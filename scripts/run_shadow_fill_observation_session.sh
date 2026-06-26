@@ -23,6 +23,8 @@ END_TIME_MS="${END_TIME_MS:-}"
 DRY_RUN="${DRY_RUN:-1}"
 RUN_VALIDATE="${RUN_VALIDATE:-1}"
 SUBMIT_ORDERS="${SUBMIT_ORDERS:-0}"
+RECORD_TYPE="${RECORD_TYPE:-orders}"
+ORDER_STATUS="${ORDER_STATUS:-}"
 MAX_PRICE_ERROR="${MAX_PRICE_ERROR:-0.5}"
 MAX_SIZE_ERROR="${MAX_SIZE_ERROR:-0.01}"
 MAX_FILL_RATE_ERROR="${MAX_FILL_RATE_ERROR:-0.05}"
@@ -30,7 +32,7 @@ MAX_FILL_RATE_ERROR="${MAX_FILL_RATE_ERROR:-0.05}"
 case "$PROVIDER" in
   bybit)
     : "${SYMBOL:=BTCUSDT}"
-    RAW_OUTPUT="${RAW_OUTPUT:-$OUT_DIR/raw_bybit_executions.json}"
+    RAW_OUTPUT="${RAW_OUTPUT:-$OUT_DIR/raw_bybit_orders.json}"
     OBSERVED_OUTPUT="${OBSERVED_OUTPUT:-$OUT_DIR/observed_fills.csv}"
     MERGED_SHADOW_OUTPUT="${MERGED_SHADOW_OUTPUT:-$OUT_DIR/shadow_decisions_observed.csv}"
     VALIDATION_OUTPUT="${VALIDATION_OUTPUT:-$OUT_DIR/shadow_fill_validation.txt}"
@@ -40,7 +42,7 @@ case "$PROVIDER" in
     ;;
   okx)
     : "${SYMBOL:=BTC-USDT-SWAP}"
-    RAW_OUTPUT="${RAW_OUTPUT:-$OUT_DIR/raw_okx_fills.json}"
+    RAW_OUTPUT="${RAW_OUTPUT:-$OUT_DIR/raw_okx_orders.json}"
     OBSERVED_OUTPUT="${OBSERVED_OUTPUT:-$OUT_DIR/observed_fills.csv}"
     MERGED_SHADOW_OUTPUT="${MERGED_SHADOW_OUTPUT:-$OUT_DIR/shadow_decisions_observed.csv}"
     VALIDATION_OUTPUT="${VALIDATION_OUTPUT:-$OUT_DIR/shadow_fill_validation.txt}"
@@ -90,12 +92,16 @@ fetch_command=(
   --symbol "$SYMBOL"
   --limit "$LIMIT"
   --output "$RAW_OUTPUT"
+  --record-type "$RECORD_TYPE"
 )
 if [[ -n "$START_TIME_MS" ]]; then
   fetch_command+=(--start-time-ms "$START_TIME_MS")
 fi
 if [[ -n "$END_TIME_MS" ]]; then
   fetch_command+=(--end-time-ms "$END_TIME_MS")
+fi
+if [[ -n "$ORDER_STATUS" ]]; then
+  fetch_command+=(--order-status "$ORDER_STATUS")
 fi
 
 submit_command=(
@@ -132,6 +138,7 @@ printf 'raw_output=%s observed_output=%s merged_shadow_output=%s validation_outp
   "$RAW_OUTPUT" "$OBSERVED_OUTPUT" "$MERGED_SHADOW_OUTPUT" "$VALIDATION_OUTPUT"
 printf 'submit_orders=%s order_plan=%s order_submission_output=%s\n' \
   "$SUBMIT_ORDERS" "$ORDER_PLAN_PATH" "$ORDER_SUBMISSION_OUTPUT"
+printf 'record_type=%s order_status=%s\n' "$RECORD_TYPE" "${ORDER_STATUS:-none}"
 printf 'required_env=%s\n' "${REQUIRED_ENV[*]}"
 if [[ "${#missing_env[@]}" -gt 0 ]]; then
   printf 'missing_env=%s\n' "${missing_env[*]}"

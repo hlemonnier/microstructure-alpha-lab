@@ -220,7 +220,7 @@ def _bybit_instruction(
         endpoint="/v5/order/create",
         symbol=symbol,
         payload=payload,
-        notes="demo trading: use orderLinkId=decision_id; fetch fills from /v5/execution/list",
+        notes="demo trading: use orderLinkId=decision_id; fetch order history from /v5/order/history or fills from /v5/execution/list",
     )
 
 

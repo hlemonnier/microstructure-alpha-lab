@@ -103,17 +103,19 @@ For OKX demo, the submitter includes `x-simulated-trading: 1` on REST requests. 
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --provider bybit \
+  --record-type orders \
   --symbol BTCUSDT \
   --start-time-ms 1700000000000 \
   --end-time-ms 1700000600000 \
-  --output results/shadow_validation/raw_bybit_executions.json
+  --output results/shadow_validation/raw_bybit_orders.json
 
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --provider okx \
+  --record-type orders \
   --symbol BTC-USDT-SWAP \
   --start-time-ms 1700000000000 \
   --end-time-ms 1700000600000 \
-  --output results/shadow_validation/raw_okx_fills.json
+  --output results/shadow_validation/raw_okx_orders.json
 
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --provider binance \
@@ -135,7 +137,7 @@ The wrapper above is the preferred executable path for Bybit, OKX, and Binance U
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
   --provider bybit \
-  --input results/shadow_validation/raw_bybit_executions.json \
+  --input results/shadow_validation/raw_bybit_orders.json \
   --output results/shadow_validation/observed_fills.csv
 
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli import-observed-fills \

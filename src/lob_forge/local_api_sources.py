@@ -69,7 +69,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         local_commands=(
             "paper-order-plan --provider bybit",
             "submit-paper-orders --provider bybit --execute",
-            "fetch-observed-fills --provider bybit",
+            "fetch-observed-fills --provider bybit --record-type orders",
             "normalize-observed-fills --provider bybit",
         ),
         docs_urls=(
@@ -79,7 +79,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         limitations=("demo orders are retained for 7 days", "demo trading is not a live execution-quality claim"),
         evidence_gates=(REAL_SHADOW_FILL_GATE, PAPER_LIVE_FILL_GATE),
         target_artifacts=(
-            "results/shadow_validation/raw_bybit_executions.json",
+            "results/shadow_validation/raw_bybit_orders.json",
             "results/shadow_validation/observed_fills.csv",
             "results/shadow_validation/shadow_decisions_observed.csv",
         ),
@@ -109,7 +109,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         local_commands=(
             "paper-order-plan --provider okx [--symbol-override BTC-USDT-SWAP]",
             "submit-paper-orders --provider okx --execute",
-            "fetch-observed-fills --provider okx",
+            "fetch-observed-fills --provider okx --record-type orders",
             "normalize-observed-fills --provider okx",
         ),
         docs_urls=("https://my.okx.com/docs-v5/en/",),
@@ -119,7 +119,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         ),
         evidence_gates=(REAL_SHADOW_FILL_GATE, PAPER_LIVE_FILL_GATE),
         target_artifacts=(
-            "results/shadow_validation/raw_okx_fills.json",
+            "results/shadow_validation/raw_okx_orders.json",
             "results/shadow_validation/observed_fills.csv",
             "results/shadow_validation/shadow_decisions_observed.csv",
         ),

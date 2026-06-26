@@ -111,6 +111,7 @@ from lob_forge.live_validation import (
 )
 from lob_forge.observed_fill_fetch import (
     SUPPORTED_OBSERVED_FILL_FETCH_PROVIDERS,
+    SUPPORTED_OBSERVED_FILL_RECORD_TYPES,
     fetch_observed_fill_export,
     format_observed_fill_fetch_report,
 )
@@ -492,6 +493,16 @@ def main(argv: list[str] | None = None) -> int:
     fetch_observed_fills_parser.add_argument("--category", default="linear", help="Bybit category.")
     fetch_observed_fills_parser.add_argument("--inst-type", default="SWAP", help="OKX instrument type.")
     fetch_observed_fills_parser.add_argument("--cursor", help="Bybit nextPageCursor.")
+    fetch_observed_fills_parser.add_argument(
+        "--record-type",
+        choices=SUPPORTED_OBSERVED_FILL_RECORD_TYPES,
+        default="fills",
+        help="Fetch trade/fill history or order-status history. Use orders to capture explicit no-fill terminal outcomes.",
+    )
+    fetch_observed_fills_parser.add_argument(
+        "--order-status",
+        help="Optional Bybit orderStatus or OKX state filter when --record-type=orders.",
+    )
     fetch_observed_fills_parser.add_argument("--base-url", help="Override provider REST base URL.")
     fetch_observed_fills_parser.add_argument(
         "--recv-window",
@@ -1654,6 +1665,8 @@ def _cmd_fetch_observed_fills(args: argparse.Namespace) -> int:
         category=args.category,
         inst_type=args.inst_type,
         cursor=args.cursor,
+        record_type=args.record_type,
+        order_status=args.order_status,
         base_url=args.base_url,
         recv_window=args.recv_window,
         timeout_seconds=args.timeout_seconds,

@@ -53,6 +53,47 @@ def test_fetch_bybit_demo_executions_signs_and_writes_raw_json(tmp_path: Path) -
     assert json.loads(output.read_text())["result"]["list"][0]["orderLinkId"] == "d1"
 
 
+def test_fetch_bybit_demo_order_history_signs_and_writes_raw_json(tmp_path: Path) -> None:
+    calls: list[tuple[str, dict[str, str], float]] = []
+
+    def fake_get(url: str, headers: dict[str, str], timeout: float) -> dict:
+        calls.append((url, dict(headers), timeout))
+        return {"result": {"list": [{"orderLinkId": "d1", "cumExecQty": "0", "orderStatus": "Cancelled"}]}}
+
+    output = tmp_path / "raw_bybit_orders.json"
+    report = fetch_observed_fill_export(
+        provider="bybit",
+        output_path=output,
+        symbol="BTCUSDT",
+        start_time_ms=1700000000000,
+        end_time_ms=1700000100000,
+        limit=1,
+        record_type="orders",
+        order_status="Cancelled",
+        env={"BYBIT_DEMO_API_KEY": "key", "BYBIT_DEMO_API_SECRET": "secret"},
+        http_get_json=fake_get,
+        now_ms=1711420489915,
+    )
+
+    url, headers, _timeout = calls[0]
+    parsed = urlparse(url)
+    query = parsed.query
+    expected_signature = hmac.new(
+        b"secret",
+        f"1711420489915key5000{query}".encode(),
+        hashlib.sha256,
+    ).hexdigest()
+
+    assert report.provider == "bybit"
+    assert report.source_id == "bybit_demo_orders"
+    assert report.rows == 1
+    assert report.endpoint == "/v5/order/history"
+    assert url.startswith("https://api-demo.bybit.com/v5/order/history?")
+    assert parse_qs(query)["orderStatus"] == ["Cancelled"]
+    assert headers["X-BAPI-SIGN"] == expected_signature
+    assert json.loads(output.read_text())["result"]["list"][0]["orderStatus"] == "Cancelled"
+
+
 def test_fetch_okx_demo_fills_history_uses_simulated_header(tmp_path: Path) -> None:
     calls: list[tuple[str, dict[str, str], float]] = []
 
@@ -97,6 +138,53 @@ def test_fetch_okx_demo_fills_history_uses_simulated_header(tmp_path: Path) -> N
     assert headers["x-simulated-trading"] == "1"
     assert headers["OK-ACCESS-SIGN"] == expected_signature
     assert json.loads(output.read_text())["data"][0]["clOrdId"] == "d1"
+
+
+def test_fetch_okx_demo_order_history_uses_simulated_header(tmp_path: Path) -> None:
+    calls: list[tuple[str, dict[str, str], float]] = []
+
+    def fake_get(url: str, headers: dict[str, str], timeout: float) -> dict:
+        calls.append((url, dict(headers), timeout))
+        return {"data": [{"clOrdId": "d1", "accFillSz": "0", "state": "canceled"}]}
+
+    output = tmp_path / "raw_okx_orders.json"
+    report = fetch_observed_fill_export(
+        provider="okx",
+        output_path=output,
+        symbol="BTC-USDT-SWAP",
+        start_time_ms=1700000000000,
+        end_time_ms=1700000100000,
+        limit=1,
+        record_type="orders",
+        order_status="canceled",
+        env={
+            "OKX_DEMO_API_KEY": "key",
+            "OKX_DEMO_API_SECRET": "secret",
+            "OKX_DEMO_API_PASSPHRASE": "passphrase",
+        },
+        http_get_json=fake_get,
+        now_ms=1711420489915,
+    )
+
+    url, headers, _timeout = calls[0]
+    parsed = urlparse(url)
+    request_path = parsed.path + "?" + parsed.query
+    expected_signature = base64.b64encode(
+        hmac.new(
+            b"secret",
+            (headers["OK-ACCESS-TIMESTAMP"] + "GET" + request_path).encode(),
+            hashlib.sha256,
+        ).digest()
+    ).decode()
+
+    assert report.provider == "okx"
+    assert report.source_id == "okx_demo_orders"
+    assert report.rows == 1
+    assert url.startswith("https://eea.okx.com/api/v5/trade/orders-history?")
+    assert parse_qs(parsed.query)["state"] == ["canceled"]
+    assert headers["x-simulated-trading"] == "1"
+    assert headers["OK-ACCESS-SIGN"] == expected_signature
+    assert json.loads(output.read_text())["data"][0]["state"] == "canceled"
 
 
 def test_fetch_binance_usdm_testnet_orders_signs_and_writes_raw_json(tmp_path: Path) -> None:

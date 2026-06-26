@@ -272,12 +272,12 @@ SUBMIT_ORDERS=1 DRY_RUN=0 PROVIDER=bybit START_TIME_MS=<start> END_TIME_MS=<end>
   bash scripts/run_shadow_fill_observation_session.sh
 ```
 
-The wrapper optionally submits provider demo/testnet orders, fetches provider fills, normalizes them, imports them into `shadow_decisions_observed.csv`, and writes `shadow_fill_validation.txt`. It refuses execution when the provider credential environment variables are missing.
+The wrapper optionally submits provider demo/testnet orders, fetches provider order/fill history, normalizes it, imports it into `shadow_decisions_observed.csv`, and writes `shadow_fill_validation.txt`. It refuses execution when the provider credential environment variables are missing.
 
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli normalize-observed-fills \
   --provider bybit \
-  --input results/shadow_validation/raw_bybit_executions.json \
+  --input results/shadow_validation/raw_bybit_orders.json \
   --output results/shadow_validation/observed_fills.csv
 ```
 

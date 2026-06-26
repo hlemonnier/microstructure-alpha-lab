@@ -433,6 +433,40 @@ def test_normalize_bybit_demo_execution_export_merges_into_shadow_decisions(tmp_
     assert abs((decisions[0].observed_fill_price or 0.0) - 100.75) < 1e-9
 
 
+def test_normalize_bybit_order_history_keeps_terminal_no_fill_observation(tmp_path: Path) -> None:
+    raw_path = tmp_path / "bybit_orders.json"
+    observed_path = tmp_path / "observed.csv"
+    raw_path.write_text(
+        json.dumps(
+            {
+                "result": {
+                    "list": [
+                        {
+                            "orderLinkId": "d1",
+                            "orderId": "bybit-order-1",
+                            "symbol": "BTCUSDT",
+                            "avgPrice": "",
+                            "cumExecQty": "0",
+                            "orderStatus": "Cancelled",
+                            "cancelType": "CancelByUser",
+                        }
+                    ]
+                }
+            }
+        )
+    )
+
+    report = normalize_observed_fills(provider="bybit", input_path=raw_path, output_path=observed_path)
+    rows = list(csv.DictReader(observed_path.open()))
+
+    assert report.input_rows == 1
+    assert report.output_rows == 1
+    assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["avgPrice"] == ""
+    assert rows[0]["cumExecQty"] == "0"
+    assert "orderStatus=Cancelled" in rows[0]["notes"]
+
+
 def test_normalize_okx_demo_transaction_details(tmp_path: Path) -> None:
     raw_path = tmp_path / "okx_fills.json"
     observed_path = tmp_path / "observed.csv"
@@ -467,6 +501,38 @@ def test_normalize_okx_demo_transaction_details(tmp_path: Path) -> None:
     assert rows[0]["cumExecQty"] == "0.00192834"
     assert rows[0]["realizedPnl"] == "0.12"
     assert "execType=M" in rows[0]["notes"]
+
+
+def test_normalize_okx_order_history_keeps_terminal_no_fill_observation(tmp_path: Path) -> None:
+    raw_path = tmp_path / "okx_orders.json"
+    observed_path = tmp_path / "observed.csv"
+    raw_path.write_text(
+        json.dumps(
+            {
+                "data": [
+                    {
+                        "clOrdId": "d1",
+                        "ordId": "okx-order-1",
+                        "instId": "BTC-USDT-SWAP",
+                        "avgPx": "",
+                        "accFillSz": "0",
+                        "state": "canceled",
+                        "cancelSource": "20",
+                    }
+                ]
+            }
+        )
+    )
+
+    report = normalize_observed_fills(provider="okx", input_path=raw_path, output_path=observed_path)
+    rows = list(csv.DictReader(observed_path.open()))
+
+    assert report.input_rows == 1
+    assert report.output_rows == 1
+    assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["avgPrice"] == ""
+    assert rows[0]["cumExecQty"] == "0"
+    assert "state=canceled" in rows[0]["notes"]
 
 
 def test_cli_normalize_observed_fills_writes_importable_csv(tmp_path: Path) -> None:

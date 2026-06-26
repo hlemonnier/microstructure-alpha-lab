@@ -24,11 +24,11 @@ def test_paper_fill_sources_prioritize_crypto_demo_venues() -> None:
     ]
     assert sources[0].id_field == "orderLinkId"
     assert "execPrice" in sources[0].fill_fields
-    assert "fetch-observed-fills --provider bybit" in sources[0].local_commands
+    assert "fetch-observed-fills --provider bybit --record-type orders" in sources[0].local_commands
     assert "submit-paper-orders --provider bybit --execute" in sources[0].local_commands
     assert "normalize-observed-fills --provider bybit" in sources[0].local_commands
     assert REAL_SHADOW_FILL_GATE in sources[0].evidence_gates
-    assert "raw_bybit_executions.json" in sources[0].target_artifacts[0]
+    assert "raw_bybit_orders.json" in sources[0].target_artifacts[0]
     assert all(source.requires_api_key for source in sources)
 
 
@@ -57,7 +57,7 @@ def test_local_api_sources_csv_includes_credentials_and_commands() -> None:
     assert "BINANCE_USDM_TESTNET_API_KEY BINANCE_USDM_TESTNET_API_SECRET" in csv_text
     assert "paper-order-plan --provider okx [--symbol-override BTC-USDT-SWAP]" in csv_text
     assert "submit-paper-orders --provider okx --execute" in csv_text
-    assert "fetch-observed-fills --provider okx" in csv_text
+    assert "fetch-observed-fills --provider okx --record-type orders" in csv_text
     assert "fetch-observed-fills --provider binance --symbol BTCUSDT" in csv_text
     assert "normalize-observed-fills --provider okx" in csv_text
     assert "minimum_local_proof" in csv_text

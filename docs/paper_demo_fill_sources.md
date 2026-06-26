@@ -132,17 +132,19 @@ After a paper/demo session, save the raw API response as `.json`, `.jsonl`, or `
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --provider bybit \
+  --record-type orders \
   --symbol BTCUSDT \
   --start-time-ms 1700000000000 \
   --end-time-ms 1700000600000 \
-  --output results/shadow_validation/raw_bybit_executions.json
+  --output results/shadow_validation/raw_bybit_orders.json
 
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --provider okx \
+  --record-type orders \
   --symbol BTC-USDT-SWAP \
   --start-time-ms 1700000000000 \
   --end-time-ms 1700000600000 \
-  --output results/shadow_validation/raw_okx_fills.json
+  --output results/shadow_validation/raw_okx_orders.json
 
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --provider binance \
@@ -152,16 +154,16 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --output results/shadow_validation/raw_binance_usdm_orders.json
 ```
 
-The fetch command uses `BYBIT_DEMO_API_KEY`/`BYBIT_DEMO_API_SECRET` for Bybit, `OKX_DEMO_API_KEY`/`OKX_DEMO_API_SECRET`/`OKX_DEMO_API_PASSPHRASE` for OKX, and `BINANCE_USDM_TESTNET_API_KEY`/`BINANCE_USDM_TESTNET_API_SECRET` for Binance USD-M Futures Testnet. It writes only the raw provider response; the normalizer remains the source of the canonical import schema.
+The fetch command uses `BYBIT_DEMO_API_KEY`/`BYBIT_DEMO_API_SECRET` for Bybit, `OKX_DEMO_API_KEY`/`OKX_DEMO_API_SECRET`/`OKX_DEMO_API_PASSPHRASE` for OKX, and `BINANCE_USDM_TESTNET_API_KEY`/`BINANCE_USDM_TESTNET_API_SECRET` for Binance USD-M Futures Testnet. Use `--record-type orders` for Bybit/OKX validation sessions so terminal unfilled orders can be normalized as explicit `cumExecQty=0` observations. The command writes only the raw provider response; the normalizer remains the source of the canonical import schema.
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
   --provider bybit \
-  --input results/shadow_validation/raw_bybit_executions.json \
+  --input results/shadow_validation/raw_bybit_orders.json \
   --output results/shadow_validation/observed_fills.csv
 ```
 
-Supported normalization providers are `bybit`, `okx`, `binance`, and `alpaca`. The Binance normalizer accepts Spot Testnet `executionReport`/FULL order payloads, USD-M Futures Testnet `ORDER_TRADE_UPDATE` payloads, and USD-M Futures Testnet `allOrders` REST exports. The normalizer writes the canonical observed-fill columns:
+Supported normalization providers are `bybit`, `okx`, `binance`, and `alpaca`. The Bybit and OKX normalizers accept both fill-history rows and order-history rows; canceled/expired/rejected zero-fill orders become explicit no-fill observations. The Binance normalizer accepts Spot Testnet `executionReport`/FULL order payloads, USD-M Futures Testnet `ORDER_TRADE_UPDATE` payloads, and USD-M Futures Testnet `allOrders` REST exports. The normalizer writes the canonical observed-fill columns:
 
 ```text
 decision_id,client_order_id,venue,symbol,avgPrice,cumExecQty,realizedPnl,notes

@@ -72,6 +72,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add observed-fill template generation, ignore blank templates during import, and enforce default shadow-fill error thresholds in evidence gates.
 - [x] Add a dry-run-first Bybit/OKX/Binance observed-fill runner that fetches, normalizes, imports, and validates submitted demo/testnet order fills.
 - [x] Add a dry-run-first Bybit/OKX/Binance demo/testnet order submitter that reads generated order plans and requires `--execute` before network writes.
+- [x] Add Bybit/OKX order-history fetch mode and terminal zero-fill normalization so canceled/rejected/expired demo orders count as explicit no-fill observations.
 - [ ] Run simulated-vs-paper/live fill validation on real shadow or paper observations.
 
 ## Validation And Statistics

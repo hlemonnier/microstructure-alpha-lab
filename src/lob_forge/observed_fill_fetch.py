@@ -16,6 +16,7 @@ from typing import Any
 
 
 SUPPORTED_OBSERVED_FILL_FETCH_PROVIDERS = ("bybit", "okx", "binance")
+SUPPORTED_OBSERVED_FILL_RECORD_TYPES = ("fills", "orders")
 
 BYBIT_DEMO_BASE_URL = "https://api-demo.bybit.com"
 OKX_DEMO_BASE_URL = "https://eea.okx.com"
@@ -44,6 +45,8 @@ def fetch_observed_fill_export(
     category: str = "linear",
     inst_type: str = "SWAP",
     cursor: str | None = None,
+    record_type: str = "fills",
+    order_status: str | None = None,
     base_url: str | None = None,
     recv_window: int = 5000,
     timeout_seconds: float = 30.0,
@@ -52,36 +55,73 @@ def fetch_observed_fill_export(
     now_ms: int | None = None,
 ) -> ObservedFillFetchReport:
     provider = provider.lower()
+    record_type = record_type.lower()
+    if record_type not in SUPPORTED_OBSERVED_FILL_RECORD_TYPES:
+        raise ValueError(f"record_type must be one of: {', '.join(SUPPORTED_OBSERVED_FILL_RECORD_TYPES)}")
     if provider == "bybit":
-        payload, endpoint = fetch_bybit_demo_executions(
-            output_symbol=symbol,
-            start_time_ms=start_time_ms,
-            end_time_ms=end_time_ms,
-            limit=limit,
-            category=category,
-            cursor=cursor,
-            base_url=base_url or BYBIT_DEMO_BASE_URL,
-            recv_window=recv_window,
-            timeout_seconds=timeout_seconds,
-            env=env,
-            http_get_json=http_get_json,
-            now_ms=now_ms,
-        )
-        source_id = "bybit_demo_fills"
+        if record_type == "orders":
+            payload, endpoint = fetch_bybit_demo_order_history(
+                output_symbol=symbol,
+                start_time_ms=start_time_ms,
+                end_time_ms=end_time_ms,
+                limit=limit,
+                category=category,
+                cursor=cursor,
+                order_status=order_status,
+                base_url=base_url or BYBIT_DEMO_BASE_URL,
+                recv_window=recv_window,
+                timeout_seconds=timeout_seconds,
+                env=env,
+                http_get_json=http_get_json,
+                now_ms=now_ms,
+            )
+            source_id = "bybit_demo_orders"
+        else:
+            payload, endpoint = fetch_bybit_demo_executions(
+                output_symbol=symbol,
+                start_time_ms=start_time_ms,
+                end_time_ms=end_time_ms,
+                limit=limit,
+                category=category,
+                cursor=cursor,
+                base_url=base_url or BYBIT_DEMO_BASE_URL,
+                recv_window=recv_window,
+                timeout_seconds=timeout_seconds,
+                env=env,
+                http_get_json=http_get_json,
+                now_ms=now_ms,
+            )
+            source_id = "bybit_demo_fills"
     elif provider == "okx":
-        payload, endpoint = fetch_okx_demo_fills_history(
-            inst_id=symbol,
-            start_time_ms=start_time_ms,
-            end_time_ms=end_time_ms,
-            limit=limit,
-            inst_type=inst_type,
-            base_url=base_url or OKX_DEMO_BASE_URL,
-            timeout_seconds=timeout_seconds,
-            env=env,
-            http_get_json=http_get_json,
-            now_ms=now_ms,
-        )
-        source_id = "okx_demo_fills"
+        if record_type == "orders":
+            payload, endpoint = fetch_okx_demo_order_history(
+                inst_id=symbol,
+                start_time_ms=start_time_ms,
+                end_time_ms=end_time_ms,
+                limit=limit,
+                inst_type=inst_type,
+                order_state=order_status,
+                base_url=base_url or OKX_DEMO_BASE_URL,
+                timeout_seconds=timeout_seconds,
+                env=env,
+                http_get_json=http_get_json,
+                now_ms=now_ms,
+            )
+            source_id = "okx_demo_orders"
+        else:
+            payload, endpoint = fetch_okx_demo_fills_history(
+                inst_id=symbol,
+                start_time_ms=start_time_ms,
+                end_time_ms=end_time_ms,
+                limit=limit,
+                inst_type=inst_type,
+                base_url=base_url or OKX_DEMO_BASE_URL,
+                timeout_seconds=timeout_seconds,
+                env=env,
+                http_get_json=http_get_json,
+                now_ms=now_ms,
+            )
+            source_id = "okx_demo_fills"
     elif provider == "binance":
         payload, endpoint = fetch_binance_usdm_testnet_orders(
             symbol=symbol,
@@ -157,6 +197,53 @@ def fetch_bybit_demo_executions(
     return (http_get_json or _http_get_json)(url, headers, timeout_seconds), endpoint
 
 
+def fetch_bybit_demo_order_history(
+    *,
+    output_symbol: str | None,
+    start_time_ms: int | None,
+    end_time_ms: int | None,
+    limit: int,
+    category: str,
+    cursor: str | None,
+    order_status: str | None,
+    base_url: str,
+    recv_window: int,
+    timeout_seconds: float,
+    env: Mapping[str, str] | None = None,
+    http_get_json: HttpGetJson | None = None,
+    now_ms: int | None = None,
+) -> tuple[Any, str]:
+    if not 1 <= limit <= 50:
+        raise ValueError("Bybit order history limit must be between 1 and 50")
+    credentials = _credentials(env, "BYBIT_DEMO_API_KEY", "BYBIT_DEMO_API_SECRET")
+    timestamp = str(now_ms if now_ms is not None else int(time.time() * 1000))
+    params = {
+        "category": category,
+        "symbol": output_symbol,
+        "startTime": start_time_ms,
+        "endTime": end_time_ms,
+        "limit": limit,
+        "cursor": cursor,
+        "orderStatus": order_status,
+    }
+    query = _query_string(params)
+    sign_payload = timestamp + credentials["BYBIT_DEMO_API_KEY"] + str(recv_window) + query
+    signature = hmac.new(
+        credentials["BYBIT_DEMO_API_SECRET"].encode("utf-8"),
+        sign_payload.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+    headers = {
+        "X-BAPI-API-KEY": credentials["BYBIT_DEMO_API_KEY"],
+        "X-BAPI-TIMESTAMP": timestamp,
+        "X-BAPI-RECV-WINDOW": str(recv_window),
+        "X-BAPI-SIGN": signature,
+        "Content-Type": "application/json",
+    }
+    endpoint = "/v5/order/history"
+    return (http_get_json or _http_get_json)(_url(base_url, endpoint, query), headers, timeout_seconds), endpoint
+
+
 def fetch_okx_demo_fills_history(
     *,
     inst_id: str | None,
@@ -183,6 +270,54 @@ def fetch_okx_demo_fills_history(
     }
     query = _query_string(params)
     endpoint = "/api/v5/trade/fills-history"
+    request_path = endpoint + (f"?{query}" if query else "")
+    sign_payload = timestamp + "GET" + request_path
+    signature = base64.b64encode(
+        hmac.new(
+            credentials["OKX_DEMO_API_SECRET"].encode("utf-8"),
+            sign_payload.encode("utf-8"),
+            hashlib.sha256,
+        ).digest()
+    ).decode("ascii")
+    headers = {
+        "OK-ACCESS-KEY": credentials["OKX_DEMO_API_KEY"],
+        "OK-ACCESS-SIGN": signature,
+        "OK-ACCESS-TIMESTAMP": timestamp,
+        "OK-ACCESS-PASSPHRASE": credentials["OKX_DEMO_API_PASSPHRASE"],
+        "x-simulated-trading": "1",
+        "Content-Type": "application/json",
+    }
+    return (http_get_json or _http_get_json)(_url(base_url, endpoint, query), headers, timeout_seconds), endpoint
+
+
+def fetch_okx_demo_order_history(
+    *,
+    inst_id: str | None,
+    start_time_ms: int | None,
+    end_time_ms: int | None,
+    limit: int,
+    inst_type: str,
+    order_state: str | None,
+    base_url: str,
+    timeout_seconds: float,
+    env: Mapping[str, str] | None = None,
+    http_get_json: HttpGetJson | None = None,
+    now_ms: int | None = None,
+) -> tuple[Any, str]:
+    if not 1 <= limit <= 100:
+        raise ValueError("OKX orders-history limit must be between 1 and 100")
+    credentials = _credentials(env, "OKX_DEMO_API_KEY", "OKX_DEMO_API_SECRET", "OKX_DEMO_API_PASSPHRASE")
+    timestamp = _okx_timestamp(now_ms)
+    params = {
+        "instType": inst_type,
+        "instId": inst_id,
+        "state": order_state,
+        "begin": start_time_ms,
+        "end": end_time_ms,
+        "limit": limit,
+    }
+    query = _query_string(params)
+    endpoint = "/api/v5/trade/orders-history"
     request_path = endpoint + (f"?{query}" if query else "")
     sign_payload = timestamp + "GET" + request_path
     signature = base64.b64encode(

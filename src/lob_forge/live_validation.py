@@ -721,9 +721,35 @@ def _normalize_provider_fill_row(provider: str, row: Mapping[str, Any]) -> list[
 
 def _normalize_bybit_fill_row(row: Mapping[str, Any]) -> dict[str, str] | None:
     decision_id = _first_raw_value(row, ("orderLinkId", "order_link_id", "clientOrderId", "client_order_id", "orderId"))
-    price = _first_raw_value(row, ("execPrice", "avgPrice"))
+    price = _first_raw_value(row, ("execPrice", "avgPrice", "avgFillPrice"))
     size = _first_raw_value(row, ("execQty", "cumExecQty"))
-    if not decision_id or _optional_float_any(size) in {None, 0.0}:
+    if not decision_id:
+        return None
+    size_value = _optional_float_any(size)
+    order_status = (_first_raw_value(row, ("orderStatus", "status")) or "").upper()
+    if size_value in {None, 0.0}:
+        if _is_terminal_unfilled(order_status):
+            return _normalized_fill_row(
+                decision_id=decision_id,
+                venue="bybit",
+                symbol=_first_raw_value(row, ("symbol",)),
+                price=None,
+                size="0",
+                realized_pnl=_first_raw_value(row, ("closedPnl", "realizedPnl")),
+                notes=_provider_notes(
+                    row,
+                    (
+                        "createdTime",
+                        "updatedTime",
+                        "execTime",
+                        "execId",
+                        "orderId",
+                        "orderStatus",
+                        "rejectReason",
+                        "cancelType",
+                    ),
+                ),
+            )
         return None
     return _normalized_fill_row(
         decision_id=decision_id,
@@ -732,23 +758,54 @@ def _normalize_bybit_fill_row(row: Mapping[str, Any]) -> dict[str, str] | None:
         price=price,
         size=size,
         realized_pnl=_first_raw_value(row, ("execPnl", "closedPnl", "realizedPnl")),
-        notes=_provider_notes(row, ("execTime", "execId", "orderId", "isMaker", "execType", "feeCurrency", "execFee")),
+        notes=_provider_notes(
+            row,
+            (
+                "createdTime",
+                "updatedTime",
+                "execTime",
+                "execId",
+                "orderId",
+                "orderStatus",
+                "isMaker",
+                "execType",
+                "feeCurrency",
+                "execFee",
+            ),
+        ),
     )
 
 
 def _normalize_okx_fill_row(row: Mapping[str, Any]) -> dict[str, str] | None:
     decision_id = _first_raw_value(row, ("clOrdId", "ordId"))
-    size = _first_raw_value(row, ("fillSz",))
-    if not decision_id or _optional_float_any(size) in {None, 0.0}:
+    size = _first_raw_value(row, ("fillSz", "accFillSz"))
+    if not decision_id:
+        return None
+    size_value = _optional_float_any(size)
+    state = (_first_raw_value(row, ("state",)) or "").upper()
+    if size_value in {None, 0.0}:
+        if _is_terminal_unfilled(state):
+            return _normalized_fill_row(
+                decision_id=decision_id,
+                venue="okx",
+                symbol=_first_raw_value(row, ("instId",)),
+                price=None,
+                size="0",
+                realized_pnl=_first_raw_value(row, ("pnl", "fillPnl")),
+                notes=_provider_notes(row, ("cTime", "uTime", "ts", "ordId", "state", "cancelSource", "category")),
+            )
         return None
     return _normalized_fill_row(
         decision_id=decision_id,
         venue="okx",
         symbol=_first_raw_value(row, ("instId",)),
-        price=_first_raw_value(row, ("fillPx",)),
+        price=_first_raw_value(row, ("fillPx", "avgPx")),
         size=size,
-        realized_pnl=_first_raw_value(row, ("fillPnl",)),
-        notes=_provider_notes(row, ("fillTime", "ts", "tradeId", "billId", "ordId", "execType", "feeCcy", "fee")),
+        realized_pnl=_first_raw_value(row, ("fillPnl", "pnl")),
+        notes=_provider_notes(
+            row,
+            ("fillTime", "cTime", "uTime", "ts", "tradeId", "billId", "ordId", "execType", "state", "feeCcy", "fee"),
+        ),
     )
 
 
@@ -1041,7 +1098,7 @@ def _prefixed_notes(row: Mapping[str, Any], prefix: str, columns: tuple[str, ...
 
 
 def _is_terminal_unfilled(status: str) -> bool:
-    return status in {"CANCELED", "CANCELLED", "EXPIRED", "REJECTED"}
+    return status in {"CANCELED", "CANCELLED", "EXPIRED", "REJECTED", "DEACTIVATED", "MMP_CANCELED"}
 
 
 def _decision_from_row(row: dict[str, str]) -> ShadowDecision:

@@ -49,7 +49,7 @@ def test_evidence_gates_report_missing_remaining_artifacts(tmp_path: Path) -> No
     shadow_gate = next(gate for gate in report.gates if gate.gate_id == "real_shadow_fill_validation")
     assert "paper-order-plan" in shadow_gate.next_action
     assert "submit-paper-orders" in shadow_gate.next_action
-    assert "fetch/normalize/import" in shadow_gate.next_action
+    assert "fetch order/fill history" in shadow_gate.next_action
     final_gate = next(gate for gate in report.gates if gate.gate_id == "immutable_final_holdout")
     assert final_gate.status == "not_ready"
     assert "result_exists=0" in final_gate.evidence
