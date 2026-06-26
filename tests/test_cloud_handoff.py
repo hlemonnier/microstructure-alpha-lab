@@ -32,3 +32,12 @@ def test_cloud_handoff_package_includes_locked_requirements() -> None:
 
     assert "--include='/requirements-ci.txt'" in script
     assert "--include='/requirements-research.txt'" in script
+
+
+def test_cloud_handoff_package_includes_reduced_e2e_fixtures_and_source_provenance() -> None:
+    script = Path("scripts/package_cloud_handoff.sh").read_text()
+
+    assert "--include='/examples/***'" in script
+    assert "source scripts/source_provenance.sh" in script
+    assert "source_git_rev" in script
+    assert ".source-git-commit" in script

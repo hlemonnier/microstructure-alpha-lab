@@ -475,7 +475,12 @@ def _git_commit() -> str:
             raise RuntimeError(f"{SOURCE_GIT_COMMIT_ENV} must be a 40- or 64-character Git commit hash")
         return env_commit
     try:
-        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+        commit = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
     except (OSError, subprocess.CalledProcessError):
         archive_commit = _source_archive_git_commit()
         if archive_commit:
@@ -503,7 +508,14 @@ def _source_archive_git_commit() -> str | None:
 
 def _working_tree_dirty() -> bool | None:
     try:
-        return bool(subprocess.check_output(["git", "status", "--short"], cwd=ROOT, text=True).strip())
+        return bool(
+            subprocess.check_output(
+                ["git", "status", "--short"],
+                cwd=ROOT,
+                text=True,
+                stderr=subprocess.DEVNULL,
+            ).strip()
+        )
     except (OSError, subprocess.CalledProcessError):
         return None
 

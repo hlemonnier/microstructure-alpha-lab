@@ -19,9 +19,11 @@ The package contains only the runnable project surface:
 - `README.md`, `Makefile`, `pyproject.toml`, `.gitignore`
 - `requirements-ci.txt`, `requirements-research.txt`
 - `docs/`
+- `examples/`
 - `scripts/`
 - `src/`
 - `tests/`
+- `.source-git-commit`
 
 It intentionally excludes local data, result artifacts, virtualenvs, caches, `.git`, `.next`, and `node_modules`.
 

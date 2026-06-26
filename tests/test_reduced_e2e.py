@@ -76,6 +76,33 @@ def test_reduced_e2e_git_commit_uses_git_archive_substitution_without_git(tmp_pa
         _restore_env(module.SOURCE_GIT_COMMIT_ENV, previous_env)
 
 
+def test_reduced_e2e_suppresses_expected_git_errors_without_git(tmp_path: Path) -> None:
+    module = _load_reduced_e2e_module()
+    previous_env = os.environ.get(module.SOURCE_GIT_COMMIT_ENV)
+    original_check_output = module.subprocess.check_output
+    original_root = module.ROOT
+    calls: list[dict[str, object]] = []
+
+    def fail_check_output(*args: object, **kwargs: object) -> str:
+        calls.append(kwargs)
+        raise subprocess.CalledProcessError(128, args[0] if args else "git")
+
+    try:
+        os.environ.pop(module.SOURCE_GIT_COMMIT_ENV, None)
+        module.subprocess.check_output = fail_check_output
+        module.ROOT = tmp_path
+        (tmp_path / module.SOURCE_ARCHIVE_COMMIT_FILE).write_text("b" * 40 + "\n")
+        assert module._git_commit() == "b" * 40
+        assert module._working_tree_dirty() is None
+    finally:
+        module.ROOT = original_root
+        module.subprocess.check_output = original_check_output
+        _restore_env(module.SOURCE_GIT_COMMIT_ENV, previous_env)
+
+    assert calls
+    assert all(call.get("stderr") is subprocess.DEVNULL for call in calls)
+
+
 def test_reduced_e2e_git_commit_ignores_unexpanded_archive_placeholder(tmp_path: Path) -> None:
     module = _load_reduced_e2e_module()
     original_root = module.ROOT
