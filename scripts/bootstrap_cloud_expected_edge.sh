@@ -28,7 +28,8 @@ if [[ "$SKIP_INSTALL" != "1" ]]; then
   # shellcheck disable=SC1091
   source .venv/bin/activate
   python3 -m pip install --upgrade pip
-  python3 -m pip install -e ".[research]"
+  python3 -m pip install -r requirements-research.txt
+  python3 -m pip install -e . --no-deps
 elif [[ -f .venv/bin/activate ]]; then
   # shellcheck disable=SC1091
   source .venv/bin/activate

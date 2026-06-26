@@ -32,6 +32,7 @@ def test_external_readiness_reports_missing_modal_and_external_evidence(tmp_path
     assert checks["modal_cli"].status == "missing"
     assert checks["modal_auth"].status == "missing"
     assert checks["cloud_handoff_package"].passed
+    assert "pinned_research_install=1" in checks["cloud_handoff_package"].evidence
     assert checks["full_cloud_study"].status == "not_ready"
     assert checks["paper_live_fill_validation"].status == "not_ready"
     assert "template_exists=0" in checks["paper_live_fill_validation"].evidence
@@ -105,6 +106,31 @@ def test_external_readiness_rejects_packages_with_excluded_nested_entries(tmp_pa
     assert "first_excluded=lob-forge/data/raw.csv" in checks["cloud_handoff_package"].evidence
 
 
+def test_external_readiness_rejects_range_based_cloud_package_installs(tmp_path: Path) -> None:
+    package = tmp_path / "dist" / "microstructure-alpha-lab-cloud-handoff-test.zip"
+    _write_package(
+        package,
+        {
+            "lob-forge/scripts/bootstrap_cloud_expected_edge.sh": 'python3 -m pip install -e ".[research]"\n',
+            "lob-forge/scripts/modal_expected_edge_job.py": "python -m pip install -e '.[research]'\n",
+        },
+    )
+
+    report = evaluate_external_gate_readiness(
+        project_root=tmp_path,
+        modal_binary=str(tmp_path / "missing-modal"),
+        cloud_package=package,
+        full_plan=tmp_path / "missing_plan.json",
+        shadow_decisions=tmp_path / "missing_shadow.csv",
+        simulated_fills=tmp_path / "missing_simulated.csv",
+    )
+
+    check = {item.check_id: item for item in report.checks}["cloud_handoff_package"]
+    assert check.status == "failed"
+    assert "pinned_research_install=0" in check.evidence
+    assert "range_research_install=1" in check.evidence
+
+
 def test_external_readiness_passes_modal_auth_when_token_fields_are_present(tmp_path: Path) -> None:
     fake_modal = tmp_path / "modal"
     fake_modal.write_text(
@@ -131,9 +157,25 @@ def test_external_readiness_passes_modal_auth_when_token_fields_are_present(tmp_
 
 def _write_package(path: Path, files: dict[str, str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    package_files = _valid_cloud_package_files()
+    package_files.update(files)
     with zipfile.ZipFile(path, "w") as archive:
-        for name, content in files.items():
+        for name, content in package_files.items():
             archive.writestr(name, content)
+
+
+def _valid_cloud_package_files() -> dict[str, str]:
+    return {
+        "lob-forge/.source-git-commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+        "lob-forge/requirements-ci.txt": "pytest==8.4.1\n",
+        "lob-forge/requirements-research.txt": "numpy==2.3.1\n",
+        "lob-forge/scripts/bootstrap_cloud_expected_edge.sh": (
+            "python3 -m pip install -r requirements-research.txt\n" "python3 -m pip install -e . --no-deps\n"
+        ),
+        "lob-forge/scripts/modal_expected_edge_job.py": (
+            "python -m pip install -r requirements-research.txt\n" "python -m pip install -e . --no-deps\n"
+        ),
+    }
 
 
 def _write_plan(path: Path) -> Path:

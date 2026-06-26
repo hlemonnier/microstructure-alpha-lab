@@ -52,7 +52,10 @@ image = (
     .apt_install("bash", "curl", "git", "rsync", "unzip", "zip")
     .add_local_dir(PROJECT_ROOT, remote_path=str(REMOTE_PROJECT_DIR), copy=True, ignore=PACKAGE_IGNORE)
     .run_commands(
-        f"cd {REMOTE_PROJECT_DIR} && python -m pip install --upgrade pip && python -m pip install -e '.[research]'"
+        f"cd {REMOTE_PROJECT_DIR} && "
+        "python -m pip install --upgrade pip && "
+        "python -m pip install -r requirements-research.txt && "
+        "python -m pip install -e . --no-deps"
     )
 )
 

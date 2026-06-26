@@ -21,6 +21,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add explicit run-plan dry-run and 64 GB cloud RAM gate for full expected-edge studies.
 - [x] Add expected-edge study completion verifier driven by `run_plan.json`.
 - [x] Add source-only cloud handoff package and cloud bootstrap/run/verify script.
+- [x] Make cloud and Modal full-research installs use `requirements-research.txt` before installing the local package with `--no-deps`.
 - [x] Add executable Modal batch runner with persistent cloud volume storage for online full-study execution.
 - [x] Add external-gate readiness checker for Modal/package/full-study/paper-fill prerequisites without starting paid cloud compute.
 - [x] Make the Modal runner prefer `.venv/bin/modal` and distinguish Modal CLI installation from Modal authentication.

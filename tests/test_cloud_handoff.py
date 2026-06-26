@@ -35,10 +35,18 @@ def test_modal_expected_edge_job_has_high_ram_limit() -> None:
 
 
 def test_cloud_handoff_package_includes_locked_requirements() -> None:
-    script = Path("scripts/package_cloud_handoff.sh").read_text()
+    package_script = Path("scripts/package_cloud_handoff.sh").read_text()
+    bootstrap_script = Path("scripts/bootstrap_cloud_expected_edge.sh").read_text()
+    modal_script = Path("scripts/modal_expected_edge_job.py").read_text()
 
-    assert "--include='/requirements-ci.txt'" in script
-    assert "--include='/requirements-research.txt'" in script
+    assert "--include='/requirements-ci.txt'" in package_script
+    assert "--include='/requirements-research.txt'" in package_script
+    assert "pip install -r requirements-research.txt" in bootstrap_script
+    assert "pip install -e . --no-deps" in bootstrap_script
+    assert "pip install -r requirements-research.txt" in modal_script
+    assert "pip install -e . --no-deps" in modal_script
+    assert 'pip install -e ".[research]"' not in bootstrap_script
+    assert "pip install -e '.[research]'" not in modal_script
 
 
 def test_cloud_handoff_package_includes_reduced_e2e_fixtures_and_source_provenance() -> None:
@@ -76,6 +84,15 @@ def test_cloud_handoff_archive_runs_reduced_e2e_without_git(tmp_path: Path) -> N
     with zipfile.ZipFile(package_path) as archive:
         names = set(archive.namelist())
         assert "microstructure-alpha-lab/.source-git-commit" in names
+        assert "microstructure-alpha-lab/requirements-research.txt" in names
+        bootstrap = archive.read("microstructure-alpha-lab/scripts/bootstrap_cloud_expected_edge.sh").decode("utf-8")
+        modal_job = archive.read("microstructure-alpha-lab/scripts/modal_expected_edge_job.py").decode("utf-8")
+        assert "pip install -r requirements-research.txt" in bootstrap
+        assert "pip install -e . --no-deps" in bootstrap
+        assert "pip install -r requirements-research.txt" in modal_job
+        assert "pip install -e . --no-deps" in modal_job
+        assert 'pip install -e ".[research]"' not in bootstrap
+        assert "pip install -e '.[research]'" not in modal_job
         assert not any(name.startswith("microstructure-alpha-lab/.git/") for name in names)
         archive.extractall(tmp_path / "unpacked")
 

@@ -32,6 +32,14 @@ DEFAULT_SHADOW_ORDER_PLAN_FILENAMES = (
     "binance_usdm_order_plan.jsonl",
 )
 
+REQUIRED_CLOUD_PACKAGE_SUFFIXES = (
+    ".source-git-commit",
+    "requirements-ci.txt",
+    "requirements-research.txt",
+    "scripts/bootstrap_cloud_expected_edge.sh",
+    "scripts/modal_expected_edge_job.py",
+)
+
 
 @dataclass(frozen=True)
 class ReadinessCheck:
@@ -288,11 +296,38 @@ def _cloud_package_check(package_path: Path | None) -> ReadinessCheck:
             f"package={package_path} entries={len(names)} excluded_entries={len(excluded)} first_excluded={excluded[0]}",
             "fix package exclusions and regenerate the handoff zip",
         )
+    by_suffix = {_package_entry_suffix(name): name for name in names}
+    missing = [suffix for suffix in REQUIRED_CLOUD_PACKAGE_SUFFIXES if suffix not in by_suffix]
+    if missing:
+        return ReadinessCheck(
+            "cloud_handoff_package",
+            "failed",
+            False,
+            f"package={package_path} entries={len(names)} excluded_entries=0 missing_required={','.join(missing)}",
+            "regenerate the cloud handoff package from the current source tree",
+        )
+    bootstrap = _read_zip_text(archive_path=package_path, member=by_suffix["scripts/bootstrap_cloud_expected_edge.sh"])
+    modal = _read_zip_text(archive_path=package_path, member=by_suffix["scripts/modal_expected_edge_job.py"])
+    pinned_install = (
+        "pip install -r requirements-research.txt" in bootstrap
+        and "pip install -e . --no-deps" in bootstrap
+        and "pip install -r requirements-research.txt" in modal
+        and "pip install -e . --no-deps" in modal
+    )
+    range_research_install = 'pip install -e ".[research]"' in bootstrap or "pip install -e '.[research]'" in modal
+    if not pinned_install or range_research_install:
+        return ReadinessCheck(
+            "cloud_handoff_package",
+            "failed",
+            False,
+            f"package={package_path} entries={len(names)} excluded_entries=0 pinned_research_install={int(pinned_install)} range_research_install={int(range_research_install)}",
+            "regenerate the package after fixing cloud bootstrap dependency installation",
+        )
     return ReadinessCheck(
         "cloud_handoff_package",
         "passed",
         True,
-        f"package={package_path} entries={len(names)} excluded_entries=0",
+        f"package={package_path} entries={len(names)} excluded_entries=0 pinned_research_install=1 source_provenance=1",
         "upload to a high-RAM VM or use the Modal runner",
     )
 
@@ -434,6 +469,22 @@ def _is_excluded_package_name(name: str) -> bool:
     excluded_names = {prefix.rstrip("/") for prefix in EXCLUDED_PACKAGE_PREFIXES}
     parts = [part for part in clean.split("/") if part]
     return any(part in excluded_names for part in parts)
+
+
+def _package_entry_suffix(name: str) -> str:
+    parts = [part for part in name.lstrip("./").split("/") if part]
+    if not parts:
+        return ""
+    if parts[-1] == ".source-git-commit":
+        return ".source-git-commit"
+    if len(parts) >= 2 and parts[-2] == "scripts":
+        return f"scripts/{parts[-1]}"
+    return parts[-1]
+
+
+def _read_zip_text(*, archive_path: Path, member: str) -> str:
+    with zipfile.ZipFile(archive_path) as archive:
+        return archive.read(member).decode("utf-8")
 
 
 def _resolve(root: Path, path: Path | str) -> Path:

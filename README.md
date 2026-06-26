@@ -40,7 +40,7 @@ Current fast verification in this checkout:
 
 ```text
 .venv/bin/python -m pytest -q
-299 passed
+300 passed
 ```
 
 Reduced fixture-only artifacts:

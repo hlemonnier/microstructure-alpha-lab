@@ -27,6 +27,8 @@ The package contains only the runnable project surface:
 
 It intentionally excludes local data, result artifacts, virtualenvs, caches, `.git`, `.next`, and `node_modules`.
 
+The cloud bootstrap installs `requirements-research.txt` first and then installs the local package with `--no-deps`. That keeps the serious run on pinned research dependencies instead of resolving the range-based optional dependencies in `pyproject.toml`.
+
 ## Upload And Unpack
 
 Upload the generated `dist/microstructure-alpha-lab-cloud-handoff-*.zip` to the cloud instance, then run:

@@ -12,7 +12,7 @@ python3 -m venv .venv
 bash scripts/run_tests.sh
 ```
 
-Pinned CI/dev constraints are in `requirements-ci.txt`. A pinned full research environment is in `requirements-research.txt`. The package dependencies in `pyproject.toml` remain range-based for normal editable installs; use the requirements files when stricter reproducibility is needed.
+Pinned CI/dev constraints are in `requirements-ci.txt`. A pinned full research environment is in `requirements-research.txt`; the cloud bootstrap and Modal image install that file before installing the local package with `--no-deps`. The package dependencies in `pyproject.toml` remain range-based for normal editable installs; use the requirements files when stricter reproducibility is needed.
 
 ## Fast Verification
 
