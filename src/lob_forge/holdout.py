@@ -242,7 +242,14 @@ def write_final_holdout_result(
     if path.exists():
         raise FileExistsError(f"immutable holdout result already exists: {path}")
     manifest_sha256 = canonical_json_sha256(asdict(manifest))
-    lock_root = Path(lock_dir) if lock_dir is not None else path.parent / ".holdout_locks"
+    lock_root = (
+        Path(lock_dir)
+        if lock_dir is not None
+        else _default_final_holdout_lock_dir(
+            manifest,
+            source_root=source_root,
+        )
+    )
     lock_root.mkdir(parents=True, exist_ok=True)
     lock_path = lock_root / f"{manifest_sha256}_{candidate_sha256}.lock"
     if lock_path.exists():
@@ -283,6 +290,11 @@ def sha256_text(text: str) -> str:
 
 def canonical_json_sha256(payload: object) -> str:
     return sha256_text(json.dumps(payload, sort_keys=True, separators=(",", ":")))
+
+
+def _default_final_holdout_lock_dir(manifest: HoldoutManifest, *, source_root: Path | str | None) -> Path:
+    source_path = _resolve_manifest_source_path(manifest, source_root=source_root)
+    return source_path.parent / ".final_holdout_locks"
 
 
 def _is_sha256(value: str) -> bool:

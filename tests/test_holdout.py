@@ -343,6 +343,43 @@ def test_final_holdout_result_lock_blocks_same_manifest_candidate_pair(tmp_path:
         raise AssertionError("expected manifest/candidate lock to block second final evaluation")
 
 
+def test_final_holdout_default_lock_blocks_different_output_directories(tmp_path: Path) -> None:
+    data = tmp_path / "features.csv"
+    first_output = tmp_path / "first" / "holdout_result.json"
+    second_output = tmp_path / "second" / "holdout_result.json"
+    candidate_sha256 = "b" * 64
+    data.write_text("source_date,label\n2026-06-01,1\n")
+    manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-01"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+        candidate_sha256=candidate_sha256,
+    )
+
+    write_final_holdout_result(
+        manifest=manifest,
+        metrics={"macro_f1": 0.0},
+        output_path=first_output,
+        explicit_final_evaluation=True,
+        candidate_sha256=candidate_sha256,
+    )
+
+    try:
+        write_final_holdout_result(
+            manifest=manifest,
+            metrics={"macro_f1": 0.1},
+            output_path=second_output,
+            explicit_final_evaluation=True,
+            candidate_sha256=candidate_sha256,
+        )
+    except FileExistsError as exc:
+        assert ".final_holdout_locks" in str(exc)
+    else:
+        raise AssertionError("expected default manifest/candidate lock to block another output directory")
+
+
 def test_final_holdout_rule_cli_consumes_frozen_candidate_once(tmp_path: Path) -> None:
     data = tmp_path / "features.csv"
     manifest_path = tmp_path / "holdout.json"
