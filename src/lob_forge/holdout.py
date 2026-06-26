@@ -234,6 +234,10 @@ def write_final_holdout_result(
         raise ValueError("final holdout evaluation requires candidate_sha256")
     if not _is_sha256(candidate_sha256):
         raise ValueError("candidate_sha256 must be a SHA-256 digest")
+    if not manifest.candidate_sha256:
+        raise ValueError("final holdout manifest must pre-register candidate_sha256")
+    if manifest.candidate_sha256 != candidate_sha256:
+        raise ValueError("candidate_sha256 does not match holdout manifest candidate_sha256")
     path = Path(output_path)
     if path.exists():
         raise FileExistsError(f"immutable holdout result already exists: {path}")

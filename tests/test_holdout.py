@@ -207,12 +207,14 @@ def test_final_holdout_result_requires_explicit_flag_candidate_hash_and_is_immut
     data = tmp_path / "features.csv"
     output = tmp_path / "holdout_result.json"
     data.write_text("source_date,label\n2026-06-01,1\n")
+    candidate_sha256 = "b" * 64
     manifest = build_holdout_manifest(
         data,
         split_column="source_date",
         holdout_values=["2026-06-01"],
         created_at_utc="2026-06-03T00:00:00Z",
         git_commit=FIXTURE_GIT_COMMIT,
+        candidate_sha256=candidate_sha256,
     )
 
     try:
@@ -244,9 +246,23 @@ def test_final_holdout_result_requires_explicit_flag_candidate_hash_and_is_immut
         metrics={"macro_f1": 0.0},
         output_path=output,
         explicit_final_evaluation=True,
-        candidate_sha256="b" * 64,
+        candidate_sha256=candidate_sha256,
         lock_dir=tmp_path / "locks",
     )
+    try:
+        write_final_holdout_result(
+            manifest=manifest,
+            metrics={"macro_f1": 0.1},
+            output_path=output,
+            explicit_final_evaluation=True,
+            candidate_sha256=candidate_sha256,
+            lock_dir=tmp_path / "locks",
+        )
+    except FileExistsError:
+        pass
+    else:
+        raise AssertionError("expected immutable holdout artifact path")
+
     try:
         write_final_holdout_result(
             manifest=manifest,
@@ -256,16 +272,15 @@ def test_final_holdout_result_requires_explicit_flag_candidate_hash_and_is_immut
             candidate_sha256="c" * 64,
             lock_dir=tmp_path / "locks",
         )
-    except FileExistsError:
-        pass
+    except ValueError as exc:
+        assert "does not match" in str(exc)
     else:
-        raise AssertionError("expected immutable holdout artifact")
+        raise AssertionError("expected mismatched final holdout candidate hash to be rejected")
 
 
-def test_final_holdout_result_lock_blocks_same_manifest_candidate_pair(tmp_path: Path) -> None:
+def test_final_holdout_result_requires_pre_registered_manifest_candidate_hash(tmp_path: Path) -> None:
     data = tmp_path / "features.csv"
     output = tmp_path / "holdout_result.json"
-    second_output = tmp_path / "holdout_result_second_path.json"
     data.write_text("source_date,label\n2026-06-01,1\n")
     manifest = build_holdout_manifest(
         data,
@@ -275,12 +290,42 @@ def test_final_holdout_result_lock_blocks_same_manifest_candidate_pair(tmp_path:
         git_commit=FIXTURE_GIT_COMMIT,
     )
 
+    try:
+        write_final_holdout_result(
+            manifest=manifest,
+            metrics={"macro_f1": 0.0},
+            output_path=output,
+            explicit_final_evaluation=True,
+            candidate_sha256="b" * 64,
+            lock_dir=tmp_path / "locks",
+        )
+    except ValueError as exc:
+        assert "pre-register candidate_sha256" in str(exc)
+    else:
+        raise AssertionError("expected final holdout manifest to require a pre-registered candidate hash")
+
+
+def test_final_holdout_result_lock_blocks_same_manifest_candidate_pair(tmp_path: Path) -> None:
+    data = tmp_path / "features.csv"
+    output = tmp_path / "holdout_result.json"
+    second_output = tmp_path / "holdout_result_second_path.json"
+    candidate_sha256 = "b" * 64
+    data.write_text("source_date,label\n2026-06-01,1\n")
+    manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-01"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+        candidate_sha256=candidate_sha256,
+    )
+
     write_final_holdout_result(
         manifest=manifest,
         metrics={"macro_f1": 0.0},
         output_path=output,
         explicit_final_evaluation=True,
-        candidate_sha256="b" * 64,
+        candidate_sha256=candidate_sha256,
         lock_dir=tmp_path / "locks",
     )
     try:
@@ -289,7 +334,7 @@ def test_final_holdout_result_lock_blocks_same_manifest_candidate_pair(tmp_path:
             metrics={"macro_f1": 0.1},
             output_path=second_output,
             explicit_final_evaluation=True,
-            candidate_sha256="b" * 64,
+            candidate_sha256=candidate_sha256,
             lock_dir=tmp_path / "locks",
         )
     except FileExistsError:
