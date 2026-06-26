@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import subprocess
 import sys
@@ -45,6 +47,29 @@ def test_reduced_e2e_artifact_verifier_rejects_untagged_current_artifacts(tmp_pa
     assert f"git_commit has no local tag: {head[:12]}" in result.stdout
 
 
+def test_reduced_e2e_artifact_verifier_accepts_source_package_manifest(tmp_path: Path) -> None:
+    git_commit = "c" * 40
+    (tmp_path / ".source-git-commit").write_text(git_commit + "\n")
+    _write_reduced_artifacts(tmp_path, git_commit=git_commit, working_tree_dirty=None)
+
+    result = _run_verifier(tmp_path)
+
+    assert result.returncode == 0
+    assert "present=1 errors=0" in result.stdout
+
+
+def test_reduced_e2e_artifact_verifier_rejects_source_package_commit_mismatch(tmp_path: Path) -> None:
+    archive_commit = "c" * 40
+    manifest_commit = "d" * 40
+    (tmp_path / ".source-git-commit").write_text(archive_commit + "\n")
+    _write_reduced_artifacts(tmp_path, git_commit=manifest_commit, working_tree_dirty=None)
+
+    result = _run_verifier(tmp_path)
+
+    assert result.returncode == 1
+    assert f"manifest={manifest_commit[:12]} archive={archive_commit[:12]}" in result.stdout
+
+
 def _run_verifier(project_root: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(SCRIPT), "--project-root", str(project_root)],
@@ -71,7 +96,7 @@ def _init_git_repo(path: Path, *, tag_head: bool = True) -> str:
     return head
 
 
-def _write_reduced_artifacts(path: Path, *, git_commit: str) -> None:
+def _write_reduced_artifacts(path: Path, *, git_commit: str, working_tree_dirty: bool | None = False) -> None:
     artifact_dir = path / "artifacts" / "reduced_e2e"
     artifact_dir.mkdir(parents=True)
     result_manifest = artifact_dir / "result_manifest.json"
@@ -90,7 +115,7 @@ def _write_reduced_artifacts(path: Path, *, git_commit: str) -> None:
         json.dumps(
             {
                 "git_commit": git_commit,
-                "working_tree_dirty": False,
+                "working_tree_dirty": working_tree_dirty,
                 "reduced_e2e_manifest": "artifacts/reduced_e2e/result_manifest.json",
                 "reduced_e2e_artifacts": {
                     "stateful_orders": "artifacts/reduced_e2e/stateful_orders.csv",

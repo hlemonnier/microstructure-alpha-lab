@@ -112,3 +112,16 @@ def test_cloud_handoff_archive_runs_reduced_e2e_without_git(tmp_path: Path) -> N
     research_manifest = json.loads((project_dir / "artifacts" / "research_manifest.json").read_text())
     assert research_manifest["git_commit"] == (project_dir / ".source-git-commit").read_text().strip()
     assert research_manifest["working_tree_dirty"] is None
+
+    verify_result = subprocess.run(
+        ["make", "verify-results"],
+        cwd=project_dir,
+        env=run_env,
+        text=True,
+        capture_output=True,
+        timeout=30,
+    )
+
+    assert verify_result.returncode == 0, verify_result.stderr
+    assert "source_package=1" in verify_result.stdout
+    assert "present=1 errors=0" in verify_result.stdout

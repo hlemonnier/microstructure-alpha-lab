@@ -52,9 +52,18 @@ def _verify_research_manifest(*, root: Path, manifest_path: Path, manifest: dict
         errors.append(f"git_commit does not match HEAD: manifest={git_commit[:12]} head={head[:12]}")
     elif head is not None and not _git_rev_has_tag(root, git_commit):
         errors.append(f"git_commit has no local tag: {git_commit[:12]}")
+    elif head is None:
+        archive_commit = _source_archive_git_commit(root)
+        if archive_commit is not None and git_commit != archive_commit:
+            errors.append(
+                f"git_commit does not match source archive: manifest={git_commit[:12]} archive={archive_commit[:12]}"
+            )
 
-    if manifest.get("working_tree_dirty") is not False:
+    working_tree_dirty = manifest.get("working_tree_dirty")
+    if head is not None and working_tree_dirty is not False:
         errors.append("working_tree_dirty must be false for local reduced E2E artifacts")
+    elif head is None and working_tree_dirty not in {False, None}:
+        errors.append("working_tree_dirty must be false or null for source-package reduced E2E artifacts")
 
     reduced_manifest = str(manifest.get("reduced_e2e_manifest") or "").strip()
     if not reduced_manifest:
@@ -126,6 +135,16 @@ def _git_rev_has_tag(root: Path, git_commit: str) -> bool:
     except (OSError, subprocess.TimeoutExpired):
         return False
     return completed.returncode == 0 and bool(completed.stdout.strip())
+
+
+def _source_archive_git_commit(root: Path) -> str | None:
+    path = root / ".source-git-commit"
+    if not path.exists():
+        return None
+    value = "".join(path.read_text().split())
+    if not value or "$Format" in value:
+        return None
+    return value if GIT_COMMIT_RE.fullmatch(value) else None
 
 
 def _resolve(root: Path, path: str | Path) -> Path:

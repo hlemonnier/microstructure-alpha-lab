@@ -239,6 +239,25 @@ def main() -> int:
         "claim_scope": "Synthetic reduced E2E fixture only; no live or historical profitability claim.",
     }
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+    reduced_e2e_artifacts = {
+        "classical_walk_forward": str(classical_path.relative_to(ROOT)),
+        "holdout_manifest": str(holdout_path.relative_to(ROOT)),
+        "experiment_registry": str(experiment_registry_path.relative_to(ROOT)),
+        "stateful_orders": str(orders_path.relative_to(ROOT)),
+        "stateful_fills": str(fills_path.relative_to(ROOT)),
+        "stateful_positions": str(positions_path.relative_to(ROOT)),
+        "l2_sequence_holdout_manifest": str(sequence_l2_holdout_path.relative_to(ROOT)),
+        "l2_sequence_development_fixture": str(sequence_development_l2.path.relative_to(ROOT)),
+    }
+    for key, rel_path in (
+        ("sequence_tcn_smoke", sequence_smokes.get("sequence_tcn", {}).get("path", "")),
+        ("sequence_transformer_smoke", sequence_smokes.get("sequence_transformer", {}).get("path", "")),
+        ("sequence_tcn_predictions", sequence_smokes.get("sequence_tcn", {}).get("predictions", "")),
+        ("sequence_transformer_predictions", sequence_smokes.get("sequence_transformer", {}).get("predictions", "")),
+    ):
+        if rel_path and (ROOT / str(rel_path)).exists():
+            reduced_e2e_artifacts[key] = str(rel_path)
+
     research_manifest = {
         "artifact_version": 1,
         "claim_scope": "Repository verification and synthetic fixture evidence only; no final empirical profitability claim.",
@@ -249,20 +268,7 @@ def main() -> int:
         "research_note": "docs/research_note.md",
         "reproducibility": "docs/reproducibility.md",
         "reduced_e2e_manifest": str(manifest_path.relative_to(ROOT)),
-        "reduced_e2e_artifacts": {
-            "classical_walk_forward": str(classical_path.relative_to(ROOT)),
-            "holdout_manifest": str(holdout_path.relative_to(ROOT)),
-            "experiment_registry": str(experiment_registry_path.relative_to(ROOT)),
-            "stateful_orders": str(orders_path.relative_to(ROOT)),
-            "stateful_fills": str(fills_path.relative_to(ROOT)),
-            "stateful_positions": str(positions_path.relative_to(ROOT)),
-            "sequence_tcn_smoke": sequence_smokes.get("sequence_tcn", {}).get("path", ""),
-            "sequence_transformer_smoke": sequence_smokes.get("sequence_transformer", {}).get("path", ""),
-            "sequence_tcn_predictions": sequence_smokes.get("sequence_tcn", {}).get("predictions", ""),
-            "sequence_transformer_predictions": sequence_smokes.get("sequence_transformer", {}).get("predictions", ""),
-            "l2_sequence_holdout_manifest": str(sequence_l2_holdout_path.relative_to(ROOT)),
-            "l2_sequence_development_fixture": str(sequence_development_l2.path.relative_to(ROOT)),
-        },
+        "reduced_e2e_artifacts": reduced_e2e_artifacts,
         "final_holdout": {
             "status": "not_run",
             "reason": "No predeclared full-data final holdout evaluation was executed in this local pass.",
