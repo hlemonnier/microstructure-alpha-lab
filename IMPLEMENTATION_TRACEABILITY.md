@@ -20,14 +20,15 @@ Authoritative scope: local implementation specification supplied outside the rep
 ## Verification Log
 
 - Baseline direct tests before edits: `passed 160 direct test functions`.
-- Current pytest suite after implementation: `280 passed`.
-- Current static checks after implementation: `ruff check .` passed, `ruff format --check .` passed, and `mypy src/lob_forge` passed.
+- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 285 direct test functions`.
+- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `285 passed`.
+- Current static checks after implementation: `.venv/bin/python -m ruff check .` passed, `.venv/bin/python -m ruff format --check .` found `88 files already formatted`, and `.venv/bin/python -m mypy src/lob_forge` found no issues in `42 source files`.
 - C++ replay equivalence is included in the direct suite when a local C++ compiler is present.
 - Reduced E2E fixture artifacts generated under `artifacts/reduced_e2e/`.
 - Reduced E2E fixture regenerated from the clean current Git checkout; `artifacts/research_manifest.json` records `working_tree_dirty=false`.
 - CPU neural fixture smokes generated `sequence_tcn_smoke.csv` and `sequence_transformer_smoke.csv`; sequence runs now expose optional holdout-manifest filtering, checkpoint/resume, repeated-seed and ablation runner support, prediction CSV export, calibration metrics, confusion matrices, stateful economic smoke fields, frozen sequence candidates, and final holdout evaluation against a pre-registered candidate hash.
-- Safe full-study script checks passed in plan/dry-run mode: `PLAN_ONLY=1 STUDY_PROFILE=local16_60day bash scripts/run_60day_expected_edge_study.sh`, `DRY_RUN=1 bash scripts/run_complete_feature_edge_jobs.sh`, `DRY_RUN=1 bash scripts/run_local16_existing_feature_edge_jobs.sh`, and `DRY_RUN=1 bash scripts/run_kelly_candidate_search.sh`.
-- `make verify-results` passed against `results/current`; `make verify-evidence-gates` still fails by design until the remaining external/final empirical gates below are satisfied.
+- Safe full-study and live-validation script checks passed in plan/dry-run mode: `PLAN_ONLY=1 STUDY_PROFILE=local16_60day bash scripts/run_60day_expected_edge_study.sh`, `DRY_RUN=1 bash scripts/run_complete_feature_edge_jobs.sh`, `DRY_RUN=1 bash scripts/run_local16_existing_feature_edge_jobs.sh`, `DRY_RUN=1 bash scripts/run_kelly_candidate_search.sh`, and `DRY_RUN=1 PROVIDER=bybit bash scripts/run_shadow_fill_observation_session.sh`.
+- `make verify-results` passed against `results/current`; `make verify-evidence-gates` still fails by design only for `full_60_90day_cloud`, `immutable_final_holdout`, and `real_shadow_fill_validation`.
 
 ## Review Gap Status
 
@@ -41,6 +42,7 @@ This table maps the final "must be fixed before sending it" review items from `/
 | Make final holdout use the stateful simulator and pre-register candidate hashes | implemented-smoke-tested | `final-holdout-rule`, `final-holdout-edge`, and `final-holdout-sequence`; `tests/test_holdout.py` asserts pre-registered candidate hashes, duplicate-evaluation locks, and `stateful_simulator=true` for rule/edge results | Full selected candidate final-holdout artifact has not been run |
 | Expand the experiment registry beyond planned rows and record results/failures/selection | implemented-smoke-tested | `src/lob_forge/experiment_registry.py`, `src/lob_forge/study_registry.py`, `artifacts/reduced_e2e/experiment_registry.jsonl`; expected-edge study status rejects stale planned registries | Full cloud study registry/result matrix still pending |
 | Complete the neural protocol before expensive hardware | implemented-smoke-tested | `src/lob_forge/ml_models.py`; `scripts/run_l2_sequence_experiments.sh`; sequence artifacts include holdout filtering, minibatches, early stopping, checkpoints, device selection, class weighting, scheduler metadata, prediction exports, calibration metrics, confusion matrices, stateful economic smoke fields, ablations, repeated seeds, and final-holdout sequence hooks | Large repeated-seed/GPU empirical runs over genuine L2 data remain pending |
+| Run simulated-vs-paper/live fill validation on real shadow or paper observations | empirically-pending | `scripts/prepare_shadow_fill_validation_session.sh`; `scripts/run_shadow_fill_observation_session.sh`; provider order plans exist and the observation runner fetches, normalizes, imports, and validates Bybit/OKX/Binance demo fills when credentials and submitted demo orders exist | Needs real observed demo/testnet fills |
 
 ## Empirical Work Still Pending
 

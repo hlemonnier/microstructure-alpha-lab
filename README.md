@@ -39,7 +39,8 @@ dependencies:
 Current fast verification in this checkout:
 
 ```text
-passed 269 direct test functions
+.venv/bin/python -m pytest -q
+285 passed
 ```
 
 Reduced fixture-only artifacts:

@@ -70,6 +70,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add free/freemium paper-demo API source priority, executable Bybit/OKX demo and Binance USD-M testnet fill/order fetchers, and raw-fill normalization for Bybit, OKX, Binance Spot/Futures Testnet, and Alpaca Paper exports.
 - [x] Add dry-run Bybit/OKX/Binance order-plan generation from shadow decisions so demo orders preserve `decision_id` as the provider client-order-id.
 - [x] Add observed-fill template generation, ignore blank templates during import, and enforce default shadow-fill error thresholds in evidence gates.
+- [x] Add a dry-run-first Bybit/OKX/Binance observed-fill runner that fetches, normalizes, imports, and validates submitted demo/testnet order fills.
 - [ ] Run simulated-vs-paper/live fill validation on real shadow or paper observations.
 
 ## Validation And Statistics
