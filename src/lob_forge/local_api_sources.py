@@ -67,6 +67,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         fill_fields=("execPrice", "execQty", "execPnl", "isMaker", "execType"),
         endpoints=("/v5/order/create", "/v5/execution/list", "wss://stream-demo.bybit.com/v5/private"),
         local_commands=(
+            "paper-order-plan --provider bybit",
             "fetch-observed-fills --provider bybit",
             "normalize-observed-fills --provider bybit",
         ),
@@ -105,6 +106,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "demo private WebSocket order channel",
         ),
         local_commands=(
+            "paper-order-plan --provider okx",
             "fetch-observed-fills --provider okx",
             "normalize-observed-fills --provider okx",
         ),
@@ -169,6 +171,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "ORDER_TRADE_UPDATE user data stream",
         ),
         local_commands=(
+            "paper-order-plan --provider binance",
             "fetch-observed-fills --provider binance --symbol BTCUSDT",
             "normalize-observed-fills --provider binance",
         ),

@@ -56,7 +56,17 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli observed-fill-template \
   --limit 50
 ```
 
-3. Place demo/paper orders using `decision_id` as the provider client ID:
+3. Generate the dry-run provider order plan. This writes auditable request payloads but does not submit anything:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
+  --shadow results/shadow_validation/shadow_decisions.csv \
+  --provider bybit \
+  --output results/shadow_validation/bybit_order_plan.jsonl \
+  --limit 50
+```
+
+Use `--provider okx` for OKX demo or `--provider binance` for Binance USD-M Futures Testnet. The generated payloads use `decision_id` as the provider client ID:
 
 ```text
 Bybit:  orderLinkId
@@ -68,7 +78,7 @@ Alpaca: client_order_id
 
 For OKX demo, send requests to the documented OKX REST/WebSocket demo URLs and include `x-simulated-trading: 1` on REST requests.
 
-4. Save the raw provider response under `results/shadow_validation/`.
+4. Place demo/paper orders from the plan, then save the raw provider response under `results/shadow_validation/`.
    The Bybit, OKX, and Binance USD-M testnet REST pulls are executable:
 
 ```bash

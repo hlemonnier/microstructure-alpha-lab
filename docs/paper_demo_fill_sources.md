@@ -71,6 +71,34 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli observed-fill-template \
   --limit 50
 ```
 
+Generate a dry-run provider order plan from the same shadow decisions before placing anything. This does not send orders; it writes the Bybit/OKX/Binance request payloads with the correct client-order-id field so the API session can be audited and replayed:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
+  --shadow results/shadow_validation/shadow_decisions.csv \
+  --provider bybit \
+  --output results/shadow_validation/bybit_order_plan.jsonl \
+  --limit 50
+
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
+  --shadow results/shadow_validation/shadow_decisions.csv \
+  --provider okx \
+  --output results/shadow_validation/okx_order_plan.jsonl \
+  --limit 50
+
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
+  --shadow results/shadow_validation/shadow_decisions.csv \
+  --provider binance \
+  --output results/shadow_validation/binance_usdm_order_plan.jsonl \
+  --limit 50
+```
+
+Provider mapping:
+
+- Bybit writes `POST /v5/order/create` payloads with `orderLinkId=decision_id`.
+- OKX writes `POST /api/v5/trade/order` payloads with `clOrdId=decision_id`; include `x-simulated-trading: 1` when submitting in demo mode.
+- Binance USD-M Futures Testnet writes `POST /fapi/v1/order` payloads with `newClientOrderId=decision_id`.
+
 For OKX demo REST requests, include `x-simulated-trading: 1`.
 
 After a paper/demo session, save the raw API response as `.json`, `.jsonl`, or `.csv`, then normalize it:
@@ -146,6 +174,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli validate-shadow-fills \
 For the second-part local gap, the repo is ready once:
 
 - raw demo/paper exports are saved under `results/shadow_validation/`,
+- the provider order plan is saved beside the exports and uses `decision_id` as the client-order-id field,
 - the chosen source appears in `free-api-sources --evidence-gate real_shadow_fill_validation`,
 - `normalize-observed-fills` produces a non-empty observed-fill CSV,
 - `import-observed-fills` reports matched decisions,

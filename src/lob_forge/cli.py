@@ -114,6 +114,11 @@ from lob_forge.observed_fill_fetch import (
     fetch_observed_fill_export,
     format_observed_fill_fetch_report,
 )
+from lob_forge.paper_orders import (
+    SUPPORTED_PAPER_ORDER_PLAN_PROVIDERS,
+    format_paper_order_plan_report,
+    write_paper_order_plan,
+)
 from lob_forge.local_api_sources import (
     LOCAL_EVIDENCE_GATES,
     PAPER_FILL_GAP,
@@ -486,6 +491,20 @@ def main(argv: list[str] | None = None) -> int:
     )
     fetch_observed_fills_parser.add_argument("--timeout-seconds", type=float, default=30.0)
     fetch_observed_fills_parser.add_argument("--format", choices=["text", "csv"], default="text")
+
+    paper_order_plan_parser = subparsers.add_parser(
+        "paper-order-plan",
+        help="Convert shadow decisions into dry-run Bybit/OKX/Binance demo order payloads.",
+    )
+    paper_order_plan_parser.add_argument("--shadow", required=True)
+    paper_order_plan_parser.add_argument("--provider", required=True, choices=SUPPORTED_PAPER_ORDER_PLAN_PROVIDERS)
+    paper_order_plan_parser.add_argument("--output", required=True)
+    paper_order_plan_parser.add_argument("--limit", type=int, default=0)
+    paper_order_plan_parser.add_argument("--category", default="linear", help="Bybit category.")
+    paper_order_plan_parser.add_argument("--td-mode", default="cross", help="OKX trade mode.")
+    paper_order_plan_parser.add_argument("--time-in-force", default="GTC")
+    paper_order_plan_parser.add_argument("--plan-format", choices=["jsonl", "csv"], default="jsonl")
+    paper_order_plan_parser.add_argument("--format", choices=["text", "csv"], default="text")
 
     observed_fill_template_parser = subparsers.add_parser(
         "observed-fill-template",
@@ -1125,6 +1144,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_normalize_observed_fills(args)
     if args.command == "fetch-observed-fills":
         return _cmd_fetch_observed_fills(args)
+    if args.command == "paper-order-plan":
+        return _cmd_paper_order_plan(args)
     if args.command == "observed-fill-template":
         return _cmd_observed_fill_template(args)
     if args.command == "simulate-shadow-fills":
@@ -1599,6 +1620,21 @@ def _cmd_fetch_observed_fills(args: argparse.Namespace) -> int:
         timeout_seconds=args.timeout_seconds,
     )
     print(format_observed_fill_fetch_report(report, output_format=args.format))
+    return 0
+
+
+def _cmd_paper_order_plan(args: argparse.Namespace) -> int:
+    report = write_paper_order_plan(
+        shadow_path=Path(args.shadow),
+        output_path=Path(args.output),
+        provider=args.provider,
+        limit=args.limit,
+        category=args.category,
+        td_mode=args.td_mode,
+        time_in_force=args.time_in_force,
+        output_format=args.plan_format,
+    )
+    print(format_paper_order_plan_report(report, output_format=args.format))
     return 0
 
 
