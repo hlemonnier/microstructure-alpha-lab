@@ -328,6 +328,15 @@ def _verify_experiment_ledger(
                 f"{path.name}:{line_number} {experiment_id}: git_rev {git_rev!r} "
                 f"does not match current HEAD {current_git_head!r}"
             )
+        if current_git_head is not None:
+            dirty_value = row.get("working_tree_dirty")
+            dirty_state = _parse_working_tree_dirty(dirty_value)
+            if "working_tree_dirty" not in row:
+                errors.append(f"{path.name}:{line_number} {experiment_id}: missing working_tree_dirty provenance")
+            elif dirty_state is None:
+                errors.append(f"{path.name}:{line_number} {experiment_id}: working_tree_dirty must be a boolean")
+            elif dirty_state:
+                errors.append(f"{path.name}:{line_number} {experiment_id}: working_tree_dirty must be false")
         command = str(row.get("command") or "")
         if not _uses_gated_cli_command(command):
             continue
@@ -374,6 +383,21 @@ def _command_tokens(command: str) -> list[str]:
 
 def _is_sha256(value: str) -> bool:
     return len(value) == 64 and all(char in "0123456789abcdefABCDEF" for char in value)
+
+
+def _parse_working_tree_dirty(value: object) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int) and value in {0, 1}:
+        return bool(value)
+    if value is None:
+        return None
+    normalized = str(value).strip().lower()
+    if normalized in {"true", "1", "dirty"}:
+        return True
+    if normalized in {"false", "0", "clean"}:
+        return False
+    return None
 
 
 def _is_valid_git_rev(value: str, *, git_root: Path | None = None) -> bool:

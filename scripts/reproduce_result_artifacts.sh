@@ -25,6 +25,7 @@ trap 'rmdir "$LOCK_DIR"' EXIT
 
 LEDGER="$OUT_DIR/experiment_ledger.jsonl"
 GIT_REV="$(source_git_rev)"
+WORKING_TREE_DIRTY="$(source_worktree_dirty)"
 
 BTC_2D="data/processed/maker_horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv"
 ETH_2D="data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv"
@@ -91,9 +92,21 @@ record_experiment() {
   local command="$7"
   local holdout_manifest_path="${8:-}"
   local holdout_manifest_sha256="${9:-}"
-  "$PYTHON_BIN" - "$LEDGER" "$experiment_id" "$hypothesis_id" "$artifact_path" "$data_path" "$candidate_count" "$GIT_REV" "$notes" "$command" "$holdout_manifest_path" "$holdout_manifest_sha256" <<'PY'
+  "$PYTHON_BIN" - "$LEDGER" "$experiment_id" "$hypothesis_id" "$artifact_path" "$data_path" "$candidate_count" "$GIT_REV" "$notes" "$command" "$holdout_manifest_path" "$holdout_manifest_sha256" "$WORKING_TREE_DIRTY" <<'PY'
 import sys
 from lob_forge.alpha_factory import ExperimentRecord, append_experiment_record, utc_now_iso
+
+
+def parse_working_tree_dirty(value):
+    normalized = value.strip().lower()
+    if normalized in {"true", "1", "dirty"}:
+        return True
+    if normalized in {"false", "0", "clean"}:
+        return False
+    if normalized in {"", "null", "none", "unknown"}:
+        return None
+    raise SystemExit(f"invalid working_tree_dirty provenance: {value!r}")
+
 
 append_experiment_record(
     sys.argv[1],
@@ -109,6 +122,7 @@ append_experiment_record(
         command=sys.argv[9],
         holdout_manifest_path=sys.argv[10],
         holdout_manifest_sha256=sys.argv[11],
+        working_tree_dirty=parse_working_tree_dirty(sys.argv[12]),
     ),
 )
 PY

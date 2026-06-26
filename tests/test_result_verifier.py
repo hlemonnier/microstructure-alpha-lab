@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import subprocess
 from pathlib import Path
 
@@ -131,6 +133,34 @@ def test_result_verifier_accepts_in_repo_ledger_from_current_head(tmp_path: Path
     assert report.passed
 
 
+def test_result_verifier_rejects_in_repo_ledger_without_worktree_provenance(tmp_path: Path) -> None:
+    repo = _init_git_repo(tmp_path / "repo")
+    head = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+    result_dir = repo / "results"
+    result_dir.mkdir()
+    _write_minimal_result_dir(result_dir, git_rev=head, working_tree_dirty=None)
+    (result_dir / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
+
+    report = verify_result_artifacts(result_dir)
+
+    assert not report.passed
+    assert any("missing working_tree_dirty provenance" in error for error in report.errors)
+
+
+def test_result_verifier_rejects_in_repo_ledger_from_dirty_worktree(tmp_path: Path) -> None:
+    repo = _init_git_repo(tmp_path / "repo")
+    head = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+    result_dir = repo / "results"
+    result_dir.mkdir()
+    _write_minimal_result_dir(result_dir, git_rev=head, working_tree_dirty=True)
+    (result_dir / "sample_audit.csv").write_text(_audit_csv(acceptance_passed=1, rejection_reasons=""))
+
+    report = verify_result_artifacts(result_dir)
+
+    assert not report.passed
+    assert any("working_tree_dirty must be false" in error for error in report.errors)
+
+
 def test_result_verifier_rejects_stale_protocol_ledger_metadata(tmp_path: Path) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
@@ -220,6 +250,7 @@ def _write_minimal_result_dir(
     pvalue_id: str = "sample",
     config_sha256: str = "",
     git_rev: str = FIXTURE_GIT_REV,
+    working_tree_dirty: bool | None = False,
 ) -> None:
     (tmp_path / "hypotheses.jsonl").write_text('{"hypothesis_id":"h1"}\n')
     _write_ledger(
@@ -228,6 +259,7 @@ def _write_minimal_result_dir(
         command="python3 -m lob_forge.cli walk-forward data.csv --holdout-manifest manifest.json",
         holdout_manifest_path="manifest.json",
         holdout_manifest_sha256="a" * 64,
+        working_tree_dirty=working_tree_dirty,
     )
     _write_pvalue_files(tmp_path, hypothesis_id=pvalue_id, config_sha256=config_sha256)
 
@@ -264,7 +296,11 @@ def _write_ledger(
     command: str,
     holdout_manifest_path: str,
     holdout_manifest_sha256: str,
+    working_tree_dirty: bool | None = False,
 ) -> None:
+    working_tree_dirty_text = (
+        "" if working_tree_dirty is None else f',"working_tree_dirty":{str(working_tree_dirty).lower()}'
+    )
     path.write_text(
         "{"
         '"experiment_id":"e1",'
@@ -277,5 +313,6 @@ def _write_ledger(
         '"created_at_utc":"2026-06-25T00:00:00+00:00",'
         f'"holdout_manifest_path":"{holdout_manifest_path}",'
         f'"holdout_manifest_sha256":"{holdout_manifest_sha256}"'
+        f"{working_tree_dirty_text}"
         "}\n"
     )

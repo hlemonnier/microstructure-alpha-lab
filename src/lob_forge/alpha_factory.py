@@ -40,6 +40,7 @@ class ExperimentRecord:
     candidate_count: int
     git_rev: str
     created_at_utc: str
+    working_tree_dirty: bool | None = None
     notes: str = ""
     holdout_manifest_path: str = ""
     holdout_manifest_sha256: str = ""
