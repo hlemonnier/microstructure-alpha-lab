@@ -31,6 +31,11 @@ DEFAULT_KELLY_CANDIDATE_GLOBS = (
 DEFAULT_FINAL_HOLDOUT_RESULT_NAME = "final_holdout_result.json"
 DEFAULT_FINAL_HOLDOUT_EDGE_RESULT_NAME = "final_holdout_edge_result.json"
 DEFAULT_FINAL_HOLDOUT_SEQUENCE_RESULT_NAME = "final_holdout_sequence_result.json"
+DEFAULT_SHADOW_ORDER_PLAN_FILENAMES = (
+    "bybit_order_plan.jsonl",
+    "okx_order_plan.jsonl",
+    "binance_usdm_order_plan.jsonl",
+)
 
 
 @dataclass(frozen=True)
@@ -60,6 +65,7 @@ def evaluate_remaining_evidence_gates(
     full_result_dir: Path | str = "results/expected_edge_60day_20230516_20230714",
     simulated_fills: Path | str = "results/shadow_validation/simulated_fills.csv",
     shadow_decisions: Path | str = "results/shadow_validation/shadow_decisions.csv",
+    order_plans: Sequence[Path | str] | None = None,
     min_shadow_observations: int = 20,
     max_price_error: float | None = 5.0,
     max_size_error: float | None = 0.01,
@@ -87,6 +93,12 @@ def evaluate_remaining_evidence_gates(
         single_artifact=Path(kelly_artifact),
         artifacts=kelly_artifacts,
     )
+    shadow_path = Path(shadow_decisions)
+    order_plan_paths = (
+        tuple(Path(path) for path in order_plans)
+        if order_plans is not None
+        else _default_shadow_order_plan_paths(shadow_path)
+    )
     gates = (
         _study_gate(
             gate_id="capped_60day_btc_eth",
@@ -108,7 +120,8 @@ def evaluate_remaining_evidence_gates(
         ),
         _shadow_gate(
             simulated_path=Path(simulated_fills),
-            shadow_path=Path(shadow_decisions),
+            shadow_path=shadow_path,
+            order_plan_paths=order_plan_paths,
             min_shadow_observations=min_shadow_observations,
             max_price_error=max_price_error,
             max_size_error=max_size_error,
@@ -354,6 +367,7 @@ def _shadow_gate(
     *,
     simulated_path: Path,
     shadow_path: Path,
+    order_plan_paths: Sequence[Path],
     min_shadow_observations: int,
     max_price_error: float | None,
     max_size_error: float | None,
@@ -361,12 +375,18 @@ def _shadow_gate(
 ) -> EvidenceGate:
     todo = "Run simulated-vs-paper/live fill validation on real shadow or paper observations."
     if not simulated_path.exists() or not shadow_path.exists():
+        existing_order_plans, nonempty_order_plans, order_plan_rows, missing_order_plan_names = _order_plan_evidence(
+            order_plan_paths
+        )
         return EvidenceGate(
             "real_shadow_fill_validation",
             todo,
             "missing",
             False,
-            f"simulated_exists={int(simulated_path.exists())} shadow_exists={int(shadow_path.exists())}",
+            f"simulated_exists={int(simulated_path.exists())} shadow_exists={int(shadow_path.exists())} "
+            f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
+            f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
+            f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names}",
             "run edge-shadow-decisions, generate paper-order-plan, submit demo orders, fetch/normalize/import fills, then validate",
         )
     try:
@@ -392,15 +412,29 @@ def _shadow_gate(
             repr(exc),
             "fix shadow/simulated files, fetch/normalize/import demo fills, and rerun validate-shadow-fills",
         )
+    existing_order_plans, nonempty_order_plans, order_plan_rows, missing_order_plan_names = _order_plan_evidence(
+        order_plan_paths
+    )
     if len(observed) < min_shadow_observations:
-        evidence = f"observed_shadow_rows={len(observed)} required={min_shadow_observations} matched={report.matched_observations} validation_passed={int(report.passed)}"
+        evidence = (
+            f"observed_shadow_rows={len(observed)} required={min_shadow_observations} "
+            f"matched={report.matched_observations} validation_passed={int(report.passed)} "
+            f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
+            f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
+            f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names}"
+        )
+        next_action = (
+            "generate paper-order-plan, submit Bybit/OKX demo or Binance USD-M testnet orders, fetch/normalize/import fills, then rerun validate-shadow-fills"
+            if existing_order_plans < len(order_plan_paths) or nonempty_order_plans == 0
+            else "submit demo orders from paper-order-plan, fetch/normalize/import fills, then rerun validate-shadow-fills"
+        )
         return EvidenceGate(
             "real_shadow_fill_validation",
             todo,
             "not_ready",
             False,
             evidence,
-            "generate paper-order-plan, submit Bybit/OKX demo or Binance USD-M testnet orders, fetch/normalize/import fills, then rerun validate-shadow-fills",
+            next_action,
         )
     evidence = (
         f"observed_shadow_rows={len(observed)} matched={report.matched_observations} "
@@ -421,6 +455,28 @@ def _shadow_gate(
         if report.passed
         else "tighten simulator assumptions or investigate paper/live fill mismatch",
     )
+
+
+def _default_shadow_order_plan_paths(shadow_path: Path) -> tuple[Path, ...]:
+    root = shadow_path.parent
+    return tuple(root / filename for filename in DEFAULT_SHADOW_ORDER_PLAN_FILENAMES)
+
+
+def _order_plan_evidence(order_plan_paths: Sequence[Path]) -> tuple[int, int, int, str]:
+    rows_by_path = tuple(_count_order_plan_rows(path) for path in order_plan_paths)
+    existing_order_plans = sum(1 for path in order_plan_paths if path.exists())
+    nonempty_order_plans = sum(1 for rows in rows_by_path if rows > 0)
+    missing_order_plan_names = ",".join(path.name for path in order_plan_paths if not path.exists()) or "none"
+    return existing_order_plans, nonempty_order_plans, sum(rows_by_path), missing_order_plan_names
+
+
+def _count_order_plan_rows(path: Path) -> int:
+    if not path.exists() or not path.is_file():
+        return 0
+    if path.suffix == ".csv":
+        with path.open(newline="") as handle:
+            return len(list(csv.DictReader(handle)))
+    return sum(1 for line in path.read_text().splitlines() if line.strip())
 
 
 def _kelly_gate(
@@ -798,6 +854,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--min-shadow-observations", type=int, default=20)
     parser.add_argument("--simulated-fills", default="results/shadow_validation/simulated_fills.csv")
     parser.add_argument("--shadow-decisions", default="results/shadow_validation/shadow_decisions.csv")
+    parser.add_argument(
+        "--order-plan",
+        action="append",
+        dest="order_plans",
+        help="Provider paper-order-plan artifact path. Repeatable; defaults to Bybit/OKX/Binance plans beside the shadow decisions.",
+    )
     parser.add_argument("--max-shadow-price-error", type=float, default=5.0)
     parser.add_argument("--max-shadow-size-error", type=float, default=0.01)
     parser.add_argument("--max-shadow-fill-rate-error", type=float, default=0.05)
@@ -821,6 +883,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     report = evaluate_remaining_evidence_gates(
         simulated_fills=args.simulated_fills,
         shadow_decisions=args.shadow_decisions,
+        order_plans=args.order_plans,
         min_shadow_observations=args.min_shadow_observations,
         max_price_error=args.max_shadow_price_error,
         max_size_error=args.max_shadow_size_error,

@@ -86,6 +86,68 @@ def test_evidence_gate_csv_format_quotes_commas(tmp_path: Path) -> None:
     assert len(list(csv.DictReader(csv_text.splitlines()))) == 7
 
 
+def test_shadow_evidence_gate_reports_order_plan_readiness(tmp_path: Path) -> None:
+    capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
+    full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")
+    audit = tmp_path / "audit.csv"
+    kelly = tmp_path / "kelly.csv"
+    shadow_dir = tmp_path / "results" / "shadow_validation"
+    simulated = shadow_dir / "simulated_fills.csv"
+    shadow = shadow_dir / "shadow_decisions.csv"
+    bybit_plan = shadow_dir / "bybit_order_plan.jsonl"
+    okx_plan = shadow_dir / "okx_order_plan.jsonl"
+    _write_audit(audit, fold_count=4, acceptance_passed=0, rejection_reasons="fold count too low")
+    _write_kelly(kelly, [1.0, -10.0, 2.0, 0.0])
+    _write_simulated_fills(
+        simulated, [{"decision_id": "d1", "simulated_fill_price": "100.0", "simulated_fill_size": "1.0"}]
+    )
+    _write_shadow_decisions(
+        shadow,
+        [
+            {
+                "decision_id": "d1",
+                "timestamp_ms": "1700000000000",
+                "venue": "bybit",
+                "symbol": "BTCUSDT",
+                "model_name": "ridge_expected_edge",
+                "predicted_side": "1",
+                "predicted_edge_bps": "0.8",
+                "order_type": "paper_limit",
+                "intended_price": "100.0",
+                "intended_size": "1.0",
+                "observed_fill_price": "",
+                "observed_fill_size": "",
+                "realized_pnl": "",
+                "notes": "",
+            }
+        ],
+    )
+    bybit_plan.write_text('{"decision_id":"d1"}\n{"decision_id":"d2"}\n')
+    okx_plan.write_text('{"decision_id":"d1"}\n')
+
+    report = evaluate_remaining_evidence_gates(
+        capped_plan=capped_plan,
+        capped_result_dir=capped_plan.parent,
+        full_plan=full_plan,
+        full_result_dir=full_plan.parent,
+        simulated_fills=simulated,
+        shadow_decisions=shadow,
+        kelly_artifact=kelly,
+        kelly_min_observations=4,
+        kelly_window_size=2,
+        baseline_audit=audit,
+        l2_path=tmp_path / "missing_l2.csv",
+    )
+
+    gate = next(gate for gate in report.gates if gate.gate_id == "real_shadow_fill_validation")
+    assert gate.status == "not_ready"
+    assert "order_plan_files=2/3" in gate.evidence
+    assert "nonempty_order_plans=2/3" in gate.evidence
+    assert "order_plan_rows=3" in gate.evidence
+    assert "missing_order_plans=binance_usdm_order_plan.jsonl" in gate.evidence
+    assert gate.next_action.startswith("generate paper-order-plan")
+
+
 def test_immutable_final_holdout_gate_passes_verified_payload(tmp_path: Path) -> None:
     capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
     full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")

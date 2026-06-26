@@ -54,6 +54,7 @@ def test_local_api_sources_csv_includes_credentials_and_commands() -> None:
 
     assert "BYBIT_DEMO_API_KEY BYBIT_DEMO_API_SECRET" in csv_text
     assert "BINANCE_USDM_TESTNET_API_KEY BINANCE_USDM_TESTNET_API_SECRET" in csv_text
+    assert "paper-order-plan --provider okx [--symbol-override BTC-USDT-SWAP]" in csv_text
     assert "fetch-observed-fills --provider okx" in csv_text
     assert "fetch-observed-fills --provider binance --symbol BTCUSDT" in csv_text
     assert "normalize-observed-fills --provider okx" in csv_text

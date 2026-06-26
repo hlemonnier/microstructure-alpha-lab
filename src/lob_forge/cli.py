@@ -381,6 +381,12 @@ def main(argv: list[str] | None = None) -> int:
     evidence_gates_parser.add_argument("--min-shadow-observations", type=int, default=20)
     evidence_gates_parser.add_argument("--simulated-fills", default="results/shadow_validation/simulated_fills.csv")
     evidence_gates_parser.add_argument("--shadow-decisions", default="results/shadow_validation/shadow_decisions.csv")
+    evidence_gates_parser.add_argument(
+        "--order-plan",
+        action="append",
+        dest="order_plans",
+        help="Provider paper-order-plan artifact path. Repeatable; defaults to Bybit/OKX/Binance plans beside the shadow decisions.",
+    )
     evidence_gates_parser.add_argument("--max-shadow-price-error", type=float, default=5.0)
     evidence_gates_parser.add_argument("--max-shadow-size-error", type=float, default=0.01)
     evidence_gates_parser.add_argument("--max-shadow-fill-rate-error", type=float, default=0.05)
@@ -503,6 +509,10 @@ def main(argv: list[str] | None = None) -> int:
     paper_order_plan_parser.add_argument("--category", default="linear", help="Bybit category.")
     paper_order_plan_parser.add_argument("--td-mode", default="cross", help="OKX trade mode.")
     paper_order_plan_parser.add_argument("--time-in-force", default="GTC")
+    paper_order_plan_parser.add_argument(
+        "--symbol-override",
+        help="Override the provider symbol or OKX instId written into generated order payloads.",
+    )
     paper_order_plan_parser.add_argument("--plan-format", choices=["jsonl", "csv"], default="jsonl")
     paper_order_plan_parser.add_argument("--format", choices=["text", "csv"], default="text")
 
@@ -1525,6 +1535,7 @@ def _cmd_evidence_gates(args: argparse.Namespace) -> int:
     report = evaluate_remaining_evidence_gates(
         simulated_fills=args.simulated_fills,
         shadow_decisions=args.shadow_decisions,
+        order_plans=args.order_plans,
         min_shadow_observations=args.min_shadow_observations,
         max_price_error=args.max_shadow_price_error,
         max_size_error=args.max_shadow_size_error,
@@ -1632,6 +1643,7 @@ def _cmd_paper_order_plan(args: argparse.Namespace) -> int:
         category=args.category,
         td_mode=args.td_mode,
         time_in_force=args.time_in_force,
+        symbol_override=args.symbol_override,
         output_format=args.plan_format,
     )
     print(format_paper_order_plan_report(report, output_format=args.format))

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import shutil
@@ -23,6 +24,12 @@ EXCLUDED_PACKAGE_PREFIXES = (
     "venv/",
     ".next/",
     "node_modules/",
+)
+
+DEFAULT_SHADOW_ORDER_PLAN_FILENAMES = (
+    "bybit_order_plan.jsonl",
+    "okx_order_plan.jsonl",
+    "binance_usdm_order_plan.jsonl",
 )
 
 
@@ -55,6 +62,7 @@ def evaluate_external_gate_readiness(
     shadow_decisions: Path | str = "results/shadow_validation/shadow_decisions.csv",
     simulated_fills: Path | str = "results/shadow_validation/simulated_fills.csv",
     observed_template: Path | str = "results/shadow_validation/observed_fills_template.csv",
+    order_plans: Sequence[Path | str] | None = None,
     min_shadow_observations: int = 20,
     max_price_error: float | None = 5.0,
     max_size_error: float | None = 0.01,
@@ -63,6 +71,12 @@ def evaluate_external_gate_readiness(
     root = Path(project_root)
     package_path = Path(cloud_package) if cloud_package is not None else _latest_cloud_package(root)
     resolved_modal = _resolve_modal_binary(root=root, modal_binary=modal_binary)
+    observed_template_path = _resolve(root, observed_template)
+    order_plan_paths = (
+        tuple(_resolve(root, path) for path in order_plans)
+        if order_plans is not None
+        else _default_shadow_order_plan_paths(observed_template_path)
+    )
     checks = (
         _modal_cli_check(resolved_modal=resolved_modal),
         _modal_auth_check(resolved_modal=resolved_modal),
@@ -75,7 +89,8 @@ def evaluate_external_gate_readiness(
         _shadow_fill_readiness_check(
             shadow_path=_resolve(root, shadow_decisions),
             simulated_path=_resolve(root, simulated_fills),
-            observed_template_path=_resolve(root, observed_template),
+            observed_template_path=observed_template_path,
+            order_plan_paths=order_plan_paths,
             min_shadow_observations=min_shadow_observations,
             max_price_error=max_price_error,
             max_size_error=max_size_error,
@@ -327,6 +342,7 @@ def _shadow_fill_readiness_check(
     shadow_path: Path,
     simulated_path: Path,
     observed_template_path: Path,
+    order_plan_paths: Sequence[Path],
     min_shadow_observations: int,
     max_price_error: float | None,
     max_size_error: float | None,
@@ -362,16 +378,25 @@ def _shadow_fill_readiness_check(
             f"shadow={shadow_path} simulated={simulated_path} error={type(exc).__name__}",
             "fix shadow/simulated fill files and import observed fills",
         )
+    order_plan_rows = tuple(_count_order_plan_rows(path) for path in order_plan_paths)
+    existing_order_plans = sum(1 for path in order_plan_paths if path.exists())
+    nonempty_order_plans = sum(1 for rows in order_plan_rows if rows > 0)
+    missing_order_plan_names = ",".join(path.name for path in order_plan_paths if not path.exists()) or "none"
     evidence = (
         f"observed_shadow_rows={len(observed)} required={min_shadow_observations} "
         f"matched={report.matched_observations} validation_passed={int(report.passed)} "
-        f"template_exists={int(observed_template_path.exists())}"
+        f"template_exists={int(observed_template_path.exists())} "
+        f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
+        f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
+        f"order_plan_rows={sum(order_plan_rows)} missing_order_plans={missing_order_plan_names}"
     )
     if len(observed) < min_shadow_observations:
         next_action = (
             "generate observed-fill-template and paper-order-plan, submit demo orders, fetch fills with fetch-observed-fills, then import them"
             if not observed_template_path.exists()
             else "generate paper-order-plan, submit demo orders, fetch fills with fetch-observed-fills, normalize/import them; blank templates do not count"
+            if existing_order_plans < len(order_plan_paths) or nonempty_order_plans == 0
+            else "submit demo orders from paper-order-plan, fetch fills with fetch-observed-fills, normalize/import them; blank templates do not count"
         )
         return ReadinessCheck("paper_live_fill_validation", "not_ready", False, evidence, next_action)
     if report.passed:
@@ -383,6 +408,20 @@ def _shadow_fill_readiness_check(
         evidence,
         "tighten simulator assumptions or investigate paper/live fill mismatch",
     )
+
+
+def _default_shadow_order_plan_paths(observed_template_path: Path) -> tuple[Path, ...]:
+    root = observed_template_path.parent
+    return tuple(root / filename for filename in DEFAULT_SHADOW_ORDER_PLAN_FILENAMES)
+
+
+def _count_order_plan_rows(path: Path) -> int:
+    if not path.exists() or not path.is_file():
+        return 0
+    if path.suffix == ".csv":
+        with path.open(newline="") as handle:
+            return len(list(csv.DictReader(handle)))
+    return sum(1 for line in path.read_text().splitlines() if line.strip())
 
 
 def _latest_cloud_package(root: Path) -> Path | None:
@@ -417,6 +456,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--shadow-decisions", default="results/shadow_validation/shadow_decisions.csv")
     parser.add_argument("--simulated-fills", default="results/shadow_validation/simulated_fills.csv")
     parser.add_argument("--observed-template", default="results/shadow_validation/observed_fills_template.csv")
+    parser.add_argument(
+        "--order-plan",
+        action="append",
+        dest="order_plans",
+        help="Provider paper-order-plan artifact path. Repeatable; defaults to Bybit/OKX/Binance plans beside the observed-fill template.",
+    )
     parser.add_argument("--min-shadow-observations", type=int, default=20)
     parser.add_argument("--max-shadow-price-error", type=float, default=5.0)
     parser.add_argument("--max-shadow-size-error", type=float, default=0.01)
@@ -433,6 +478,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         shadow_decisions=args.shadow_decisions,
         simulated_fills=args.simulated_fills,
         observed_template=args.observed_template,
+        order_plans=args.order_plans,
         min_shadow_observations=args.min_shadow_observations,
         max_price_error=args.max_shadow_price_error,
         max_size_error=args.max_shadow_size_error,

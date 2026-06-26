@@ -96,7 +96,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
 Provider mapping:
 
 - Bybit writes `POST /v5/order/create` payloads with `orderLinkId=decision_id`.
-- OKX writes `POST /api/v5/trade/order` payloads with `clOrdId=decision_id`; include `x-simulated-trading: 1` when submitting in demo mode.
+- OKX writes `POST /api/v5/trade/order` payloads with `clOrdId=decision_id`; Binance-style shadow symbols such as `BTCUSDT` are normalized to OKX swap instruments such as `BTC-USDT-SWAP`, and `--symbol-override` can pin another `instId`; include `x-simulated-trading: 1` when submitting in demo mode.
 - Binance USD-M Futures Testnet writes `POST /fapi/v1/order` payloads with `newClientOrderId=decision_id`.
 
 For OKX demo REST requests, include `x-simulated-trading: 1`.

@@ -35,9 +35,50 @@ def test_external_readiness_reports_missing_modal_and_external_evidence(tmp_path
     assert checks["full_cloud_study"].status == "not_ready"
     assert checks["paper_live_fill_validation"].status == "not_ready"
     assert "template_exists=0" in checks["paper_live_fill_validation"].evidence
+    assert "order_plan_files=0/3" in checks["paper_live_fill_validation"].evidence
+    assert (
+        "missing_order_plans=bybit_order_plan.jsonl,okx_order_plan.jsonl,binance_usdm_order_plan.jsonl"
+        in checks["paper_live_fill_validation"].evidence
+    )
     assert "paper-order-plan" in checks["paper_live_fill_validation"].next_action
     assert "fetch-observed-fills" in checks["paper_live_fill_validation"].next_action
     assert "check=modal_cli" in text
+
+
+def test_external_readiness_counts_shadow_order_plan_files(tmp_path: Path) -> None:
+    package = tmp_path / "dist" / "microstructure-alpha-lab-cloud-handoff-test.zip"
+    _write_package(package, {"lob-forge/README.md": "# ok\n"})
+    full_plan = _write_plan(tmp_path / "results" / "expected_edge_60day_20230516_20230714" / "run_plan.json")
+    shadow_dir = tmp_path / "results" / "shadow_validation"
+    shadow = shadow_dir / "shadow_decisions.csv"
+    simulated = shadow_dir / "simulated_fills.csv"
+    template = shadow_dir / "observed_fills_template.csv"
+    bybit_plan = shadow_dir / "bybit_order_plan.jsonl"
+    okx_plan = shadow_dir / "okx_order_plan.jsonl"
+    _write_shadow(shadow, observed_size="")
+    _write_simulated(simulated)
+    template.write_text("decision_id,client_order_id\n")
+    bybit_plan.write_text('{"decision_id":"d1"}\n{"decision_id":"d2"}\n')
+    okx_plan.write_text('{"decision_id":"d1"}\n')
+
+    report = evaluate_external_gate_readiness(
+        project_root=tmp_path,
+        modal_binary=str(tmp_path / "missing-modal"),
+        cloud_package=package,
+        full_plan=full_plan,
+        full_result_dir=full_plan.parent,
+        shadow_decisions=shadow,
+        simulated_fills=simulated,
+        observed_template=template,
+    )
+
+    check = {item.check_id: item for item in report.checks}["paper_live_fill_validation"]
+    assert check.status == "not_ready"
+    assert "template_exists=1" in check.evidence
+    assert "order_plan_files=2/3" in check.evidence
+    assert "nonempty_order_plans=2/3" in check.evidence
+    assert "order_plan_rows=3" in check.evidence
+    assert "missing_order_plans=binance_usdm_order_plan.jsonl" in check.evidence
 
 
 def test_external_readiness_rejects_packages_with_excluded_nested_entries(tmp_path: Path) -> None:

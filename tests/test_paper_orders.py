@@ -48,6 +48,8 @@ def test_paper_order_plan_writes_jsonl_and_skips_non_orders(tmp_path: Path) -> N
     assert report.skipped_flat_rows == 1
     assert report.skipped_size_rows == 1
     assert lines[0]["endpoint"] == "/api/v5/trade/order"
+    assert lines[0]["symbol"] == "BTC-USDT-SWAP"
+    assert lines[0]["payload"]["instId"] == "BTC-USDT-SWAP"
     assert lines[0]["payload"]["clOrdId"] == "d1"
     assert lines[0]["payload"]["ordType"] == "limit"
     assert lines[0]["payload"]["px"] == "65000.5"
@@ -80,6 +82,21 @@ def test_paper_order_plan_cli_writes_binance_csv(tmp_path: Path) -> None:
     assert first_payload["newClientOrderId"] == "d1"
     assert first_payload["type"] == "LIMIT"
     assert first_payload["timeInForce"] == "GTC"
+
+
+def test_paper_order_plan_allows_explicit_symbol_override(tmp_path: Path) -> None:
+    shadow = _shadow_file(tmp_path)
+
+    instructions = build_paper_order_plan(
+        shadow,
+        provider="okx",
+        limit=1,
+        symbol_override="ETH-USDT-SWAP",
+    )
+
+    assert len(instructions) == 1
+    assert instructions[0].symbol == "ETH-USDT-SWAP"
+    assert instructions[0].payload["instId"] == "ETH-USDT-SWAP"
 
 
 def test_paper_order_plan_rejects_limit_order_without_price(tmp_path: Path) -> None:

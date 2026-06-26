@@ -106,7 +106,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "demo private WebSocket order channel",
         ),
         local_commands=(
-            "paper-order-plan --provider okx",
+            "paper-order-plan --provider okx [--symbol-override BTC-USDT-SWAP]",
             "fetch-observed-fills --provider okx",
             "normalize-observed-fills --provider okx",
         ),

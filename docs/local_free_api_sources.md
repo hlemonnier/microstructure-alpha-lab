@@ -66,7 +66,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
   --limit 50
 ```
 
-Use `--provider okx` for OKX demo or `--provider binance` for Binance USD-M Futures Testnet. The generated payloads use `decision_id` as the provider client ID:
+Use `--provider okx` for OKX demo or `--provider binance` for Binance USD-M Futures Testnet. OKX order plans normalize Binance-style shadow symbols such as `BTCUSDT` to OKX swap instruments such as `BTC-USDT-SWAP`; pass `--symbol-override` when the demo session targets another `instId`. The generated payloads use `decision_id` as the provider client ID:
 
 ```text
 Bybit:  orderLinkId
