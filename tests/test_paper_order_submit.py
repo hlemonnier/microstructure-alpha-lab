@@ -187,6 +187,70 @@ def test_submit_paper_orders_rejects_wrong_provider_plan(tmp_path: Path) -> None
         raise AssertionError("expected provider mismatch failure")
 
 
+def test_submit_paper_orders_rejects_payload_client_id_mismatch(tmp_path: Path) -> None:
+    plan = tmp_path / "bybit_order_plan.jsonl"
+    output = tmp_path / "submitted.jsonl"
+    write_paper_order_plan(
+        shadow_path=_shadow_file(tmp_path),
+        output_path=plan,
+        provider="bybit",
+        limit=1,
+    )
+    row = json.loads(plan.read_text().splitlines()[0])
+    row["payload"]["orderLinkId"] = "not-d1"
+    plan.write_text(json.dumps(row, sort_keys=True) + "\n")
+
+    try:
+        submit_paper_order_plan(provider="bybit", plan_path=plan, output_path=output)
+    except ValueError as exc:
+        assert "payload client order id='not-d1'" in str(exc)
+        assert "expected it to equal decision_id" in str(exc)
+    else:
+        raise AssertionError("expected client-order-id mismatch failure")
+
+
+def test_submit_paper_orders_rejects_payload_symbol_mismatch(tmp_path: Path) -> None:
+    plan = tmp_path / "okx_order_plan.jsonl"
+    output = tmp_path / "submitted.jsonl"
+    write_paper_order_plan(
+        shadow_path=_shadow_file(tmp_path),
+        output_path=plan,
+        provider="okx",
+        limit=1,
+    )
+    row = json.loads(plan.read_text().splitlines()[0])
+    row["payload"]["instId"] = "ETH-USDT-SWAP"
+    plan.write_text(json.dumps(row, sort_keys=True) + "\n")
+
+    try:
+        submit_paper_order_plan(provider="okx", plan_path=plan, output_path=output)
+    except ValueError as exc:
+        assert "payload symbol='ETH-USDT-SWAP'" in str(exc)
+        assert "expected 'BTC-USDT-SWAP'" in str(exc)
+    else:
+        raise AssertionError("expected symbol mismatch failure")
+
+
+def test_submit_paper_orders_rejects_duplicate_decision_ids(tmp_path: Path) -> None:
+    plan = tmp_path / "bybit_order_plan.jsonl"
+    output = tmp_path / "submitted.jsonl"
+    write_paper_order_plan(
+        shadow_path=_shadow_file(tmp_path),
+        output_path=plan,
+        provider="bybit",
+        limit=1,
+    )
+    line = plan.read_text().splitlines()[0]
+    plan.write_text(line + "\n" + line + "\n")
+
+    try:
+        submit_paper_order_plan(provider="bybit", plan_path=plan, output_path=output)
+    except ValueError as exc:
+        assert "duplicate decision_id in order plan: d1" in str(exc)
+    else:
+        raise AssertionError("expected duplicate decision_id failure")
+
+
 def test_submit_paper_orders_report_formats_csv(tmp_path: Path) -> None:
     plan = tmp_path / "bybit_order_plan.jsonl"
     output = tmp_path / "submitted.jsonl"

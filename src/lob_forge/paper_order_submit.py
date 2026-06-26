@@ -53,8 +53,7 @@ def submit_paper_order_plan(
         raise ValueError(f"provider must be one of: {', '.join(SUPPORTED_PAPER_ORDER_PLAN_PROVIDERS)}")
     instructions = _read_plan(plan_path)
     selected = instructions[:limit] if limit > 0 else instructions
-    for instruction in selected:
-        _validate_instruction(instruction, provider=provider)
+    _validate_instructions(selected, provider=provider)
     resolved_base_url = base_url or _default_base_url(provider)
     rows = [
         _submit_or_preview(
@@ -318,6 +317,8 @@ def _instruction_from_mapping(row: Mapping[str, Any]) -> PaperOrderInstruction:
 
 
 def _validate_instruction(instruction: PaperOrderInstruction, *, provider: str) -> None:
+    if not instruction.decision_id:
+        raise ValueError("plan row has empty decision_id")
     expected_endpoint = {
         "bybit": "/v5/order/create",
         "okx": "/api/v5/trade/order",
@@ -333,6 +334,40 @@ def _validate_instruction(instruction: PaperOrderInstruction, *, provider: str) 
         raise ValueError(
             f"plan row {instruction.decision_id} endpoint={instruction.endpoint}; expected {expected_endpoint}"
         )
+    payload_decision_id = _payload_decision_id(instruction.payload, provider=provider)
+    if payload_decision_id != instruction.decision_id:
+        raise ValueError(
+            f"plan row {instruction.decision_id} payload client order id={payload_decision_id!r}; "
+            "expected it to equal decision_id"
+        )
+    payload_symbol = _payload_symbol(instruction.payload, provider=provider)
+    if payload_symbol != instruction.symbol:
+        raise ValueError(
+            f"plan row {instruction.decision_id} payload symbol={payload_symbol!r}; " f"expected {instruction.symbol!r}"
+        )
+
+
+def _validate_instructions(instructions: list[PaperOrderInstruction], *, provider: str) -> None:
+    seen_decision_ids: set[str] = set()
+    for instruction in instructions:
+        _validate_instruction(instruction, provider=provider)
+        if instruction.decision_id in seen_decision_ids:
+            raise ValueError(f"duplicate decision_id in order plan: {instruction.decision_id}")
+        seen_decision_ids.add(instruction.decision_id)
+
+
+def _payload_decision_id(payload: Mapping[str, object], *, provider: str) -> str:
+    key = {
+        "bybit": "orderLinkId",
+        "okx": "clOrdId",
+        "binance": "newClientOrderId",
+    }[provider]
+    return str(payload.get(key, ""))
+
+
+def _payload_symbol(payload: Mapping[str, object], *, provider: str) -> str:
+    key = "instId" if provider == "okx" else "symbol"
+    return str(payload.get(key, ""))
 
 
 def _default_base_url(provider: str) -> str:

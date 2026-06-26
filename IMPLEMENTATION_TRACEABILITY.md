@@ -20,8 +20,8 @@ Authoritative scope: local implementation specification supplied outside the rep
 ## Verification Log
 
 - Baseline direct tests before edits: `passed 160 direct test functions`.
-- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 326 direct test functions`.
-- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `326 passed`.
+- Current direct suite after implementation: `bash scripts/run_tests.sh` -> `passed 329 direct test functions`.
+- Current pytest suite after implementation: `.venv/bin/python -m pytest -q` -> `329 passed`.
 - Current static checks after implementation: `.venv/bin/python -m ruff format --check .`, `.venv/bin/python -m ruff check .`, and `.venv/bin/python -m mypy src/lob_forge` all passed.
 - C++ replay equivalence is included in the direct suite when a local C++ compiler is present.
 - Runbook holdout enforcement covers both Markdown code blocks and shell scripts, including multi-line Bash arrays that invoke gated research CLI commands.
