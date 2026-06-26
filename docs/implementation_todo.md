@@ -116,6 +116,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Run Transformer/TCN experiments only after baseline and L2 paths are verified.
 - [x] Add masked sequence pretraining batch utility.
 - [x] Run self-supervised order-book pretraining smoke only after true L2 tensor data exists.
+- [x] Add deterministic sequence ablation matrix for class weighting, scheduler, window, depth, models, and seeds.
 
 ## Documentation And Claims
 

@@ -44,6 +44,9 @@ MAX_ROWS="${MAX_ROWS:-100000}"
 MAX_SNAPSHOTS="${MAX_SNAPSHOTS:-2000}"
 SEED="${SEED:-7}"
 SEEDS="${SEEDS:-$SEED}"
+ABLATIONS="${ABLATIONS:-baseline}"
+ABLATION_SHORT_WINDOW="${ABLATION_SHORT_WINDOW:-8}"
+ABLATION_SHALLOW_DEPTH="${ABLATION_SHALLOW_DEPTH:-3}"
 
 mkdir -p "$OUT_DIR" "$CHECKPOINT_DIR" "$PREDICTION_DIR"
 if [[ -n "$HOLDOUT_MANIFEST_PATH" ]]; then
@@ -52,10 +55,14 @@ fi
 normalized_seeds="${SEEDS//,/ }"
 read -r -a seed_values <<< "$normalized_seeds"
 seed_count="${#seed_values[@]}"
+normalized_ablations="${ABLATIONS//,/ }"
+read -r -a ablation_values <<< "$normalized_ablations"
+ablation_count="${#ablation_values[@]}"
 
 printf 'models="%s"\n' "$MODELS"
 printf 'baseline_audit=%s l2=%s out_dir=%s dry_run=%s resume=%s resume_checkpoint=%s seeds="%s"\n' \
   "$BASELINE_AUDIT_PATH" "$L2_PATH" "$OUT_DIR" "$DRY_RUN" "$RESUME" "$RESUME_CHECKPOINT" "$SEEDS"
+printf 'ablations="%s"\n' "$ABLATIONS"
 if [[ -n "$HOLDOUT_MANIFEST_PATH" ]]; then
   printf 'holdout_manifest=%s development_l2_dir=%s\n' "$HOLDOUT_MANIFEST_PATH" "$DEVELOPMENT_L2_DIR"
 fi
@@ -72,63 +79,93 @@ for model in $MODELS; do
       ;;
   esac
 
-  for seed in "${seed_values[@]}"; do
-    suffix=""
-    if [[ "$seed_count" -gt 1 ]]; then
-      suffix="_seed_${seed}"
-    fi
-    output="$OUT_DIR/${model}${suffix}_results.csv"
-    checkpoint="$CHECKPOINT_DIR/${model}${suffix}.pt"
-    predictions="$PREDICTION_DIR/${model}${suffix}_predictions.csv"
-    development_l2="$DEVELOPMENT_L2_DIR/${model}${suffix}_development_l2.csv"
-    if [[ "$RESUME" == "1" && -s "$output" ]]; then
-      printf 'skip existing model=%s seed=%s output=%s\n' "$model" "$seed" "$output"
-      continue
-    fi
+  for ablation in "${ablation_values[@]}"; do
+    variant_depth="$DEPTH"
+    variant_window="$WINDOW"
+    variant_class_weighting="$CLASS_WEIGHTING"
+    variant_lr_scheduler_gamma="$LR_SCHEDULER_GAMMA"
+    case "$ablation" in
+      baseline)
+        ;;
+      no_class_weighting)
+        variant_class_weighting="none"
+        ;;
+      no_lr_scheduler)
+        variant_lr_scheduler_gamma="1"
+        ;;
+      short_window)
+        variant_window="$ABLATION_SHORT_WINDOW"
+        ;;
+      shallow_depth)
+        variant_depth="$ABLATION_SHALLOW_DEPTH"
+        ;;
+      *)
+        echo "unknown ablation=$ablation; expected baseline, no_class_weighting, no_lr_scheduler, short_window, or shallow_depth" >&2
+        exit 2
+        ;;
+    esac
 
-    command=(
-      "$PYTHON_BIN" -m lob_forge.cli l2-sequence-experiment
-      --model "$model"
-      --baseline-audit "$BASELINE_AUDIT_PATH"
-      --l2 "$L2_PATH"
-      --output "$output"
-      --depth "$DEPTH"
-      --window "$WINDOW"
-      --label-horizon "$LABEL_HORIZON"
-      --flat-threshold-bps "$FLAT_THRESHOLD_BPS"
-      --epochs "$EPOCHS"
-      --learning-rate "$LEARNING_RATE"
-      --batch-size "$BATCH_SIZE"
-      --early-stopping-patience "$EARLY_STOPPING_PATIENCE"
-      --device "$DEVICE"
-      --class-weighting "$CLASS_WEIGHTING"
-      --lr-scheduler-gamma "$LR_SCHEDULER_GAMMA"
-      --checkpoint-path "$checkpoint"
-      --predictions-output "$predictions"
-      --economic-target-notional "$ECONOMIC_TARGET_NOTIONAL"
-      --economic-taker-fee-bps "$ECONOMIC_TAKER_FEE_BPS"
-      --economic-slippage-bps "$ECONOMIC_SLIPPAGE_BPS"
-      --max-rows "$MAX_ROWS"
-      --max-snapshots "$MAX_SNAPSHOTS"
-      --min-fold-count "$MIN_FOLD_COUNT"
-      --min-l2-rows "$MIN_L2_ROWS"
-      --seed "$seed"
-    )
-    if [[ -n "$HOLDOUT_MANIFEST_PATH" ]]; then
-      command+=(--holdout-manifest "$HOLDOUT_MANIFEST_PATH" --development-l2-output "$development_l2")
-    fi
-    if [[ "$RESUME_CHECKPOINT" == "1" && -s "$checkpoint" ]]; then
-      command+=(--resume-from-checkpoint)
-    fi
+    for seed in "${seed_values[@]}"; do
+      suffix=""
+      if [[ "$ablation_count" -gt 1 || "$ablation" != "baseline" ]]; then
+        suffix="_ablation_${ablation}"
+      fi
+      if [[ "$seed_count" -gt 1 ]]; then
+        suffix="${suffix}_seed_${seed}"
+      fi
+      output="$OUT_DIR/${model}${suffix}_results.csv"
+      checkpoint="$CHECKPOINT_DIR/${model}${suffix}.pt"
+      predictions="$PREDICTION_DIR/${model}${suffix}_predictions.csv"
+      development_l2="$DEVELOPMENT_L2_DIR/${model}${suffix}_development_l2.csv"
+      if [[ "$RESUME" == "1" && -s "$output" ]]; then
+        printf 'skip existing model=%s ablation=%s seed=%s output=%s\n' "$model" "$ablation" "$seed" "$output"
+        continue
+      fi
 
-    if [[ "$DRY_RUN" != "0" ]]; then
-      printf 'would_run model=%s seed=%s output=%s checkpoint=%s predictions=%s command=' "$model" "$seed" "$output" "$checkpoint" "$predictions"
-      printf '%q ' "${command[@]}"
-      printf '\n'
-      continue
-    fi
+      command=(
+        "$PYTHON_BIN" -m lob_forge.cli l2-sequence-experiment
+        --model "$model"
+        --baseline-audit "$BASELINE_AUDIT_PATH"
+        --l2 "$L2_PATH"
+        --output "$output"
+        --depth "$variant_depth"
+        --window "$variant_window"
+        --label-horizon "$LABEL_HORIZON"
+        --flat-threshold-bps "$FLAT_THRESHOLD_BPS"
+        --epochs "$EPOCHS"
+        --learning-rate "$LEARNING_RATE"
+        --batch-size "$BATCH_SIZE"
+        --early-stopping-patience "$EARLY_STOPPING_PATIENCE"
+        --device "$DEVICE"
+        --class-weighting "$variant_class_weighting"
+        --lr-scheduler-gamma "$variant_lr_scheduler_gamma"
+        --checkpoint-path "$checkpoint"
+        --predictions-output "$predictions"
+        --economic-target-notional "$ECONOMIC_TARGET_NOTIONAL"
+        --economic-taker-fee-bps "$ECONOMIC_TAKER_FEE_BPS"
+        --economic-slippage-bps "$ECONOMIC_SLIPPAGE_BPS"
+        --max-rows "$MAX_ROWS"
+        --max-snapshots "$MAX_SNAPSHOTS"
+        --min-fold-count "$MIN_FOLD_COUNT"
+        --min-l2-rows "$MIN_L2_ROWS"
+        --seed "$seed"
+      )
+      if [[ -n "$HOLDOUT_MANIFEST_PATH" ]]; then
+        command+=(--holdout-manifest "$HOLDOUT_MANIFEST_PATH" --development-l2-output "$development_l2")
+      fi
+      if [[ "$RESUME_CHECKPOINT" == "1" && -s "$checkpoint" ]]; then
+        command+=(--resume-from-checkpoint)
+      fi
 
-    printf 'run model=%s seed=%s output=%s checkpoint=%s predictions=%s\n' "$model" "$seed" "$output" "$checkpoint" "$predictions"
-    "${command[@]}"
+      if [[ "$DRY_RUN" != "0" ]]; then
+        printf 'would_run model=%s ablation=%s seed=%s output=%s checkpoint=%s predictions=%s command=' "$model" "$ablation" "$seed" "$output" "$checkpoint" "$predictions"
+        printf '%q ' "${command[@]}"
+        printf '\n'
+        continue
+      fi
+
+      printf 'run model=%s ablation=%s seed=%s output=%s checkpoint=%s predictions=%s\n' "$model" "$ablation" "$seed" "$output" "$checkpoint" "$predictions"
+      "${command[@]}"
+    done
   done
 done

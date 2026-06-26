@@ -102,6 +102,16 @@ For repeated local seeds without launching cloud work:
 SEEDS=7,11,13 DRY_RUN=0 RESUME=0 bash scripts/run_l2_sequence_experiments.sh
 ```
 
+For ablation planning, keep `DRY_RUN=1` first. The runner expands `MODELS x SEEDS x ABLATIONS` and prints every exact command before any training starts:
+
+```bash
+ABLATIONS=baseline,no_class_weighting,no_lr_scheduler,short_window,shallow_depth \
+SEEDS=7,11,13 \
+DRY_RUN=1 bash scripts/run_l2_sequence_experiments.sh
+```
+
+The named ablations preserve the same holdout-manifest filtering, checkpoint, prediction-export, calibration, and stateful-economic artifact contract as the baseline sequence runs.
+
 ## Final Holdout
 
 CLI research commands such as `baseline`, `walk-forward`, `calendar-walk-forward`, `conditional-walk-forward`, `logistic-walk-forward`, `edge-walk-forward`, `edge-shadow-decisions`, `eval-rule`, and `regime` require `--holdout-manifest`. The CLI verifies the source content hash and runs against a temporary development CSV with declared holdout rows removed.

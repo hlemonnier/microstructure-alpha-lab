@@ -91,3 +91,61 @@ def test_l2_sequence_runner_dry_run_propagates_holdout_manifest(tmp_path: Path) 
     assert "--holdout-manifest" in result.stdout
     assert "--development-l2-output" in result.stdout
     assert "sequence_tcn_development_l2.csv" in result.stdout
+
+
+def test_l2_sequence_runner_dry_run_emits_ablation_matrix(tmp_path: Path) -> None:
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": "src",
+            "DRY_RUN": "1",
+            "MODELS": "sequence_tcn",
+            "SEEDS": "7,11",
+            "ABLATIONS": "baseline,no_class_weighting,short_window",
+            "OUT_DIR": str(tmp_path / "model_experiments"),
+            "WINDOW": "16",
+            "ABLATION_SHORT_WINDOW": "5",
+        }
+    )
+
+    result = subprocess.run(
+        ["bash", "scripts/run_l2_sequence_experiments.sh"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 0
+    assert 'ablations="baseline,no_class_weighting,short_window"' in result.stdout
+    assert result.stdout.count("would_run model=sequence_tcn") == 6
+    assert "sequence_tcn_ablation_no_class_weighting_seed_7_results.csv" in result.stdout
+    assert "--class-weighting none" in result.stdout
+    assert "sequence_tcn_ablation_short_window_seed_11_results.csv" in result.stdout
+    assert "--window 5" in result.stdout
+
+
+def test_l2_sequence_runner_rejects_unknown_ablation(tmp_path: Path) -> None:
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": "src",
+            "DRY_RUN": "1",
+            "MODELS": "sequence_tcn",
+            "ABLATIONS": "baseline,unknown_variant",
+            "OUT_DIR": str(tmp_path / "model_experiments"),
+        }
+    )
+
+    result = subprocess.run(
+        ["bash", "scripts/run_l2_sequence_experiments.sh"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 2
+    assert "unknown ablation=unknown_variant" in result.stderr

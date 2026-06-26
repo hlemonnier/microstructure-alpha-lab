@@ -208,6 +208,16 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-pretraining-smoke \
 
 Current local state: the Bybit true-L2 smoke path is ready, the masked reconstruction pretraining artifact exists, and local Torch smoke artifacts exist for `sequence_transformer` and `sequence_tcn` under `results/model_experiments/`. These prove the gated training/evidence path and artifact contract, not production model edge. Current neural outputs are tiny-sample smoke artifacts and should not be promoted as alpha.
 
+The sequence runner also has a deterministic ablation axis. Start with a dry run so the full matrix is visible before any compute is spent:
+
+```bash
+ABLATIONS=baseline,no_class_weighting,no_lr_scheduler,short_window,shallow_depth \
+SEEDS=7,11,13 \
+DRY_RUN=1 bash scripts/run_l2_sequence_experiments.sh
+```
+
+Each ablation keeps the same baseline/L2 readiness gates, optional holdout-manifest filtering, checkpoint, prediction-export, calibration, and stateful-economic fields as the baseline artifacts.
+
 ## Result Auditing
 
 Saved walk-forward CSVs can be audited with:
