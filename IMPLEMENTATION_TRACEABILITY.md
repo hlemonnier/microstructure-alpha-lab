@@ -20,11 +20,27 @@ Authoritative scope: local implementation specification supplied outside the rep
 ## Verification Log
 
 - Baseline direct tests before edits: `passed 160 direct test functions`.
-- Current direct tests after implementation: `passed 271 direct test functions`.
+- Current pytest suite after implementation: `280 passed`.
+- Current static checks after implementation: `ruff check .` passed, `ruff format --check .` passed, and `mypy src/lob_forge` passed.
 - C++ replay equivalence is included in the direct suite when a local C++ compiler is present.
 - Reduced E2E fixture artifacts generated under `artifacts/reduced_e2e/`.
+- Reduced E2E fixture regenerated from the clean current Git checkout; `artifacts/research_manifest.json` records `working_tree_dirty=false`.
 - CPU neural fixture smokes generated `sequence_tcn_smoke.csv` and `sequence_transformer_smoke.csv`; sequence runs now expose optional holdout-manifest filtering, checkpoint/resume, repeated-seed and ablation runner support, prediction CSV export, calibration metrics, confusion matrices, stateful economic smoke fields, frozen sequence candidates, and final holdout evaluation against a pre-registered candidate hash.
-- Full cloud/full-data empirical runs were not executed in this local turn.
+- Safe full-study script checks passed in plan/dry-run mode: `PLAN_ONLY=1 STUDY_PROFILE=local16_60day bash scripts/run_60day_expected_edge_study.sh`, `DRY_RUN=1 bash scripts/run_complete_feature_edge_jobs.sh`, `DRY_RUN=1 bash scripts/run_local16_existing_feature_edge_jobs.sh`, and `DRY_RUN=1 bash scripts/run_kelly_candidate_search.sh`.
+- `make verify-results` passed against `results/current`; `make verify-evidence-gates` still fails by design until the remaining external/final empirical gates below are satisfied.
+
+## Review Gap Status
+
+This table maps the final "must be fixed before sending it" review items from `/Users/lemonnierhugo/.codex/attachments/597785c4-52c9-4068-95ba-a175387a43c2/pasted-text-1.txt` to current repository evidence.
+
+| Review item | Current status | Evidence | Remaining blocker |
+|---|---:|---|---|
+| Rewrite `simulate_stateful_execution()` as a chronological event loop with globally consumed liquidity and adversarial tests | implemented-smoke-tested | `src/lob_forge/execution_sim.py`; `tests/test_execution_sim.py` covers passive fill chronology, same-timestamp taker liquidity, same-timestamp passive trade-flow consumption, cancellation, expiry, position timestamps, rate limits, and kill switch behavior | Paper/live fill calibration remains external |
+| Add `create-holdout-manifest` and propagate manifests through full-study scripts/runbooks | implemented-smoke-tested | `src/lob_forge/cli.py`; `scripts/holdout_manifest.sh`; `scripts/reproduce_core_results.sh`; `scripts/reproduce_multiday_results.sh`; `scripts/reproduce_result_artifacts.sh`; `scripts/run_60day_expected_edge_study.sh`; dry-run/plan commands listed above | Full cloud study still needs high-RAM execution |
+| Replace reduced E2E placeholder statistics with OOS-only signals and ledger-derived statistics | implemented-smoke-tested | `scripts/run_reduced_e2e.py`; `_signals_from_walk_forward()` emits selected-rule test-window signals only; `_ledger_statistics_inputs()` derives net/gross PnL, returns, turnover, fees, and days from simulator ledgers | Synthetic fixture only; not empirical market evidence |
+| Make final holdout use the stateful simulator and pre-register candidate hashes | implemented-smoke-tested | `final-holdout-rule`, `final-holdout-edge`, and `final-holdout-sequence`; `tests/test_holdout.py` asserts pre-registered candidate hashes, duplicate-evaluation locks, and `stateful_simulator=true` for rule/edge results | Full selected candidate final-holdout artifact has not been run |
+| Expand the experiment registry beyond planned rows and record results/failures/selection | implemented-smoke-tested | `src/lob_forge/experiment_registry.py`, `src/lob_forge/study_registry.py`, `artifacts/reduced_e2e/experiment_registry.jsonl`; expected-edge study status rejects stale planned registries | Full cloud study registry/result matrix still pending |
+| Complete the neural protocol before expensive hardware | implemented-smoke-tested | `src/lob_forge/ml_models.py`; `scripts/run_l2_sequence_experiments.sh`; sequence artifacts include holdout filtering, minibatches, early stopping, checkpoints, device selection, class weighting, scheduler metadata, prediction exports, calibration metrics, confusion matrices, stateful economic smoke fields, ablations, repeated seeds, and final-holdout sequence hooks | Large repeated-seed/GPU empirical runs over genuine L2 data remain pending |
 
 ## Empirical Work Still Pending
 
