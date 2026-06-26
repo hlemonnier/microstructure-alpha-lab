@@ -137,6 +137,20 @@ hypothesis_id,metric,p_value
 
 The output includes Bonferroni and Benjamini-Hochberg adjusted p-values.
 
+For expected-edge study runs, do not build this file from audit filenames by hand. Refresh the candidate registry after all result/audit artifacts are present and ask the registry writer to emit candidate-linked p-values:
+
+```bash
+PYTHONPATH=src python3 -m lob_forge.study_registry \
+  --plan results/current/run_plan.json \
+  --result-dir results/current \
+  --output results/current/candidate_registry.jsonl \
+  --pvalues-output results/current/pvalues.csv
+PYTHONPATH=src python3 -m lob_forge.cli pvalue-correction \
+  results/current/pvalues.csv > results/current/pvalue_corrections.csv
+```
+
+The expected-edge verifier requires each completed candidate/config in `candidate_registry.jsonl` to have a matching `config_sha256` row in `pvalues.csv`; this makes the multiple-testing correction family explicit.
+
 ## Capacity Screen
 
 The current archive can support only a conservative taker-capacity screen:

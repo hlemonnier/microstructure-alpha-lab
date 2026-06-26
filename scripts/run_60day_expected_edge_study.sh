@@ -442,37 +442,19 @@ for symbol in $SYMBOLS; do
   done
 done
 
+pvalue_registry_args=()
 if [[ "$WRITE_PVALUES" == "1" ]]; then
-python3 - "$OUT_DIR" <<'PY'
-import csv
-import glob
-import os
-import sys
-from pathlib import Path
-
-out_dir = Path(sys.argv[1])
-with (out_dir / "pvalues.csv").open("w", newline="") as handle:
-    writer = csv.DictWriter(handle, fieldnames=["hypothesis_id", "metric", "p_value"])
-    writer.writeheader()
-    for path in sorted(glob.glob(str(out_dir / "*_audit.csv"))):
-        with open(path, newline="") as audit_handle:
-            row = next(csv.DictReader(audit_handle))
-        writer.writerow(
-            {
-                "hypothesis_id": os.path.basename(path).replace("_audit.csv", ""),
-                "metric": "fold_mean_net_pnl",
-                "p_value": row["one_sided_p_value_mean_le_zero"],
-            }
-        )
-PY
-
-python3 -m lob_forge.cli pvalue-correction "$OUT_DIR/pvalues.csv" > "$OUT_DIR/pvalue_corrections.csv"
+  pvalue_registry_args+=(--pvalues-output "$OUT_DIR/pvalues.csv")
 fi
-
 python3 -m lob_forge.study_registry \
   --plan "$PLAN_PATH" \
   --result-dir "$OUT_DIR" \
-  --output "$OUT_DIR/candidate_registry.jsonl"
+  --output "$OUT_DIR/candidate_registry.jsonl" \
+  "${pvalue_registry_args[@]}"
+
+if [[ "$WRITE_PVALUES" == "1" ]]; then
+  python3 -m lob_forge.cli pvalue-correction "$OUT_DIR/pvalues.csv" > "$OUT_DIR/pvalue_corrections.csv"
+fi
 
 study_status_pvalue_args=()
 if [[ "$WRITE_PVALUES" != "1" ]]; then

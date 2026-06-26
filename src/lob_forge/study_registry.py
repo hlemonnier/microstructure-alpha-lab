@@ -40,6 +40,7 @@ class ExpectedEdgeCandidateAttempt:
     failure_reason: str
     config_sha256: str
     config_json: str
+    audit_p_value: float | None = None
 
 
 @dataclass(frozen=True)
@@ -52,6 +53,7 @@ class _ArtifactSummary:
     test_net_pnl: dict[float, float]
     audit_acceptance_passed: bool | None
     audit_rejection_reasons: str
+    audit_p_value: float | None
     failure_reason: str
 
 
@@ -136,6 +138,7 @@ def build_expected_edge_candidate_registry(
                                     failure_reason=_candidate_failure_reason(summary),
                                     config_sha256=hashlib.sha256(config_json.encode("utf-8")).hexdigest(),
                                     config_json=config_json,
+                                    audit_p_value=summary.audit_p_value,
                                 )
                             )
     return attempts
@@ -150,6 +153,41 @@ def write_expected_edge_candidate_registry(
     with output_path.open("w") as handle:
         for attempt in attempts:
             handle.write(json.dumps(asdict(attempt), sort_keys=True) + "\n")
+    return output_path
+
+
+def write_expected_edge_candidate_pvalues(
+    attempts: Sequence[ExpectedEdgeCandidateAttempt],
+    path: Path | str,
+) -> Path:
+    output_path = Path(path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fields = [
+        "hypothesis_id",
+        "metric",
+        "p_value",
+        "config_sha256",
+        "status",
+        "artifact_path",
+        "audit_path",
+    ]
+    with output_path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        for attempt in attempts:
+            if attempt.audit_p_value is None:
+                continue
+            writer.writerow(
+                {
+                    "hypothesis_id": _attempt_hypothesis_id(attempt),
+                    "metric": "fold_mean_net_pnl_attempted_grid_hac_p_value",
+                    "p_value": _format_float(attempt.audit_p_value),
+                    "config_sha256": attempt.config_sha256,
+                    "status": attempt.status,
+                    "artifact_path": attempt.artifact_path,
+                    "audit_path": attempt.audit_path,
+                }
+            )
     return output_path
 
 
@@ -178,6 +216,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--plan", required=True)
     parser.add_argument("--result-dir")
     parser.add_argument("--output")
+    parser.add_argument("--pvalues-output")
     args = parser.parse_args(argv)
 
     attempts = build_expected_edge_candidate_registry(plan_path=args.plan, result_dir=args.result_dir)
@@ -188,6 +227,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     output_path = write_expected_edge_candidate_registry(attempts, output)
     print(f"candidate_registry={output_path}")
+    if args.pvalues_output:
+        pvalues_path = write_expected_edge_candidate_pvalues(attempts, args.pvalues_output)
+        print(f"pvalues={pvalues_path}")
     print(format_expected_edge_candidate_registry(attempts))
     return 0
 
@@ -246,6 +288,7 @@ def _summarize_artifacts(*, result_path: Path, audit_path: Path) -> _ArtifactSum
 
     audit_acceptance_passed: bool | None = None
     audit_rejection_reasons = ""
+    audit_p_value: float | None = None
     if audit_exists:
         try:
             with audit_path.open(newline="") as handle:
@@ -253,6 +296,9 @@ def _summarize_artifacts(*, result_path: Path, audit_path: Path) -> _ArtifactSum
             if audit_row is not None:
                 audit_acceptance_passed = str(audit_row.get("acceptance_passed", "")).strip() == "1"
                 audit_rejection_reasons = str(audit_row.get("rejection_reasons", ""))
+                raw_p_value = str(audit_row.get("one_sided_p_value_mean_le_zero", "")).strip()
+                if raw_p_value:
+                    audit_p_value = float(raw_p_value)
             else:
                 failure_reasons.append("audit_parse_error=empty_csv")
         except Exception as exc:
@@ -267,6 +313,7 @@ def _summarize_artifacts(*, result_path: Path, audit_path: Path) -> _ArtifactSum
         test_net_pnl=test_net_pnl,
         audit_acceptance_passed=audit_acceptance_passed,
         audit_rejection_reasons=audit_rejection_reasons,
+        audit_p_value=audit_p_value,
         failure_reason="; ".join(failure_reasons),
     )
 
@@ -292,6 +339,21 @@ def _candidate_failure_reason(summary: _ArtifactSummary) -> str:
     if not summary.audit_exists:
         missing.append("audit")
     return f"missing {','.join(missing)}" if missing else ""
+
+
+def _attempt_hypothesis_id(attempt: ExpectedEdgeCandidateAttempt) -> str:
+    threshold = _fee_token(attempt.edge_threshold_bps)
+    fee = _fee_token(attempt.taker_fee_bps)
+    return (
+        f"{attempt.run_id}:{attempt.family}:{attempt.symbol}:"
+        f"{attempt.horizon_ms}ms:fee_{fee}:threshold_{threshold}:"
+        f"{attempt.model_class}:{attempt.feature_set}:"
+        f"{attempt.config_sha256[:12]}"
+    )
+
+
+def _format_float(value: float) -> str:
+    return f"{value:.12g}"
 
 
 def _float_cell(value: str | None) -> float:

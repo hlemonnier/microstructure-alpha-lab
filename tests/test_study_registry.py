@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 from pathlib import Path
 
 from lob_forge.study_plan import build_expected_edge_run_plan, write_expected_edge_run_plan
@@ -8,6 +9,7 @@ from lob_forge.study_registry import (
     main as study_registry_main,
     read_expected_edge_candidate_registry,
     write_expected_edge_candidate_registry,
+    write_expected_edge_candidate_pvalues,
 )
 
 
@@ -41,8 +43,8 @@ def test_expected_edge_candidate_registry_marks_selected_artifact_rows(tmp_path:
     (result_dir / "BTCUSDT_5000ms_fee_0p1_edge_audit.csv").write_text(
         "\n".join(
             [
-                "acceptance_passed,rejection_reasons",
-                "0,total OOS net PnL is not positive",
+                "acceptance_passed,rejection_reasons,one_sided_p_value_mean_le_zero",
+                "0,total OOS net PnL is not positive,0.04",
             ]
         )
         + "\n"
@@ -60,23 +62,71 @@ def test_expected_edge_candidate_registry_marks_selected_artifact_rows(tmp_path:
     assert selected.test_net_pnl == -0.25
     assert selected.audit_acceptance_passed is False
     assert selected.audit_rejection_reasons == "total OOS net PnL is not positive"
+    assert selected.audit_p_value == 0.04
     assert selected.artifact_path.endswith("BTCUSDT_5000ms_fee_0p1_edge.csv")
     assert unselected.status == "evaluated_unselected"
     assert not unselected.selected
+    assert unselected.audit_p_value == 0.04
+
+
+def test_expected_edge_candidate_pvalues_cover_completed_attempt_grid(tmp_path: Path) -> None:
+    plan_path = _write_plan(tmp_path / "run_plan.json")
+    result_dir = tmp_path / "results"
+    result_dir.mkdir()
+    (result_dir / "BTCUSDT_5000ms_fee_0p1_edge.csv").write_text(
+        "\n".join(
+            [
+                "fold,edge_threshold_bps,val_net_pnl,test_net_pnl",
+                "1,0.1,2.5,-0.5",
+                "2,0.1,1.5,0.25",
+            ]
+        )
+        + "\n"
+    )
+    (result_dir / "BTCUSDT_5000ms_fee_0p1_edge_audit.csv").write_text(
+        "\n".join(
+            [
+                "acceptance_passed,rejection_reasons,one_sided_p_value_mean_le_zero",
+                "0,total OOS net PnL is not positive,0.04",
+            ]
+        )
+        + "\n"
+    )
+
+    attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
+    pvalues_path = write_expected_edge_candidate_pvalues(attempts, result_dir / "pvalues.csv")
+
+    with pvalues_path.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    assert len(rows) == 2
+    assert {row["config_sha256"] for row in rows} == {attempt.config_sha256 for attempt in attempts}
+    assert {row["p_value"] for row in rows} == {"0.04"}
+    assert all(row["metric"] == "fold_mean_net_pnl_attempted_grid_hac_p_value" for row in rows)
 
 
 def test_expected_edge_candidate_registry_cli_writes_jsonl(tmp_path: Path) -> None:
     plan_path = _write_plan(tmp_path / "run_plan.json")
     output = tmp_path / "candidate_registry.jsonl"
 
+    pvalues_output = tmp_path / "pvalues.csv"
     exit_code = study_registry_main(
-        ["--plan", str(plan_path), "--result-dir", str(tmp_path / "results"), "--output", str(output)]
+        [
+            "--plan",
+            str(plan_path),
+            "--result-dir",
+            str(tmp_path / "results"),
+            "--output",
+            str(output),
+            "--pvalues-output",
+            str(pvalues_output),
+        ]
     )
     attempts = read_expected_edge_candidate_registry(output)
 
     assert exit_code == 0
     assert len(attempts) == 2
     assert output.read_text().count("\n") == 2
+    assert pvalues_output.exists()
     assert write_expected_edge_candidate_registry(attempts, tmp_path / "roundtrip.jsonl").exists()
 
 

@@ -81,6 +81,9 @@ def evaluate_expected_edge_study_status(
     registry_path = result_dir_path / "candidate_registry.jsonl"
     if registry_path.exists() and registry_path.stat().st_size > 0:
         verifier_errors = tuple(verifier_errors) + tuple(_candidate_registry_errors(registry_path))
+        pvalues_path = result_dir_path / "pvalues.csv"
+        if require_pvalues and pvalues_path.exists() and pvalues_path.stat().st_size > 0:
+            verifier_errors = tuple(verifier_errors) + tuple(_candidate_pvalue_errors(registry_path, pvalues_path))
     verifier_passed = not verifier_errors
     complete = (
         not missing_results
@@ -262,6 +265,56 @@ def _candidate_registry_errors(path: Path) -> list[str]:
             errors.append(f"{path.name}: status_{status}={count}")
     if selected_count == 0:
         errors.append(f"{path.name}: selected_candidates=0")
+    return errors
+
+
+def _candidate_pvalue_errors(registry_path: Path, pvalues_path: Path) -> list[str]:
+    errors: list[str] = []
+    try:
+        attempts = read_expected_edge_candidate_registry(registry_path)
+    except Exception as exc:
+        return [f"{registry_path.name}: candidate registry parse failed before p-value join: {exc!r}"]
+    completed_attempts = [
+        attempt for attempt in attempts if attempt.status not in {"planned", "incomplete_artifact", "artifact_error"}
+    ]
+    if not completed_attempts:
+        return []
+    try:
+        with pvalues_path.open(newline="") as handle:
+            rows = list(csv.DictReader(handle))
+    except Exception as exc:
+        return [f"{pvalues_path.name}: could not read candidate-linked p-values: {exc!r}"]
+    if not rows:
+        return [f"{pvalues_path.name}: no candidate-linked p-value rows"]
+    required = {"hypothesis_id", "p_value", "config_sha256"}
+    missing_columns = required - set(rows[0])
+    if missing_columns:
+        return [f"{pvalues_path.name}: missing candidate-link columns {sorted(missing_columns)}"]
+
+    pvalue_configs: set[str] = set()
+    for index, row in enumerate(rows, start=2):
+        config_sha256 = str(row.get("config_sha256") or "").strip()
+        if not config_sha256:
+            errors.append(f"{pvalues_path.name}:{index}: missing config_sha256")
+            continue
+        if config_sha256 in pvalue_configs:
+            errors.append(f"{pvalues_path.name}:{index}: duplicate config_sha256 {config_sha256}")
+            continue
+        pvalue_configs.add(config_sha256)
+        try:
+            p_value = float(str(row.get("p_value") or ""))
+        except ValueError:
+            errors.append(f"{pvalues_path.name}:{index}: p_value is not parseable")
+            continue
+        if not 0.0 <= p_value <= 1.0:
+            errors.append(f"{pvalues_path.name}:{index}: p_value outside [0, 1]")
+
+    expected_configs = {attempt.config_sha256 for attempt in completed_attempts if attempt.config_sha256}
+    missing_configs = sorted(expected_configs - pvalue_configs)
+    if missing_configs:
+        preview = ", ".join(config[:12] for config in missing_configs[:10])
+        suffix = "" if len(missing_configs) <= 10 else f", +{len(missing_configs) - 10} more"
+        errors.append(f"{pvalues_path.name}: missing completed candidate config_sha256 rows: {preview}{suffix}")
     return errors
 
 

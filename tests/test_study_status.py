@@ -7,6 +7,7 @@ from lob_forge.study_status import (
     format_expected_edge_study_status,
 )
 from lob_forge.study_registry import build_expected_edge_candidate_registry, write_expected_edge_candidate_registry
+from lob_forge.study_registry import write_expected_edge_candidate_pvalues
 
 
 def test_expected_edge_study_status_passes_complete_study(tmp_path: Path) -> None:
@@ -22,9 +23,9 @@ def test_expected_edge_study_status_passes_complete_study(tmp_path: Path) -> Non
     _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0_edge_audit.csv")
     _write_edge_result(result_dir / "BTCUSDT_5000ms_fee_0p05_edge.csv")
     _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0p05_edge_audit.csv")
-    _write_pvalues(result_dir / "pvalues.csv")
-    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv")
     _write_candidate_registry(plan_path, result_dir)
+    _write_pvalues_from_registry(plan_path, result_dir)
+    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv", result_dir / "pvalues.csv")
 
     status = evaluate_expected_edge_study_status(plan_path=plan_path)
 
@@ -97,9 +98,9 @@ def test_expected_edge_study_status_can_require_min_audit_folds(tmp_path: Path) 
     )
     _write_edge_result(result_dir / "BTCUSDT_5000ms_fee_0_edge.csv")
     _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0_edge_audit.csv")
-    _write_pvalues(result_dir / "pvalues.csv")
-    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv")
     _write_candidate_registry(plan_path, result_dir)
+    _write_pvalues_from_registry(plan_path, result_dir)
+    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv", result_dir / "pvalues.csv")
 
     status = evaluate_expected_edge_study_status(
         plan_path=plan_path,
@@ -124,7 +125,7 @@ def test_expected_edge_study_status_rejects_stale_planned_candidate_registry(tmp
     _write_edge_result(result_dir / "BTCUSDT_5000ms_fee_0_edge.csv")
     _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0_edge_audit.csv")
     _write_pvalues(result_dir / "pvalues.csv")
-    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv")
+    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv", result_dir / "pvalues.csv")
     (result_dir / "candidate_registry.jsonl").write_text(
         json.dumps(
             {
@@ -209,6 +210,7 @@ def _write_edge_audit(path: Path) -> None:
             "total_test_rows",
             "total_test_trades",
             "total_test_net_pnl",
+            "one_sided_p_value_mean_le_zero",
             "acceptance_passed",
             "rejection_reasons",
         ],
@@ -219,6 +221,7 @@ def _write_edge_audit(path: Path) -> None:
                 "total_test_rows": "10",
                 "total_test_trades": "2",
                 "total_test_net_pnl": "1.0",
+                "one_sided_p_value_mean_le_zero": "0.1",
                 "acceptance_passed": "1",
                 "rejection_reasons": "",
             }
@@ -234,18 +237,21 @@ def _write_pvalues(path: Path) -> None:
     )
 
 
-def _write_pvalue_corrections(path: Path) -> None:
+def _write_pvalue_corrections(path: Path, pvalues_path: Path) -> None:
+    with pvalues_path.open(newline="") as handle:
+        pvalue_rows = list(csv.DictReader(handle))
     _write_csv(
         path,
         ["hypothesis_id", "p_value", "bonferroni_p_value", "bh_adjusted_p_value", "bh_accept"],
         [
             {
-                "hypothesis_id": "BTCUSDT_5000ms_fee_0_edge",
-                "p_value": "0.1",
-                "bonferroni_p_value": "0.1",
-                "bh_adjusted_p_value": "0.1",
+                "hypothesis_id": row["hypothesis_id"],
+                "p_value": row["p_value"],
+                "bonferroni_p_value": row["p_value"],
+                "bh_adjusted_p_value": row["p_value"],
                 "bh_accept": "0",
             }
+            for row in pvalue_rows
         ],
     )
 
@@ -253,6 +259,11 @@ def _write_pvalue_corrections(path: Path) -> None:
 def _write_candidate_registry(plan_path: Path, result_dir: Path) -> None:
     attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
     write_expected_edge_candidate_registry(attempts, result_dir / "candidate_registry.jsonl")
+
+
+def _write_pvalues_from_registry(plan_path: Path, result_dir: Path) -> None:
+    attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
+    write_expected_edge_candidate_pvalues(attempts, result_dir / "pvalues.csv")
 
 
 def _write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, str]]) -> None:

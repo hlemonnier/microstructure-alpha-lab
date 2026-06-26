@@ -79,9 +79,13 @@ def verify_result_artifacts(result_dir: Path | str, *, strict_metadata: bool = T
         checked += 1
         errors.extend(_verify_audit_csv(path))
 
+    pvalues = result_dir / "pvalues.csv"
+    if pvalues.exists():
+        errors.extend(_verify_pvalues(pvalues))
+
     corrections = result_dir / "pvalue_corrections.csv"
     if corrections.exists():
-        errors.extend(_verify_pvalue_corrections(corrections))
+        errors.extend(_verify_pvalue_corrections(corrections, pvalues_path=pvalues if pvalues.exists() else None))
 
     return ResultVerification(
         result_dir=result_dir,
@@ -155,7 +159,36 @@ def _verify_audit_csv(path: Path) -> list[str]:
     return errors
 
 
-def _verify_pvalue_corrections(path: Path) -> list[str]:
+def _verify_pvalues(path: Path) -> list[str]:
+    with path.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    if not rows:
+        return [f"{path.name}: no p-value rows"]
+    required = {"hypothesis_id", "metric", "p_value"}
+    missing = required - set(rows[0])
+    if missing:
+        return [f"{path.name}: missing columns {sorted(missing)}"]
+    errors: list[str] = []
+    seen: set[str] = set()
+    for index, row in enumerate(rows, start=2):
+        hypothesis_id = str(row.get("hypothesis_id") or "").strip()
+        if not hypothesis_id:
+            errors.append(f"{path.name}:{index}: missing hypothesis_id")
+            continue
+        if hypothesis_id in seen:
+            errors.append(f"{path.name}:{index}: duplicate hypothesis_id {hypothesis_id}")
+        seen.add(hypothesis_id)
+        try:
+            p_value = float(str(row.get("p_value") or ""))
+        except ValueError:
+            errors.append(f"{path.name}:{index}: p_value is not parseable")
+            continue
+        if not 0.0 <= p_value <= 1.0:
+            errors.append(f"{path.name}:{index}: p_value outside [0, 1]")
+    return errors
+
+
+def _verify_pvalue_corrections(path: Path, *, pvalues_path: Path | None = None) -> list[str]:
     with path.open(newline="") as handle:
         rows = list(csv.DictReader(handle))
     if not rows:
@@ -164,7 +197,34 @@ def _verify_pvalue_corrections(path: Path) -> list[str]:
     missing = required - set(rows[0])
     if missing:
         return [f"{path.name}: missing columns {sorted(missing)}"]
-    return []
+    errors: list[str] = []
+    corrected_ids = {str(row.get("hypothesis_id") or "").strip() for row in rows if row.get("hypothesis_id")}
+    for index, row in enumerate(rows, start=2):
+        try:
+            p_value = float(str(row.get("p_value") or ""))
+            bonferroni = float(str(row.get("bonferroni_p_value") or ""))
+            bh_adjusted = float(str(row.get("bh_adjusted_p_value") or ""))
+        except ValueError:
+            errors.append(f"{path.name}:{index}: numeric p-value columns are not parseable")
+            continue
+        if not all(0.0 <= value <= 1.0 for value in (p_value, bonferroni, bh_adjusted)):
+            errors.append(f"{path.name}:{index}: adjusted p-value outside [0, 1]")
+    if pvalues_path is not None and pvalues_path.exists():
+        with pvalues_path.open(newline="") as handle:
+            pvalue_rows = list(csv.DictReader(handle))
+        pvalue_ids = {str(row.get("hypothesis_id") or "").strip() for row in pvalue_rows if row.get("hypothesis_id")}
+        if corrected_ids != pvalue_ids:
+            missing_ids = sorted(pvalue_ids - corrected_ids)
+            extra_ids = sorted(corrected_ids - pvalue_ids)
+            if missing_ids:
+                preview = ", ".join(missing_ids[:10])
+                suffix = "" if len(missing_ids) <= 10 else f", +{len(missing_ids) - 10} more"
+                errors.append(f"{path.name}: missing corrections for pvalues.csv IDs: {preview}{suffix}")
+            if extra_ids:
+                preview = ", ".join(extra_ids[:10])
+                suffix = "" if len(extra_ids) <= 10 else f", +{len(extra_ids) - 10} more"
+                errors.append(f"{path.name}: correction IDs not present in pvalues.csv: {preview}{suffix}")
+    return errors
 
 
 def _verify_experiment_ledger(path: Path) -> list[str]:
