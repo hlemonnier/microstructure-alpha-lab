@@ -84,7 +84,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Run latency grid: `0ms`, `250ms`, `500ms`, `1000ms`, `2000ms`.
 - [x] Run fee-near-actual sensitivity grid as a promotion gate.
 - [x] Add `make verify-results` or an equivalent single verifier script for checked-in artifacts.
-- [x] Add machine-readable evidence-gate checker for remaining cloud/live/L2 execution TODOs.
+- [x] Add machine-readable evidence-gate checker for remaining cloud/live/final-holdout/L2 execution TODOs.
 - [x] Add regime splits by time of day, weekday/weekend, funding windows, trend/chop, and stress/high-volume days.
 
 ## Risk, Portfolio, And Capacity

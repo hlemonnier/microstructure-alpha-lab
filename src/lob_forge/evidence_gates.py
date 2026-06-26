@@ -76,6 +76,8 @@ def evaluate_remaining_evidence_gates(
     transformer_artifact: Path | str = "results/model_experiments/sequence_transformer_results.csv",
     tcn_artifact: Path | str = "results/model_experiments/sequence_tcn_results.csv",
     pretraining_artifact: Path | str = "results/model_experiments/self_supervised_pretraining.csv",
+    final_holdout_result: Path | str = "results/final_holdout/final_holdout_result.json",
+    research_manifest: Path | str = "artifacts/research_manifest.json",
 ) -> EvidenceGateReport:
     resolved_l2_paths = _resolve_l2_paths(l2_path=l2_path, l2_paths=l2_paths)
     resolved_kelly_artifacts = _resolve_kelly_artifacts(
@@ -96,6 +98,10 @@ def evaluate_remaining_evidence_gates(
             plan_path=Path(full_plan),
             result_dir=Path(full_result_dir),
             min_audit_fold_count=min_fold_count,
+        ),
+        _final_holdout_gate(
+            result_path=Path(final_holdout_result),
+            research_manifest_path=Path(research_manifest),
         ),
         _shadow_gate(
             simulated_path=Path(simulated_fills),
@@ -130,6 +136,82 @@ def evaluate_remaining_evidence_gates(
         ),
     )
     return EvidenceGateReport(gates=gates)
+
+
+def _final_holdout_gate(*, result_path: Path, research_manifest_path: Path) -> EvidenceGate:
+    todo = "Run and check in the declared immutable final holdout result artifact for the full selected candidate."
+    if not result_path.exists() or result_path.stat().st_size == 0:
+        manifest_status = "unknown"
+        manifest_reason = ""
+        if research_manifest_path.exists():
+            try:
+                manifest_payload = json.loads(research_manifest_path.read_text())
+                final_holdout = manifest_payload.get("final_holdout", {})
+                if isinstance(final_holdout, dict):
+                    manifest_status = str(final_holdout.get("status", "unknown"))
+                    manifest_reason = str(final_holdout.get("reason", ""))
+            except Exception as exc:
+                manifest_status = f"research_manifest_error={type(exc).__name__}"
+        evidence = (
+            f"result_exists=0 result_path={result_path} research_manifest={research_manifest_path} "
+            f"manifest_final_holdout_status={manifest_status} reason={manifest_reason or 'none'}"
+        )
+        return EvidenceGate(
+            "immutable_final_holdout",
+            todo,
+            "not_ready",
+            False,
+            evidence,
+            "after the full study selects one frozen candidate, run final-holdout-rule with a pre-registered candidate hash",
+        )
+    try:
+        payload = json.loads(result_path.read_text())
+    except Exception as exc:
+        return EvidenceGate(
+            "immutable_final_holdout",
+            todo,
+            "failed",
+            False,
+            f"result_path={result_path} parse_error={type(exc).__name__}",
+            "fix the final holdout JSON artifact and rerun the evidence gate",
+        )
+    manifest = payload.get("manifest", {})
+    metrics = payload.get("metrics", {})
+    candidate_sha256 = str(payload.get("candidate_sha256", ""))
+    manifest_candidate_sha256 = str(manifest.get("candidate_sha256", "")) if isinstance(manifest, dict) else ""
+    metrics_candidate_sha256 = str(metrics.get("candidate_sha256", "")) if isinstance(metrics, dict) else ""
+    final_evaluation = payload.get("final_evaluation") is True
+    stateful_simulator = bool(metrics.get("stateful_simulator")) if isinstance(metrics, dict) else False
+    rows = _numeric_metric(metrics, "rows")
+    checks = {
+        "final_evaluation": final_evaluation,
+        "candidate_sha256": bool(re.fullmatch(r"[0-9a-fA-F]{64}", candidate_sha256)),
+        "manifest_candidate_match": bool(candidate_sha256 and candidate_sha256 == manifest_candidate_sha256),
+        "metrics_candidate_match": bool(candidate_sha256 and candidate_sha256 == metrics_candidate_sha256),
+        "stateful_simulator": stateful_simulator,
+        "rows": rows > 0,
+    }
+    evidence = (
+        f"result_path={result_path} "
+        f"final_evaluation={int(final_evaluation)} "
+        f"candidate_sha256={int(checks['candidate_sha256'])} "
+        f"manifest_candidate_match={int(checks['manifest_candidate_match'])} "
+        f"metrics_candidate_match={int(checks['metrics_candidate_match'])} "
+        f"stateful_simulator={int(stateful_simulator)} rows={rows:.12g}"
+    )
+    if all(checks.values()):
+        return EvidenceGate(
+            "immutable_final_holdout", todo, "passed", True, evidence, "checkbox can be marked complete"
+        )
+    failed = ",".join(name for name, passed in checks.items() if not passed)
+    return EvidenceGate(
+        "immutable_final_holdout",
+        todo,
+        "failed",
+        False,
+        f"{evidence} failed_checks={failed}",
+        "rerun final-holdout-rule from the verified manifest and frozen candidate, preserving the immutable result",
+    )
 
 
 def format_evidence_gate_report(report: EvidenceGateReport, *, output_format: str = "text") -> str:
@@ -577,6 +659,15 @@ def _truthy_csv_value(value: str | None) -> bool:
         return bool(int(float(normalized)))
     except ValueError:
         return False
+
+
+def _numeric_metric(metrics: object, key: str) -> float:
+    if not isinstance(metrics, dict):
+        return 0.0
+    try:
+        return float(metrics.get(key, 0.0) or 0.0)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 def _resolve_l2_paths(*, l2_path: Path | str | None, l2_paths: Sequence[Path | str] | None) -> tuple[Path, ...]:

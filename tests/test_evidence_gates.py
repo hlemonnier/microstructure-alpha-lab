@@ -1,4 +1,5 @@
 import csv
+import json
 from pathlib import Path
 
 from lob_forge.evidence_gates import evaluate_remaining_evidence_gates, format_evidence_gate_report
@@ -36,6 +37,7 @@ def test_evidence_gates_report_missing_remaining_artifacts(tmp_path: Path) -> No
     assert [gate.gate_id for gate in report.gates] == [
         "capped_60day_btc_eth",
         "full_60_90day_cloud",
+        "immutable_final_holdout",
         "real_shadow_fill_validation",
         "kelly_variance_stability",
         "sequence_transformer_tcn_experiments",
@@ -46,6 +48,9 @@ def test_evidence_gates_report_missing_remaining_artifacts(tmp_path: Path) -> No
     assert any(gate.status in {"missing", "not_ready"} for gate in report.gates)
     shadow_gate = next(gate for gate in report.gates if gate.gate_id == "real_shadow_fill_validation")
     assert "fetch-observed-fills" in shadow_gate.next_action
+    final_gate = next(gate for gate in report.gates if gate.gate_id == "immutable_final_holdout")
+    assert final_gate.status == "not_ready"
+    assert "result_exists=0" in final_gate.evidence
 
 
 def test_evidence_gate_csv_format_quotes_commas(tmp_path: Path) -> None:
@@ -72,7 +77,38 @@ def test_evidence_gate_csv_format_quotes_commas(tmp_path: Path) -> None:
     csv_text = format_evidence_gate_report(report, output_format="csv")
 
     assert csv_text.splitlines()[0] == "gate_id,status,passed,evidence,next_action,todo_text"
-    assert len(list(csv.DictReader(csv_text.splitlines()))) == 6
+    assert len(list(csv.DictReader(csv_text.splitlines()))) == 7
+
+
+def test_immutable_final_holdout_gate_passes_verified_payload(tmp_path: Path) -> None:
+    capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
+    full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")
+    audit = tmp_path / "audit.csv"
+    kelly = tmp_path / "kelly.csv"
+    final_holdout = tmp_path / "final_holdout.json"
+    _write_audit(audit, fold_count=4, acceptance_passed=0, rejection_reasons="fold count too low")
+    _write_kelly(kelly, [1.0, -10.0, 2.0, 0.0])
+    _write_final_holdout_result(final_holdout)
+
+    report = evaluate_remaining_evidence_gates(
+        capped_plan=capped_plan,
+        capped_result_dir=capped_plan.parent,
+        full_plan=full_plan,
+        full_result_dir=full_plan.parent,
+        final_holdout_result=final_holdout,
+        simulated_fills=tmp_path / "simulated.csv",
+        shadow_decisions=tmp_path / "shadow.csv",
+        kelly_artifact=kelly,
+        kelly_min_observations=4,
+        kelly_window_size=2,
+        baseline_audit=audit,
+        l2_path=tmp_path / "missing_l2.csv",
+    )
+
+    gate = next(gate for gate in report.gates if gate.gate_id == "immutable_final_holdout")
+    assert gate.passed
+    assert "final_evaluation=1" in gate.evidence
+    assert "stateful_simulator=1" in gate.evidence
 
 
 def test_evidence_gates_accept_bybit_l2_candidate_when_okx_missing(tmp_path: Path) -> None:
@@ -412,6 +448,28 @@ def _write_kelly(path: Path, values: list[float]) -> None:
         writer.writeheader()
         for index, value in enumerate(values, start=1):
             writer.writerow({"fold": index, "test_net_pnl": value})
+
+
+def _write_final_holdout_result(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    candidate_sha256 = "a" * 64
+    path.write_text(
+        json.dumps(
+            {
+                "candidate_sha256": candidate_sha256,
+                "final_evaluation": True,
+                "manifest": {"candidate_sha256": candidate_sha256},
+                "metrics": {
+                    "candidate_sha256": candidate_sha256,
+                    "rows": 10,
+                    "stateful_simulator": True,
+                    "net_pnl": -1.25,
+                },
+            },
+            sort_keys=True,
+        )
+        + "\n"
+    )
 
 
 def _write_simulated_fills(path: Path, rows: list[dict[str, str]]) -> None:

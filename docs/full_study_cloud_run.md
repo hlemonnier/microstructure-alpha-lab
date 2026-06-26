@@ -186,7 +186,7 @@ Before paying for the run, check the operational state:
 make external-readiness
 ```
 
-This check is expected to stay red until Modal is authenticated, the full cloud study has completed, and real paper/live fills have been imported.
+This check is expected to stay red until Modal is authenticated, the full cloud study has completed, the immutable final holdout artifact has been written for the frozen selected candidate, and real paper/live fills have been imported.
 
 If the run is interrupted, rerun the same command. The script keeps raw archives, skips existing combined feature files, skips completed result/audit pairs, and daily feature builds use `.done` markers.
 
