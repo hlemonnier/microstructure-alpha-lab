@@ -16,6 +16,7 @@ from lob_forge.ml_models import (
     evaluate_model_readiness,
 )
 from lob_forge.portfolio import evaluate_oos_variance_stability
+from lob_forge.provider_order_ids import read_order_plan_client_id_map
 from lob_forge.study_status import evaluate_expected_edge_study_status
 
 
@@ -375,9 +376,13 @@ def _shadow_gate(
 ) -> EvidenceGate:
     todo = "Run simulated-vs-paper/live fill validation on real shadow or paper observations."
     if not simulated_path.exists() or not shadow_path.exists():
-        existing_order_plans, nonempty_order_plans, order_plan_rows, missing_order_plan_names = _order_plan_evidence(
-            order_plan_paths
-        )
+        (
+            existing_order_plans,
+            nonempty_order_plans,
+            order_plan_rows,
+            missing_order_plan_names,
+            invalid_order_plan_names,
+        ) = _order_plan_evidence(order_plan_paths)
         return EvidenceGate(
             "real_shadow_fill_validation",
             todo,
@@ -386,12 +391,17 @@ def _shadow_gate(
             f"simulated_exists={int(simulated_path.exists())} shadow_exists={int(shadow_path.exists())} "
             f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
             f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
-            f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names}",
+            f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names} "
+            f"invalid_order_plans={invalid_order_plan_names}",
             "run edge-shadow-decisions, generate paper-order-plan, submit-paper-orders with --execute on demo/testnet, fetch order/fill history, normalize/import observations, then validate",
         )
-    existing_order_plans, nonempty_order_plans, order_plan_rows, missing_order_plan_names = _order_plan_evidence(
-        order_plan_paths
-    )
+    (
+        existing_order_plans,
+        nonempty_order_plans,
+        order_plan_rows,
+        missing_order_plan_names,
+        invalid_order_plan_names,
+    ) = _order_plan_evidence(order_plan_paths)
     try:
         decisions = read_shadow_decisions(shadow_path)
         observed = [decision for decision in decisions if has_observed_fill(decision)]
@@ -410,7 +420,8 @@ def _shadow_gate(
             "matched=0 validation_passed=0 "
             f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
             f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
-            f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names}"
+            f"order_plan_rows={order_plan_rows} missing_order_plans={missing_order_plan_names} "
+            f"invalid_order_plans={invalid_order_plan_names}"
         )
         next_action = (
             "generate paper-order-plan, run submit-paper-orders with --execute on Bybit/OKX demo or Binance USD-M testnet, fetch order/fill history, normalize/import observations, then rerun validate-shadow-fills"
@@ -468,21 +479,32 @@ def _default_shadow_order_plan_paths(shadow_path: Path) -> tuple[Path, ...]:
     return tuple(root / filename for filename in DEFAULT_SHADOW_ORDER_PLAN_FILENAMES)
 
 
-def _order_plan_evidence(order_plan_paths: Sequence[Path]) -> tuple[int, int, int, str]:
-    rows_by_path = tuple(_count_order_plan_rows(path) for path in order_plan_paths)
+def _order_plan_evidence(order_plan_paths: Sequence[Path]) -> tuple[int, int, int, str, str]:
+    rows_and_errors = tuple(_count_order_plan_rows(path) for path in order_plan_paths)
+    rows_by_path = tuple(rows for rows, _error in rows_and_errors)
     existing_order_plans = sum(1 for path in order_plan_paths if path.exists())
     nonempty_order_plans = sum(1 for rows in rows_by_path if rows > 0)
     missing_order_plan_names = ",".join(path.name for path in order_plan_paths if not path.exists()) or "none"
-    return existing_order_plans, nonempty_order_plans, sum(rows_by_path), missing_order_plan_names
+    invalid_order_plan_names = (
+        ",".join(path.name for path, (_rows, error) in zip(order_plan_paths, rows_and_errors) if error is not None)
+        or "none"
+    )
+    return (
+        existing_order_plans,
+        nonempty_order_plans,
+        sum(rows_by_path),
+        missing_order_plan_names,
+        invalid_order_plan_names,
+    )
 
 
-def _count_order_plan_rows(path: Path) -> int:
+def _count_order_plan_rows(path: Path) -> tuple[int, str | None]:
     if not path.exists() or not path.is_file():
-        return 0
-    if path.suffix == ".csv":
-        with path.open(newline="") as handle:
-            return len(list(csv.DictReader(handle)))
-    return sum(1 for line in path.read_text().splitlines() if line.strip())
+        return 0, None
+    try:
+        return len(read_order_plan_client_id_map(path)), None
+    except Exception as exc:
+        return 0, f"{type(exc).__name__}: {exc}"
 
 
 def _kelly_gate(

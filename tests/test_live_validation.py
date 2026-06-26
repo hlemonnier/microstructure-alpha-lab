@@ -17,6 +17,7 @@ from lob_forge.live_validation import (
     write_observed_fill_template,
     write_simulated_fill_predictions,
 )
+from lob_forge.paper_orders import write_paper_order_plan
 
 
 def test_shadow_decision_logger_round_trips(tmp_path: Path) -> None:
@@ -517,6 +518,118 @@ def test_normalize_bybit_demo_execution_export_merges_into_shadow_decisions(tmp_
     assert merge_report.matched_decisions == 1
     assert decisions[0].observed_fill_size == 1.0
     assert abs((decisions[0].observed_fill_price or 0.0) - 100.75) < 1e-9
+
+
+def test_normalize_observed_fills_maps_provider_client_id_with_order_plan(tmp_path: Path) -> None:
+    decision_id = "BTCUSDT-2023-05-17-f1-1684313188997-0"
+    shadow_path = tmp_path / "shadow.csv"
+    plan_path = tmp_path / "bybit_order_plan.jsonl"
+    raw_path = tmp_path / "bybit_orders.json"
+    observed_path = tmp_path / "observed.csv"
+    output_path = tmp_path / "shadow_with_observed.csv"
+    append_shadow_decision(
+        shadow_path,
+        ShadowDecision(
+            decision_id=decision_id,
+            timestamp_ms=1700000000000,
+            venue="bybit",
+            symbol="BTCUSDT",
+            model_name="ridge_expected_edge",
+            predicted_side=1,
+            predicted_edge_bps=0.8,
+            order_type="paper_limit",
+            intended_price=100.0,
+            intended_size=1.0,
+        ),
+    )
+    write_paper_order_plan(shadow_path=shadow_path, output_path=plan_path, provider="bybit")
+    plan_row = json.loads(plan_path.read_text().splitlines()[0])
+    client_order_id = plan_row["client_order_id"]
+    raw_path.write_text(
+        json.dumps(
+            {
+                "result": {
+                    "list": [
+                        {
+                            "orderLinkId": client_order_id,
+                            "orderId": "bybit-order-1",
+                            "symbol": "BTCUSDT",
+                            "execPrice": "100.0",
+                            "execQty": "0.5",
+                        },
+                        {
+                            "orderLinkId": "unrelated-account-order",
+                            "orderId": "bybit-order-2",
+                            "symbol": "BTCUSDT",
+                            "execPrice": "101.0",
+                            "execQty": "0.5",
+                        },
+                    ]
+                }
+            }
+        )
+    )
+
+    normalize_report = normalize_observed_fills(
+        provider="bybit",
+        input_path=raw_path,
+        output_path=observed_path,
+        order_plan_path=plan_path,
+    )
+    observed_rows = list(csv.DictReader(observed_path.open()))
+    merge_report = merge_observed_fills_into_shadow_decisions(
+        shadow_path=shadow_path,
+        observed_path=observed_path,
+        output_path=output_path,
+        order_plan_path=plan_path,
+    )
+    decisions = read_shadow_decisions(output_path)
+
+    assert normalize_report.output_rows == 1
+    assert normalize_report.skipped_rows == 1
+    assert observed_rows[0]["decision_id"] == decision_id
+    assert observed_rows[0]["client_order_id"] == client_order_id
+    assert merge_report.matched_decisions == 1
+    assert decisions[0].observed_fill_price == 100.0
+    assert decisions[0].observed_fill_size == 0.5
+
+
+def test_import_observed_fills_maps_manual_client_order_id_with_order_plan(tmp_path: Path) -> None:
+    decision_id = "BTCUSDT-2023-05-17-f1-1684313188997-0"
+    shadow_path = tmp_path / "shadow.csv"
+    plan_path = tmp_path / "bybit_order_plan.jsonl"
+    observed_path = tmp_path / "observed.csv"
+    output_path = tmp_path / "shadow_with_observed.csv"
+    append_shadow_decision(
+        shadow_path,
+        ShadowDecision(
+            decision_id=decision_id,
+            timestamp_ms=1700000000000,
+            venue="bybit",
+            symbol="BTCUSDT",
+            model_name="ridge_expected_edge",
+            predicted_side=1,
+            predicted_edge_bps=0.8,
+            order_type="paper_limit",
+            intended_price=100.0,
+            intended_size=1.0,
+        ),
+    )
+    write_paper_order_plan(shadow_path=shadow_path, output_path=plan_path, provider="bybit")
+    client_order_id = json.loads(plan_path.read_text().splitlines()[0])["client_order_id"]
+    observed_path.write_text(f"client_order_id,avgPrice,cumExecQty\n{client_order_id},100.0,0.25\n")
+
+    report = merge_observed_fills_into_shadow_decisions(
+        shadow_path=shadow_path,
+        observed_path=observed_path,
+        output_path=output_path,
+        order_plan_path=plan_path,
+    )
+    decisions = read_shadow_decisions(output_path)
+
+    assert report.matched_decisions == 1
+    assert decisions[0].observed_fill_price == 100.0
+    assert decisions[0].observed_fill_size == 0.25
 
 
 def test_normalize_bybit_order_history_keeps_terminal_no_fill_observation(tmp_path: Path) -> None:

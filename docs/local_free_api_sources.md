@@ -140,12 +140,14 @@ The wrapper above is the preferred executable path for Bybit, OKX, and Binance U
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
   --provider bybit \
   --input results/shadow_validation/raw_bybit_orders.json \
-  --output results/shadow_validation/observed_fills.csv
+  --output results/shadow_validation/observed_fills.csv \
+  --order-plan results/shadow_validation/bybit_order_plan.jsonl
 
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli import-observed-fills \
   --shadow results/shadow_validation/shadow_decisions.csv \
   --observed results/shadow_validation/observed_fills.csv \
-  --output results/shadow_validation/shadow_decisions_observed.csv
+  --output results/shadow_validation/shadow_decisions_observed.csv \
+  --order-plan results/shadow_validation/bybit_order_plan.jsonl
 
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli validate-shadow-fills \
   --simulated results/shadow_validation/simulated_fills.csv \

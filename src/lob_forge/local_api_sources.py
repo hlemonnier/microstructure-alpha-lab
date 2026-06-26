@@ -83,7 +83,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "results/shadow_validation/observed_fills.csv",
             "results/shadow_validation/shadow_decisions_observed.csv",
         ),
-        minimum_local_proof="non-empty normalized Bybit fills matched back to shadow decision_id/orderLinkId",
+        minimum_local_proof="non-empty normalized Bybit fills matched back to shadow decision_id through orderLinkId/client_order_id",
     ),
     LocalApiSource(
         source_id="okx_demo_fills",
@@ -123,7 +123,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "results/shadow_validation/observed_fills.csv",
             "results/shadow_validation/shadow_decisions_observed.csv",
         ),
-        minimum_local_proof="non-empty normalized OKX fills matched back to shadow decision_id/clOrdId",
+        minimum_local_proof="non-empty normalized OKX fills matched back to shadow decision_id through clOrdId/client_order_id",
     ),
     LocalApiSource(
         source_id="binance_spot_testnet_fills",
@@ -190,7 +190,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
             "results/shadow_validation/raw_binance_futures_order_trade_updates.jsonl",
             "results/shadow_validation/observed_fills.csv",
         ),
-        minimum_local_proof="USD-M futures testnet allOrders or ORDER_TRADE_UPDATE rows normalize and match decision_id/newClientOrderId",
+        minimum_local_proof="USD-M futures testnet allOrders or ORDER_TRADE_UPDATE rows normalize and match decision_id through newClientOrderId/client_order_id",
     ),
     LocalApiSource(
         source_id="alpaca_paper_fills",

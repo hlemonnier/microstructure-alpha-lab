@@ -278,7 +278,8 @@ The wrapper optionally submits provider demo/testnet orders, fetches provider or
 PYTHONPATH=src python3 -m lob_forge.cli normalize-observed-fills \
   --provider bybit \
   --input results/shadow_validation/raw_bybit_orders.json \
-  --output results/shadow_validation/observed_fills.csv
+  --output results/shadow_validation/observed_fills.csv \
+  --order-plan results/shadow_validation/bybit_order_plan.jsonl
 ```
 
 Import observed fills, then run the real gate:
@@ -287,7 +288,8 @@ Import observed fills, then run the real gate:
 PYTHONPATH=src python3 -m lob_forge.cli import-observed-fills \
   --shadow results/shadow_validation/shadow_decisions.csv \
   --observed results/shadow_validation/observed_fills.csv \
-  --output results/shadow_validation/shadow_decisions_observed.csv
+  --output results/shadow_validation/shadow_decisions_observed.csv \
+  --order-plan results/shadow_validation/bybit_order_plan.jsonl
 ```
 
 Run the real gate only after `observed_fill_price` and `observed_fill_size` are populated from shadow/paper observations:

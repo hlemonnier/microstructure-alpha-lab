@@ -61,8 +61,11 @@ def test_external_readiness_counts_shadow_order_plan_files(tmp_path: Path) -> No
     _write_shadow(shadow, observed_size="")
     _write_simulated(simulated)
     template.write_text("decision_id,client_order_id\n")
-    bybit_plan.write_text('{"decision_id":"d1"}\n{"decision_id":"d2"}\n')
-    okx_plan.write_text('{"decision_id":"d1"}\n')
+    bybit_plan.write_text(
+        '{"provider":"bybit","decision_id":"d1","client_order_id":"d1","payload":{"orderLinkId":"d1"}}\n'
+        '{"provider":"bybit","decision_id":"d2","client_order_id":"d2","payload":{"orderLinkId":"d2"}}\n'
+    )
+    okx_plan.write_text('{"provider":"okx","decision_id":"d1","client_order_id":"d1","payload":{"clOrdId":"d1"}}\n')
 
     report = evaluate_external_gate_readiness(
         project_root=tmp_path,
@@ -82,6 +85,7 @@ def test_external_readiness_counts_shadow_order_plan_files(tmp_path: Path) -> No
     assert "nonempty_order_plans=2/3" in check.evidence
     assert "order_plan_rows=3" in check.evidence
     assert "missing_order_plans=binance_usdm_order_plan.jsonl" in check.evidence
+    assert "invalid_order_plans=none" in check.evidence
 
 
 def test_external_readiness_rejects_packages_with_excluded_nested_entries(tmp_path: Path) -> None:

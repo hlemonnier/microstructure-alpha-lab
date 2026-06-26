@@ -19,6 +19,7 @@ from lob_forge.observed_fill_fetch import (
     _url,
 )
 from lob_forge.paper_orders import SUPPORTED_PAPER_ORDER_PLAN_PROVIDERS, PaperOrderInstruction
+from lob_forge.provider_order_ids import provider_payload_client_order_id, validate_provider_client_order_id
 
 HttpPostJson = Callable[[str, Mapping[str, str], Optional[str], float], Any]
 
@@ -131,6 +132,7 @@ def _submit_or_preview(
         return {
             "provider": provider,
             "decision_id": instruction.decision_id,
+            "client_order_id": instruction.client_order_id,
             "endpoint": instruction.endpoint,
             "symbol": instruction.symbol,
             "dry_run": True,
@@ -170,6 +172,7 @@ def _submit_or_preview(
     return {
         "provider": provider,
         "decision_id": instruction.decision_id,
+        "client_order_id": instruction.client_order_id,
         "endpoint": instruction.endpoint,
         "symbol": instruction.symbol,
         "dry_run": False,
@@ -289,6 +292,8 @@ def _read_plan_csv(path: Path) -> list[PaperOrderInstruction]:
                     PaperOrderInstruction(
                         provider=row["provider"],
                         decision_id=row["decision_id"],
+                        client_order_id=row.get("client_order_id")
+                        or provider_payload_client_order_id(payload, provider=row["provider"]),
                         method=row["method"],
                         endpoint=row["endpoint"],
                         symbol=row["symbol"],
@@ -305,9 +310,11 @@ def _instruction_from_mapping(row: Mapping[str, Any]) -> PaperOrderInstruction:
     payload = row.get("payload")
     if not isinstance(payload, dict):
         raise ValueError("payload must be an object")
+    provider = str(row["provider"])
     return PaperOrderInstruction(
-        provider=str(row["provider"]),
+        provider=provider,
         decision_id=str(row["decision_id"]),
+        client_order_id=str(row.get("client_order_id") or provider_payload_client_order_id(payload, provider=provider)),
         method=str(row["method"]),
         endpoint=str(row["endpoint"]),
         symbol=str(row["symbol"]),
@@ -319,6 +326,7 @@ def _instruction_from_mapping(row: Mapping[str, Any]) -> PaperOrderInstruction:
 def _validate_instruction(instruction: PaperOrderInstruction, *, provider: str) -> None:
     if not instruction.decision_id:
         raise ValueError("plan row has empty decision_id")
+    validate_provider_client_order_id(provider, instruction.client_order_id)
     expected_endpoint = {
         "bybit": "/v5/order/create",
         "okx": "/api/v5/trade/order",
@@ -334,11 +342,11 @@ def _validate_instruction(instruction: PaperOrderInstruction, *, provider: str) 
         raise ValueError(
             f"plan row {instruction.decision_id} endpoint={instruction.endpoint}; expected {expected_endpoint}"
         )
-    payload_decision_id = _payload_decision_id(instruction.payload, provider=provider)
-    if payload_decision_id != instruction.decision_id:
+    payload_client_order_id = provider_payload_client_order_id(instruction.payload, provider=provider)
+    if payload_client_order_id != instruction.client_order_id:
         raise ValueError(
-            f"plan row {instruction.decision_id} payload client order id={payload_decision_id!r}; "
-            "expected it to equal decision_id"
+            f"plan row {instruction.decision_id} payload client order id={payload_client_order_id!r}; "
+            f"expected client_order_id={instruction.client_order_id!r}"
         )
     payload_symbol = _payload_symbol(instruction.payload, provider=provider)
     if payload_symbol != instruction.symbol:
@@ -349,20 +357,15 @@ def _validate_instruction(instruction: PaperOrderInstruction, *, provider: str) 
 
 def _validate_instructions(instructions: list[PaperOrderInstruction], *, provider: str) -> None:
     seen_decision_ids: set[str] = set()
+    seen_client_order_ids: set[str] = set()
     for instruction in instructions:
         _validate_instruction(instruction, provider=provider)
         if instruction.decision_id in seen_decision_ids:
             raise ValueError(f"duplicate decision_id in order plan: {instruction.decision_id}")
         seen_decision_ids.add(instruction.decision_id)
-
-
-def _payload_decision_id(payload: Mapping[str, object], *, provider: str) -> str:
-    key = {
-        "bybit": "orderLinkId",
-        "okx": "clOrdId",
-        "binance": "newClientOrderId",
-    }[provider]
-    return str(payload.get(key, ""))
+        if instruction.client_order_id in seen_client_order_ids:
+            raise ValueError(f"duplicate client_order_id in order plan: {instruction.client_order_id}")
+        seen_client_order_ids.add(instruction.client_order_id)
 
 
 def _payload_symbol(payload: Mapping[str, object], *, provider: str) -> str:

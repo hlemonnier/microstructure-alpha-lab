@@ -17,6 +17,7 @@ from lob_forge.execution_sim import (
     simulate_taker_latency_order,
     validate_simulated_vs_live_fills,
 )
+from lob_forge.provider_order_ids import read_order_plan_client_id_map
 
 
 SHADOW_DECISION_COLUMNS = [
@@ -44,6 +45,13 @@ SIMULATED_FILL_COLUMNS = [
 
 OBSERVED_DECISION_ID_COLUMNS = (
     "decision_id",
+    "client_order_id",
+    "clientOrderId",
+    "order_link_id",
+    "orderLinkId",
+    "clOrdId",
+)
+OBSERVED_CLIENT_ORDER_ID_COLUMNS = (
     "client_order_id",
     "clientOrderId",
     "order_link_id",
@@ -240,9 +248,11 @@ def merge_observed_fills_into_shadow_decisions(
     shadow_path: Path | str,
     observed_path: Path | str,
     output_path: Path | str,
+    order_plan_path: Path | str | None = None,
 ) -> ObservedFillMergeReport:
     decisions = read_shadow_decisions(shadow_path)
-    observed = _read_observed_fill_aggregates(observed_path)
+    client_id_map = read_order_plan_client_id_map(order_plan_path) if order_plan_path is not None else None
+    observed = _read_observed_fill_aggregates(observed_path, client_id_map=client_id_map)
     matched_ids: set[str] = set()
     updated: list[ShadowDecision] = []
 
@@ -314,10 +324,14 @@ def normalize_observed_fills(
     provider: str,
     input_path: Path | str,
     output_path: Path | str,
+    order_plan_path: Path | str | None = None,
 ) -> ObservedFillNormalizationReport:
     provider = provider.lower()
     if provider not in SUPPORTED_OBSERVED_FILL_PROVIDERS:
         raise ValueError(f"provider must be one of: {', '.join(SUPPORTED_OBSERVED_FILL_PROVIDERS)}")
+    client_id_map = (
+        read_order_plan_client_id_map(order_plan_path, provider=provider) if order_plan_path is not None else None
+    )
     raw_rows = _read_raw_provider_rows(Path(input_path))
     output_rows: list[dict[str, str]] = []
     seen_keys: set[str] = set()
@@ -329,12 +343,16 @@ def normalize_observed_fills(
             skipped_rows += 1
             continue
         for normalized in normalized_rows:
-            key = _dedupe_key(provider, normalized)
+            mapped = _apply_client_id_map(normalized, client_id_map)
+            if mapped is None:
+                skipped_rows += 1
+                continue
+            key = _dedupe_key(provider, mapped)
             if key in seen_keys:
                 skipped_rows += 1
                 continue
             seen_keys.add(key)
-            output_rows.append(normalized)
+            output_rows.append(mapped)
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -636,7 +654,11 @@ def format_observed_fill_normalization_report(
     )
 
 
-def _read_observed_fill_aggregates(path: Path | str) -> dict[str, _ObservedFillAggregate]:
+def _read_observed_fill_aggregates(
+    path: Path | str,
+    *,
+    client_id_map: Mapping[str, str] | None = None,
+) -> dict[str, _ObservedFillAggregate]:
     aggregates: dict[str, _ObservedFillAggregate] = {}
     with Path(path).open(newline="") as handle:
         reader = csv.DictReader(handle)
@@ -644,6 +666,11 @@ def _read_observed_fill_aggregates(path: Path | str) -> dict[str, _ObservedFillA
             raise ValueError("observed fill CSV has no header")
         for row_number, row in enumerate(reader, start=2):
             decision_id = _first_present(row, OBSERVED_DECISION_ID_COLUMNS)
+            client_order_id = _first_present(row, OBSERVED_CLIENT_ORDER_ID_COLUMNS)
+            if client_id_map is not None:
+                lookup_id = client_order_id or decision_id
+                if lookup_id is not None:
+                    decision_id = client_id_map.get(lookup_id, decision_id)
             if not decision_id:
                 raise ValueError(f"observed fill row {row_number} missing decision/client order id")
             price = _optional_float_from_aliases(row, OBSERVED_FILL_PRICE_COLUMNS)
@@ -667,6 +694,22 @@ def _read_observed_fill_aggregates(path: Path | str) -> dict[str, _ObservedFillA
                 aggregate.realized_pnl += realized_pnl
                 aggregate.has_realized_pnl = True
     return aggregates
+
+
+def _apply_client_id_map(
+    normalized: dict[str, str],
+    client_id_map: Mapping[str, str] | None,
+) -> dict[str, str] | None:
+    if client_id_map is None:
+        return normalized
+    client_order_id = normalized.get("client_order_id") or normalized.get("decision_id", "")
+    decision_id = client_id_map.get(client_order_id)
+    if decision_id is None:
+        return None
+    mapped = dict(normalized)
+    mapped["decision_id"] = decision_id
+    mapped["client_order_id"] = client_order_id
+    return mapped
 
 
 def _read_raw_provider_rows(path: Path) -> list[dict[str, Any]]:
@@ -1016,6 +1059,7 @@ def _normalize_alpaca_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
 def _normalized_fill_row(
     *,
     decision_id: str,
+    client_order_id: str | None = None,
     venue: str,
     symbol: str | None,
     price: str | None,
@@ -1031,9 +1075,10 @@ def _normalized_fill_row(
         raise ValueError(f"observed fill for {decision_id} has negative fill size")
     if size_value > 0 and price_value is None:
         raise ValueError(f"observed fill for {decision_id} has positive fill size but no fill price")
+    client_order_id = client_order_id or decision_id
     return {
         "decision_id": decision_id,
-        "client_order_id": decision_id,
+        "client_order_id": client_order_id,
         "venue": venue,
         "symbol": symbol or "",
         "avgPrice": _format_optional(price_value),

@@ -454,6 +454,10 @@ def main(argv: list[str] | None = None) -> int:
     import_observed_fills_parser.add_argument("--shadow", required=True)
     import_observed_fills_parser.add_argument("--observed", required=True)
     import_observed_fills_parser.add_argument("--output", required=True)
+    import_observed_fills_parser.add_argument(
+        "--order-plan",
+        help="Optional provider paper-order-plan used to map client_order_id back to decision_id.",
+    )
     import_observed_fills_parser.add_argument("--format", choices=["text", "csv"], default="text")
 
     normalize_observed_fills_parser = subparsers.add_parser(
@@ -470,6 +474,10 @@ def main(argv: list[str] | None = None) -> int:
         "--input", required=True, help="Raw provider .csv, .json, or .jsonl file."
     )
     normalize_observed_fills_parser.add_argument("--output", required=True)
+    normalize_observed_fills_parser.add_argument(
+        "--order-plan",
+        help="Optional provider paper-order-plan used to map provider client order IDs back to decision_id.",
+    )
     normalize_observed_fills_parser.add_argument("--format", choices=["text", "csv"], default="text")
 
     fetch_observed_fills_parser = subparsers.add_parser(
@@ -1639,6 +1647,7 @@ def _cmd_import_observed_fills(args: argparse.Namespace) -> int:
         shadow_path=Path(args.shadow),
         observed_path=Path(args.observed),
         output_path=Path(args.output),
+        order_plan_path=Path(args.order_plan) if args.order_plan else None,
     )
     print(format_observed_fill_merge_report(report, output_format=args.format))
     return 0
@@ -1649,6 +1658,7 @@ def _cmd_normalize_observed_fills(args: argparse.Namespace) -> int:
         provider=args.provider,
         input_path=Path(args.input),
         output_path=Path(args.output),
+        order_plan_path=Path(args.order_plan) if args.order_plan else None,
     )
     print(format_observed_fill_normalization_report(report, output_format=args.format))
     return 0

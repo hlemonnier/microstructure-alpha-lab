@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import os
 import re
@@ -14,6 +13,7 @@ from typing import Sequence
 
 from lob_forge.evidence_gates import format_evidence_gate_report
 from lob_forge.live_validation import has_observed_fill, read_shadow_decisions, validate_shadow_fill_predictions
+from lob_forge.provider_order_ids import read_order_plan_client_id_map
 from lob_forge.study_status import evaluate_expected_edge_study_status
 
 
@@ -426,10 +426,17 @@ def _shadow_fill_readiness_check(
             f"shadow={shadow_path} simulated={simulated_path} error={type(exc).__name__}",
             "fix shadow decision files and import observed fills",
         )
-    order_plan_rows = tuple(_count_order_plan_rows(path) for path in order_plan_paths)
+    order_plan_rows_and_errors = tuple(_count_order_plan_rows(path) for path in order_plan_paths)
+    order_plan_rows = tuple(rows for rows, _error in order_plan_rows_and_errors)
     existing_order_plans = sum(1 for path in order_plan_paths if path.exists())
     nonempty_order_plans = sum(1 for rows in order_plan_rows if rows > 0)
     missing_order_plan_names = ",".join(path.name for path in order_plan_paths if not path.exists()) or "none"
+    invalid_order_plan_names = (
+        ",".join(
+            path.name for path, (_rows, error) in zip(order_plan_paths, order_plan_rows_and_errors) if error is not None
+        )
+        or "none"
+    )
     if len(observed) < min_shadow_observations:
         evidence = (
             f"observed_shadow_rows={len(observed)} required={min_shadow_observations} "
@@ -437,7 +444,8 @@ def _shadow_fill_readiness_check(
             f"template_exists={int(observed_template_path.exists())} "
             f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
             f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
-            f"order_plan_rows={sum(order_plan_rows)} missing_order_plans={missing_order_plan_names}"
+            f"order_plan_rows={sum(order_plan_rows)} missing_order_plans={missing_order_plan_names} "
+            f"invalid_order_plans={invalid_order_plan_names}"
         )
         next_action = (
             "generate observed-fill-template and paper-order-plan, run submit-paper-orders with --execute on demo/testnet, fetch order/fill history with fetch-observed-fills, then import observations"
@@ -469,7 +477,8 @@ def _shadow_fill_readiness_check(
         f"template_exists={int(observed_template_path.exists())} "
         f"order_plan_files={existing_order_plans}/{len(order_plan_paths)} "
         f"nonempty_order_plans={nonempty_order_plans}/{len(order_plan_paths)} "
-        f"order_plan_rows={sum(order_plan_rows)} missing_order_plans={missing_order_plan_names}"
+        f"order_plan_rows={sum(order_plan_rows)} missing_order_plans={missing_order_plan_names} "
+        f"invalid_order_plans={invalid_order_plan_names}"
     )
     if report.passed:
         return ReadinessCheck("paper_live_fill_validation", "passed", True, evidence, "run make verify-evidence-gates")
@@ -487,13 +496,13 @@ def _default_shadow_order_plan_paths(observed_template_path: Path) -> tuple[Path
     return tuple(root / filename for filename in DEFAULT_SHADOW_ORDER_PLAN_FILENAMES)
 
 
-def _count_order_plan_rows(path: Path) -> int:
+def _count_order_plan_rows(path: Path) -> tuple[int, str | None]:
     if not path.exists() or not path.is_file():
-        return 0
-    if path.suffix == ".csv":
-        with path.open(newline="") as handle:
-            return len(list(csv.DictReader(handle)))
-    return sum(1 for line in path.read_text().splitlines() if line.strip())
+        return 0, None
+    try:
+        return len(read_order_plan_client_id_map(path)), None
+    except Exception as exc:
+        return 0, f"{type(exc).__name__}: {exc}"
 
 
 def _latest_cloud_package(root: Path) -> Path | None:

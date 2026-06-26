@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from lob_forge.live_validation import ShadowDecision, read_shadow_decisions
+from lob_forge.provider_order_ids import client_order_id_for_decision
 
 
 SUPPORTED_PAPER_ORDER_PLAN_PROVIDERS = ("bybit", "okx", "binance")
@@ -16,6 +17,7 @@ SUPPORTED_PAPER_ORDER_PLAN_PROVIDERS = ("bybit", "okx", "binance")
 class PaperOrderInstruction:
     provider: str
     decision_id: str
+    client_order_id: str
     method: str
     endpoint: str
     symbol: str
@@ -153,7 +155,7 @@ def format_paper_order_instructions_jsonl(instructions: list[PaperOrderInstructi
 
 
 def format_paper_order_instructions_csv(instructions: list[PaperOrderInstruction]) -> str:
-    fields = ["provider", "decision_id", "method", "endpoint", "symbol", "payload_json", "notes"]
+    fields = ["provider", "decision_id", "client_order_id", "method", "endpoint", "symbol", "payload_json", "notes"]
     handle = io.StringIO()
     writer = csv.DictWriter(handle, fieldnames=fields)
     writer.writeheader()
@@ -162,6 +164,7 @@ def format_paper_order_instructions_csv(instructions: list[PaperOrderInstruction
             {
                 "provider": instruction.provider,
                 "decision_id": instruction.decision_id,
+                "client_order_id": instruction.client_order_id,
                 "method": instruction.method,
                 "endpoint": instruction.endpoint,
                 "symbol": instruction.symbol,
@@ -186,18 +189,31 @@ def _instruction_for_decision(
     if decision.order_type == "paper_limit" and decision.intended_price <= 0.0:
         raise ValueError(f"limit shadow decision {decision.decision_id} requires a positive intended_price")
     symbol = _provider_symbol(provider, decision.symbol, symbol_override)
+    client_order_id = client_order_id_for_decision(provider, decision.decision_id)
     if provider == "bybit":
-        return _bybit_instruction(decision, symbol=symbol, category=category, time_in_force=time_in_force)
+        return _bybit_instruction(
+            decision,
+            client_order_id=client_order_id,
+            symbol=symbol,
+            category=category,
+            time_in_force=time_in_force,
+        )
     if provider == "okx":
-        return _okx_instruction(decision, symbol=symbol, td_mode=td_mode)
+        return _okx_instruction(decision, client_order_id=client_order_id, symbol=symbol, td_mode=td_mode)
     if provider == "binance":
-        return _binance_instruction(decision, symbol=symbol, time_in_force=time_in_force)
+        return _binance_instruction(
+            decision,
+            client_order_id=client_order_id,
+            symbol=symbol,
+            time_in_force=time_in_force,
+        )
     raise ValueError(f"provider must be one of: {', '.join(SUPPORTED_PAPER_ORDER_PLAN_PROVIDERS)}")
 
 
 def _bybit_instruction(
     decision: ShadowDecision,
     *,
+    client_order_id: str,
     symbol: str,
     category: str,
     time_in_force: str,
@@ -208,7 +224,7 @@ def _bybit_instruction(
         "side": "Buy" if decision.predicted_side > 0 else "Sell",
         "orderType": "Market" if decision.order_type == "paper_taker" else "Limit",
         "qty": _number(decision.intended_size),
-        "orderLinkId": decision.decision_id,
+        "orderLinkId": client_order_id,
     }
     if decision.order_type == "paper_limit":
         payload["price"] = _number(decision.intended_price)
@@ -216,43 +232,60 @@ def _bybit_instruction(
     return PaperOrderInstruction(
         provider="bybit",
         decision_id=decision.decision_id,
+        client_order_id=client_order_id,
         method="POST",
         endpoint="/v5/order/create",
         symbol=symbol,
         payload=payload,
-        notes="demo trading: use orderLinkId=decision_id; fetch order history from /v5/order/history or fills from /v5/execution/list",
+        notes=(
+            "demo trading: use orderLinkId=client_order_id; plan maps client_order_id to decision_id; "
+            "fetch order history from /v5/order/history or fills from /v5/execution/list"
+        ),
     )
 
 
-def _okx_instruction(decision: ShadowDecision, *, symbol: str, td_mode: str) -> PaperOrderInstruction:
+def _okx_instruction(
+    decision: ShadowDecision,
+    *,
+    client_order_id: str,
+    symbol: str,
+    td_mode: str,
+) -> PaperOrderInstruction:
     payload: dict[str, object] = {
         "instId": symbol,
         "tdMode": td_mode,
         "side": "buy" if decision.predicted_side > 0 else "sell",
         "ordType": "market" if decision.order_type == "paper_taker" else "limit",
         "sz": _number(decision.intended_size),
-        "clOrdId": decision.decision_id,
+        "clOrdId": client_order_id,
     }
     if decision.order_type == "paper_limit":
         payload["px"] = _number(decision.intended_price)
     return PaperOrderInstruction(
         provider="okx",
         decision_id=decision.decision_id,
+        client_order_id=client_order_id,
         method="POST",
         endpoint="/api/v5/trade/order",
         symbol=symbol,
         payload=payload,
-        notes="demo trading: include x-simulated-trading: 1; use clOrdId=decision_id",
+        notes="demo trading: include x-simulated-trading: 1; use clOrdId=client_order_id",
     )
 
 
-def _binance_instruction(decision: ShadowDecision, *, symbol: str, time_in_force: str) -> PaperOrderInstruction:
+def _binance_instruction(
+    decision: ShadowDecision,
+    *,
+    client_order_id: str,
+    symbol: str,
+    time_in_force: str,
+) -> PaperOrderInstruction:
     payload: dict[str, object] = {
         "symbol": symbol,
         "side": "BUY" if decision.predicted_side > 0 else "SELL",
         "type": "MARKET" if decision.order_type == "paper_taker" else "LIMIT",
         "quantity": _number(decision.intended_size),
-        "newClientOrderId": decision.decision_id,
+        "newClientOrderId": client_order_id,
     }
     if decision.order_type == "paper_limit":
         payload["price"] = _number(decision.intended_price)
@@ -260,11 +293,12 @@ def _binance_instruction(decision: ShadowDecision, *, symbol: str, time_in_force
     return PaperOrderInstruction(
         provider="binance",
         decision_id=decision.decision_id,
+        client_order_id=client_order_id,
         method="POST",
         endpoint="/fapi/v1/order",
         symbol=symbol,
         payload=payload,
-        notes="USD-M futures testnet: sign payload and use newClientOrderId=decision_id",
+        notes="USD-M futures testnet: sign payload and use newClientOrderId=client_order_id",
     )
 
 

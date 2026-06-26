@@ -116,12 +116,14 @@ normalize_command=(
   --provider "$PROVIDER"
   --input "$RAW_OUTPUT"
   --output "$OBSERVED_OUTPUT"
+  --order-plan "$ORDER_PLAN_PATH"
 )
 import_command=(
   "$PYTHON_BIN" -m lob_forge.cli import-observed-fills
   --shadow "$SHADOW_PATH"
   --observed "$OBSERVED_OUTPUT"
   --output "$MERGED_SHADOW_OUTPUT"
+  --order-plan "$ORDER_PLAN_PATH"
 )
 validate_command=(
   "$PYTHON_BIN" -m lob_forge.cli validate-shadow-fills

@@ -123,8 +123,11 @@ def test_shadow_evidence_gate_reports_order_plan_readiness(tmp_path: Path) -> No
             }
         ],
     )
-    bybit_plan.write_text('{"decision_id":"d1"}\n{"decision_id":"d2"}\n')
-    okx_plan.write_text('{"decision_id":"d1"}\n')
+    bybit_plan.write_text(
+        '{"provider":"bybit","decision_id":"d1","client_order_id":"d1","payload":{"orderLinkId":"d1"}}\n'
+        '{"provider":"bybit","decision_id":"d2","client_order_id":"d2","payload":{"orderLinkId":"d2"}}\n'
+    )
+    okx_plan.write_text('{"provider":"okx","decision_id":"d1","client_order_id":"d1","payload":{"clOrdId":"d1"}}\n')
 
     report = evaluate_remaining_evidence_gates(
         capped_plan=capped_plan,
@@ -146,6 +149,7 @@ def test_shadow_evidence_gate_reports_order_plan_readiness(tmp_path: Path) -> No
     assert "nonempty_order_plans=2/3" in gate.evidence
     assert "order_plan_rows=3" in gate.evidence
     assert "missing_order_plans=binance_usdm_order_plan.jsonl" in gate.evidence
+    assert "invalid_order_plans=none" in gate.evidence
     assert gate.next_action.startswith("generate paper-order-plan")
     assert "submit-paper-orders" in gate.next_action
 

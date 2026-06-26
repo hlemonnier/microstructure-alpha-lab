@@ -56,13 +56,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli free-api-sources \
 
 ## Local Workflow
 
-Generate a shadow fill template first. The `client_order_id` column is intentionally set equal to `decision_id`; use that value as:
-
-- Bybit `orderLinkId`
-- OKX `clOrdId`
-- Binance USD-M Futures Testnet `newClientOrderId`, visible as `ORDER_TRADE_UPDATE.o.c`
-- Binance Spot Testnet `newClientOrderId`, visible as `executionReport.c`
-- Alpaca `client_order_id`
+Generate a shadow fill template first. The template is for manual imports; blank rows are not evidence. Provider submissions should use the generated order plan below because public exchange APIs impose stricter client-order-id limits than the repository's internal `decision_id` strings.
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli observed-fill-template \
@@ -71,7 +65,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli observed-fill-template \
   --limit 50
 ```
 
-Generate a dry-run provider order plan from the same shadow decisions before placing anything. This does not send orders; it writes the Bybit/OKX/Binance request payloads with the correct client-order-id field so the API session can be audited and replayed:
+Generate a dry-run provider order plan from the same shadow decisions before placing anything. This does not send orders; it writes the Bybit/OKX/Binance request payloads with a provider-safe `client_order_id` and preserves the original `decision_id` as the join key:
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
@@ -95,9 +89,10 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli paper-order-plan \
 
 Provider mapping:
 
-- Bybit writes `POST /v5/order/create` payloads with `orderLinkId=decision_id`.
-- OKX writes `POST /api/v5/trade/order` payloads with `clOrdId=decision_id`; Binance-style shadow symbols such as `BTCUSDT` are normalized to OKX swap instruments such as `BTC-USDT-SWAP`, and `--symbol-override` can pin another `instId`.
-- Binance USD-M Futures Testnet writes `POST /fapi/v1/order` payloads with `newClientOrderId=decision_id`.
+- Bybit writes `POST /v5/order/create` payloads with `orderLinkId=client_order_id`.
+- OKX writes `POST /api/v5/trade/order` payloads with `clOrdId=client_order_id`; Binance-style shadow symbols such as `BTCUSDT` are normalized to OKX swap instruments such as `BTC-USDT-SWAP`, and `--symbol-override` can pin another `instId`.
+- Binance USD-M Futures Testnet writes `POST /fapi/v1/order` payloads with `newClientOrderId=client_order_id`.
+- The top-level plan row maps `client_order_id` back to the full internal `decision_id`; use `--order-plan` when normalizing or importing observed fills.
 
 Preview the exact signed-submission target before placing anything. This command writes a local request-preview JSONL and does not touch the network:
 
@@ -160,10 +155,11 @@ The fetch command uses `BYBIT_DEMO_API_KEY`/`BYBIT_DEMO_API_SECRET` for Bybit, `
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
   --provider bybit \
   --input results/shadow_validation/raw_bybit_orders.json \
-  --output results/shadow_validation/observed_fills.csv
+  --output results/shadow_validation/observed_fills.csv \
+  --order-plan results/shadow_validation/bybit_order_plan.jsonl
 ```
 
-Supported normalization providers are `bybit`, `okx`, `binance`, and `alpaca`. The Bybit and OKX normalizers accept both fill-history rows and order-history rows; canceled/expired/rejected zero-fill orders become explicit no-fill observations. The Binance normalizer accepts Spot Testnet `executionReport`/FULL order payloads, USD-M Futures Testnet `ORDER_TRADE_UPDATE` payloads, and USD-M Futures Testnet `allOrders` REST exports. The normalizer writes the canonical observed-fill columns:
+Supported normalization providers are `bybit`, `okx`, `binance`, and `alpaca`. The Bybit and OKX normalizers accept both fill-history rows and order-history rows; canceled/expired/rejected zero-fill orders become explicit no-fill observations. The Binance normalizer accepts Spot Testnet `executionReport`/FULL order payloads, USD-M Futures Testnet `ORDER_TRADE_UPDATE` payloads, and USD-M Futures Testnet `allOrders` REST exports. When `--order-plan` is provided, unrelated provider rows outside that plan are skipped and provider `client_order_id` values are mapped back to the original `decision_id`. The normalizer writes the canonical observed-fill columns:
 
 ```text
 decision_id,client_order_id,venue,symbol,avgPrice,cumExecQty,realizedPnl,notes
@@ -175,7 +171,8 @@ Then merge observed fills into the shadow decisions and run the validation gate:
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli import-observed-fills \
   --shadow results/shadow_validation/shadow_decisions.csv \
   --observed results/shadow_validation/observed_fills.csv \
-  --output results/shadow_validation/shadow_decisions_observed.csv
+  --output results/shadow_validation/shadow_decisions_observed.csv \
+  --order-plan results/shadow_validation/bybit_order_plan.jsonl
 
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli validate-shadow-fills \
   --simulated results/shadow_validation/simulated_fills.csv \

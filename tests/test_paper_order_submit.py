@@ -38,6 +38,7 @@ def test_submit_paper_orders_defaults_to_dry_run_without_credentials(tmp_path: P
     assert report.submitted_rows == 0
     assert rows[0]["dry_run"] is True
     assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["client_order_id"] == "d1"
     assert rows[0]["endpoint"] == "/v5/order/create"
 
 
@@ -204,9 +205,32 @@ def test_submit_paper_orders_rejects_payload_client_id_mismatch(tmp_path: Path) 
         submit_paper_order_plan(provider="bybit", plan_path=plan, output_path=output)
     except ValueError as exc:
         assert "payload client order id='not-d1'" in str(exc)
-        assert "expected it to equal decision_id" in str(exc)
+        assert "expected client_order_id='d1'" in str(exc)
     else:
         raise AssertionError("expected client-order-id mismatch failure")
+
+
+def test_submit_paper_orders_rejects_invalid_provider_client_id(tmp_path: Path) -> None:
+    plan = tmp_path / "okx_order_plan.jsonl"
+    output = tmp_path / "submitted.jsonl"
+    write_paper_order_plan(
+        shadow_path=_shadow_file(tmp_path),
+        output_path=plan,
+        provider="okx",
+        limit=1,
+    )
+    row = json.loads(plan.read_text().splitlines()[0])
+    row["client_order_id"] = "bad-client-id-with-dashes"
+    row["payload"]["clOrdId"] = "bad-client-id-with-dashes"
+    plan.write_text(json.dumps(row, sort_keys=True) + "\n")
+
+    try:
+        submit_paper_order_plan(provider="okx", plan_path=plan, output_path=output)
+    except ValueError as exc:
+        assert "client_order_id='bad-client-id-with-dashes'" in str(exc)
+        assert "case-sensitive alphanumerics" in str(exc)
+    else:
+        raise AssertionError("expected invalid provider client-order-id failure")
 
 
 def test_submit_paper_orders_rejects_payload_symbol_mismatch(tmp_path: Path) -> None:
@@ -249,6 +273,28 @@ def test_submit_paper_orders_rejects_duplicate_decision_ids(tmp_path: Path) -> N
         assert "duplicate decision_id in order plan: d1" in str(exc)
     else:
         raise AssertionError("expected duplicate decision_id failure")
+
+
+def test_submit_paper_orders_rejects_duplicate_client_order_ids(tmp_path: Path) -> None:
+    plan = tmp_path / "bybit_order_plan.jsonl"
+    output = tmp_path / "submitted.jsonl"
+    write_paper_order_plan(
+        shadow_path=_shadow_file(tmp_path),
+        output_path=plan,
+        provider="bybit",
+        limit=2,
+    )
+    rows = [json.loads(line) for line in plan.read_text().splitlines()]
+    rows[1]["client_order_id"] = rows[0]["client_order_id"]
+    rows[1]["payload"]["orderLinkId"] = rows[0]["client_order_id"]
+    plan.write_text("\n".join(json.dumps(row, sort_keys=True) for row in rows) + "\n")
+
+    try:
+        submit_paper_order_plan(provider="bybit", plan_path=plan, output_path=output)
+    except ValueError as exc:
+        assert "duplicate client_order_id in order plan: d1" in str(exc)
+    else:
+        raise AssertionError("expected duplicate client_order_id failure")
 
 
 def test_submit_paper_orders_report_formats_csv(tmp_path: Path) -> None:
