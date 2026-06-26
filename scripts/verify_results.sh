@@ -8,3 +8,4 @@ PYTHONPATH="${PYTHONPATH:-src}"
 export PYTHONPATH
 
 python3 -m lob_forge.result_verifier "${1:-results/current}"
+python3 scripts/verify_reduced_e2e_artifacts.py --project-root "$ROOT_DIR"
