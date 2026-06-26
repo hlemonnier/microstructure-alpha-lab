@@ -81,6 +81,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Make holdout manifest verification resolve repository-relative source paths from the manifest location, not only from the current working directory.
 - [x] Require final holdout manifests to pre-register `candidate_sha256` before `final-holdout-rule` evaluates the held-out data.
 - [x] Add threshold and expected-edge candidate freezers for pre-registering final-holdout candidate JSON from validation-selected artifacts.
+- [x] Add a dry-run-first full expected-edge final-holdout preparation helper that derives the selected artifact and feature CSV from `run_plan.json` plus `candidate_registry.jsonl`.
 - [ ] Run and check in the declared immutable final holdout result artifact for the full selected candidate.
 - [x] Add dependence-aware intervals with explicit inference grain; reduced E2E intervals are ledger-derived, while current walk-forward CSV audits remain fold-summary audits.
 - [x] Add Bayesian posterior scoring: `P(mu > 0)`, `P(mu > cost_margin)`, and posterior Sharpe checks.
