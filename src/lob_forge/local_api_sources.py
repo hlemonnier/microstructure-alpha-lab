@@ -156,7 +156,7 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         access_tier="free_testnet_account",
         requires_account=True,
         requires_api_key=True,
-        credential_env=("BINANCE_FUTURES_TESTNET_API_KEY", "BINANCE_FUTURES_TESTNET_API_SECRET"),
+        credential_env=("BINANCE_USDM_TESTNET_API_KEY", "BINANCE_USDM_TESTNET_API_SECRET"),
         best_for="BTCUSDT/ETHUSDT futures testnet order-event plumbing with client order IDs",
         not_for="proof of live production queue priority, impact, or adverse-selection behavior",
         id_field="newClientOrderId",
@@ -164,10 +164,14 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         endpoints=(
             "https://demo-fapi.binance.com",
             "wss://demo-fstream.binance.com",
+            "/fapi/v1/allOrders",
             "/fapi/v1/order",
             "ORDER_TRADE_UPDATE user data stream",
         ),
-        local_commands=("normalize-observed-fills --provider binance",),
+        local_commands=(
+            "fetch-observed-fills --provider binance --symbol BTCUSDT",
+            "normalize-observed-fills --provider binance",
+        ),
         docs_urls=(
             "https://developers.binance.com/docs/derivatives/usds-margined-futures/general-info",
             "https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api",
@@ -176,10 +180,11 @@ LOCAL_API_SOURCES: tuple[LocalApiSource, ...] = (
         limitations=("testnet matching is not production queue evidence", "requires futures testnet API credentials"),
         evidence_gates=(REAL_SHADOW_FILL_GATE, PAPER_LIVE_FILL_GATE),
         target_artifacts=(
+            "results/shadow_validation/raw_binance_usdm_orders.json",
             "results/shadow_validation/raw_binance_futures_order_trade_updates.jsonl",
             "results/shadow_validation/observed_fills.csv",
         ),
-        minimum_local_proof="USD-M futures ORDER_TRADE_UPDATE rows normalize and match decision_id/newClientOrderId",
+        minimum_local_proof="USD-M futures testnet allOrders or ORDER_TRADE_UPDATE rows normalize and match decision_id/newClientOrderId",
     ),
     LocalApiSource(
         source_id="alpaca_paper_fills",

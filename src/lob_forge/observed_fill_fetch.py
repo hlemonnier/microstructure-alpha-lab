@@ -15,10 +15,11 @@ from pathlib import Path
 from typing import Any
 
 
-SUPPORTED_OBSERVED_FILL_FETCH_PROVIDERS = ("bybit", "okx")
+SUPPORTED_OBSERVED_FILL_FETCH_PROVIDERS = ("bybit", "okx", "binance")
 
 BYBIT_DEMO_BASE_URL = "https://api-demo.bybit.com"
 OKX_DEMO_BASE_URL = "https://eea.okx.com"
+BINANCE_USDM_TESTNET_BASE_URL = "https://demo-fapi.binance.com"
 
 HttpGetJson = Callable[[str, Mapping[str, str], float], Any]
 
@@ -81,6 +82,20 @@ def fetch_observed_fill_export(
             now_ms=now_ms,
         )
         source_id = "okx_demo_fills"
+    elif provider == "binance":
+        payload, endpoint = fetch_binance_usdm_testnet_orders(
+            symbol=symbol,
+            start_time_ms=start_time_ms,
+            end_time_ms=end_time_ms,
+            limit=limit,
+            base_url=base_url or BINANCE_USDM_TESTNET_BASE_URL,
+            recv_window=recv_window,
+            timeout_seconds=timeout_seconds,
+            env=env,
+            http_get_json=http_get_json,
+            now_ms=now_ms,
+        )
+        source_id = "binance_usdm_testnet_orders"
     else:
         raise ValueError(f"provider must be one of: {', '.join(SUPPORTED_OBSERVED_FILL_FETCH_PROVIDERS)}")
 
@@ -185,6 +200,47 @@ def fetch_okx_demo_fills_history(
         "x-simulated-trading": "1",
         "Content-Type": "application/json",
     }
+    return (http_get_json or _http_get_json)(_url(base_url, endpoint, query), headers, timeout_seconds), endpoint
+
+
+def fetch_binance_usdm_testnet_orders(
+    *,
+    symbol: str | None,
+    start_time_ms: int | None,
+    end_time_ms: int | None,
+    limit: int,
+    base_url: str,
+    recv_window: int,
+    timeout_seconds: float,
+    env: Mapping[str, str] | None = None,
+    http_get_json: HttpGetJson | None = None,
+    now_ms: int | None = None,
+) -> tuple[Any, str]:
+    if not symbol:
+        raise ValueError("Binance USD-M futures testnet order export requires --symbol")
+    if not 1 <= limit <= 1000:
+        raise ValueError("Binance allOrders limit must be between 1 and 1000")
+    credentials = _credentials(env, "BINANCE_USDM_TESTNET_API_KEY", "BINANCE_USDM_TESTNET_API_SECRET")
+    params = {
+        "symbol": symbol,
+        "startTime": start_time_ms,
+        "endTime": end_time_ms,
+        "limit": limit,
+        "recvWindow": recv_window,
+        "timestamp": now_ms if now_ms is not None else int(time.time() * 1000),
+    }
+    unsigned_query = _query_string(params)
+    signature = hmac.new(
+        credentials["BINANCE_USDM_TESTNET_API_SECRET"].encode("utf-8"),
+        unsigned_query.encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+    query = f"{unsigned_query}&signature={signature}"
+    headers = {
+        "X-MBX-APIKEY": credentials["BINANCE_USDM_TESTNET_API_KEY"],
+        "Content-Type": "application/json",
+    }
+    endpoint = "/fapi/v1/allOrders"
     return (http_get_json or _http_get_json)(_url(base_url, endpoint, query), headers, timeout_seconds), endpoint
 
 

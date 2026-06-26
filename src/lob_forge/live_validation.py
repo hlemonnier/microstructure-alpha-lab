@@ -803,17 +803,22 @@ def _normalize_binance_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
     executed_size = _first_raw_value(record, ("executedQty", "z"))
     executed_qty = _optional_float_any(executed_size)
     if executed_qty is not None and executed_qty > 0 and exec_type != "TRADE":
+        avg_price = _first_raw_value(record, ("avgPrice", "ap"))
         quote_value = _optional_float_any(_first_raw_value(record, ("cummulativeQuoteQty", "cumulativeQuoteQty", "Z")))
-        avg_price = _format_optional(quote_value / executed_qty) if quote_value is not None else last_price
+        if not avg_price and quote_value is not None:
+            avg_price = _format_optional(quote_value / executed_qty)
         return [
             _normalized_fill_row(
                 decision_id=decision_id,
                 venue="binance",
                 symbol=_first_raw_value(record, ("s", "symbol")),
-                price=avg_price,
+                price=avg_price or last_price,
                 size=executed_size,
                 realized_pnl=None,
-                notes=_provider_notes(record, ("E", "T", "i", "t", "I", "x", "X", "m")),
+                notes=_provider_notes(
+                    record,
+                    ("E", "T", "time", "updateTime", "orderId", "i", "t", "I", "x", "X", "status", "m"),
+                ),
             )
         ]
 

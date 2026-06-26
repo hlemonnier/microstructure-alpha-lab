@@ -692,6 +692,50 @@ def test_normalize_alpaca_paper_trade_updates(tmp_path: Path) -> None:
     assert rows[1]["cumExecQty"] == "0"
 
 
+def test_normalize_binance_usdm_all_orders_export(tmp_path: Path) -> None:
+    raw_path = tmp_path / "binance_usdm_orders.json"
+    observed_path = tmp_path / "observed.csv"
+    raw_path.write_text(
+        json.dumps(
+            [
+                {
+                    "clientOrderId": "d1",
+                    "symbol": "BTCUSDT",
+                    "avgPrice": "65000.5",
+                    "executedQty": "0.002",
+                    "status": "FILLED",
+                    "orderId": 123,
+                    "time": 1700000000000,
+                    "updateTime": 1700000000500,
+                },
+                {
+                    "clientOrderId": "d2",
+                    "symbol": "BTCUSDT",
+                    "avgPrice": "0",
+                    "executedQty": "0",
+                    "status": "CANCELED",
+                    "orderId": 124,
+                    "time": 1700000001000,
+                    "updateTime": 1700000001500,
+                },
+            ]
+        )
+    )
+
+    report = normalize_observed_fills(provider="binance", input_path=raw_path, output_path=observed_path)
+    rows = list(csv.DictReader(observed_path.open()))
+
+    assert report.output_rows == 2
+    assert rows[0]["decision_id"] == "d1"
+    assert rows[0]["symbol"] == "BTCUSDT"
+    assert rows[0]["avgPrice"] == "65000.5"
+    assert rows[0]["cumExecQty"] == "0.002"
+    assert "orderId=123" in rows[0]["notes"]
+    assert rows[1]["decision_id"] == "d2"
+    assert rows[1]["avgPrice"] == ""
+    assert rows[1]["cumExecQty"] == "0"
+
+
 def test_feature_csv_exports_market_events_for_fill_simulation(tmp_path: Path) -> None:
     feature_path = tmp_path / "features.csv"
     output_path = tmp_path / "market_events.csv"

@@ -61,7 +61,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli observed-fill-template \
 ```text
 Bybit:  orderLinkId
 OKX:    clOrdId
-Binance USD-M Futures Testnet: newClientOrderId, returned as ORDER_TRADE_UPDATE.o.c
+Binance USD-M Futures Testnet: newClientOrderId/clientOrderId, returned as ORDER_TRADE_UPDATE.o.c or allOrders.clientOrderId
 Binance Spot Testnet: newClientOrderId / executionReport.c
 Alpaca: client_order_id
 ```
@@ -69,7 +69,7 @@ Alpaca: client_order_id
 For OKX demo, send requests to the documented OKX REST/WebSocket demo URLs and include `x-simulated-trading: 1` on REST requests.
 
 4. Save the raw provider response under `results/shadow_validation/`.
-   The Bybit and OKX demo REST pulls are executable:
+   The Bybit, OKX, and Binance USD-M testnet REST pulls are executable:
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
@@ -85,6 +85,13 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --start-time-ms 1700000000000 \
   --end-time-ms 1700000600000 \
   --output results/shadow_validation/raw_okx_fills.json
+
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
+  --provider binance \
+  --symbol BTCUSDT \
+  --start-time-ms 1700000000000 \
+  --end-time-ms 1700000600000 \
+  --output results/shadow_validation/raw_binance_usdm_orders.json
 ```
 
 5. Normalize, import, and validate:

@@ -448,7 +448,7 @@ def main(argv: list[str] | None = None) -> int:
 
     fetch_observed_fills_parser = subparsers.add_parser(
         "fetch-observed-fills",
-        help="Fetch raw Bybit/OKX demo fill history from free demo APIs.",
+        help="Fetch raw Bybit/OKX demo or Binance USD-M testnet fill/order history from free APIs.",
     )
     fetch_observed_fills_parser.add_argument(
         "--provider",
@@ -459,7 +459,7 @@ def main(argv: list[str] | None = None) -> int:
     fetch_observed_fills_parser.add_argument("--output", required=True)
     fetch_observed_fills_parser.add_argument(
         "--symbol",
-        help="Bybit symbol or OKX instId, for example BTCUSDT or BTC-USDT-SWAP.",
+        help="Bybit/Binance symbol or OKX instId, for example BTCUSDT or BTC-USDT-SWAP.",
     )
     fetch_observed_fills_parser.add_argument("--start-time-ms", type=int)
     fetch_observed_fills_parser.add_argument("--end-time-ms", type=int)
@@ -468,7 +468,12 @@ def main(argv: list[str] | None = None) -> int:
     fetch_observed_fills_parser.add_argument("--inst-type", default="SWAP", help="OKX instrument type.")
     fetch_observed_fills_parser.add_argument("--cursor", help="Bybit nextPageCursor.")
     fetch_observed_fills_parser.add_argument("--base-url", help="Override provider REST base URL.")
-    fetch_observed_fills_parser.add_argument("--recv-window", type=int, default=5000)
+    fetch_observed_fills_parser.add_argument(
+        "--recv-window",
+        type=int,
+        default=5000,
+        help="Bybit recvWindow or Binance recvWindow.",
+    )
     fetch_observed_fills_parser.add_argument("--timeout-seconds", type=float, default=30.0)
     fetch_observed_fills_parser.add_argument("--format", choices=["text", "csv"], default="text")
 

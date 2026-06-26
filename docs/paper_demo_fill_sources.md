@@ -89,9 +89,16 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
   --start-time-ms 1700000000000 \
   --end-time-ms 1700000600000 \
   --output results/shadow_validation/raw_okx_fills.json
+
+PYTHONPATH=src .venv/bin/python -m lob_forge.cli fetch-observed-fills \
+  --provider binance \
+  --symbol BTCUSDT \
+  --start-time-ms 1700000000000 \
+  --end-time-ms 1700000600000 \
+  --output results/shadow_validation/raw_binance_usdm_orders.json
 ```
 
-The fetch command uses `BYBIT_DEMO_API_KEY`/`BYBIT_DEMO_API_SECRET` for Bybit and `OKX_DEMO_API_KEY`/`OKX_DEMO_API_SECRET`/`OKX_DEMO_API_PASSPHRASE` for OKX. It writes only the raw provider response; the normalizer remains the source of the canonical import schema.
+The fetch command uses `BYBIT_DEMO_API_KEY`/`BYBIT_DEMO_API_SECRET` for Bybit, `OKX_DEMO_API_KEY`/`OKX_DEMO_API_SECRET`/`OKX_DEMO_API_PASSPHRASE` for OKX, and `BINANCE_USDM_TESTNET_API_KEY`/`BINANCE_USDM_TESTNET_API_SECRET` for Binance USD-M Futures Testnet. It writes only the raw provider response; the normalizer remains the source of the canonical import schema.
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
@@ -100,7 +107,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli normalize-observed-fills \
   --output results/shadow_validation/observed_fills.csv
 ```
 
-Supported providers are `bybit`, `okx`, `binance`, and `alpaca`. The Binance normalizer accepts both Spot Testnet `executionReport`/FULL order payloads and USD-M Futures Testnet `ORDER_TRADE_UPDATE` payloads. The normalizer writes the canonical observed-fill columns:
+Supported normalization providers are `bybit`, `okx`, `binance`, and `alpaca`. The Binance normalizer accepts Spot Testnet `executionReport`/FULL order payloads, USD-M Futures Testnet `ORDER_TRADE_UPDATE` payloads, and USD-M Futures Testnet `allOrders` REST exports. The normalizer writes the canonical observed-fill columns:
 
 ```text
 decision_id,client_order_id,venue,symbol,avgPrice,cumExecQty,realizedPnl,notes

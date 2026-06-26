@@ -99,6 +99,73 @@ def test_fetch_okx_demo_fills_history_uses_simulated_header(tmp_path: Path) -> N
     assert json.loads(output.read_text())["data"][0]["clOrdId"] == "d1"
 
 
+def test_fetch_binance_usdm_testnet_orders_signs_and_writes_raw_json(tmp_path: Path) -> None:
+    calls: list[tuple[str, dict[str, str], float]] = []
+
+    def fake_get(url: str, headers: dict[str, str], timeout: float) -> list[dict[str, str]]:
+        calls.append((url, dict(headers), timeout))
+        return [
+            {
+                "clientOrderId": "d1",
+                "symbol": "BTCUSDT",
+                "avgPrice": "65000",
+                "executedQty": "0.001",
+                "status": "FILLED",
+            }
+        ]
+
+    output = tmp_path / "raw_binance_orders.json"
+    report = fetch_observed_fill_export(
+        provider="binance",
+        output_path=output,
+        symbol="BTCUSDT",
+        start_time_ms=1700000000000,
+        end_time_ms=1700000100000,
+        limit=1,
+        env={
+            "BINANCE_USDM_TESTNET_API_KEY": "key",
+            "BINANCE_USDM_TESTNET_API_SECRET": "secret",
+        },
+        http_get_json=fake_get,
+        now_ms=1711420489915,
+    )
+
+    url, headers, timeout = calls[0]
+    parsed = urlparse(url)
+    query_values = parse_qs(parsed.query)
+    unsigned_query = parsed.query.rsplit("&signature=", 1)[0]
+    expected_signature = hmac.new(b"secret", unsigned_query.encode(), hashlib.sha256).hexdigest()
+
+    assert report.provider == "binance"
+    assert report.source_id == "binance_usdm_testnet_orders"
+    assert report.rows == 1
+    assert report.endpoint == "/fapi/v1/allOrders"
+    assert timeout == 30.0
+    assert url.startswith("https://demo-fapi.binance.com/fapi/v1/allOrders?")
+    assert query_values["symbol"] == ["BTCUSDT"]
+    assert query_values["timestamp"] == ["1711420489915"]
+    assert query_values["signature"] == [expected_signature]
+    assert headers["X-MBX-APIKEY"] == "key"
+    assert json.loads(output.read_text())[0]["clientOrderId"] == "d1"
+
+
+def test_fetch_binance_usdm_testnet_orders_requires_symbol(tmp_path: Path) -> None:
+    try:
+        fetch_observed_fill_export(
+            provider="binance",
+            output_path=tmp_path / "raw.json",
+            env={
+                "BINANCE_USDM_TESTNET_API_KEY": "key",
+                "BINANCE_USDM_TESTNET_API_SECRET": "secret",
+            },
+            http_get_json=lambda _url, _headers, _timeout: [],
+        )
+    except ValueError as exc:
+        assert "--symbol" in str(exc)
+    else:
+        raise AssertionError("expected missing Binance symbol failure")
+
+
 def test_fetch_observed_fills_requires_explicit_credentials(tmp_path: Path) -> None:
     try:
         fetch_observed_fill_export(
@@ -134,7 +201,7 @@ def test_fetch_observed_fills_report_formats_csv(tmp_path: Path) -> None:
 
 def test_cli_fetch_observed_fills_rejects_unknown_provider() -> None:
     try:
-        cli_main(["fetch-observed-fills", "--provider", "alpaca", "--output", "raw.json"])
+        cli_main(["fetch-observed-fills", "--provider", "kraken", "--output", "raw.json"])
     except SystemExit as exc:
         assert exc.code == 2
     else:
