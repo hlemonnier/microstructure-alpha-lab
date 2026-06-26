@@ -194,7 +194,7 @@ def test_evidence_gates_pass_pretraining_when_artifact_matches_l2(tmp_path: Path
 
     pretraining_gate = next(gate for gate in report.gates if gate.gate_id == "self_supervised_l2_pretraining")
     assert pretraining_gate.passed
-    assert "artifact_passed=1" in pretraining_gate.evidence
+    assert "pipeline_completed=1" in pretraining_gate.evidence
     assert "artifact_l2_match=1" in pretraining_gate.evidence
 
 
@@ -478,7 +478,7 @@ def _write_pretraining_artifact(path: Path, *, l2_path: Path) -> None:
             "mean_reconstruction_mse": "0.1",
             "zero_reconstruction_mse": "1.0",
             "mean_abs_error": "0.2",
-            "passed": "1",
+            "pipeline_completed": "1",
         }
     ]
     with path.open("w", newline="") as handle:

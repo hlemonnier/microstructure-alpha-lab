@@ -496,8 +496,10 @@ def _pretraining_gate(*, l2_paths: tuple[Path, ...], min_l2_rows: int, artifact_
             failure,
             "import verified true L2 tensor rows before pretraining",
         )
-    artifact_passed, artifact_evidence = _pretraining_artifact_status(artifact_path, selected_l2_path=selected_l2_path)
-    if selected_l2.passed and artifact_passed:
+    artifact_pipeline_completed, artifact_evidence = _pretraining_artifact_status(
+        artifact_path, selected_l2_path=selected_l2_path
+    )
+    if selected_l2.passed and artifact_pipeline_completed:
         evidence = f"l2_path={selected_l2_path} l2_rows_checked={selected_l2.rows_checked} {artifact_evidence}"
         return EvidenceGate(
             "self_supervised_l2_pretraining", todo, "passed", True, evidence, "checkbox can be marked complete"
@@ -555,14 +557,14 @@ def _pretraining_artifact_status(artifact_path: Path, *, selected_l2_path: Path)
     if not rows:
         return False, f"artifact_present=1 artifact_rows=0 artifact={artifact_path}"
     row = rows[0]
-    artifact_passed = _truthy_csv_value(row.get("passed", "0"))
+    pipeline_completed = _truthy_csv_value(row.get("pipeline_completed", row.get("passed", "0")))
     artifact_l2_path = row.get("l2_path", "")
     l2_match = artifact_l2_path == str(selected_l2_path)
     evidence = (
-        f"artifact_present=1 artifact_passed={int(artifact_passed)} "
+        f"artifact_present=1 pipeline_completed={int(pipeline_completed)} "
         f"artifact_l2_match={int(l2_match)} artifact={artifact_path}"
     )
-    return artifact_passed and l2_match, evidence
+    return pipeline_completed and l2_match, evidence
 
 
 def _truthy_csv_value(value: str | None) -> bool:

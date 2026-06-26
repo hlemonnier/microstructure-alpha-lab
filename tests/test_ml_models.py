@@ -236,12 +236,12 @@ def test_l2_masked_pretraining_smoke_writes_artifact(tmp_path: Path) -> None:
     assert report.feature_count == 4
     assert report.masked_values == 8
     assert output_path.exists()
-    assert "passed=1" in text
+    assert "pipeline_completed=1" in text
 
     with output_path.open(newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert rows[0]["l2_path"] == str(l2_path)
-    assert rows[0]["passed"] == "1"
+    assert rows[0]["pipeline_completed"] == "1"
 
 
 def test_model_readiness_gate_checks_baseline_l2_and_dependency(tmp_path: Path) -> None:

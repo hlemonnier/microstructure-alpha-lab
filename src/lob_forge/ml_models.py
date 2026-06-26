@@ -119,7 +119,11 @@ class L2MaskedPretrainingReport:
     mean_reconstruction_mse: float
     zero_reconstruction_mse: float
     mean_abs_error: float
-    passed: bool
+    pipeline_completed: bool
+
+    @property
+    def passed(self) -> bool:
+        return self.pipeline_completed
 
 
 @dataclass(frozen=True)
@@ -649,7 +653,7 @@ def run_l2_masked_pretraining_smoke(
         mean_reconstruction_mse=squared_error / masked_values,
         zero_reconstruction_mse=zero_squared_error / masked_values,
         mean_abs_error=absolute_error / masked_values,
-        passed=True,
+        pipeline_completed=True,
     )
     write_l2_masked_pretraining_report(report, output_path)
     return report
@@ -1271,7 +1275,7 @@ def write_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, path: 
         "mean_reconstruction_mse",
         "zero_reconstruction_mse",
         "mean_abs_error",
-        "passed",
+        "pipeline_completed",
     ]
     with output_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -1290,7 +1294,7 @@ def write_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, path: 
                 "mean_reconstruction_mse": f"{report.mean_reconstruction_mse:.12g}",
                 "zero_reconstruction_mse": f"{report.zero_reconstruction_mse:.12g}",
                 "mean_abs_error": f"{report.mean_abs_error:.12g}",
-                "passed": int(report.passed),
+                "pipeline_completed": int(report.pipeline_completed),
             }
         )
     return output_path
@@ -1312,7 +1316,7 @@ def format_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, *, ou
             "mean_reconstruction_mse",
             "zero_reconstruction_mse",
             "mean_abs_error",
-            "passed",
+            "pipeline_completed",
         ]
         values = [
             str(report.l2_path),
@@ -1328,7 +1332,7 @@ def format_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, *, ou
             f"{report.mean_reconstruction_mse:.12g}",
             f"{report.zero_reconstruction_mse:.12g}",
             f"{report.mean_abs_error:.12g}",
-            str(int(report.passed)),
+            str(int(report.pipeline_completed)),
         ]
         return ",".join(fields) + "\n" + ",".join(values)
     if output_format != "text":
@@ -1348,7 +1352,7 @@ def format_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, *, ou
             f"mean_reconstruction_mse={report.mean_reconstruction_mse:.12g}",
             f"zero_reconstruction_mse={report.zero_reconstruction_mse:.12g}",
             f"mean_abs_error={report.mean_abs_error:.12g}",
-            f"passed={int(report.passed)}",
+            f"pipeline_completed={int(report.pipeline_completed)}",
         ]
     )
 
