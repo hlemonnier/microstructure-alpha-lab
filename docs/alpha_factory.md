@@ -73,6 +73,25 @@ A candidate is rejected if any of these fail:
 - The candidate does not rely on one day, one symbol, one regime, or one latency assumption.
 - The complex model beats the simple threshold baseline.
 
+## Final Holdout Candidate Freeze
+
+Before evaluating any fixed threshold rule on the immutable holdout, freeze the validation-selected rule into candidate JSON and pre-register that exact candidate hash in the holdout manifest:
+
+```bash
+PYTHONPATH=src python3 -m lob_forge.cli freeze-threshold-candidate results/current/<threshold_walk_forward_result.csv> \
+  --output results/final_holdout/<candidate>.json \
+  --sort-by validation_net_pnl \
+  --taker-fee-bps 0
+
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest data/processed/<feature-source>.csv \
+  --output results/holdout_manifests/<candidate>.json \
+  --split-column source_date \
+  --holdout-values <final_holdout_dates> \
+  --candidate-json results/final_holdout/<candidate>.json
+```
+
+`freeze-threshold-candidate` is only for threshold-rule artifacts with `feature` and `threshold` columns. Expected-edge model artifacts require their own frozen model contract before final holdout evaluation.
+
 ## Multiple Testing
 
 Every tried candidate counts:

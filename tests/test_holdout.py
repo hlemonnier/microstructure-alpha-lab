@@ -392,6 +392,107 @@ def test_final_holdout_rule_cli_consumes_frozen_candidate_once(tmp_path: Path) -
     assert payload["candidate_sha256"] == payload["metrics"]["candidate_sha256"]
 
 
+def test_freeze_threshold_candidate_cli_selects_aggregate_candidate_for_final_holdout(tmp_path: Path) -> None:
+    artifact_path = tmp_path / "threshold_walk_forward.csv"
+    candidate_path = tmp_path / "candidate.json"
+    data = tmp_path / "features.csv"
+    manifest_path = tmp_path / "holdout.json"
+    output_path = tmp_path / "final_holdout.json"
+    artifact_path.write_text(
+        "fold,feature,threshold,name,val_net_pnl,test_net_pnl,val_break_even_fee_bps,test_break_even_fee_bps\n"
+        "1,microprice_deviation,0.1,microprice_deviation_threshold,10.0,1.0,0.2,0.1\n"
+        "2,microprice_deviation,0.1,microprice_deviation_threshold,15.0,2.0,0.1,0.1\n"
+        "3,trade_imbalance,0.2,trade_imbalance_threshold,20.0,-1.0,0.3,0.2\n"
+        "summary,constant,0.0,always_flat,999.0,999.0,999.0,999.0\n"
+    )
+    data.write_text(
+        "source_date,label,microprice_deviation,bid,ask,future_bid,future_ask\n"
+        "2026-06-01,1,0.5,100.0,100.1,100.4,100.5\n"
+        "2026-06-02,-1,-0.5,100.0,100.1,99.6,99.7\n"
+    )
+
+    output = io.StringIO()
+    with redirect_stdout(output):
+        code = cli_main(
+            [
+                "freeze-threshold-candidate",
+                str(artifact_path),
+                "--output",
+                str(candidate_path),
+                "--taker-fee-bps",
+                "0",
+                "--target-notional",
+                "100",
+            ]
+        )
+
+    candidate = json.loads(candidate_path.read_text())
+    assert code == 0
+    assert output.getvalue().startswith("candidate_json=")
+    assert f"candidate_sha256={canonical_json_sha256(candidate)}" in output.getvalue()
+    assert candidate["feature"] == "microprice_deviation"
+    assert candidate["threshold"] == 0.1
+    assert candidate["selection_metric"] == "validation_net_pnl"
+    assert candidate["selection_score"] == 25.0
+    assert candidate["selected_rows"] == 2
+    assert candidate["validation_net_pnl"] == 25.0
+    assert candidate["test_net_pnl"] == 3.0
+    assert candidate["target_notional"] == 100.0
+
+    manifest = build_holdout_manifest(
+        data,
+        split_column="source_date",
+        holdout_values=["2026-06-02"],
+        created_at_utc="2026-06-03T00:00:00Z",
+        git_commit=FIXTURE_GIT_COMMIT,
+        candidate_sha256=canonical_json_sha256(candidate),
+    )
+    write_holdout_manifest(manifest, manifest_path)
+
+    with redirect_stdout(io.StringIO()):
+        code = cli_main(
+            [
+                "final-holdout-rule",
+                str(data),
+                "--holdout-manifest",
+                str(manifest_path),
+                "--candidate-json",
+                str(candidate_path),
+                "--output",
+                str(output_path),
+                "--lock-dir",
+                str(tmp_path / "locks"),
+                "--explicit-final-evaluation",
+            ]
+        )
+
+    payload = json.loads(output_path.read_text())
+    assert code == 0
+    assert payload["metrics"]["candidate"]["source_artifact"] == str(artifact_path)
+    assert payload["metrics"]["candidate"]["selection_grain"] == "fold_rows_aggregated_by_feature_threshold"
+    assert payload["metrics"]["stateful_simulator"] is True
+
+
+def test_freeze_threshold_candidate_cli_rejects_edge_model_artifact(tmp_path: Path) -> None:
+    artifact_path = tmp_path / "edge_walk_forward.csv"
+    candidate_path = tmp_path / "candidate.json"
+    artifact_path.write_text("fold,edge_threshold_bps,val_net_pnl\n1,0.5,10.0\n")
+
+    try:
+        cli_main(
+            [
+                "freeze-threshold-candidate",
+                str(artifact_path),
+                "--output",
+                str(candidate_path),
+            ]
+        )
+    except ValueError as exc:
+        assert "threshold-rule artifact" in str(exc)
+    else:
+        raise AssertionError("expected edge-model artifacts without feature/threshold columns to be rejected")
+
+
 def test_final_holdout_rule_cli_requires_pre_registered_candidate_hash(tmp_path: Path) -> None:
     data = tmp_path / "features.csv"
     manifest_path = tmp_path / "holdout.json"

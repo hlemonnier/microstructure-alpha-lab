@@ -121,6 +121,11 @@ Final holdout evaluation must call `write_final_holdout_result(..., explicit_fin
 For the fixed threshold-rule family, the CLI exposes that one-way path:
 
 ```bash
+.venv/bin/python -m lob_forge.cli freeze-threshold-candidate <threshold_walk_forward_result.csv> \
+  --output <frozen_candidate.json> \
+  --sort-by validation_net_pnl \
+  --taker-fee-bps 0
+
 .venv/bin/python -m lob_forge.cli create-holdout-manifest <feature_csv> \
   --output <manifest.json> \
   --split-column source_date \

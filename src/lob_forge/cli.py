@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import csv
 import json
 import sys
 import tempfile
@@ -826,6 +827,36 @@ def main(argv: list[str] | None = None) -> int:
     final_holdout_rule_parser.add_argument("--lock-dir", default="artifacts/final_holdout_locks")
     final_holdout_rule_parser.add_argument("--explicit-final-evaluation", action="store_true")
 
+    freeze_threshold_candidate_parser = subparsers.add_parser(
+        "freeze-threshold-candidate",
+        help="Freeze one threshold-rule candidate from a validation-selected result CSV for final holdout use.",
+    )
+    freeze_threshold_candidate_parser.add_argument("artifact")
+    freeze_threshold_candidate_parser.add_argument("--output", required=True)
+    freeze_threshold_candidate_parser.add_argument(
+        "--sort-by",
+        choices=["validation_net_pnl", "test_net_pnl", "validation_break_even_fee_bps", "test_break_even_fee_bps"],
+        default="validation_net_pnl",
+    )
+    freeze_threshold_candidate_parser.add_argument(
+        "--execution-model", choices=["taker", "maker_entry"], default="taker"
+    )
+    freeze_threshold_candidate_parser.add_argument("--order-type", choices=["market", "passive"])
+    freeze_threshold_candidate_parser.add_argument("--maker-fee-bps", type=float, default=0.0)
+    freeze_threshold_candidate_parser.add_argument("--taker-fee-bps", type=float, default=5.0)
+    freeze_threshold_candidate_parser.add_argument("--slippage-bps", type=float, default=0.0)
+    freeze_threshold_candidate_parser.add_argument("--target-notional", type=float)
+    freeze_threshold_candidate_parser.add_argument("--initial-cash", type=float)
+    freeze_threshold_candidate_parser.add_argument("--max-position-notional", type=float)
+    freeze_threshold_candidate_parser.add_argument("--max-leverage", type=float)
+    freeze_threshold_candidate_parser.add_argument("--latency-ms", type=int)
+    freeze_threshold_candidate_parser.add_argument("--max-order-age-ms", type=int)
+    freeze_threshold_candidate_parser.add_argument("--kill-switch-loss", type=float)
+    freeze_threshold_candidate_parser.add_argument("--rate-limit-interval-ms", type=int)
+    freeze_threshold_candidate_parser.add_argument("--queue-ahead-size", type=float)
+    freeze_threshold_candidate_parser.add_argument("--cancellation-rate-per-second", type=float)
+    freeze_threshold_candidate_parser.add_argument("--cancel-replace-edge-bps", type=float)
+
     fill_parser = subparsers.add_parser(
         "fill-diagnostics",
         help="Analyze conservative passive-entry fills and adverse selection for one threshold rule.",
@@ -1050,6 +1081,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_regime(args)
     if args.command == "final-holdout-rule":
         return _cmd_final_holdout_rule(args)
+    if args.command == "freeze-threshold-candidate":
+        return _cmd_freeze_threshold_candidate(args)
     if args.command == "fill-diagnostics":
         return _cmd_fill_diagnostics(args)
     if args.command == "fill-regime":
@@ -1782,6 +1815,16 @@ def _cmd_final_holdout_rule(args: argparse.Namespace) -> int:
         "queue_ahead_size",
         "cancellation_rate_per_second",
         "cancel_replace_edge_bps",
+        "source_artifact",
+        "selection_metric",
+        "selection_score",
+        "selected_rows",
+        "selection_grain",
+        "selection_method",
+        "validation_net_pnl",
+        "test_net_pnl",
+        "validation_break_even_fee_bps",
+        "test_break_even_fee_bps",
     }
     extra_fields = set(candidate) - allowed_fields
     if extra_fields:
@@ -1875,6 +1918,116 @@ def _cmd_final_holdout_rule(args: argparse.Namespace) -> int:
     )
     print(f"final_holdout_result={output}")
     return 0
+
+
+def _cmd_freeze_threshold_candidate(args: argparse.Namespace) -> int:
+    candidate = _freeze_threshold_candidate_payload(args)
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(candidate, indent=2, sort_keys=True) + "\n")
+    print(f"candidate_json={output_path}")
+    print(f"candidate_sha256={canonical_json_sha256(candidate)}")
+    print(f"feature={candidate['feature']} threshold={candidate['threshold']}")
+    print(f"selection_metric={candidate['selection_metric']} selection_score={candidate['selection_score']}")
+    return 0
+
+
+def _freeze_threshold_candidate_payload(args: argparse.Namespace) -> dict[str, object]:
+    metric_columns = {
+        "validation_net_pnl": "val_net_pnl",
+        "test_net_pnl": "test_net_pnl",
+        "validation_break_even_fee_bps": "val_break_even_fee_bps",
+        "test_break_even_fee_bps": "test_break_even_fee_bps",
+    }
+    metric_column = metric_columns[args.sort_by]
+    groups: dict[tuple[str, float], dict[str, float | int]] = {}
+    with Path(args.artifact).open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = set(reader.fieldnames or [])
+        missing = {"feature", "threshold", metric_column} - fieldnames
+        if missing:
+            raise ValueError(
+                "freeze-threshold-candidate requires a threshold-rule artifact with columns: "
+                + ", ".join(sorted(missing))
+            )
+        for row in reader:
+            raw_fold = str(row.get("fold", "")).strip()
+            if raw_fold == "summary" or not raw_fold:
+                continue
+            feature = str(row.get("feature", "")).strip()
+            name = str(row.get("name", "")).strip()
+            if not feature or feature == "constant" or name == "always_flat":
+                continue
+            threshold = float(row["threshold"])
+            key = (feature, threshold)
+            bucket = groups.setdefault(
+                key,
+                {
+                    "rows": 0,
+                    "selection_score": 0.0,
+                    "validation_net_pnl": 0.0,
+                    "test_net_pnl": 0.0,
+                    "validation_break_even_fee_bps": 0.0,
+                    "test_break_even_fee_bps": 0.0,
+                },
+            )
+            bucket["rows"] = int(bucket["rows"]) + 1
+            bucket["selection_score"] = float(bucket["selection_score"]) + _csv_float(row.get(metric_column))
+            bucket["validation_net_pnl"] = float(bucket["validation_net_pnl"]) + _csv_float(row.get("val_net_pnl"))
+            bucket["test_net_pnl"] = float(bucket["test_net_pnl"]) + _csv_float(row.get("test_net_pnl"))
+            bucket["validation_break_even_fee_bps"] = float(bucket["validation_break_even_fee_bps"]) + _csv_float(
+                row.get("val_break_even_fee_bps")
+            )
+            bucket["test_break_even_fee_bps"] = float(bucket["test_break_even_fee_bps"]) + _csv_float(
+                row.get("test_break_even_fee_bps")
+            )
+    if not groups:
+        raise ValueError("no non-flat threshold-rule candidates found to freeze")
+    feature, threshold = max(
+        groups,
+        key=lambda key: (float(groups[key]["selection_score"]), int(groups[key]["rows"]), key[0], -key[1]),
+    )
+    selected = groups[(feature, threshold)]
+    candidate: dict[str, object] = {
+        "feature": feature,
+        "threshold": threshold,
+        "execution_model": args.execution_model,
+        "order_type": args.order_type or ("passive" if args.execution_model == "maker_entry" else "market"),
+        "maker_fee_bps": args.maker_fee_bps,
+        "taker_fee_bps": args.taker_fee_bps,
+        "slippage_bps": args.slippage_bps,
+        "source_artifact": str(Path(args.artifact)),
+        "selection_metric": args.sort_by,
+        "selection_score": float(selected["selection_score"]),
+        "selected_rows": int(selected["rows"]),
+        "selection_grain": "fold_rows_aggregated_by_feature_threshold",
+        "selection_method": "max_aggregate_metric",
+        "validation_net_pnl": float(selected["validation_net_pnl"]),
+        "test_net_pnl": float(selected["test_net_pnl"]),
+        "validation_break_even_fee_bps": float(selected["validation_break_even_fee_bps"]),
+        "test_break_even_fee_bps": float(selected["test_break_even_fee_bps"]),
+    }
+    optional_fields = {
+        "target_notional": args.target_notional,
+        "initial_cash": args.initial_cash,
+        "max_position_notional": args.max_position_notional,
+        "max_leverage": args.max_leverage,
+        "latency_ms": args.latency_ms,
+        "max_order_age_ms": args.max_order_age_ms,
+        "kill_switch_loss": args.kill_switch_loss,
+        "rate_limit_interval_ms": args.rate_limit_interval_ms,
+        "queue_ahead_size": args.queue_ahead_size,
+        "cancellation_rate_per_second": args.cancellation_rate_per_second,
+        "cancel_replace_edge_bps": args.cancel_replace_edge_bps,
+    }
+    candidate.update({key: value for key, value in optional_fields.items() if value is not None})
+    return candidate
+
+
+def _csv_float(value: str | None) -> float:
+    if value is None or value == "":
+        return 0.0
+    return float(value)
 
 
 def _market_events_from_feature_rows(rows: list[dict[str, str]], *, target_notional: float) -> list[MarketEvent]:
