@@ -149,7 +149,7 @@ PYTHONPATH=src python3 -m lob_forge.cli pvalue-correction \
   results/current/pvalues.csv > results/current/pvalue_corrections.csv
 ```
 
-The expected-edge verifier requires each completed candidate/config in `candidate_registry.jsonl` to have a matching `config_sha256` row in `pvalues.csv`; this makes the multiple-testing correction family explicit.
+The expected-edge verifier requires each completed candidate/config in `candidate_registry.jsonl` to have a matching `config_sha256` row in both `pvalues.csv` and `pvalue_corrections.csv`; this makes the multiple-testing correction family explicit.
 
 ## Capacity Screen
 

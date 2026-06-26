@@ -7,10 +7,12 @@ from lob_forge.alpha_factory import (
     benjamini_hochberg_adjust,
     correct_p_values,
     evaluate_acceptance,
+    format_p_value_corrections,
     format_result_audit_csv,
     format_result_audit_markdown,
     one_sided_hac_p_value_mean_le_zero,
     one_sided_normal_p_value_mean_le_zero,
+    read_p_value_records,
 )
 import lob_forge.alpha_factory as alpha_factory
 from lob_forge.statistics import MeanUncertainty
@@ -130,6 +132,26 @@ def test_pvalue_corrections_apply_bonferroni_and_bh() -> None:
     assert corrections[1].bh_adjusted_p_value == 0.03
     assert not corrections[2].bh_accept
     assert benjamini_hochberg_adjust([0.03, 0.01]) == [0.03, 0.02]
+
+
+def test_pvalue_corrections_preserve_candidate_metadata(tmp_path: Path) -> None:
+    path = tmp_path / "pvalues.csv"
+    path.write_text(
+        "\n".join(
+            [
+                "hypothesis_id,metric,p_value,config_sha256,status",
+                f"h1,attempted_grid,0.01,{'a' * 64},selected_in_artifact",
+            ]
+        )
+        + "\n"
+    )
+
+    output = format_p_value_corrections(correct_p_values(read_p_value_records(path)))
+
+    assert "config_sha256" in output.splitlines()[0]
+    assert "status" in output.splitlines()[0]
+    assert "selected_in_artifact" in output
+    assert "a" * 64 in output
 
 
 def test_one_sided_p_value_rewards_positive_mean() -> None:

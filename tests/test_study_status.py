@@ -64,6 +64,29 @@ def test_expected_edge_study_status_reports_missing_outputs(tmp_path: Path) -> N
     assert "missing_result=ETHUSDT_5000ms_fee_0_edge.csv" in formatted
 
 
+def test_expected_edge_study_status_rejects_candidate_corrections_without_config_hash(tmp_path: Path) -> None:
+    result_dir = tmp_path / "results"
+    result_dir.mkdir()
+    plan_path = _write_plan(
+        result_dir,
+        symbols=["BTCUSDT"],
+        horizons_ms=[5000],
+        fees_bps=[0.0],
+    )
+    _write_edge_result(result_dir / "BTCUSDT_5000ms_fee_0_edge.csv")
+    _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0_edge_audit.csv")
+    _write_candidate_registry(plan_path, result_dir)
+    _write_pvalues_from_registry(plan_path, result_dir)
+    _write_artifact_level_pvalue_corrections(result_dir / "pvalue_corrections.csv")
+
+    status = evaluate_expected_edge_study_status(plan_path=plan_path)
+    formatted = format_expected_edge_study_status(status)
+
+    assert not status.complete
+    assert not status.artifact_verifier_passed
+    assert "pvalue_corrections.csv: missing candidate-link columns ['config_sha256']" in formatted
+
+
 def test_expected_edge_study_status_can_skip_pvalue_requirement(tmp_path: Path) -> None:
     result_dir = tmp_path / "results"
     result_dir.mkdir()
@@ -240,9 +263,21 @@ def _write_pvalues(path: Path) -> None:
 def _write_pvalue_corrections(path: Path, pvalues_path: Path) -> None:
     with pvalues_path.open(newline="") as handle:
         pvalue_rows = list(csv.DictReader(handle))
+    metadata_columns = [
+        column
+        for column in (pvalue_rows[0].keys() if pvalue_rows else [])
+        if column not in {"hypothesis_id", "metric", "p_value"}
+    ]
     _write_csv(
         path,
-        ["hypothesis_id", "p_value", "bonferroni_p_value", "bh_adjusted_p_value", "bh_accept"],
+        [
+            "hypothesis_id",
+            "p_value",
+            "bonferroni_p_value",
+            "bh_adjusted_p_value",
+            "bh_accept",
+            *metadata_columns,
+        ],
         [
             {
                 "hypothesis_id": row["hypothesis_id"],
@@ -250,8 +285,25 @@ def _write_pvalue_corrections(path: Path, pvalues_path: Path) -> None:
                 "bonferroni_p_value": row["p_value"],
                 "bh_adjusted_p_value": row["p_value"],
                 "bh_accept": "0",
+                **{column: row.get(column, "") for column in metadata_columns},
             }
             for row in pvalue_rows
+        ],
+    )
+
+
+def _write_artifact_level_pvalue_corrections(path: Path) -> None:
+    _write_csv(
+        path,
+        ["hypothesis_id", "p_value", "bonferroni_p_value", "bh_adjusted_p_value", "bh_accept"],
+        [
+            {
+                "hypothesis_id": "BTCUSDT_5000ms_fee_0_edge",
+                "p_value": "0.1",
+                "bonferroni_p_value": "0.1",
+                "bh_adjusted_p_value": "0.1",
+                "bh_accept": "0",
+            }
         ],
     )
 

@@ -84,6 +84,11 @@ def evaluate_expected_edge_study_status(
         pvalues_path = result_dir_path / "pvalues.csv"
         if require_pvalues and pvalues_path.exists() and pvalues_path.stat().st_size > 0:
             verifier_errors = tuple(verifier_errors) + tuple(_candidate_pvalue_errors(registry_path, pvalues_path))
+        corrections_path = result_dir_path / "pvalue_corrections.csv"
+        if require_pvalues and corrections_path.exists() and corrections_path.stat().st_size > 0:
+            verifier_errors = tuple(verifier_errors) + tuple(
+                _candidate_pvalue_correction_errors(registry_path, corrections_path)
+            )
     verifier_passed = not verifier_errors
     complete = (
         not missing_results
@@ -269,6 +274,18 @@ def _candidate_registry_errors(path: Path) -> list[str]:
 
 
 def _candidate_pvalue_errors(registry_path: Path, pvalues_path: Path) -> list[str]:
+    return _candidate_config_pvalue_errors(registry_path, pvalues_path, artifact_label="candidate-linked p-values")
+
+
+def _candidate_pvalue_correction_errors(registry_path: Path, corrections_path: Path) -> list[str]:
+    return _candidate_config_pvalue_errors(
+        registry_path,
+        corrections_path,
+        artifact_label="candidate-linked p-value corrections",
+    )
+
+
+def _candidate_config_pvalue_errors(registry_path: Path, pvalues_path: Path, *, artifact_label: str) -> list[str]:
     errors: list[str] = []
     try:
         attempts = read_expected_edge_candidate_registry(registry_path)
@@ -283,9 +300,9 @@ def _candidate_pvalue_errors(registry_path: Path, pvalues_path: Path) -> list[st
         with pvalues_path.open(newline="") as handle:
             rows = list(csv.DictReader(handle))
     except Exception as exc:
-        return [f"{pvalues_path.name}: could not read candidate-linked p-values: {exc!r}"]
+        return [f"{pvalues_path.name}: could not read {artifact_label}: {exc!r}"]
     if not rows:
-        return [f"{pvalues_path.name}: no candidate-linked p-value rows"]
+        return [f"{pvalues_path.name}: no {artifact_label} rows"]
     required = {"hypothesis_id", "p_value", "config_sha256"}
     missing_columns = required - set(rows[0])
     if missing_columns:

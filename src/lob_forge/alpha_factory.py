@@ -111,6 +111,7 @@ class PValueRecord:
     hypothesis_id: str
     p_value: float
     metric: str = ""
+    metadata: dict[str, str] | None = None
 
 
 @dataclass(frozen=True)
@@ -121,6 +122,7 @@ class PValueCorrection:
     bonferroni_p_value: float
     bh_adjusted_p_value: float
     bh_accept: bool
+    metadata: dict[str, str] | None = None
 
 
 def hypothesis_to_dict(spec: HypothesisSpec) -> dict[str, str]:
@@ -429,6 +431,7 @@ def correct_p_values(records: list[PValueRecord], *, q: float = 0.05) -> list[PV
             bonferroni_p_value=bonferroni[idx],
             bh_adjusted_p_value=bh[idx],
             bh_accept=bh[idx] <= q,
+            metadata=dict(record.metadata or {}),
         )
         for idx, record in enumerate(records)
     ]
@@ -448,18 +451,38 @@ def read_p_value_records(
         missing = [column for column in [id_column, p_value_column] if column not in reader.fieldnames]
         if missing:
             raise ValueError(f"p-value CSV missing required columns: {', '.join(missing)}")
+        metadata_columns = [
+            column for column in reader.fieldnames if column not in {id_column, p_value_column, metric_column}
+        ]
         return [
             PValueRecord(
                 hypothesis_id=row[id_column],
                 p_value=float(row[p_value_column]),
                 metric=row.get(metric_column, ""),
+                metadata={column: row.get(column, "") for column in metadata_columns},
             )
             for row in reader
         ]
 
 
 def format_p_value_corrections(corrections: list[PValueCorrection]) -> str:
-    lines = ["hypothesis_id,metric,p_value,bonferroni_p_value,bh_adjusted_p_value,bh_accept"]
+    metadata_columns: list[str] = []
+    seen_metadata_columns: set[str] = set()
+    for correction in corrections:
+        for column in correction.metadata or {}:
+            if column not in seen_metadata_columns:
+                metadata_columns.append(column)
+                seen_metadata_columns.add(column)
+    header = [
+        "hypothesis_id",
+        "metric",
+        "p_value",
+        "bonferroni_p_value",
+        "bh_adjusted_p_value",
+        "bh_accept",
+        *metadata_columns,
+    ]
+    lines = [_csv_line(header)]
     for correction in corrections:
         lines.append(
             _csv_line(
@@ -470,6 +493,7 @@ def format_p_value_corrections(corrections: list[PValueCorrection]) -> str:
                     _fmt(correction.bonferroni_p_value),
                     _fmt(correction.bh_adjusted_p_value),
                     str(int(correction.bh_accept)),
+                    *[str((correction.metadata or {}).get(column, "")) for column in metadata_columns],
                 ]
             )
         )
