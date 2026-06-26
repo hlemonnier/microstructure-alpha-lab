@@ -161,6 +161,62 @@ def test_reduced_e2e_signals_are_exported_from_walk_forward_test_slice_only() ->
     assert all(signal.target_side == 1 for signal in signals)
 
 
+def test_reduced_e2e_sequence_smokes_use_l2_holdout_manifest(tmp_path: Path) -> None:
+    module = _load_reduced_e2e_module()
+    previous_root = module.ROOT
+    original_runner = module.run_l2_torch_sequence_experiment
+    calls: list[dict[str, object]] = []
+
+    def fake_runner(**kwargs: object) -> SimpleNamespace:
+        calls.append(kwargs)
+        output_path = Path(kwargs["output_path"])
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text("model_name,pipeline_completed\nfixture,1\n")
+        development_l2_path = Path(kwargs["development_l2_output_path"])
+        development_l2_path.parent.mkdir(parents=True, exist_ok=True)
+        development_l2_path.write_text("exchange_timestamp\n1000\n")
+        return SimpleNamespace(
+            passed=True,
+            validation_macro_f1=0.25,
+            test_macro_f1=0.5,
+            test_stateful_net_pnl=-0.1,
+            purge_gap=3,
+            holdout_manifest_sha256="a" * 64,
+            development_l2_path=str(development_l2_path),
+            holdout_rows_excluded=1,
+        )
+
+    try:
+        module.ROOT = tmp_path
+        module.run_l2_torch_sequence_experiment = fake_runner
+        baseline_audit_path = tmp_path / "baseline.csv"
+        tcn_path = tmp_path / "sequence_tcn.csv"
+        transformer_path = tmp_path / "sequence_transformer.csv"
+        holdout_manifest_path = tmp_path / "l2_holdout.json"
+        development_l2_path = tmp_path / "development_l2.csv"
+
+        outputs = module._run_sequence_smokes(
+            baseline_audit_path=baseline_audit_path,
+            sequence_tcn_path=tcn_path,
+            sequence_transformer_path=transformer_path,
+            checkpoint_dir=tmp_path / "checkpoints",
+            prediction_dir=tmp_path / "predictions",
+            holdout_manifest_path=holdout_manifest_path,
+            development_l2_path=development_l2_path,
+        )
+    finally:
+        module.ROOT = previous_root
+        module.run_l2_torch_sequence_experiment = original_runner
+
+    assert len(calls) == 2
+    assert all(call["holdout_manifest_path"] == holdout_manifest_path for call in calls)
+    assert all(call["development_l2_output_path"] == development_l2_path for call in calls)
+    assert outputs["sequence_tcn"]["holdout_manifest"] == "l2_holdout.json"
+    assert outputs["sequence_tcn"]["development_l2"] == "development_l2.csv"
+    assert outputs["sequence_tcn"]["holdout_manifest_sha256"] == "a" * 64
+    assert outputs["sequence_transformer"]["holdout_rows_excluded"] == 1
+
+
 def _load_reduced_e2e_module() -> object:
     path = Path("scripts/run_reduced_e2e.py")
     spec = importlib.util.spec_from_file_location("_test_run_reduced_e2e", path)

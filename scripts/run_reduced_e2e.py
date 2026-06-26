@@ -62,6 +62,8 @@ def main() -> int:
     sequence_transformer_path = OUT / "sequence_transformer_smoke.csv"
     sequence_checkpoint_dir = OUT / "sequence_checkpoints"
     sequence_prediction_dir = OUT / "sequence_predictions"
+    sequence_l2_holdout_path = OUT / "l2_sequence_holdout_manifest.json"
+    sequence_development_l2_path = OUT / "development_l2_sequence_fixture.csv"
     research_manifest_path = ROOT / "artifacts" / "research_manifest.json"
     _write_dataclass_csv(
         baseline_audit_path,
@@ -82,6 +84,24 @@ def main() -> int:
     holdout_path.unlink(missing_ok=True)
     write_holdout_manifest(holdout_manifest, holdout_path)
     development_csv = write_development_csv(FEATURE_FIXTURE, holdout_manifest, development_fixture_path)
+    sequence_l2_holdout_manifest = build_holdout_manifest(
+        L2_SEQUENCE_FIXTURE,
+        split_column="exchange_timestamp",
+        holdout_values=["1140"],
+        created_at_utc="2026-06-24T00:00:00Z",
+        feature_version="l2_sequence_fixture_v1",
+        target_version="fixture_l2_delta_v1",
+        git_commit=_git_commit(),
+        notes="Synthetic L2 fixture holdout for CI/reduced neural pipeline only; not empirical evidence.",
+        source_root=ROOT,
+    )
+    sequence_l2_holdout_path.unlink(missing_ok=True)
+    write_holdout_manifest(sequence_l2_holdout_manifest, sequence_l2_holdout_path)
+    sequence_development_l2 = write_development_csv(
+        L2_SEQUENCE_FIXTURE,
+        sequence_l2_holdout_manifest,
+        sequence_development_l2_path,
+    )
     selected_features = ["microprice_deviation", "trade_imbalance"]
     selected_thresholds = [0.05, 0.15, 0.25]
     folds = run_walk_forward_thresholds(
@@ -184,6 +204,8 @@ def main() -> int:
         sequence_transformer_path=sequence_transformer_path,
         checkpoint_dir=sequence_checkpoint_dir,
         prediction_dir=sequence_prediction_dir,
+        holdout_manifest_path=sequence_l2_holdout_path,
+        development_l2_path=sequence_development_l2_path,
     )
 
     manifest = {
@@ -200,6 +222,11 @@ def main() -> int:
         "baseline_audit_fixture": str(baseline_audit_path.relative_to(ROOT)),
         "l2_replay_fixture": "examples/fixtures/l2_replay_fixture.csv",
         "l2_sequence_fixture": str(L2_SEQUENCE_FIXTURE.relative_to(ROOT)),
+        "l2_sequence_holdout_manifest": str(sequence_l2_holdout_path.relative_to(ROOT)),
+        "l2_sequence_development_fixture": str(sequence_development_l2.path.relative_to(ROOT)),
+        "l2_sequence_source_rows_before_holdout_filter": sequence_development_l2.source_rows,
+        "l2_sequence_development_rows_after_holdout_filter": sequence_development_l2.development_rows,
+        "l2_sequence_holdout_rows_excluded": sequence_development_l2.excluded_holdout_rows,
         "sequence_smokes": sequence_smokes,
         "source_rows_before_holdout_filter": development_csv.source_rows,
         "development_rows_after_holdout_filter": development_csv.development_rows,
@@ -231,6 +258,8 @@ def main() -> int:
             "sequence_transformer_smoke": sequence_smokes.get("sequence_transformer", {}).get("path", ""),
             "sequence_tcn_predictions": sequence_smokes.get("sequence_tcn", {}).get("predictions", ""),
             "sequence_transformer_predictions": sequence_smokes.get("sequence_transformer", {}).get("predictions", ""),
+            "l2_sequence_holdout_manifest": str(sequence_l2_holdout_path.relative_to(ROOT)),
+            "l2_sequence_development_fixture": str(sequence_development_l2.path.relative_to(ROOT)),
         },
         "final_holdout": {
             "status": "not_run",
@@ -377,6 +406,8 @@ def _run_sequence_smokes(
     sequence_transformer_path: Path,
     checkpoint_dir: Path,
     prediction_dir: Path,
+    holdout_manifest_path: Path,
+    development_l2_path: Path,
 ) -> dict[str, dict[str, object]]:
     outputs: dict[str, dict[str, object]] = {}
     for model_name, output_path in (
@@ -403,6 +434,8 @@ def _run_sequence_smokes(
                 class_weighting="balanced",
                 checkpoint_path=checkpoint_path,
                 prediction_output_path=prediction_path,
+                holdout_manifest_path=holdout_manifest_path,
+                development_l2_output_path=development_l2_path,
             )
         except RuntimeError as exc:
             output_path.unlink(missing_ok=True)
@@ -425,6 +458,10 @@ def _run_sequence_smokes(
                 "test_macro_f1": report.test_macro_f1,
                 "test_stateful_net_pnl": report.test_stateful_net_pnl,
                 "purge_gap": report.purge_gap,
+                "holdout_manifest": str(holdout_manifest_path.relative_to(ROOT)),
+                "holdout_manifest_sha256": report.holdout_manifest_sha256,
+                "development_l2": str(Path(report.development_l2_path).relative_to(ROOT)),
+                "holdout_rows_excluded": report.holdout_rows_excluded,
             }
     return outputs
 

@@ -39,7 +39,7 @@ Fixture-only smoke:
 .venv/bin/python scripts/run_reduced_e2e.py
 ```
 
-This command first writes `artifacts/reduced_e2e/holdout_manifest.json`, then materializes `artifacts/reduced_e2e/development_feature_fixture.csv` with the declared holdout rows removed, then runs model selection on that development CSV only. It predeclares the reduced threshold search family and writes `artifacts/reduced_e2e/experiment_registry.jsonl` with evaluated statuses plus validation/test PnL for each attempted threshold rule. The script requires official source provenance so the holdout manifest records a real commit hash. In a Git checkout it reads `git rev-parse HEAD`; in a `git archive` export it reads the expanded `.source-git-commit`; for a generic source ZIP without Git metadata, set `LOB_FORGE_SOURCE_GIT_COMMIT=<40-or-64-char-commit-hash>` explicitly. Invalid or missing archive provenance is rejected rather than written into a manifest.
+This command first writes `artifacts/reduced_e2e/holdout_manifest.json`, then materializes `artifacts/reduced_e2e/development_feature_fixture.csv` with the declared holdout rows removed, then runs model selection on that development CSV only. It also writes `artifacts/reduced_e2e/l2_sequence_holdout_manifest.json` and `artifacts/reduced_e2e/development_l2_sequence_fixture.csv` so the reduced TCN/Transformer smoke artifacts exercise the same manifest-filtered L2 training path used by serious neural runs. It predeclares the reduced threshold search family and writes `artifacts/reduced_e2e/experiment_registry.jsonl` with evaluated statuses plus validation/test PnL for each attempted threshold rule. The script requires official source provenance so the holdout manifests record a real commit hash. In a Git checkout it reads `git rev-parse HEAD`; in a `git archive` export it reads the expanded `.source-git-commit`; for a generic source ZIP without Git metadata, set `LOB_FORGE_SOURCE_GIT_COMMIT=<40-or-64-char-commit-hash>` explicitly. Invalid or missing archive provenance is rejected rather than written into a manifest.
 
 C++ replay smoke:
 
@@ -62,6 +62,8 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-sequence-experiment \
   --baseline-audit artifacts/reduced_e2e/baseline_audit_fixture.csv \
   --l2 examples/fixtures/l2_sequence_fixture.csv \
   --output artifacts/reduced_e2e/sequence_transformer_smoke.csv \
+  --holdout-manifest artifacts/reduced_e2e/l2_sequence_holdout_manifest.json \
+  --development-l2-output artifacts/reduced_e2e/development_l2_sequence_fixture.csv \
   --checkpoint-path artifacts/reduced_e2e/sequence_transformer_smoke.pt \
   --predictions-output artifacts/reduced_e2e/sequence_transformer_predictions.csv \
   --device auto --class-weighting balanced \

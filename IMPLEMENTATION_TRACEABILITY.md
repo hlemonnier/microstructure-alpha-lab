@@ -20,7 +20,7 @@ Authoritative scope: local implementation specification supplied outside the rep
 ## Verification Log
 
 - Baseline direct tests before edits: `passed 160 direct test functions`.
-- Current direct tests after implementation: `passed 250 direct test functions`.
+- Current direct tests after implementation: `passed 251 direct test functions`.
 - C++ replay equivalence is included in the direct suite when a local C++ compiler is present.
 - Reduced E2E fixture artifacts generated under `artifacts/reduced_e2e/`.
 - CPU neural fixture smokes generated `sequence_tcn_smoke.csv` and `sequence_transformer_smoke.csv`; sequence runs now expose optional holdout-manifest filtering, checkpoint/resume, repeated-seed runner support, prediction CSV export, calibration metrics, confusion matrices, and stateful economic smoke fields.
