@@ -49,6 +49,8 @@ SOURCE_ARCHIVE_COMMIT_FILE = ".source-git-commit"
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
+    source_git_commit = _git_commit()
+    source_working_tree_dirty = _working_tree_dirty()
     classical_path = OUT / "classical_walk_forward.csv"
     holdout_path = OUT / "holdout_manifest.json"
     development_fixture_path = OUT / "development_feature_fixture.csv"
@@ -77,7 +79,7 @@ def main() -> int:
         created_at_utc="2026-06-24T00:00:00Z",
         feature_version="synthetic_fixture_v1",
         target_version="fixture_mid_move_v1",
-        git_commit=_git_commit(),
+        git_commit=source_git_commit,
         notes="Synthetic fixture for CI/reduced pipeline only; not empirical evidence.",
         source_root=ROOT,
     )
@@ -91,7 +93,7 @@ def main() -> int:
         created_at_utc="2026-06-24T00:00:00Z",
         feature_version="l2_sequence_fixture_v1",
         target_version="fixture_l2_delta_v1",
-        git_commit=_git_commit(),
+        git_commit=source_git_commit,
         notes="Synthetic L2 fixture holdout for CI/reduced neural pipeline only; not empirical evidence.",
         source_root=ROOT,
     )
@@ -241,8 +243,8 @@ def main() -> int:
         "artifact_version": 1,
         "claim_scope": "Repository verification and synthetic fixture evidence only; no final empirical profitability claim.",
         "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "git_commit": _git_commit(),
-        "working_tree_dirty": _working_tree_dirty(),
+        "git_commit": source_git_commit,
+        "working_tree_dirty": source_working_tree_dirty,
         "spec_traceability": "IMPLEMENTATION_TRACEABILITY.md",
         "research_note": "docs/research_note.md",
         "reproducibility": "docs/reproducibility.md",
