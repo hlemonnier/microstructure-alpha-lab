@@ -50,6 +50,8 @@ def _verify_research_manifest(*, root: Path, manifest_path: Path, manifest: dict
     head = _current_git_head(root)
     if head is not None and git_commit != head:
         errors.append(f"git_commit does not match HEAD: manifest={git_commit[:12]} head={head[:12]}")
+    elif head is not None and not _git_rev_has_tag(root, git_commit):
+        errors.append(f"git_commit has no local tag: {git_commit[:12]}")
 
     if manifest.get("working_tree_dirty") is not False:
         errors.append("working_tree_dirty must be false for local reduced E2E artifacts")
@@ -109,6 +111,21 @@ def _current_git_head(root: Path) -> str | None:
         return None
     commit = completed.stdout.strip()
     return commit if GIT_COMMIT_RE.fullmatch(commit) else None
+
+
+def _git_rev_has_tag(root: Path, git_commit: str) -> bool:
+    try:
+        completed = subprocess.run(
+            ["git", "tag", "--points-at", git_commit],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return completed.returncode == 0 and bool(completed.stdout.strip())
 
 
 def _resolve(root: Path, path: str | Path) -> Path:

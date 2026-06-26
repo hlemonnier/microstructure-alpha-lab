@@ -35,6 +35,16 @@ def test_reduced_e2e_artifact_verifier_accepts_current_clean_artifacts(tmp_path:
     assert "present=1 errors=0" in result.stdout
 
 
+def test_reduced_e2e_artifact_verifier_rejects_untagged_current_artifacts(tmp_path: Path) -> None:
+    head = _init_git_repo(tmp_path, tag_head=False)
+    _write_reduced_artifacts(tmp_path, git_commit=head)
+
+    result = _run_verifier(tmp_path)
+
+    assert result.returncode == 1
+    assert f"git_commit has no local tag: {head[:12]}" in result.stdout
+
+
 def _run_verifier(project_root: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(SCRIPT), "--project-root", str(project_root)],
@@ -44,7 +54,7 @@ def _run_verifier(project_root: Path) -> subprocess.CompletedProcess[str]:
     )
 
 
-def _init_git_repo(path: Path) -> str:
+def _init_git_repo(path: Path, *, tag_head: bool = True) -> str:
     (path / "README.md").write_text("# temp\n")
     subprocess.run(["git", "init"], cwd=path, check=True, capture_output=True, text=True)
     subprocess.run(["git", "add", "README.md"], cwd=path, check=True, capture_output=True, text=True)
@@ -55,7 +65,10 @@ def _init_git_repo(path: Path) -> str:
         capture_output=True,
         text=True,
     )
-    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=path, text=True).strip()
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=path, text=True).strip()
+    if tag_head:
+        subprocess.run(["git", "tag", "fixture-reduced-e2e"], cwd=path, check=True, capture_output=True, text=True)
+    return head
 
 
 def _write_reduced_artifacts(path: Path, *, git_commit: str) -> None:
