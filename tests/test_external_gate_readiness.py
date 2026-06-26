@@ -1,4 +1,5 @@
 import csv
+import subprocess
 import zipfile
 from pathlib import Path
 
@@ -131,6 +132,26 @@ def test_external_readiness_rejects_range_based_cloud_package_installs(tmp_path:
     assert "range_research_install=1" in check.evidence
 
 
+def test_external_readiness_rejects_stale_cloud_package_source_commit(tmp_path: Path) -> None:
+    _init_git_repo(tmp_path)
+    package = tmp_path / "dist" / "microstructure-alpha-lab-cloud-handoff-test.zip"
+    _write_package(package, {"lob-forge/.source-git-commit": "b" * 40 + "\n"})
+
+    report = evaluate_external_gate_readiness(
+        project_root=tmp_path,
+        modal_binary=str(tmp_path / "missing-modal"),
+        cloud_package=package,
+        full_plan=tmp_path / "missing_plan.json",
+        shadow_decisions=tmp_path / "missing_shadow.csv",
+        simulated_fills=tmp_path / "missing_simulated.csv",
+    )
+
+    check = {item.check_id: item for item in report.checks}["cloud_handoff_package"]
+    assert check.status == "failed"
+    assert "source_provenance=1" in check.evidence
+    assert "source_commit_matches_head=0" in check.evidence
+
+
 def test_external_readiness_passes_modal_auth_when_token_fields_are_present(tmp_path: Path) -> None:
     fake_modal = tmp_path / "modal"
     fake_modal.write_text(
@@ -162,6 +183,19 @@ def _write_package(path: Path, files: dict[str, str]) -> None:
     with zipfile.ZipFile(path, "w") as archive:
         for name, content in package_files.items():
             archive.writestr(name, content)
+
+
+def _init_git_repo(path: Path) -> None:
+    (path / "README.md").write_text("# temp\n")
+    subprocess.run(["git", "init"], cwd=path, check=True, capture_output=True, text=True)
+    subprocess.run(["git", "add", "README.md"], cwd=path, check=True, capture_output=True, text=True)
+    subprocess.run(
+        ["git", "-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "-m", "init"],
+        cwd=path,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
 
 def _valid_cloud_package_files() -> dict[str, str]:

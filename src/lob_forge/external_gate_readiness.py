@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 import os
+import re
 import shutil
 import subprocess
 import zipfile
@@ -88,7 +89,7 @@ def evaluate_external_gate_readiness(
     checks = (
         _modal_cli_check(resolved_modal=resolved_modal),
         _modal_auth_check(resolved_modal=resolved_modal),
-        _cloud_package_check(package_path),
+        _cloud_package_check(package_path, current_git_head=_current_git_head(root)),
         _full_cloud_study_check(
             plan_path=_resolve(root, full_plan),
             result_dir=_resolve(root, full_result_dir),
@@ -259,7 +260,7 @@ def _modal_auth_check(*, resolved_modal: str | None) -> ReadinessCheck:
     )
 
 
-def _cloud_package_check(package_path: Path | None) -> ReadinessCheck:
+def _cloud_package_check(package_path: Path | None, *, current_git_head: str | None = None) -> ReadinessCheck:
     if package_path is None:
         return ReadinessCheck(
             "cloud_handoff_package",
@@ -306,6 +307,23 @@ def _cloud_package_check(package_path: Path | None) -> ReadinessCheck:
             f"package={package_path} entries={len(names)} excluded_entries=0 missing_required={','.join(missing)}",
             "regenerate the cloud handoff package from the current source tree",
         )
+    source_git_commit = _read_zip_text(archive_path=package_path, member=by_suffix[".source-git-commit"]).strip()
+    if not re.fullmatch(r"[0-9a-fA-F]{40,64}", source_git_commit):
+        return ReadinessCheck(
+            "cloud_handoff_package",
+            "failed",
+            False,
+            f"package={package_path} entries={len(names)} excluded_entries=0 source_provenance=0",
+            "regenerate the cloud handoff package with a resolved source commit",
+        )
+    if current_git_head is not None and source_git_commit != current_git_head:
+        return ReadinessCheck(
+            "cloud_handoff_package",
+            "failed",
+            False,
+            f"package={package_path} entries={len(names)} excluded_entries=0 source_provenance=1 source_commit_matches_head=0 package_commit={source_git_commit[:12]} head_commit={current_git_head[:12]}",
+            "regenerate the cloud handoff package from the current committed source tree",
+        )
     bootstrap = _read_zip_text(archive_path=package_path, member=by_suffix["scripts/bootstrap_cloud_expected_edge.sh"])
     modal = _read_zip_text(archive_path=package_path, member=by_suffix["scripts/modal_expected_edge_job.py"])
     pinned_install = (
@@ -327,7 +345,7 @@ def _cloud_package_check(package_path: Path | None) -> ReadinessCheck:
         "cloud_handoff_package",
         "passed",
         True,
-        f"package={package_path} entries={len(names)} excluded_entries=0 pinned_research_install=1 source_provenance=1",
+        f"package={package_path} entries={len(names)} excluded_entries=0 pinned_research_install=1 source_provenance=1 source_commit_matches_head={int(current_git_head is None or source_git_commit == current_git_head)}",
         "upload to a high-RAM VM or use the Modal runner",
     )
 
@@ -462,6 +480,22 @@ def _count_order_plan_rows(path: Path) -> int:
 def _latest_cloud_package(root: Path) -> Path | None:
     packages = sorted((root / "dist").glob("microstructure-alpha-lab-cloud-handoff-*.zip"))
     return packages[-1] if packages else None
+
+
+def _current_git_head(root: Path) -> str | None:
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return None
+    commit = completed.stdout.strip()
+    return commit if re.fullmatch(r"[0-9a-fA-F]{40,64}", commit) else None
 
 
 def _is_excluded_package_name(name: str) -> bool:
