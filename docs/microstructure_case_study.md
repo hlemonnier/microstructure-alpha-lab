@@ -256,7 +256,13 @@ No tested spread, volatility, trade-flow, or aggregate-depth bucket turns passiv
 The repo now includes fixed-rule regime decomposition by recent spread, realized volatility, and aggregate 1 percent notional-depth imbalance:
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest <feature_csv> \
+  --output <holdout-manifest.json> \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli regime <feature_csv> \
+  --holdout-manifest <holdout-manifest.json> \
   --feature microprice_deviation \
   --threshold <threshold> \
   --regime-features spread_mean_5,realized_volatility_5,notional_imbalance_1pct \

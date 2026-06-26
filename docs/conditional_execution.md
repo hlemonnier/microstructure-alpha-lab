@@ -15,7 +15,13 @@ Regime bucket boundaries are learned from the validation window and then applied
 ## Command
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest <feature_csv> \
+  --output <holdout-manifest.json> \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli conditional-walk-forward <feature_csv> \
+  --holdout-manifest <holdout-manifest.json> \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \

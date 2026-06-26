@@ -28,7 +28,7 @@ HOLDOUT_MANIFEST_DIR="${HOLDOUT_MANIFEST_DIR:-artifacts/holdout_manifests/multid
 HOLDOUT_SPLIT_COLUMN="${HOLDOUT_SPLIT_COLUMN:-source_date}"
 
 holdout_value_for() {
-  python3 - "$1" "$HOLDOUT_SPLIT_COLUMN" <<'PY'
+  "$PYTHON_BIN" - "$1" "$HOLDOUT_SPLIT_COLUMN" <<'PY'
 import csv
 import sys
 
@@ -56,7 +56,7 @@ ensure_holdout_manifest() {
   if [[ ! -s "$manifest" ]]; then
     local value
     value="$(holdout_value_for "$path")"
-    python3 -m lob_forge.cli create-holdout-manifest "$path" \
+    "$PYTHON_BIN" -m lob_forge.cli create-holdout-manifest "$path" \
       --output "$manifest" \
       --split-column "$HOLDOUT_SPLIT_COLUMN" \
       --holdout-values "$value" \
@@ -72,11 +72,11 @@ run_with_holdout() {
   shift 2
   local manifest
   manifest="$(ensure_holdout_manifest "$path")"
-  python3 -m lob_forge.cli "$command" "$path" --holdout-manifest "$manifest" "$@"
+  "$PYTHON_BIN" -m lob_forge.cli "$command" "$path" --holdout-manifest "$manifest" "$@"
 }
 
 run_builds() {
-  python3 -m lob_forge.cli build-range \
+  "$PYTHON_BIN" -m lob_forge.cli build-range \
     --symbol BTCUSDT \
     --start "$START_DATE" \
     --end "$END_DATE" \
@@ -90,7 +90,7 @@ run_builds() {
     --max-quote-buckets "$MAX_QUOTE_BUCKETS" \
     --with-book-depth
 
-  python3 -m lob_forge.cli build-range \
+  "$PYTHON_BIN" -m lob_forge.cli build-range \
     --symbol ETHUSDT \
     --start "$START_DATE" \
     --end "$END_DATE" \
@@ -110,7 +110,7 @@ run_results_for_symbol() {
   local path="$2"
 
   echo "== ${symbol} multiday feature summary =="
-  python3 -m lob_forge.cli describe-features "$path"
+  "$PYTHON_BIN" -m lob_forge.cli describe-features "$path"
 
   echo
   echo "== ${symbol} multiday threshold walk-forward, zero fees =="
@@ -163,7 +163,7 @@ run_results() {
 
 run_fills() {
   echo "== BTCUSDT multiday passive fill diagnostics =="
-  python3 -m lob_forge.cli fill-diagnostics "$BTC_COMBINED" \
+  "$PYTHON_BIN" -m lob_forge.cli fill-diagnostics "$BTC_COMBINED" \
     --feature microprice_deviation \
     --threshold 0.1 \
     --by-source-date \
@@ -172,7 +172,7 @@ run_fills() {
 
   echo
   echo "== ETHUSDT multiday passive fill diagnostics =="
-  python3 -m lob_forge.cli fill-diagnostics "$ETH_COMBINED" \
+  "$PYTHON_BIN" -m lob_forge.cli fill-diagnostics "$ETH_COMBINED" \
     --feature microprice_deviation \
     --threshold 0.1 \
     --by-source-date \
@@ -182,7 +182,7 @@ run_fills() {
 
 run_fill_regimes() {
   echo "== BTCUSDT multiday passive fill regime diagnostics =="
-  python3 -m lob_forge.cli fill-regime "$BTC_COMBINED" \
+  "$PYTHON_BIN" -m lob_forge.cli fill-regime "$BTC_COMBINED" \
     --feature microprice_deviation \
     --threshold 0.1 \
     --regime-features spread_mean_5,realized_volatility_5,trade_imbalance,notional_imbalance_1pct \
@@ -192,7 +192,7 @@ run_fill_regimes() {
 
   echo
   echo "== ETHUSDT multiday passive fill regime diagnostics =="
-  python3 -m lob_forge.cli fill-regime "$ETH_COMBINED" \
+  "$PYTHON_BIN" -m lob_forge.cli fill-regime "$ETH_COMBINED" \
     --feature microprice_deviation \
     --threshold 0.1 \
     --regime-features spread_mean_5,realized_volatility_5,trade_imbalance,notional_imbalance_1pct \

@@ -314,7 +314,13 @@ The audit reports:
 Row-count walk-forward remains useful for quick sanity checks, but serious runs should group by market dates:
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest data/processed/<feature-source>.csv \
+  --output artifacts/holdout_manifests/<feature-source>.json \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli calendar-walk-forward data/processed/<feature-source>.csv \
+  --holdout-manifest artifacts/holdout_manifests/<feature-source>.json \
   --train-days 20 \
   --validation-days 5 \
   --test-days 5 \

@@ -56,8 +56,15 @@ short_fillable_rate: 0.364775
 Command:
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest \
+  data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --output artifacts/holdout_manifests/cross_asset/eth_5s_source_date_holdout.json \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli walk-forward \
   data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest artifacts/holdout_manifests/cross_asset/eth_5s_source_date_holdout.json \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \
@@ -88,8 +95,15 @@ summary test_net_pnl: 0
 Command:
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest \
+  data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --output artifacts/holdout_manifests/cross_asset/eth_5s_source_date_holdout.json \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli logistic-walk-forward \
   data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest artifacts/holdout_manifests/cross_asset/eth_5s_source_date_holdout.json \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \
@@ -123,8 +137,15 @@ summary test_net_pnl: 0
 Command:
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest \
+  data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --output artifacts/holdout_manifests/cross_asset/eth_5s_source_date_holdout.json \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli walk-forward \
   data/processed/eth_maker_horizon_5000_latency_1000/ETHUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest artifacts/holdout_manifests/cross_asset/eth_5s_source_date_holdout.json \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \

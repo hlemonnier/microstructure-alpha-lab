@@ -206,8 +206,15 @@ decision_id,timestamp_ms,venue,symbol,model_name,predicted_side,predicted_edge_b
 Export OOS decisions from the same expected-edge walk-forward protocol used for the result artifacts:
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest \
+  data/processed/horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --output artifacts/holdout_manifests/shadow_validation/btcusdt_5s_source_date_holdout.json \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli edge-shadow-decisions \
   data/processed/horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest artifacts/holdout_manifests/shadow_validation/btcusdt_5s_source_date_holdout.json \
   --output results/shadow_validation/shadow_decisions.csv \
   --venue binance \
   --symbol BTCUSDT \

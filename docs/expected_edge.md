@@ -33,7 +33,13 @@ Then it trades the side with the larger predicted net edge only if it exceeds a 
 ## Command
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest <feature_csv> \
+  --output <holdout-manifest.json> \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli edge-walk-forward <feature_csv> \
+  --holdout-manifest <holdout-manifest.json> \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \

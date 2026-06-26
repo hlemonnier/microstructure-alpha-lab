@@ -13,7 +13,13 @@ This is a diagnostic layer, not a new claim of profitability. It bins a fixed ru
 ## Command Pattern
 
 ```bash
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest <feature_csv> \
+  --output <holdout-manifest.json> \
+  --split-column source_date \
+  --holdout-values <final-date> \
+  --source-root "$PWD"
 PYTHONPATH=src python3 -m lob_forge.cli regime <feature_csv> \
+  --holdout-manifest <holdout-manifest.json> \
   --feature microprice_deviation \
   --threshold <threshold> \
   --regime-features spread_mean_5,realized_volatility_5,notional_imbalance_1pct \

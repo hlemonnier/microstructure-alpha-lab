@@ -20,7 +20,7 @@ HOLDOUT_MANIFEST_DIR="${HOLDOUT_MANIFEST_DIR:-artifacts/holdout_manifests/core}"
 HOLDOUT_SPLIT_COLUMN="${HOLDOUT_SPLIT_COLUMN:-event_time}"
 
 holdout_value_for() {
-  python3 - "$1" "$HOLDOUT_SPLIT_COLUMN" <<'PY'
+  "$PYTHON_BIN" - "$1" "$HOLDOUT_SPLIT_COLUMN" <<'PY'
 import csv
 import sys
 
@@ -48,7 +48,7 @@ ensure_holdout_manifest() {
   if [[ ! -s "$manifest" ]]; then
     local value
     value="$(holdout_value_for "$path")"
-    python3 -m lob_forge.cli create-holdout-manifest "$path" \
+    "$PYTHON_BIN" -m lob_forge.cli create-holdout-manifest "$path" \
       --output "$manifest" \
       --split-column "$HOLDOUT_SPLIT_COLUMN" \
       --holdout-values "$value" \
@@ -64,11 +64,11 @@ run_with_holdout() {
   shift 2
   local manifest
   manifest="$(ensure_holdout_manifest "$path")"
-  python3 -m lob_forge.cli "$command" "$path" --holdout-manifest "$manifest" "$@"
+  "$PYTHON_BIN" -m lob_forge.cli "$command" "$path" --holdout-manifest "$manifest" "$@"
 }
 
 run_builds() {
-  python3 -m lob_forge.cli build-range \
+  "$PYTHON_BIN" -m lob_forge.cli build-range \
     --symbol BTCUSDT \
     --start 2023-05-16 \
     --end 2023-05-17 \
@@ -82,7 +82,7 @@ run_builds() {
     --max-quote-buckets 3600 \
     --with-book-depth
 
-  python3 -m lob_forge.cli build-range \
+  "$PYTHON_BIN" -m lob_forge.cli build-range \
     --symbol ETHUSDT \
     --start 2023-05-16 \
     --end 2023-05-17 \

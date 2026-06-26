@@ -122,7 +122,16 @@ The next serious step is a baseline model runner:
 The first dependency-free threshold baseline runner is now available:
 
 ```bash
-PYTHONPATH=src python3 -m lob_forge.cli baseline data/processed/BTCUSDT-2023-05-16-quote-trade-features.csv --top 10
+PYTHONPATH=src python3 -m lob_forge.cli create-holdout-manifest \
+  data/processed/BTCUSDT-2023-05-16-quote-trade-features.csv \
+  --output artifacts/holdout_manifests/manual/btcusdt_2023_05_16_event_time_holdout.json \
+  --split-column event_time \
+  --holdout-values <final-event-time> \
+  --source-root "$PWD"
+PYTHONPATH=src python3 -m lob_forge.cli baseline \
+  data/processed/BTCUSDT-2023-05-16-quote-trade-features.csv \
+  --holdout-manifest artifacts/holdout_manifests/manual/btcusdt_2023_05_16_event_time_holdout.json \
+  --top 10
 ```
 
 It evaluates simple directional rules over:
@@ -251,6 +260,7 @@ Classification-first ranking can be misleading. The CLI now supports sorting by 
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli baseline \
   data/processed/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --top 5 \
   --taker-fee-bps 5 \
   --sort-by validation_net_pnl
@@ -452,6 +462,7 @@ The custom feature/threshold CLI options are useful because OFI and returns are 
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli walk-forward \
   data/processed/ofi_depth_1000_twoday/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \
@@ -549,6 +560,7 @@ Run maker-entry walk-forward selection:
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli walk-forward \
   data/processed/maker_horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \
@@ -598,6 +610,7 @@ Run purged walk-forward logistic regression:
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli logistic-walk-forward \
   data/processed/maker_horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \
@@ -736,6 +749,7 @@ Run a fee sweep:
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli fee-sweep \
   data/processed/horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --fees 0,0.01,0.025,0.05,0.1,0.25,0.5,1,2,5 \
   --sort-by validation_net_pnl
 ```
@@ -776,6 +790,7 @@ Example:
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli walk-forward \
   data/processed/depth_1000_twoday/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \
@@ -829,6 +844,7 @@ The `regime` command evaluates one fixed rule inside quantile buckets of market-
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli regime \
   data/processed/maker_horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --feature microprice_deviation \
   --threshold 0.05 \
   --regime-features spread_mean_5,realized_volatility_5,notional_imbalance_1pct \
@@ -876,6 +892,7 @@ Example:
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli conditional-walk-forward \
   data/processed/maker_horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \
@@ -927,6 +944,7 @@ Example:
 ```bash
 PYTHONPATH=src python3 -m lob_forge.cli edge-walk-forward \
   data/processed/maker_horizon_5000_latency_1000/BTCUSDT-2023-05-16_2023-05-17-combined-features.csv \
+  --holdout-manifest <holdout-manifest.json> \
   --train-size 2400 \
   --validation-size 1200 \
   --test-size 1200 \
