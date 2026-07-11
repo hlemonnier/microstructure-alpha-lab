@@ -4,6 +4,7 @@ import csv
 import importlib.util
 import json
 import math
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -36,6 +37,8 @@ OPTIONAL_MODEL_DEPENDENCIES = {
     "xgboost": ("xgboost_classifier",),
     "torch": ("sequence_mlp", "sequence_tcn", "sequence_transformer", "lob_cnn"),
 }
+SEQUENCE_ECONOMICS_VERSION = "flat_to_flat_label_horizon_v2"
+SEQUENCE_CHECKPOINT_CONTRACT_VERSION = 2
 
 
 @dataclass(frozen=True)
@@ -137,12 +140,15 @@ class L2MaskedPretrainingReport:
 class L2SequenceExperimentReport:
     model_name: str
     l2_path: Path
+    l2_sha256: str
     baseline_audit_path: Path
+    baseline_audit_sha256: str
     output_path: Path
     holdout_manifest_path: str
     holdout_manifest_sha256: str
     holdout_manifest_verified: bool
     development_l2_path: str
+    development_l2_sha256: str
     source_rows_before_holdout_filter: int
     development_rows_after_holdout_filter: int
     holdout_rows_excluded: int
@@ -154,6 +160,10 @@ class L2SequenceExperimentReport:
     flat_threshold_bps: float
     rows_checked: int
     snapshots: int
+    max_rows: int
+    max_snapshots: int
+    min_fold_count: int
+    min_l2_rows: int
     sequence_count: int
     feature_count: int
     purge_gap: int
@@ -175,16 +185,21 @@ class L2SequenceExperimentReport:
     validation_confusion_matrix_json: str
     test_confusion_matrix_json: str
     batch_size: int
+    requested_batch_size: int
     early_stopping_patience: int
     best_epoch: int
     seed: int
     selected_device: str
+    requested_device: str
     class_weighting: str
     lr_scheduler_gamma: float
     final_learning_rate: float
     checkpoint_path: str
+    checkpoint_sha256: str
     resumed_from_checkpoint: bool
     prediction_output_path: str
+    prediction_output_sha256: str
+    economic_simulation_version: str
     economic_target_notional: float
     economic_taker_fee_bps: float
     economic_slippage_bps: float
@@ -192,6 +207,7 @@ class L2SequenceExperimentReport:
     test_stateful_turnover: float
     test_stateful_net_pnl: float
     test_stateful_break_even_fee_bps: float
+    test_stateful_final_inventory: float
     pipeline_completed: bool
     acceptance_passed: bool
 
@@ -218,6 +234,8 @@ class L2SequenceFinalHoldoutReport:
     stateful_turnover: float
     stateful_net_pnl: float
     stateful_break_even_fee_bps: float
+    stateful_final_inventory: float
+    economic_simulation_version: str
     predictions_output_path: str
 
 
@@ -233,6 +251,7 @@ class SequenceHoldoutMetadata:
     holdout_manifest_sha256: str = ""
     holdout_manifest_verified: bool = False
     development_l2_path: str = ""
+    development_l2_sha256: str = ""
     source_rows_before_holdout_filter: int = 0
     development_rows_after_holdout_filter: int = 0
     holdout_rows_excluded: int = 0
@@ -715,6 +734,7 @@ def _prepare_sequence_l2_training_source(
         holdout_manifest_sha256=sha256_file(manifest_path),
         holdout_manifest_verified=True,
         development_l2_path=str(development.path),
+        development_l2_sha256=sha256_file(development.path),
         source_rows_before_holdout_filter=development.source_rows,
         development_rows_after_holdout_filter=development.development_rows,
         holdout_rows_excluded=development.excluded_holdout_rows,
@@ -870,6 +890,33 @@ def run_l2_torch_sequence_experiment(
     x_test = torch.tensor(test_sequences, dtype=torch.float32, device=torch_device)
     y_test = torch.tensor(test_labels, dtype=torch.long, device=torch_device)
 
+    effective_batch_size = max(1, min(batch_size, len(train_sequences)))
+    checkpoint_contract = {
+        "contract_version": SEQUENCE_CHECKPOINT_CONTRACT_VERSION,
+        "model_name": model_name,
+        "training_l2_sha256": sha256_file(training_l2_path),
+        "baseline_audit_sha256": sha256_file(baseline_audit_path),
+        "holdout_manifest_sha256": holdout_metadata.holdout_manifest_sha256,
+        "depth": depth,
+        "window": window,
+        "label_horizon": label_horizon,
+        "flat_threshold_bps": flat_threshold_bps,
+        "max_rows": max_rows,
+        "max_snapshots": max_snapshots,
+        "min_fold_count": min_fold_count,
+        "min_l2_rows": min_l2_rows,
+        "feature_count": feature_count,
+        "train_rows": train_count,
+        "validation_rows": validation_count,
+        "test_rows": test_count,
+        "epochs": epochs,
+        "learning_rate": learning_rate,
+        "batch_size": effective_batch_size,
+        "early_stopping_patience": early_stopping_patience,
+        "seed": seed,
+        "class_weighting": class_weighting,
+        "lr_scheduler_gamma": lr_scheduler_gamma,
+    }
     best_state: dict[str, Any] | None = None
     best_epoch = 0
     best_validation_loss = math.inf
@@ -878,18 +925,40 @@ def run_l2_torch_sequence_experiment(
     checkpoint = Path(checkpoint_path) if checkpoint_path is not None else None
     resumed_from_checkpoint = False
     if resume_from_checkpoint and checkpoint is not None and checkpoint.exists():
-        payload = torch.load(checkpoint, map_location=torch_device)
-        model.load_state_dict(payload["model_state"])
-        optimizer.load_state_dict(payload["optimizer_state"])
-        if "scheduler_state" in payload:
-            scheduler.load_state_dict(payload["scheduler_state"])
-        best_state = payload.get("best_model_state")
-        best_epoch = int(payload.get("best_epoch", 0))
-        best_validation_loss = float(payload.get("best_validation_loss", math.inf))
-        stale_epochs = int(payload.get("stale_epochs", 0))
-        start_epoch = int(payload.get("epoch", 0)) + 1
-        resumed_from_checkpoint = True
-    effective_batch_size = max(1, min(batch_size, len(train_sequences)))
+        try:
+            payload = torch.load(checkpoint, map_location=torch_device)
+        except Exception as exc:
+            warnings.warn(
+                f"ignoring unreadable sequence checkpoint {checkpoint}: {type(exc).__name__}: {exc}",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+        else:
+            recorded_contract = payload.get("experiment_contract")
+            if recorded_contract != checkpoint_contract:
+                recorded_fields = recorded_contract if isinstance(recorded_contract, dict) else {}
+                mismatched_fields = sorted(
+                    key
+                    for key in set(checkpoint_contract) | set(recorded_fields)
+                    if recorded_fields.get(key) != checkpoint_contract.get(key)
+                )
+                warnings.warn(
+                    f"ignoring incompatible sequence checkpoint {checkpoint}; "
+                    f"contract_mismatches={','.join(mismatched_fields) or 'unknown'}",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+            else:
+                model.load_state_dict(payload["model_state"])
+                optimizer.load_state_dict(payload["optimizer_state"])
+                if "scheduler_state" in payload:
+                    scheduler.load_state_dict(payload["scheduler_state"])
+                best_state = payload.get("best_model_state")
+                best_epoch = int(payload.get("best_epoch", 0))
+                best_validation_loss = float(payload.get("best_validation_loss", math.inf))
+                stale_epochs = int(payload.get("stale_epochs", 0))
+                start_epoch = int(payload.get("epoch", 0)) + 1
+                resumed_from_checkpoint = True
     for epoch in range(start_epoch, epochs + 1):
         model.train()
         generator = torch.Generator()
@@ -927,6 +996,7 @@ def run_l2_torch_sequence_experiment(
                 best_validation_loss=best_validation_loss,
                 stale_epochs=stale_epochs,
                 seed=seed,
+                experiment_contract=checkpoint_contract,
             )
     if best_state is not None:
         model.load_state_dict(best_state)
@@ -985,12 +1055,15 @@ def run_l2_torch_sequence_experiment(
     report = L2SequenceExperimentReport(
         model_name=model_name,
         l2_path=source_l2_path,
+        l2_sha256=sha256_file(source_l2_path),
         baseline_audit_path=baseline_audit_path,
+        baseline_audit_sha256=sha256_file(baseline_audit_path),
         output_path=output_path,
         holdout_manifest_path=holdout_metadata.holdout_manifest_path,
         holdout_manifest_sha256=holdout_metadata.holdout_manifest_sha256,
         holdout_manifest_verified=holdout_metadata.holdout_manifest_verified,
         development_l2_path=holdout_metadata.development_l2_path,
+        development_l2_sha256=holdout_metadata.development_l2_sha256,
         source_rows_before_holdout_filter=holdout_metadata.source_rows_before_holdout_filter,
         development_rows_after_holdout_filter=holdout_metadata.development_rows_after_holdout_filter,
         holdout_rows_excluded=holdout_metadata.holdout_rows_excluded,
@@ -1002,6 +1075,10 @@ def run_l2_torch_sequence_experiment(
         flat_threshold_bps=flat_threshold_bps,
         rows_checked=rows_checked,
         snapshots=len(snapshots),
+        max_rows=max_rows,
+        max_snapshots=max_snapshots,
+        min_fold_count=min_fold_count,
+        min_l2_rows=min_l2_rows,
         sequence_count=len(sequences),
         feature_count=feature_count,
         purge_gap=purge_gap,
@@ -1023,16 +1100,21 @@ def run_l2_torch_sequence_experiment(
         validation_confusion_matrix_json=json.dumps(validation_confusion, sort_keys=True),
         test_confusion_matrix_json=json.dumps(test_confusion, sort_keys=True),
         batch_size=effective_batch_size,
+        requested_batch_size=batch_size,
         early_stopping_patience=early_stopping_patience,
         best_epoch=best_epoch,
         seed=seed,
         selected_device=selected_device,
+        requested_device=device,
         class_weighting=class_weighting,
         lr_scheduler_gamma=lr_scheduler_gamma,
         final_learning_rate=float(optimizer.param_groups[0]["lr"]),
         checkpoint_path=str(checkpoint) if checkpoint is not None else "",
+        checkpoint_sha256=sha256_file(checkpoint) if checkpoint is not None else "",
         resumed_from_checkpoint=resumed_from_checkpoint,
         prediction_output_path=str(prediction_path) if prediction_path is not None else "",
+        prediction_output_sha256=sha256_file(prediction_path) if prediction_path is not None else "",
+        economic_simulation_version=SEQUENCE_ECONOMICS_VERSION,
         economic_target_notional=economic_target_notional,
         economic_taker_fee_bps=economic_taker_fee_bps,
         economic_slippage_bps=economic_slippage_bps,
@@ -1040,6 +1122,7 @@ def run_l2_torch_sequence_experiment(
         test_stateful_turnover=float(economic["turnover"]),
         test_stateful_net_pnl=float(economic["net_pnl"]),
         test_stateful_break_even_fee_bps=float(economic["break_even_fee_bps"]),
+        test_stateful_final_inventory=float(economic["final_inventory"]),
         pipeline_completed=readiness.passed and test_count > 0 and math.isfinite(test_macro_f1),
         acceptance_passed=False,
     )
@@ -1053,11 +1136,14 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
     fields = [
         "model_name",
         "l2_path",
+        "l2_sha256",
         "baseline_audit_path",
+        "baseline_audit_sha256",
         "holdout_manifest_path",
         "holdout_manifest_sha256",
         "holdout_manifest_verified",
         "development_l2_path",
+        "development_l2_sha256",
         "source_rows_before_holdout_filter",
         "development_rows_after_holdout_filter",
         "holdout_rows_excluded",
@@ -1069,6 +1155,10 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         "flat_threshold_bps",
         "rows_checked",
         "snapshots",
+        "max_rows",
+        "max_snapshots",
+        "min_fold_count",
+        "min_l2_rows",
         "sequence_count",
         "feature_count",
         "purge_gap",
@@ -1090,16 +1180,21 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         "validation_confusion_matrix_json",
         "test_confusion_matrix_json",
         "batch_size",
+        "requested_batch_size",
         "early_stopping_patience",
         "best_epoch",
         "seed",
         "selected_device",
+        "requested_device",
         "class_weighting",
         "lr_scheduler_gamma",
         "final_learning_rate",
         "checkpoint_path",
+        "checkpoint_sha256",
         "resumed_from_checkpoint",
         "prediction_output_path",
+        "prediction_output_sha256",
+        "economic_simulation_version",
         "economic_target_notional",
         "economic_taker_fee_bps",
         "economic_slippage_bps",
@@ -1107,6 +1202,7 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         "test_stateful_turnover",
         "test_stateful_net_pnl",
         "test_stateful_break_even_fee_bps",
+        "test_stateful_final_inventory",
         "pipeline_completed",
         "acceptance_passed",
     ]
@@ -1117,11 +1213,14 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
             {
                 "model_name": report.model_name,
                 "l2_path": _display_path(report.l2_path),
+                "l2_sha256": report.l2_sha256,
                 "baseline_audit_path": _display_path(report.baseline_audit_path),
+                "baseline_audit_sha256": report.baseline_audit_sha256,
                 "holdout_manifest_path": report.holdout_manifest_path,
                 "holdout_manifest_sha256": report.holdout_manifest_sha256,
                 "holdout_manifest_verified": int(report.holdout_manifest_verified),
                 "development_l2_path": report.development_l2_path,
+                "development_l2_sha256": report.development_l2_sha256,
                 "source_rows_before_holdout_filter": report.source_rows_before_holdout_filter,
                 "development_rows_after_holdout_filter": report.development_rows_after_holdout_filter,
                 "holdout_rows_excluded": report.holdout_rows_excluded,
@@ -1133,6 +1232,10 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
                 "flat_threshold_bps": f"{report.flat_threshold_bps:.12g}",
                 "rows_checked": report.rows_checked,
                 "snapshots": report.snapshots,
+                "max_rows": report.max_rows,
+                "max_snapshots": report.max_snapshots,
+                "min_fold_count": report.min_fold_count,
+                "min_l2_rows": report.min_l2_rows,
                 "sequence_count": report.sequence_count,
                 "feature_count": report.feature_count,
                 "purge_gap": report.purge_gap,
@@ -1154,16 +1257,21 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
                 "validation_confusion_matrix_json": report.validation_confusion_matrix_json,
                 "test_confusion_matrix_json": report.test_confusion_matrix_json,
                 "batch_size": report.batch_size,
+                "requested_batch_size": report.requested_batch_size,
                 "early_stopping_patience": report.early_stopping_patience,
                 "best_epoch": report.best_epoch,
                 "seed": report.seed,
                 "selected_device": report.selected_device,
+                "requested_device": report.requested_device,
                 "class_weighting": report.class_weighting,
                 "lr_scheduler_gamma": f"{report.lr_scheduler_gamma:.12g}",
                 "final_learning_rate": f"{report.final_learning_rate:.12g}",
                 "checkpoint_path": report.checkpoint_path,
+                "checkpoint_sha256": report.checkpoint_sha256,
                 "resumed_from_checkpoint": int(report.resumed_from_checkpoint),
                 "prediction_output_path": report.prediction_output_path,
+                "prediction_output_sha256": report.prediction_output_sha256,
+                "economic_simulation_version": report.economic_simulation_version,
                 "economic_target_notional": f"{report.economic_target_notional:.12g}",
                 "economic_taker_fee_bps": f"{report.economic_taker_fee_bps:.12g}",
                 "economic_slippage_bps": f"{report.economic_slippage_bps:.12g}",
@@ -1171,6 +1279,7 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
                 "test_stateful_turnover": f"{report.test_stateful_turnover:.12g}",
                 "test_stateful_net_pnl": f"{report.test_stateful_net_pnl:.12g}",
                 "test_stateful_break_even_fee_bps": f"{report.test_stateful_break_even_fee_bps:.12g}",
+                "test_stateful_final_inventory": f"{report.test_stateful_final_inventory:.12g}",
                 "pipeline_completed": int(report.pipeline_completed),
                 "acceptance_passed": int(report.acceptance_passed),
             }
@@ -1187,15 +1296,31 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
     row = rows[0]
     if not _csv_bool(row.get("pipeline_completed")):
         raise ValueError("cannot freeze sequence candidate whose pipeline_completed flag is not true")
+    if row.get("economic_simulation_version") != SEQUENCE_ECONOMICS_VERSION:
+        raise ValueError("sequence artifact uses a stale economic simulation contract")
+    if abs(_csv_float(row.get("test_stateful_final_inventory"))) > 1e-9:
+        raise ValueError("sequence artifact has nonzero residual test inventory")
     model_name = row.get("model_name", "")
     if model_name not in {"sequence_tcn", "sequence_transformer"}:
         raise ValueError("sequence candidate model_name must be sequence_tcn or sequence_transformer")
+    l2_path = Path(row.get("l2_path", ""))
+    if not l2_path.is_file():
+        raise FileNotFoundError("freeze-sequence-candidate requires an l2_path that exists")
+    if row.get("l2_sha256") != sha256_file(l2_path):
+        raise ValueError("sequence artifact l2_sha256 does not match source L2 content")
+    baseline_audit_path = Path(row.get("baseline_audit_path", ""))
+    if not baseline_audit_path.is_file():
+        raise FileNotFoundError("freeze-sequence-candidate requires a baseline_audit_path that exists")
+    if row.get("baseline_audit_sha256") != sha256_file(baseline_audit_path):
+        raise ValueError("sequence artifact baseline_audit_sha256 does not match baseline audit content")
     checkpoint_value = row.get("checkpoint_path", "")
     if not checkpoint_value:
         raise ValueError("freeze-sequence-candidate requires a checkpoint_path")
     checkpoint_path = Path(checkpoint_value)
     if not checkpoint_path.is_file():
         raise FileNotFoundError(f"sequence checkpoint not found: {checkpoint_path}")
+    if row.get("checkpoint_sha256") != sha256_file(checkpoint_path):
+        raise ValueError("sequence artifact checkpoint_sha256 does not match checkpoint content")
     development_l2_value = row.get("development_l2_path", "")
     if not development_l2_value:
         raise ValueError("freeze-sequence-candidate requires a development_l2_path")
@@ -1204,8 +1329,20 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
         raise FileNotFoundError(
             "freeze-sequence-candidate requires a manifest-filtered development_l2_path that exists"
         )
+    if row.get("development_l2_sha256") != sha256_file(development_l2_path):
+        raise ValueError("sequence artifact development_l2_sha256 does not match development L2 content")
+    source_rows = _csv_int(row.get("source_rows_before_holdout_filter"))
+    development_rows = _csv_int(row.get("development_rows_after_holdout_filter"))
+    excluded_rows = _csv_int(row.get("holdout_rows_excluded"))
+    if excluded_rows <= 0 or source_rows != development_rows + excluded_rows:
+        raise ValueError("sequence artifact does not prove a nonempty, complete development/holdout partition")
     if not _csv_bool(row.get("holdout_manifest_verified")):
         raise ValueError("freeze-sequence-candidate requires holdout_manifest_verified=1")
+    holdout_manifest_path = Path(row.get("holdout_manifest_path", ""))
+    if not holdout_manifest_path.is_file() or not verify_holdout_manifest_file(holdout_manifest_path):
+        raise ValueError("sequence artifact holdout manifest no longer verifies against its source L2")
+    if row.get("holdout_manifest_sha256") != sha256_file(holdout_manifest_path):
+        raise ValueError("sequence artifact holdout_manifest_sha256 does not match manifest content")
     depth = _csv_int(row.get("depth"))
     window = _csv_int(row.get("window"))
     label_horizon = _csv_int(row.get("label_horizon"))
@@ -1233,12 +1370,15 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
     )
     standardizer = _fit_sequence_standardizer(sequences[:train_count])
     return {
-        "candidate_type": "l2_sequence_torch_v1",
+        "candidate_type": "l2_sequence_torch_v2",
+        "economic_simulation_version": SEQUENCE_ECONOMICS_VERSION,
         "model_name": model_name,
         "source_artifact": str(artifact),
         "source_artifact_sha256": sha256_file(artifact),
-        "l2_path": row.get("l2_path", ""),
+        "l2_path": str(l2_path),
+        "l2_sha256": sha256_file(l2_path),
         "baseline_audit_path": row.get("baseline_audit_path", ""),
+        "baseline_audit_sha256": row.get("baseline_audit_sha256", ""),
         "development_holdout_manifest_path": row.get("holdout_manifest_path", ""),
         "development_holdout_manifest_sha256": row.get("holdout_manifest_sha256", ""),
         "development_l2_path": str(development_l2_path),
@@ -1290,12 +1430,17 @@ def evaluate_l2_sequence_final_holdout(
     economic_slippage_bps: float | None = None,
 ) -> L2SequenceFinalHoldoutReport:
     model_name = _candidate_string(candidate, "model_name")
-    if candidate.get("candidate_type") != "l2_sequence_torch_v1":
-        raise ValueError("frozen sequence candidate candidate_type must be l2_sequence_torch_v1")
+    if candidate.get("candidate_type") != "l2_sequence_torch_v2":
+        raise ValueError("frozen sequence candidate candidate_type must be l2_sequence_torch_v2")
+    if candidate.get("economic_simulation_version") != SEQUENCE_ECONOMICS_VERSION:
+        raise ValueError("frozen sequence candidate uses a stale economic simulation contract")
     if model_name not in {"sequence_tcn", "sequence_transformer"}:
         raise ValueError("frozen sequence candidate model_name must be sequence_tcn or sequence_transformer")
     if device not in {"auto", "cpu", "cuda"}:
         raise ValueError("device must be auto, cpu, or cuda")
+    source_l2_path = Path(l2_path)
+    if sha256_file(source_l2_path) != _candidate_string(candidate, "l2_sha256"):
+        raise ValueError("final-holdout L2 hash does not match the frozen candidate source L2")
     depth = _candidate_positive_int(candidate, "depth")
     window = _candidate_positive_int(candidate, "window")
     label_horizon = _candidate_positive_int(candidate, "label_horizon")
@@ -1337,7 +1482,7 @@ def evaluate_l2_sequence_final_holdout(
         frozen_value=frozen_slippage_bps,
     )
 
-    rows = read_holdout_rows(l2_path, manifest)
+    rows = read_holdout_rows(source_l2_path, manifest)
     snapshots, rows_checked = _load_l2_top_n_vectors_from_rows(
         rows,
         depth=depth,
@@ -1419,6 +1564,8 @@ def evaluate_l2_sequence_final_holdout(
         stateful_turnover=float(economic["turnover"]),
         stateful_net_pnl=float(economic["net_pnl"]),
         stateful_break_even_fee_bps=float(economic["break_even_fee_bps"]),
+        stateful_final_inventory=float(economic["final_inventory"]),
+        economic_simulation_version=SEQUENCE_ECONOMICS_VERSION,
         predictions_output_path=str(prediction_path) if prediction_path is not None else "",
     )
 
@@ -1428,11 +1575,13 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
         fields = [
             "model_name",
             "l2_path",
+            "l2_sha256",
             "output_path",
             "holdout_manifest_path",
             "holdout_manifest_sha256",
             "holdout_manifest_verified",
             "development_l2_path",
+            "development_l2_sha256",
             "source_rows_before_holdout_filter",
             "development_rows_after_holdout_filter",
             "holdout_rows_excluded",
@@ -1450,19 +1599,23 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             "economic_target_notional",
             "economic_taker_fee_bps",
             "economic_slippage_bps",
+            "economic_simulation_version",
             "test_stateful_net_pnl",
             "test_stateful_break_even_fee_bps",
+            "test_stateful_final_inventory",
             "pipeline_completed",
             "acceptance_passed",
         ]
         values = [
             report.model_name,
             str(report.l2_path),
+            report.l2_sha256,
             str(report.output_path),
             report.holdout_manifest_path,
             report.holdout_manifest_sha256,
             str(int(report.holdout_manifest_verified)),
             report.development_l2_path,
+            report.development_l2_sha256,
             str(report.source_rows_before_holdout_filter),
             str(report.development_rows_after_holdout_filter),
             str(report.holdout_rows_excluded),
@@ -1480,8 +1633,10 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"{report.economic_target_notional:.12g}",
             f"{report.economic_taker_fee_bps:.12g}",
             f"{report.economic_slippage_bps:.12g}",
+            report.economic_simulation_version,
             f"{report.test_stateful_net_pnl:.12g}",
             f"{report.test_stateful_break_even_fee_bps:.12g}",
+            f"{report.test_stateful_final_inventory:.12g}",
             str(int(report.pipeline_completed)),
             str(int(report.acceptance_passed)),
         ]
@@ -1492,12 +1647,15 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
         [
             f"model_name={report.model_name}",
             f"l2_path={report.l2_path}",
+            f"l2_sha256={report.l2_sha256}",
             f"baseline_audit_path={report.baseline_audit_path}",
+            f"baseline_audit_sha256={report.baseline_audit_sha256}",
             f"output_path={report.output_path}",
             f"holdout_manifest_path={report.holdout_manifest_path}",
             f"holdout_manifest_sha256={report.holdout_manifest_sha256}",
             f"holdout_manifest_verified={int(report.holdout_manifest_verified)}",
             f"development_l2_path={report.development_l2_path}",
+            f"development_l2_sha256={report.development_l2_sha256}",
             f"source_rows_before_holdout_filter={report.source_rows_before_holdout_filter}",
             f"development_rows_after_holdout_filter={report.development_rows_after_holdout_filter}",
             f"holdout_rows_excluded={report.holdout_rows_excluded}",
@@ -1509,6 +1667,10 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"flat_threshold_bps={report.flat_threshold_bps:.12g}",
             f"rows_checked={report.rows_checked}",
             f"snapshots={report.snapshots}",
+            f"max_rows={report.max_rows}",
+            f"max_snapshots={report.max_snapshots}",
+            f"min_fold_count={report.min_fold_count}",
+            f"min_l2_rows={report.min_l2_rows}",
             f"sequence_count={report.sequence_count}",
             f"feature_count={report.feature_count}",
             f"purge_gap={report.purge_gap}",
@@ -1530,23 +1692,29 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"validation_confusion_matrix_json={report.validation_confusion_matrix_json}",
             f"test_confusion_matrix_json={report.test_confusion_matrix_json}",
             f"batch_size={report.batch_size}",
+            f"requested_batch_size={report.requested_batch_size}",
             f"early_stopping_patience={report.early_stopping_patience}",
             f"best_epoch={report.best_epoch}",
             f"seed={report.seed}",
             f"selected_device={report.selected_device}",
+            f"requested_device={report.requested_device}",
             f"class_weighting={report.class_weighting}",
             f"lr_scheduler_gamma={report.lr_scheduler_gamma:.12g}",
             f"final_learning_rate={report.final_learning_rate:.12g}",
             f"checkpoint_path={report.checkpoint_path}",
+            f"checkpoint_sha256={report.checkpoint_sha256}",
             f"resumed_from_checkpoint={int(report.resumed_from_checkpoint)}",
             f"prediction_output_path={report.prediction_output_path}",
+            f"prediction_output_sha256={report.prediction_output_sha256}",
             f"economic_target_notional={report.economic_target_notional:.12g}",
             f"economic_taker_fee_bps={report.economic_taker_fee_bps:.12g}",
             f"economic_slippage_bps={report.economic_slippage_bps:.12g}",
+            f"economic_simulation_version={report.economic_simulation_version}",
             f"test_stateful_trades={report.test_stateful_trades}",
             f"test_stateful_turnover={report.test_stateful_turnover:.12g}",
             f"test_stateful_net_pnl={report.test_stateful_net_pnl:.12g}",
             f"test_stateful_break_even_fee_bps={report.test_stateful_break_even_fee_bps:.12g}",
+            f"test_stateful_final_inventory={report.test_stateful_final_inventory:.12g}",
             f"pipeline_completed={int(report.pipeline_completed)}",
             f"acceptance_passed={int(report.acceptance_passed)}",
         ]
@@ -2233,6 +2401,7 @@ def _write_torch_sequence_checkpoint(
     best_validation_loss: float,
     stale_epochs: int,
     seed: int,
+    experiment_contract: dict[str, Any],
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(
@@ -2246,6 +2415,7 @@ def _write_torch_sequence_checkpoint(
             "best_validation_loss": best_validation_loss,
             "stale_epochs": stale_epochs,
             "seed": seed,
+            "experiment_contract": experiment_contract,
         },
         path,
     )
@@ -2352,54 +2522,104 @@ def _sequence_stateful_economics(
     taker_fee_bps: float,
     slippage_bps: float,
 ) -> dict[str, float | int]:
-    events: list[MarketEvent] = []
-    signals: list[SignalEvent] = []
-    for row_number, (end_index, prediction) in enumerate(zip(end_indices, predictions), start=1):
+    if len(end_indices) != len(predictions):
+        raise ValueError("end_indices and predictions must have the same length")
+    if label_horizon <= 0:
+        raise ValueError("label_horizon must be positive")
+    if target_notional <= 0.0:
+        raise ValueError("target_notional must be positive")
+    if taker_fee_bps < 0.0 or slippage_bps < 0.0:
+        raise ValueError("taker_fee_bps and slippage_bps must be non-negative")
+
+    completed_round_trips = 0
+    turnover = 0.0
+    net_pnl = 0.0
+    final_inventory = 0.0
+    prior_exit_index: int | None = None
+    prediction_rows = sorted(
+        enumerate(zip(end_indices, predictions), start=1),
+        key=lambda item: (item[1][0], item[0]),
+    )
+    for row_number, (end_index, prediction) in prediction_rows:
         if end_index + label_horizon >= len(snapshots):
+            continue
+        side = -1 if prediction == 0 else 1 if prediction == 2 else 0
+        if side == 0:
+            continue
+        if prior_exit_index is not None and end_index < prior_exit_index:
             continue
         current = snapshots[end_index]
         future = snapshots[end_index + label_horizon]
         current_bid, current_ask = _top_bid_ask_from_vector(current)
         future_bid, future_ask = _top_bid_ask_from_vector(future)
-        if min(current_bid, current_ask, future_bid, future_ask) <= 0.0:
+        prices = (current_bid, current_ask, future_bid, future_ask)
+        if min(prices) <= 0.0 or not all(math.isfinite(price) for price in prices):
             continue
-        event_time = row_number * 2000
-        future_time = event_time + 1000
-        events.append(MarketEvent(event_time, bid=current_bid, ask=current_ask, bid_size=10.0, ask_size=10.0))
-        events.append(MarketEvent(future_time, bid=future_bid, ask=future_ask, bid_size=10.0, ask_size=10.0))
-        side = -1 if prediction == 0 else 1 if prediction == 2 else 0
-        signals.append(
+        current_mid = (current_bid + current_ask) / 2.0
+        required_quantity = target_notional / current_mid
+        available_quantity = max(1.0, required_quantity * 2.0)
+        entry_time = end_index
+        exit_time = end_index + label_horizon
+        events = [
+            MarketEvent(
+                entry_time,
+                bid=current_bid,
+                ask=current_ask,
+                bid_size=available_quantity,
+                ask_size=available_quantity,
+            ),
+            MarketEvent(
+                exit_time,
+                bid=future_bid,
+                ask=future_ask,
+                bid_size=available_quantity,
+                ask_size=available_quantity,
+            ),
+        ]
+        signals = [
             SignalEvent(
-                event_time,
+                entry_time,
                 target_side=side,
-                target_notional=target_notional if side else 0.0,
-                signal_id=f"neural-test-{row_number}",
-            )
+                target_notional=target_notional,
+                signal_id=f"neural-test-{row_number}-entry",
+            ),
+            SignalEvent(
+                exit_time,
+                target_side=0,
+                target_notional=0.0,
+                signal_id=f"neural-test-{row_number}-exit",
+            ),
+        ]
+        initial_cash = max(1000.0, target_notional * 2.0, required_quantity * max(prices) * 2.0)
+        result = simulate_stateful_execution(
+            events,
+            signals,
+            config=StatefulExecutionConfig(
+                initial_cash=initial_cash,
+                max_position_notional=target_notional * 2.0,
+                max_leverage=1.0,
+                taker_fee_bps=taker_fee_bps,
+                slippage_bps=slippage_bps,
+                latency_ms=0,
+            ),
         )
-    if not events:
-        return {"trades": 0, "turnover": 0.0, "net_pnl": 0.0, "break_even_fee_bps": 0.0}
-    initial_cash = 1000.0
-    result = simulate_stateful_execution(
-        events,
-        signals,
-        config=StatefulExecutionConfig(
-            initial_cash=initial_cash,
-            max_position_notional=target_notional * 2.0,
-            max_leverage=1.0,
-            taker_fee_bps=taker_fee_bps,
-            slippage_bps=slippage_bps,
-            latency_ms=0,
-        ),
-    )
-    fees = sum(fill.fee for fill in result.fills)
-    net_pnl = result.final_equity - initial_cash
-    gross_pnl = net_pnl + fees
-    break_even = gross_pnl / result.turnover * 10_000.0 if result.turnover else 0.0
+        fill_sides = [fill.side for fill in result.fills]
+        if fill_sides != [side, -side] or abs(result.final_inventory) > 1e-9:
+            raise RuntimeError("sequence economics failed to complete a deterministic entry/exit round trip")
+        completed_round_trips += 1
+        turnover += result.turnover
+        net_pnl += result.realized_pnl
+        final_inventory += result.final_inventory
+        prior_exit_index = exit_time
+
+    pnl_before_taker_fees = net_pnl + turnover * taker_fee_bps / 10_000.0
+    break_even = pnl_before_taker_fees / turnover * 10_000.0 if turnover else 0.0
     return {
-        "trades": len(result.fills),
-        "turnover": result.turnover,
+        "trades": completed_round_trips,
+        "turnover": turnover,
         "net_pnl": net_pnl,
         "break_even_fee_bps": break_even,
+        "final_inventory": final_inventory,
     }
 
 

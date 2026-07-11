@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import csv
+import hashlib
 import json
+import math
 import re
 import subprocess
 import sys
@@ -10,6 +13,7 @@ from typing import Any
 
 
 GIT_COMMIT_RE = re.compile(r"^[0-9a-fA-F]{40,64}$")
+SEQUENCE_ECONOMICS_VERSION = "flat_to_flat_label_horizon_v2"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -104,6 +108,58 @@ def _verify_reduced_manifest_path(*, root: Path, reduced_manifest: str, errors: 
         return
     if payload.get("claim_scope") != "Synthetic reduced E2E fixture only; no live or historical profitability claim.":
         errors.append("reduced_e2e_manifest claim_scope is not the expected synthetic-fixture disclaimer")
+    _verify_sequence_smokes(root=root, payload=payload, errors=errors)
+
+
+def _verify_sequence_smokes(*, root: Path, payload: dict[str, Any], errors: list[str]) -> None:
+    smokes = payload.get("sequence_smokes", {})
+    if not isinstance(smokes, dict):
+        errors.append("sequence_smokes must be a JSON object")
+        return
+    for model_name, entry in sorted(smokes.items()):
+        if not isinstance(entry, dict) or entry.get("status") != "pipeline_completed":
+            continue
+        artifact = _resolve(root, str(entry.get("path", "")))
+        try:
+            with artifact.open(newline="") as handle:
+                rows = list(csv.DictReader(handle))
+        except OSError:
+            errors.append(f"sequence_smokes.{model_name} artifact is unreadable")
+            continue
+        if len(rows) != 1:
+            errors.append(f"sequence_smokes.{model_name} artifact must contain exactly one row")
+            continue
+        row = rows[0]
+        if row.get("economic_simulation_version") != SEQUENCE_ECONOMICS_VERSION:
+            errors.append(f"sequence_smokes.{model_name} uses stale economic simulation semantics")
+        try:
+            final_inventory = float(row.get("test_stateful_final_inventory", "nan"))
+        except ValueError:
+            final_inventory = math.nan
+        if not math.isfinite(final_inventory) or abs(final_inventory) > 1e-9:
+            errors.append(f"sequence_smokes.{model_name} has nonzero or invalid residual inventory")
+        baseline = _resolve(root, str(payload.get("baseline_audit_fixture", "")))
+        if not baseline.is_file() or row.get("baseline_audit_sha256") != _sha256_file(baseline):
+            errors.append(f"sequence_smokes.{model_name} baseline audit hash mismatch")
+        for label, path_key, hash_field in (
+            ("holdout manifest", "holdout_manifest", "holdout_manifest_sha256"),
+            ("checkpoint", "checkpoint", "checkpoint_sha256"),
+            ("predictions", "predictions", "prediction_output_sha256"),
+        ):
+            source = _resolve(root, str(entry.get(path_key, "")))
+            if not source.is_file() or source.stat().st_size <= 0:
+                errors.append(f"sequence_smokes.{model_name} {label} is missing")
+                continue
+            if row.get(hash_field) != _sha256_file(source):
+                errors.append(f"sequence_smokes.{model_name} {label} hash mismatch")
+
+
+def _sha256_file(path: Path) -> str:
+    hasher = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
 
 
 def _current_git_head(root: Path) -> str | None:

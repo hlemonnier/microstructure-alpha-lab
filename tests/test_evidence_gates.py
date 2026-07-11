@@ -1,8 +1,16 @@
 import csv
 import json
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
-from lob_forge.evidence_gates import evaluate_remaining_evidence_gates, format_evidence_gate_report
+from lob_forge.evidence_gates import (
+    evaluate_remaining_evidence_gates,
+    format_evidence_gate_report,
+    verify_l2_sequence_experiment_artifact,
+)
+from lob_forge.holdout import build_holdout_manifest, sha256_file, write_development_csv, write_holdout_manifest
+from lob_forge.ml_models import SEQUENCE_ECONOMICS_VERSION
 from lob_forge.study_plan import build_expected_edge_run_plan, write_expected_edge_run_plan
 
 
@@ -460,10 +468,15 @@ def test_sequence_model_gate_requires_pipeline_completed_artifacts(tmp_path: Pat
     _write_audit(audit, fold_count=20, acceptance_passed=1, rejection_reasons="")
     _write_kelly(kelly, [1.0, -10.0, 2.0, 0.0])
     _write_l2(bybit_l2)
-    _write_sequence_model_artifact(transformer, model_name="sequence_transformer", l2_path=bybit_l2)
-    _write_sequence_model_artifact(tcn, model_name="sequence_tcn", l2_path=bybit_l2)
+    _write_sequence_model_artifact(
+        transformer,
+        model_name="sequence_transformer",
+        l2_path=bybit_l2,
+        baseline_audit=audit,
+    )
+    _write_sequence_model_artifact(tcn, model_name="sequence_tcn", l2_path=bybit_l2, baseline_audit=audit)
 
-    report = evaluate_remaining_evidence_gates(
+    unprovenanced_report = evaluate_remaining_evidence_gates(
         capped_plan=capped_plan,
         capped_result_dir=capped_plan.parent,
         full_plan=full_plan,
@@ -480,6 +493,33 @@ def test_sequence_model_gate_requires_pipeline_completed_artifacts(tmp_path: Pat
         tcn_artifact=tcn,
         pretraining_artifact=pretraining,
     )
+    unprovenanced_gate = next(
+        gate for gate in unprovenanced_report.gates if gate.gate_id == "sequence_transformer_tcn_experiments"
+    )
+    assert not unprovenanced_gate.passed
+    assert "baseline_provenance_passed=0" in unprovenanced_gate.evidence
+
+    with patch(
+        "lob_forge.evidence_gates._baseline_provenance_status",
+        return_value=(True, "baseline_provenance_errors=none"),
+    ):
+        report = evaluate_remaining_evidence_gates(
+            capped_plan=capped_plan,
+            capped_result_dir=capped_plan.parent,
+            full_plan=full_plan,
+            full_result_dir=full_plan.parent,
+            simulated_fills=tmp_path / "simulated.csv",
+            shadow_decisions=tmp_path / "shadow.csv",
+            kelly_artifact=kelly,
+            kelly_min_observations=4,
+            kelly_window_size=2,
+            baseline_audit=audit,
+            l2_paths=[bybit_l2],
+            min_l2_rows=4,
+            transformer_artifact=transformer,
+            tcn_artifact=tcn,
+            pretraining_artifact=pretraining,
+        )
     gate = next(gate for gate in report.gates if gate.gate_id == "sequence_transformer_tcn_experiments")
     assert gate.passed
     assert "pipeline_completed=1" in gate.evidence
@@ -488,34 +528,66 @@ def test_sequence_model_gate_requires_pipeline_completed_artifacts(tmp_path: Pat
         legacy_transformer,
         model_name="sequence_transformer",
         l2_path=bybit_l2,
+        baseline_audit=audit,
         legacy_passed_only=True,
     )
     _write_sequence_model_artifact(
         legacy_tcn,
         model_name="sequence_tcn",
         l2_path=bybit_l2,
+        baseline_audit=audit,
         legacy_passed_only=True,
     )
-    legacy_report = evaluate_remaining_evidence_gates(
-        capped_plan=capped_plan,
-        capped_result_dir=capped_plan.parent,
-        full_plan=full_plan,
-        full_result_dir=full_plan.parent,
-        simulated_fills=tmp_path / "simulated.csv",
-        shadow_decisions=tmp_path / "shadow.csv",
-        kelly_artifact=kelly,
-        kelly_min_observations=4,
-        kelly_window_size=2,
-        baseline_audit=audit,
-        l2_paths=[bybit_l2],
-        min_l2_rows=4,
-        transformer_artifact=legacy_transformer,
-        tcn_artifact=legacy_tcn,
-        pretraining_artifact=pretraining,
-    )
+    with patch(
+        "lob_forge.evidence_gates._baseline_provenance_status",
+        return_value=(True, "baseline_provenance_errors=none"),
+    ):
+        legacy_report = evaluate_remaining_evidence_gates(
+            capped_plan=capped_plan,
+            capped_result_dir=capped_plan.parent,
+            full_plan=full_plan,
+            full_result_dir=full_plan.parent,
+            simulated_fills=tmp_path / "simulated.csv",
+            shadow_decisions=tmp_path / "shadow.csv",
+            kelly_artifact=kelly,
+            kelly_min_observations=4,
+            kelly_window_size=2,
+            baseline_audit=audit,
+            l2_paths=[bybit_l2],
+            min_l2_rows=4,
+            transformer_artifact=legacy_transformer,
+            tcn_artifact=legacy_tcn,
+            pretraining_artifact=pretraining,
+        )
     legacy_gate = next(gate for gate in legacy_report.gates if gate.gate_id == "sequence_transformer_tcn_experiments")
     assert not legacy_gate.passed
     assert "pipeline_completed=0" in legacy_gate.evidence
+
+
+def test_sequence_artifact_resume_verifier_rejects_configuration_drift(tmp_path: Path) -> None:
+    audit = tmp_path / "audit.csv"
+    l2_path = tmp_path / "l2.csv"
+    artifact = tmp_path / "sequence_tcn_results.csv"
+    _write_audit(audit, fold_count=20, acceptance_passed=1, rejection_reasons="")
+    _write_l2(l2_path)
+    _write_sequence_model_artifact(
+        artifact,
+        model_name="sequence_tcn",
+        l2_path=l2_path,
+        baseline_audit=audit,
+    )
+
+    passed, detail = verify_l2_sequence_experiment_artifact(
+        artifact,
+        expected_model="sequence_tcn",
+        selected_l2_path=l2_path,
+        baseline_audit=audit,
+        expected_fields={"depth": 5},
+    )
+
+    assert not passed
+    assert "config_match=0" in detail
+    assert "config_mismatches=depth" in detail
 
 
 def test_kelly_gate_requires_variance_and_audit_acceptance(tmp_path: Path) -> None:
@@ -549,7 +621,43 @@ def test_kelly_gate_requires_variance_and_audit_acceptance(tmp_path: Path) -> No
     assert "audit_passed=0" in gate.evidence
 
 
-def test_kelly_gate_passes_when_variance_and_audit_acceptance_match(tmp_path: Path) -> None:
+def test_kelly_gate_passes_when_provenance_variance_and_audit_acceptance_match(tmp_path: Path) -> None:
+    capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
+    full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")
+    audit = tmp_path / "audit.csv"
+    kelly = tmp_path / "strategy_fee_0p05_edge.csv"
+    kelly_audit = tmp_path / "strategy_fee_0p05_edge_audit.csv"
+    _write_audit(audit, fold_count=4, acceptance_passed=0, rejection_reasons="fold count too low")
+    _write_audit(kelly_audit, fold_count=20, acceptance_passed=1, rejection_reasons="")
+    _write_kelly(kelly, [1.0, 2.0, 3.0, 2.0, 3.0, 4.0, 3.0, 4.0, 5.0])
+    with patch(
+        "lob_forge.evidence_gates.verify_recorded_expected_edge_provenance",
+        return_value=SimpleNamespace(passed=True, errors=()),
+    ):
+        report = evaluate_remaining_evidence_gates(
+            capped_plan=capped_plan,
+            capped_result_dir=capped_plan.parent,
+            full_plan=full_plan,
+            full_result_dir=full_plan.parent,
+            simulated_fills=tmp_path / "simulated.csv",
+            shadow_decisions=tmp_path / "shadow.csv",
+            kelly_artifacts=[kelly],
+            kelly_min_observations=9,
+            kelly_window_size=3,
+            kelly_max_variance_cv=0.01,
+            baseline_audit=audit,
+            l2_path=tmp_path / "missing_l2.csv",
+        )
+
+    gate = next(gate for gate in report.gates if gate.gate_id == "kelly_variance_stability")
+    assert gate.passed
+    assert "variance_passed=1" in gate.evidence
+    assert "audit_passed=1" in gate.evidence
+    assert "fee_eligible=1" in gate.evidence
+    assert "provenance_passed=1" in gate.evidence
+
+
+def test_kelly_gate_rejects_unprovenanced_artifact(tmp_path: Path) -> None:
     capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
     full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")
     audit = tmp_path / "audit.csv"
@@ -575,10 +683,10 @@ def test_kelly_gate_passes_when_variance_and_audit_acceptance_match(tmp_path: Pa
     )
 
     gate = next(gate for gate in report.gates if gate.gate_id == "kelly_variance_stability")
-    assert gate.passed
+    assert not gate.passed
     assert "variance_passed=1" in gate.evidence
     assert "audit_passed=1" in gate.evidence
-    assert "fee_eligible=1" in gate.evidence
+    assert "provenance_passed=0" in gate.evidence
 
 
 def test_kelly_gate_rejects_zero_fee_even_with_variance_and_audit_acceptance(tmp_path: Path) -> None:
@@ -762,15 +870,48 @@ def _write_sequence_model_artifact(
     *,
     model_name: str,
     l2_path: Path,
+    baseline_audit: Path,
     legacy_passed_only: bool = False,
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    holdout = path.with_suffix(".holdout.json")
+    development_l2 = path.with_suffix(".development.csv")
+    checkpoint = path.with_suffix(".pt")
+    predictions = path.with_suffix(".predictions.csv")
+    manifest = build_holdout_manifest(
+        l2_path,
+        split_column="event_type",
+        holdout_values=["delta"],
+        created_at_utc="2026-07-11T00:00:00Z",
+        git_commit="a" * 40,
+    )
+    write_holdout_manifest(manifest, holdout)
+    development = write_development_csv(l2_path, manifest, development_l2)
+    checkpoint.write_text("checkpoint\n")
+    predictions.write_text("prediction\n")
     row = {
         "model_name": model_name,
         "l2_path": str(l2_path),
+        "l2_sha256": sha256_file(l2_path),
+        "baseline_audit_path": str(baseline_audit),
+        "baseline_audit_sha256": sha256_file(baseline_audit),
         "readiness_passed": "1",
         "dependency_available": "1",
         "test_macro_f1": "0.0",
+        "holdout_manifest_path": str(holdout),
+        "holdout_manifest_sha256": sha256_file(holdout),
+        "holdout_manifest_verified": "1",
+        "development_l2_path": str(development_l2),
+        "development_l2_sha256": sha256_file(development_l2),
+        "source_rows_before_holdout_filter": str(development.source_rows),
+        "development_rows_after_holdout_filter": str(development.development_rows),
+        "holdout_rows_excluded": str(development.excluded_holdout_rows),
+        "checkpoint_path": str(checkpoint),
+        "checkpoint_sha256": sha256_file(checkpoint),
+        "prediction_output_path": str(predictions),
+        "prediction_output_sha256": sha256_file(predictions),
+        "economic_simulation_version": SEQUENCE_ECONOMICS_VERSION,
+        "test_stateful_final_inventory": "0",
     }
     if legacy_passed_only:
         row["passed"] = "1"

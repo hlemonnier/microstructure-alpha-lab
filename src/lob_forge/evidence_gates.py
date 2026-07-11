@@ -3,21 +3,25 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Sequence
+from typing import Any, Mapping, Sequence
 
+from lob_forge.holdout import sha256_file, verify_holdout_manifest_file
 from lob_forge.live_validation import has_observed_fill, read_shadow_decisions, validate_shadow_fill_predictions
 from lob_forge.ml_models import (
     L2TensorReadiness,
     ModelReadinessReport,
+    SEQUENCE_ECONOMICS_VERSION,
     evaluate_l2_tensor_readiness,
     evaluate_model_readiness,
 )
 from lob_forge.portfolio import evaluate_oos_variance_stability
 from lob_forge.provider_order_ids import read_order_plan_client_id_map
 from lob_forge.study_status import evaluate_expected_edge_study_status
+from lob_forge.study_provenance import provenance_path_for, verify_recorded_expected_edge_provenance
 
 
 DEFAULT_L2_PATHS = (
@@ -240,6 +244,19 @@ def _final_holdout_result_gate_for_path(*, result_path: Path, todo: str) -> Evid
     final_evaluation = payload.get("final_evaluation") is True
     stateful_simulator = bool(metrics.get("stateful_simulator")) if isinstance(metrics, dict) else False
     rows = _numeric_metric(metrics, "rows")
+    candidate_type = str(metrics.get("candidate_type", "")) if isinstance(metrics, dict) else ""
+    sequence_contract = True
+    if candidate_type.startswith("l2_sequence_torch_"):
+        try:
+            final_inventory = float(metrics["stateful_final_inventory"])
+        except (KeyError, TypeError, ValueError):
+            final_inventory = math.nan
+        sequence_contract = (
+            candidate_type == "l2_sequence_torch_v2"
+            and metrics.get("economic_simulation_version") == SEQUENCE_ECONOMICS_VERSION
+            and math.isfinite(final_inventory)
+            and abs(final_inventory) <= 1e-9
+        )
     checks = {
         "final_evaluation": final_evaluation,
         "candidate_sha256": bool(re.fullmatch(r"[0-9a-fA-F]{64}", candidate_sha256)),
@@ -247,6 +264,7 @@ def _final_holdout_result_gate_for_path(*, result_path: Path, todo: str) -> Evid
         "metrics_candidate_match": bool(candidate_sha256 and candidate_sha256 == metrics_candidate_sha256),
         "stateful_simulator": stateful_simulator,
         "rows": rows > 0,
+        "sequence_contract": sequence_contract,
     }
     evidence = (
         f"result_path={result_path} "
@@ -254,7 +272,8 @@ def _final_holdout_result_gate_for_path(*, result_path: Path, todo: str) -> Evid
         f"candidate_sha256={int(checks['candidate_sha256'])} "
         f"manifest_candidate_match={int(checks['manifest_candidate_match'])} "
         f"metrics_candidate_match={int(checks['metrics_candidate_match'])} "
-        f"stateful_simulator={int(stateful_simulator)} rows={rows:.12g}"
+        f"stateful_simulator={int(stateful_simulator)} rows={rows:.12g} "
+        f"sequence_contract={int(sequence_contract)}"
     )
     if all(checks.values()):
         return EvidenceGate(
@@ -545,6 +564,12 @@ def _kelly_gate(
             continue
         audit_path = _audit_path_for_edge_artifact(artifact_path)
         audit_passed, audit_detail = _audit_acceptance_detail(audit_path)
+        provenance = verify_recorded_expected_edge_provenance(
+            provenance_path_for(artifact_path),
+            result_path=artifact_path,
+            audit_path=audit_path,
+            require_source_files=True,
+        )
         fee_bps = _fee_bps_from_artifact_name(artifact_path)
         fee_eligible = fee_bps is not None and fee_bps >= min_cost_bps
         if report.passed:
@@ -553,9 +578,11 @@ def _kelly_gate(
             f"artifact={artifact_path} audit={audit_path} observations={report.observations} "
             f"window_count={len(report.window_variances)} variance_cv={report.variance_cv:.12g} "
             f"variance_passed={int(report.passed)} fee_bps={fee_bps if fee_bps is not None else 'unknown'} "
-            f"min_cost_bps={min_cost_bps:.12g} fee_eligible={int(fee_eligible)} {audit_detail}"
+            f"min_cost_bps={min_cost_bps:.12g} fee_eligible={int(fee_eligible)} {audit_detail} "
+            f"provenance_passed={int(provenance.passed)} "
+            f"provenance_errors={';'.join(provenance.errors) or 'none'}"
         )
-        if report.passed and audit_passed and fee_eligible:
+        if report.passed and audit_passed and fee_eligible and provenance.passed:
             return EvidenceGate(
                 "kelly_variance_stability",
                 todo,
@@ -577,7 +604,7 @@ def _kelly_gate(
         "not_ready",
         False,
         evidence,
-        "keep Kelly disabled until the same nonzero-cost strategy artifact passes audit acceptance and variance stability",
+        "keep Kelly disabled until the same nonzero-cost strategy artifact passes provenance, audit acceptance, and variance stability",
     )
 
 
@@ -601,6 +628,7 @@ def _model_experiment_gate(
             f"missing baseline_audit={baseline_audit}",
             "produce accepted baseline audit before model experiments",
         )
+    baseline_provenance_passed, baseline_provenance_detail = _baseline_provenance_status(baseline_audit)
     existing_l2_paths = tuple(path for path in l2_paths if path.exists())
     if not existing_l2_paths:
         return EvidenceGate(
@@ -645,18 +673,25 @@ def _model_experiment_gate(
             "produce accepted baseline audit and verified normalized L2 rows before model experiments",
         )
     artifact_checks = tuple(
-        _model_experiment_artifact_status(path, expected_model=model_name, selected_l2_path=selected_l2_path)
+        verify_l2_sequence_experiment_artifact(
+            path,
+            expected_model=model_name,
+            selected_l2_path=selected_l2_path,
+            baseline_audit=baseline_audit,
+        )
         for model_name, path in zip(model_names, required_artifacts)
     )
     artifacts_passed = all(passed for passed, _ in artifact_checks)
-    if ready and artifacts_passed:
+    if ready and artifacts_passed and baseline_provenance_passed:
         evidence = (
             f"models={','.join(model_names)} l2_path={selected_l2_path} "
+            f"baseline_provenance_passed=1 {baseline_provenance_detail} "
             f"{' '.join(detail for _, detail in artifact_checks)}"
         )
         return EvidenceGate(gate_id, todo_text, "passed", True, evidence, "checkbox can be marked complete")
     evidence = (
         f"l2_path={selected_l2_path} readiness_passed={int(ready)} "
+        f"baseline_provenance_passed={int(baseline_provenance_passed)} {baseline_provenance_detail} "
         f"model_reasons={' | '.join(';'.join(report.reasons) or 'ready' for report in selected_readiness)} "
         f"missing_artifacts={','.join(str(path) for path in missing_artifacts) or 'none'} "
         f"artifact_checks={' | '.join(detail for _, detail in artifact_checks)}"
@@ -667,7 +702,7 @@ def _model_experiment_gate(
         "not_ready",
         False,
         evidence,
-        "satisfy model-readiness-gate, run experiments, and save result artifacts",
+        "produce a provenance-valid baseline, use a verified development holdout, and regenerate versioned sequence artifacts with hashed checkpoints and predictions",
     )
 
 
@@ -728,8 +763,13 @@ def _pretraining_gate(*, l2_paths: tuple[Path, ...], min_l2_rows: int, artifact_
     )
 
 
-def _model_experiment_artifact_status(
-    artifact_path: Path, *, expected_model: str, selected_l2_path: Path
+def verify_l2_sequence_experiment_artifact(
+    artifact_path: Path,
+    *,
+    expected_model: str,
+    selected_l2_path: Path,
+    baseline_audit: Path,
+    expected_fields: Mapping[str, Any] | None = None,
 ) -> tuple[bool, str]:
     prefix = f"artifact={artifact_path}"
     if not artifact_path.exists() or artifact_path.stat().st_size == 0:
@@ -744,16 +784,140 @@ def _model_experiment_artifact_status(
     row = rows[0]
     model_match = row.get("model_name") == expected_model
     l2_match = row.get("l2_path") == str(selected_l2_path)
+    l2_hash_match = l2_match and selected_l2_path.is_file() and row.get("l2_sha256") == sha256_file(selected_l2_path)
+    baseline_match = row.get("baseline_audit_path") == str(baseline_audit)
+    baseline_hash_match = (
+        baseline_match and baseline_audit.is_file() and row.get("baseline_audit_sha256") == sha256_file(baseline_audit)
+    )
     pipeline_completed = row.get("pipeline_completed") in {"1", "true", "True"}
     readiness_passed = row.get("readiness_passed") in {"1", "true", "True"}
     dependency_available = row.get("dependency_available") in {"1", "true", "True"}
-    ok = model_match and l2_match and pipeline_completed and readiness_passed and dependency_available
+    semantics_match = row.get("economic_simulation_version") == SEQUENCE_ECONOMICS_VERSION
+    try:
+        final_inventory_flat = abs(float(row.get("test_stateful_final_inventory", "nan"))) <= 1e-9
+        source_rows = int(row.get("source_rows_before_holdout_filter", "0"))
+        development_rows = int(row.get("development_rows_after_holdout_filter", "0"))
+        excluded_rows = int(row.get("holdout_rows_excluded", "0"))
+    except ValueError:
+        final_inventory_flat = False
+        source_rows = development_rows = excluded_rows = 0
+    holdout_verified = row.get("holdout_manifest_verified") in {"1", "true", "True"}
+    holdout_hash_match = _artifact_hash_matches(
+        row.get("holdout_manifest_path", ""),
+        row.get("holdout_manifest_sha256", ""),
+    )
+    holdout_source_verified = holdout_hash_match and _holdout_manifest_verifies(row.get("holdout_manifest_path", ""))
+    development_l2_present = _artifact_path_exists(row.get("development_l2_path", ""))
+    development_l2_hash_match = _artifact_hash_matches(
+        row.get("development_l2_path", ""),
+        row.get("development_l2_sha256", ""),
+    )
+    holdout_partition_valid = excluded_rows > 0 and source_rows == development_rows + excluded_rows
+    checkpoint_hash_match = _artifact_hash_matches(
+        row.get("checkpoint_path", ""),
+        row.get("checkpoint_sha256", ""),
+    )
+    prediction_hash_match = _artifact_hash_matches(
+        row.get("prediction_output_path", ""),
+        row.get("prediction_output_sha256", ""),
+    )
+    config_mismatches = sorted(
+        field for field, expected in (expected_fields or {}).items() if not _csv_value_matches(row.get(field), expected)
+    )
+    config_match = not config_mismatches
+    ok = (
+        model_match
+        and l2_hash_match
+        and baseline_hash_match
+        and pipeline_completed
+        and readiness_passed
+        and dependency_available
+        and semantics_match
+        and final_inventory_flat
+        and holdout_verified
+        and holdout_hash_match
+        and holdout_source_verified
+        and development_l2_present
+        and development_l2_hash_match
+        and holdout_partition_valid
+        and checkpoint_hash_match
+        and prediction_hash_match
+        and config_match
+    )
     detail = (
         f"{prefix} present=1 expected_model={expected_model} model_match={int(model_match)} "
-        f"l2_match={int(l2_match)} readiness_passed={int(readiness_passed)} "
-        f"dependency_available={int(dependency_available)} pipeline_completed={int(pipeline_completed)}"
+        f"l2_match={int(l2_match)} l2_hash_match={int(l2_hash_match)} "
+        f"baseline_hash_match={int(baseline_hash_match)} "
+        f"readiness_passed={int(readiness_passed)} "
+        f"dependency_available={int(dependency_available)} pipeline_completed={int(pipeline_completed)} "
+        f"semantics_match={int(semantics_match)} final_inventory_flat={int(final_inventory_flat)} "
+        f"holdout_verified={int(holdout_verified)} holdout_hash_match={int(holdout_hash_match)} "
+        f"holdout_source_verified={int(holdout_source_verified)} "
+        f"holdout_partition_valid={int(holdout_partition_valid)} "
+        f"development_l2_present={int(development_l2_present)} "
+        f"development_l2_hash_match={int(development_l2_hash_match)} "
+        f"checkpoint_hash_match={int(checkpoint_hash_match)} prediction_hash_match={int(prediction_hash_match)} "
+        f"config_match={int(config_match)} "
+        f"config_mismatches={','.join(config_mismatches) or 'none'}"
     )
     return ok, detail
+
+
+def _csv_value_matches(actual: str | None, expected: Any) -> bool:
+    if actual is None:
+        return False
+    try:
+        if isinstance(expected, bool):
+            return _truthy_csv_value(actual) is expected
+        if isinstance(expected, int):
+            return int(float(actual)) == expected
+        if isinstance(expected, float):
+            return math.isclose(float(actual), expected, rel_tol=0.0, abs_tol=1e-12)
+    except (TypeError, ValueError):
+        return False
+    if isinstance(expected, Path):
+        return Path(actual) == expected
+    return actual == str(expected)
+
+
+def _holdout_manifest_verifies(path_value: str) -> bool:
+    try:
+        return bool(path_value) and verify_holdout_manifest_file(Path(path_value))
+    except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+        return False
+
+
+def _baseline_provenance_status(audit_path: Path) -> tuple[bool, str]:
+    result_path: Path | None = None
+    try:
+        with audit_path.open(newline="") as handle:
+            row = next(csv.DictReader(handle), None)
+        if row is not None and row.get("artifact_path"):
+            result_path = Path(str(row["artifact_path"]))
+    except OSError:
+        pass
+    if result_path is None:
+        suffix = "_audit.csv"
+        result_path = Path(f"{str(audit_path)[:-len(suffix)]}.csv") if str(audit_path).endswith(suffix) else audit_path
+    report = verify_recorded_expected_edge_provenance(
+        provenance_path_for(result_path),
+        result_path=result_path,
+        audit_path=audit_path,
+        require_source_files=True,
+    )
+    detail = f"baseline_result={result_path} baseline_provenance_errors={';'.join(report.errors) or 'none'}"
+    return report.passed, detail
+
+
+def _artifact_path_exists(value: str) -> bool:
+    path = Path(value)
+    return bool(value) and path.is_file() and path.stat().st_size > 0
+
+
+def _artifact_hash_matches(path_value: str, expected_sha256: str) -> bool:
+    if not expected_sha256 or not _artifact_path_exists(path_value):
+        return False
+    return sha256_file(Path(path_value)) == expected_sha256
 
 
 def _pretraining_artifact_status(artifact_path: Path, *, selected_l2_path: Path) -> tuple[bool, str]:

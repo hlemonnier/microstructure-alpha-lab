@@ -75,6 +75,7 @@ def run_expected_edge(
     study_profile: str = "cloud_full",
     run_tests: bool = True,
     confirm_heavy: bool = True,
+    holdout_manifest_path: str = "",
 ) -> dict[str, str]:
     if mode not in {"plan", "run", "verify", "sequence"}:
         raise ValueError("mode must be one of: plan, run, verify, sequence")
@@ -91,6 +92,10 @@ def run_expected_edge(
             "PYTHONPATH": "src",
         }
     )
+    if holdout_manifest_path:
+        env["HOLDOUT_MANIFEST_PATH"] = holdout_manifest_path
+    if mode == "sequence" and not holdout_manifest_path:
+        raise ValueError("holdout_manifest_path is required for sequence mode")
     subprocess.run(
         ["bash", "scripts/bootstrap_cloud_expected_edge.sh"],
         cwd=REMOTE_PROJECT_DIR,
@@ -113,12 +118,14 @@ def main(
     study_profile: str = "cloud_full",
     run_tests: bool = True,
     confirm_heavy: bool = True,
+    holdout_manifest_path: str = "",
 ) -> None:
     summary = run_expected_edge.remote(
         mode=mode,
         study_profile=study_profile,
         run_tests=run_tests,
         confirm_heavy=confirm_heavy,
+        holdout_manifest_path=holdout_manifest_path,
     )
     for key, value in summary.items():
         print(f"{key}={value}")

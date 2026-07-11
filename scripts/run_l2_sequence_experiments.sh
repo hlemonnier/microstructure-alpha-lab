@@ -52,6 +52,10 @@ mkdir -p "$OUT_DIR" "$CHECKPOINT_DIR" "$PREDICTION_DIR"
 if [[ -n "$HOLDOUT_MANIFEST_PATH" ]]; then
   mkdir -p "$DEVELOPMENT_L2_DIR"
 fi
+if [[ "$DRY_RUN" == "0" && -z "$HOLDOUT_MANIFEST_PATH" ]]; then
+  echo "HOLDOUT_MANIFEST_PATH is required for a certifiable sequence experiment" >&2
+  exit 2
+fi
 normalized_seeds="${SEEDS//,/ }"
 read -r -a seed_values <<< "$normalized_seeds"
 seed_count="${#seed_values[@]}"
@@ -118,8 +122,89 @@ for model in $MODELS; do
       predictions="$PREDICTION_DIR/${model}${suffix}_predictions.csv"
       development_l2="$DEVELOPMENT_L2_DIR/${model}${suffix}_development_l2.csv"
       if [[ "$RESUME" == "1" && -s "$output" ]]; then
-        printf 'skip existing model=%s ablation=%s seed=%s output=%s\n' "$model" "$ablation" "$seed" "$output"
-        continue
+        if "$PYTHON_BIN" - \
+          "$output" "$model" "$L2_PATH" "$BASELINE_AUDIT_PATH" "$checkpoint" "$predictions" \
+          "$HOLDOUT_MANIFEST_PATH" "$development_l2" "$variant_depth" "$variant_window" \
+          "$LABEL_HORIZON" "$FLAT_THRESHOLD_BPS" "$EPOCHS" "$LEARNING_RATE" "$BATCH_SIZE" \
+          "$EARLY_STOPPING_PATIENCE" "$DEVICE" "$variant_class_weighting" "$variant_lr_scheduler_gamma" \
+          "$MAX_ROWS" "$MAX_SNAPSHOTS" "$MIN_FOLD_COUNT" "$MIN_L2_ROWS" "$seed" \
+          "$ECONOMIC_TARGET_NOTIONAL" "$ECONOMIC_TAKER_FEE_BPS" "$ECONOMIC_SLIPPAGE_BPS" <<'PY'
+import sys
+from pathlib import Path
+
+from lob_forge.evidence_gates import verify_l2_sequence_experiment_artifact
+
+(
+    output,
+    model,
+    l2_path,
+    baseline_audit,
+    checkpoint,
+    predictions,
+    holdout_manifest,
+    development_l2,
+    depth,
+    window,
+    label_horizon,
+    flat_threshold_bps,
+    epochs,
+    learning_rate,
+    batch_size,
+    patience,
+    requested_device,
+    class_weighting,
+    lr_scheduler_gamma,
+    max_rows,
+    max_snapshots,
+    min_fold_count,
+    min_l2_rows,
+    seed,
+    target_notional,
+    taker_fee_bps,
+    slippage_bps,
+) = sys.argv[1:]
+expected_fields = {
+    "checkpoint_path": Path(checkpoint),
+    "prediction_output_path": Path(predictions),
+    "depth": int(depth),
+    "window": int(window),
+    "label_horizon": int(label_horizon),
+    "flat_threshold_bps": float(flat_threshold_bps),
+    "epochs": int(epochs),
+    "learning_rate": float(learning_rate),
+    "requested_batch_size": int(batch_size),
+    "early_stopping_patience": int(patience),
+    "requested_device": requested_device,
+    "class_weighting": class_weighting,
+    "lr_scheduler_gamma": float(lr_scheduler_gamma),
+    "max_rows": int(max_rows),
+    "max_snapshots": int(max_snapshots),
+    "min_fold_count": int(min_fold_count),
+    "min_l2_rows": int(min_l2_rows),
+    "seed": int(seed),
+    "economic_target_notional": float(target_notional),
+    "economic_taker_fee_bps": float(taker_fee_bps),
+    "economic_slippage_bps": float(slippage_bps),
+}
+if holdout_manifest:
+    expected_fields["holdout_manifest_path"] = Path(holdout_manifest)
+    expected_fields["development_l2_path"] = Path(development_l2)
+passed, detail = verify_l2_sequence_experiment_artifact(
+    Path(output),
+    expected_model=model,
+    selected_l2_path=Path(l2_path),
+    baseline_audit=Path(baseline_audit),
+    expected_fields=expected_fields,
+)
+if not passed:
+    print(f"stale_sequence_artifact={detail}", file=sys.stderr)
+    raise SystemExit(1)
+PY
+        then
+          printf 'skip existing model=%s ablation=%s seed=%s output=%s\n' "$model" "$ablation" "$seed" "$output"
+          continue
+        fi
+        printf 'rerun invalid existing model=%s ablation=%s seed=%s output=%s\n' "$model" "$ablation" "$seed" "$output"
       fi
 
       command=(

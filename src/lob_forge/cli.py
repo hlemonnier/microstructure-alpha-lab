@@ -2417,6 +2417,8 @@ def _cmd_final_holdout_sequence(args: argparse.Namespace) -> int:
             "stateful_turnover": report.stateful_turnover,
             "stateful_net_pnl": report.stateful_net_pnl,
             "stateful_break_even_fee_bps": report.stateful_break_even_fee_bps,
+            "stateful_final_inventory": report.stateful_final_inventory,
+            "economic_simulation_version": report.economic_simulation_version,
             "predictions_output_path": report.predictions_output_path,
             "stateful_simulator": True,
         },

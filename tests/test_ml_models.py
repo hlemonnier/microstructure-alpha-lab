@@ -1,12 +1,20 @@
 import csv
 from pathlib import Path
 
-from lob_forge.holdout import build_holdout_manifest, canonical_json_sha256, sha256_file, write_holdout_manifest
+from lob_forge.holdout import (
+    build_holdout_manifest,
+    canonical_json_sha256,
+    sha256_file,
+    write_development_csv,
+    write_holdout_manifest,
+)
 from lob_forge.ml_models import (
     _apply_sequence_standardizer,
     _fit_sequence_standardizer,
     _purged_sequential_split_counts,
+    _sequence_stateful_economics,
     _stationary_l2_vector,
+    SEQUENCE_ECONOMICS_VERSION,
     available_model_specs,
     build_sequence_dataset,
     build_torch_sequence_classifier,
@@ -219,6 +227,53 @@ def test_sequence_standardizer_fits_train_only() -> None:
     assert transformed[-1][0][0] == 999.0
 
 
+def test_sequence_stateful_economics_flattens_at_the_label_horizon_with_exact_costs() -> None:
+    economics = _sequence_stateful_economics(
+        [
+            [101.0, 1.0, 99.0, 1.0],
+            [105.0, 1.0, 103.0, 1.0],
+        ],
+        [0],
+        [2],
+        label_horizon=1,
+        target_notional=100.0,
+        taker_fee_bps=10.0,
+        slippage_bps=5.0,
+    )
+
+    expected_turnover = 101.0 + 103.0
+    expected_net_pnl = (103.0 - 101.0) - expected_turnover * 15.0 / 10_000.0
+    expected_break_even_fee_bps = (103.0 - 101.0) / expected_turnover * 10_000.0 - 5.0
+    assert economics["trades"] == 1
+    assert abs(float(economics["turnover"]) - expected_turnover) < 1e-12
+    assert abs(float(economics["net_pnl"]) - expected_net_pnl) < 1e-12
+    assert abs(float(economics["break_even_fee_bps"]) - expected_break_even_fee_bps) < 1e-12
+    assert abs(float(economics["final_inventory"])) < 1e-12
+
+
+def test_sequence_stateful_economics_skips_overlapping_prediction_windows() -> None:
+    economics = _sequence_stateful_economics(
+        [
+            [101.0, 1.0, 99.0, 1.0],
+            [101.0, 1.0, 99.0, 1.0],
+            [101.0, 1.0, 99.0, 1.0],
+            [101.0, 1.0, 99.0, 1.0],
+            [101.0, 1.0, 99.0, 1.0],
+        ],
+        [0, 1, 2],
+        [2, 2, 2],
+        label_horizon=2,
+        target_notional=100.0,
+        taker_fee_bps=0.0,
+        slippage_bps=0.0,
+    )
+
+    assert economics["trades"] == 2
+    assert abs(float(economics["turnover"]) - 400.0) < 1e-12
+    assert abs(float(economics["net_pnl"]) + 4.0) < 1e-12
+    assert abs(float(economics["final_inventory"])) < 1e-12
+
+
 def test_l2_masked_pretraining_smoke_writes_artifact(tmp_path: Path) -> None:
     l2_path = tmp_path / "bybit_l2.csv"
     output_path = tmp_path / "self_supervised_pretraining.csv"
@@ -332,7 +387,7 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
             depth=1,
             window=3,
             label_horizon=1,
-            epochs=1,
+            epochs=2,
             min_l2_rows=20,
             max_rows=200,
             max_snapshots=50,
@@ -372,10 +427,17 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
         assert report.selected_device in {"cpu", "cuda"}
         assert report.class_weighting == "balanced"
         assert report.holdout_manifest_verified
+        assert report.l2_sha256 == sha256_file(l2_path)
+        assert report.baseline_audit_sha256 == sha256_file(audit_path)
         assert report.holdout_manifest_sha256 == sha256_file(holdout_manifest_path)
         assert report.development_l2_path == str(development_l2_path)
+        assert report.development_l2_sha256 == sha256_file(development_l2_path)
         assert report.checkpoint_path == str(checkpoint_path)
+        assert report.checkpoint_sha256 == sha256_file(checkpoint_path)
         assert report.prediction_output_path == str(prediction_path)
+        assert report.prediction_output_sha256 == sha256_file(prediction_path)
+        assert report.economic_simulation_version == SEQUENCE_ECONOMICS_VERSION
+        assert abs(report.test_stateful_final_inventory) < 1e-12
         assert report.test_stateful_trades >= 0
         assert "pipeline_completed=1" in text
         assert f"holdout_manifest_sha256={sha256_file(holdout_manifest_path)}" in text
@@ -397,12 +459,36 @@ def test_l2_sequence_experiment_is_readiness_and_dependency_gated(tmp_path: Path
             max_snapshots=50,
             batch_size=2,
             class_weighting="balanced",
+            lr_scheduler_gamma=0.9,
             checkpoint_path=checkpoint_path,
             resume_from_checkpoint=True,
             prediction_output_path=tmp_path / "sequence_tcn_resumed_predictions.csv",
+            holdout_manifest_path=holdout_manifest_path,
+            development_l2_output_path=development_l2_path,
         )
         assert resumed.resumed_from_checkpoint
         assert resumed.pipeline_completed
+
+        incompatible = run_l2_torch_sequence_experiment(
+            model_name="sequence_tcn",
+            l2_path=l2_path,
+            baseline_audit_path=audit_path,
+            output_path=tmp_path / "sequence_tcn_incompatible_results.csv",
+            depth=1,
+            window=3,
+            label_horizon=1,
+            epochs=2,
+            min_l2_rows=20,
+            max_rows=200,
+            max_snapshots=50,
+            batch_size=2,
+            class_weighting="balanced",
+            lr_scheduler_gamma=0.9,
+            checkpoint_path=checkpoint_path,
+            resume_from_checkpoint=True,
+            prediction_output_path=tmp_path / "sequence_tcn_incompatible_predictions.csv",
+        )
+        assert not incompatible.resumed_from_checkpoint
 
 
 def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing(tmp_path: Path) -> None:
@@ -454,13 +540,22 @@ def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing
     assert report.pipeline_completed
 
     candidate = freeze_l2_sequence_candidate(output_path)
-    assert candidate["candidate_type"] == "l2_sequence_torch_v1"
+    assert candidate["candidate_type"] == "l2_sequence_torch_v2"
     assert candidate["checkpoint_sha256"] == sha256_file(checkpoint_path)
     assert candidate["development_l2_sha256"] == sha256_file(tmp_path / "development_l2.csv")
     assert candidate["standardizer_means"]
     assert candidate["economic_target_notional"] == 125.0
     assert candidate["economic_taker_fee_bps"] == 0.25
     assert candidate["economic_slippage_bps"] == 0.05
+    development_text = (tmp_path / "development_l2.csv").read_text()
+    (tmp_path / "development_l2.csv").write_text(development_text + "\n")
+    try:
+        freeze_l2_sequence_candidate(output_path)
+    except ValueError as exc:
+        assert "development_l2_sha256" in str(exc)
+    else:
+        raise AssertionError("expected tampered development L2 to be rejected")
+    (tmp_path / "development_l2.csv").write_text(development_text)
     final_manifest = build_holdout_manifest(
         l2_path,
         split_column="exchange_timestamp",
@@ -484,6 +579,33 @@ def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing
     assert final_report.sequence_count > 0
     assert final_report.predictions_output_path == str(final_prediction_path)
     assert final_prediction_path.read_text().splitlines()[1].startswith("holdout,")
+    with final_prediction_path.open(newline="") as handle:
+        final_predictions = list(csv.DictReader(handle))
+    expected_stateful_trades = 0
+    prior_exit_index: int | None = None
+    for row in sorted(final_predictions, key=lambda value: int(value["sequence_end_index"])):
+        if row["predicted_label"] == "1":
+            continue
+        entry_index = int(row["sequence_end_index"])
+        if prior_exit_index is not None and entry_index < prior_exit_index:
+            continue
+        expected_stateful_trades += 1
+        prior_exit_index = entry_index + int(candidate["label_horizon"])
+    assert final_report.stateful_trades == expected_stateful_trades
+
+    wrong_source = dict(candidate)
+    wrong_source["l2_sha256"] = "0" * 64
+    try:
+        evaluate_l2_sequence_final_holdout(
+            l2_path=l2_path,
+            manifest=final_manifest,
+            candidate=wrong_source,
+            device="cpu",
+        )
+    except ValueError as exc:
+        assert "source L2" in str(exc)
+    else:
+        raise AssertionError("expected source-L2 candidate mismatch to be rejected")
 
     tampered = dict(candidate)
     tampered["checkpoint_sha256"] = "0" * 64
@@ -501,9 +623,12 @@ def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing
 
 
 def test_l2_sequence_candidate_freeze_locks_economic_config_for_final_holdout(tmp_path: Path) -> None:
-    l2_path = tmp_path / "development_l2.csv"
+    l2_path = tmp_path / "source_l2.csv"
+    development_l2_path = tmp_path / "development_l2.csv"
+    development_manifest_path = tmp_path / "development_holdout.json"
     artifact_path = tmp_path / "sequence_tcn_results.csv"
     checkpoint_path = tmp_path / "sequence_tcn.pt"
+    baseline_audit_path = tmp_path / "baseline_audit.csv"
     with l2_path.open("w", newline="") as handle:
         writer = csv.DictWriter(
             handle,
@@ -541,15 +666,36 @@ def test_l2_sequence_candidate_freeze_locks_economic_config_for_final_holdout(tm
                     }
                 )
     checkpoint_path.write_text("not-a-real-checkpoint")
+    baseline_audit_path.write_text("fold_count,acceptance_passed,rejection_reasons\n20,1,\n")
+    development_manifest = build_holdout_manifest(
+        l2_path,
+        split_column="exchange_timestamp",
+        holdout_values=[str(1684195200000 + index) for index in range(30, 40)],
+        created_at_utc="2026-06-26T00:00:00Z",
+        git_commit="a" * 40,
+    )
+    write_holdout_manifest(development_manifest, development_manifest_path)
+    development = write_development_csv(l2_path, development_manifest, development_l2_path)
     with artifact_path.open("w", newline="") as handle:
         writer = csv.DictWriter(
             handle,
             fieldnames=[
                 "model_name",
                 "pipeline_completed",
+                "l2_path",
+                "l2_sha256",
+                "baseline_audit_path",
+                "baseline_audit_sha256",
                 "checkpoint_path",
+                "checkpoint_sha256",
+                "holdout_manifest_path",
+                "holdout_manifest_sha256",
                 "development_l2_path",
+                "development_l2_sha256",
                 "holdout_manifest_verified",
+                "source_rows_before_holdout_filter",
+                "development_rows_after_holdout_filter",
+                "holdout_rows_excluded",
                 "depth",
                 "window",
                 "label_horizon",
@@ -559,6 +705,8 @@ def test_l2_sequence_candidate_freeze_locks_economic_config_for_final_holdout(tm
                 "economic_target_notional",
                 "economic_taker_fee_bps",
                 "economic_slippage_bps",
+                "economic_simulation_version",
+                "test_stateful_final_inventory",
             ],
         )
         writer.writeheader()
@@ -566,9 +714,20 @@ def test_l2_sequence_candidate_freeze_locks_economic_config_for_final_holdout(tm
             {
                 "model_name": "sequence_tcn",
                 "pipeline_completed": "1",
+                "l2_path": str(l2_path),
+                "l2_sha256": sha256_file(l2_path),
+                "baseline_audit_path": str(baseline_audit_path),
+                "baseline_audit_sha256": sha256_file(baseline_audit_path),
                 "checkpoint_path": str(checkpoint_path),
-                "development_l2_path": str(l2_path),
+                "checkpoint_sha256": sha256_file(checkpoint_path),
+                "holdout_manifest_path": str(development_manifest_path),
+                "holdout_manifest_sha256": sha256_file(development_manifest_path),
+                "development_l2_path": str(development_l2_path),
+                "development_l2_sha256": sha256_file(development_l2_path),
                 "holdout_manifest_verified": "1",
+                "source_rows_before_holdout_filter": str(development.source_rows),
+                "development_rows_after_holdout_filter": str(development.development_rows),
+                "holdout_rows_excluded": str(development.excluded_holdout_rows),
                 "depth": "1",
                 "window": "3",
                 "label_horizon": "1",
@@ -578,6 +737,8 @@ def test_l2_sequence_candidate_freeze_locks_economic_config_for_final_holdout(tm
                 "economic_target_notional": "125",
                 "economic_taker_fee_bps": "0.25",
                 "economic_slippage_bps": "0.05",
+                "economic_simulation_version": SEQUENCE_ECONOMICS_VERSION,
+                "test_stateful_final_inventory": "0",
             }
         )
 

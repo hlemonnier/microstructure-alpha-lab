@@ -70,6 +70,16 @@ def test_reduced_e2e_artifact_verifier_rejects_source_package_commit_mismatch(tm
     assert f"manifest={manifest_commit[:12]} archive={archive_commit[:12]}" in result.stdout
 
 
+def test_reduced_e2e_artifact_verifier_rejects_legacy_sequence_economics(tmp_path: Path) -> None:
+    head = _init_git_repo(tmp_path)
+    _write_reduced_artifacts(tmp_path, git_commit=head, legacy_sequence=True)
+
+    result = _run_verifier(tmp_path)
+
+    assert result.returncode == 1
+    assert "uses stale economic simulation semantics" in result.stdout
+
+
 def _run_verifier(project_root: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(SCRIPT), "--project-root", str(project_root)],
@@ -96,18 +106,29 @@ def _init_git_repo(path: Path, *, tag_head: bool = True) -> str:
     return head
 
 
-def _write_reduced_artifacts(path: Path, *, git_commit: str, working_tree_dirty: bool | None = False) -> None:
+def _write_reduced_artifacts(
+    path: Path,
+    *,
+    git_commit: str,
+    working_tree_dirty: bool | None = False,
+    legacy_sequence: bool = False,
+) -> None:
     artifact_dir = path / "artifacts" / "reduced_e2e"
     artifact_dir.mkdir(parents=True)
     result_manifest = artifact_dir / "result_manifest.json"
-    result_manifest.write_text(
-        json.dumps(
-            {
-                "claim_scope": "Synthetic reduced E2E fixture only; no live or historical profitability claim.",
+    result_payload: dict[str, object] = {
+        "claim_scope": "Synthetic reduced E2E fixture only; no live or historical profitability claim.",
+    }
+    if legacy_sequence:
+        sequence_artifact = artifact_dir / "sequence_tcn_smoke.csv"
+        sequence_artifact.write_text("model_name,pipeline_completed\nsequence_tcn,1\n")
+        result_payload["sequence_smokes"] = {
+            "sequence_tcn": {
+                "status": "pipeline_completed",
+                "path": "artifacts/reduced_e2e/sequence_tcn_smoke.csv",
             }
-        )
-        + "\n"
-    )
+        }
+    result_manifest.write_text(json.dumps(result_payload) + "\n")
     stateful_orders = artifact_dir / "stateful_orders.csv"
     stateful_orders.write_text("order_id\n1\n")
     research_manifest = path / "artifacts" / "research_manifest.json"

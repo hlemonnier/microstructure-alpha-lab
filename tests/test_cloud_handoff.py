@@ -10,12 +10,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_modal_expected_edge_job_persists_data_and_results() -> None:
     script = Path("scripts/modal_expected_edge_job.py").read_text()
+    wrapper = Path("scripts/run_modal_expected_edge.sh").read_text()
 
     assert "modal.Volume.from_name" in script
     assert "create_if_missing=True" in script
     assert "data" in script
     assert "results" in script
     assert "volume.commit()" in script
+    assert 'env["HOLDOUT_MANIFEST_PATH"] = holdout_manifest_path' in script
+    assert "holdout_manifest_path is required for sequence mode" in script
+    assert "HOLDOUT_MANIFEST_PATH is required for MODE=sequence" in wrapper
+    assert "--holdout-manifest-path" in wrapper
 
 
 def test_modal_expected_edge_job_excludes_local_heavy_paths() -> None:

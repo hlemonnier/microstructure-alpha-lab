@@ -94,6 +94,70 @@ def test_l2_sequence_runner_dry_run_propagates_holdout_manifest(tmp_path: Path) 
     assert "sequence_tcn_development_l2.csv" in result.stdout
 
 
+def test_l2_sequence_runner_does_not_resume_stale_nonempty_artifact(tmp_path: Path) -> None:
+    out_dir = tmp_path / "model_experiments"
+    out_dir.mkdir()
+    (out_dir / "sequence_tcn_results.csv").write_text("model_name,pipeline_completed\nsequence_tcn,1\n")
+    baseline = tmp_path / "baseline_audit.csv"
+    baseline.write_text("fold_count,acceptance_passed,rejection_reasons\n20,1,\n")
+    l2_path = tmp_path / "l2.csv"
+    l2_path.write_text("exchange_timestamp,side,price,size\n1,bid,100,1\n")
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": "src",
+            "DRY_RUN": "1",
+            "RESUME": "1",
+            "MODELS": "sequence_tcn",
+            "SEEDS": "7",
+            "OUT_DIR": str(out_dir),
+            "BASELINE_AUDIT_PATH": str(baseline),
+            "L2_PATH": str(l2_path),
+        }
+    )
+
+    result = subprocess.run(
+        ["bash", "scripts/run_l2_sequence_experiments.sh"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 0
+    assert "rerun invalid existing model=sequence_tcn" in result.stdout
+    assert "would_run model=sequence_tcn" in result.stdout
+    assert "skip existing model=sequence_tcn" not in result.stdout
+    assert "stale_sequence_artifact=" in result.stderr
+
+
+def test_l2_sequence_runner_requires_holdout_manifest_for_actual_run(tmp_path: Path) -> None:
+    env = os.environ.copy()
+    env.update(
+        {
+            "PYTHONPATH": "src",
+            "DRY_RUN": "0",
+            "MODELS": "sequence_tcn",
+            "OUT_DIR": str(tmp_path / "model_experiments"),
+        }
+    )
+    env.pop("HOLDOUT_MANIFEST_PATH", None)
+    env.pop("HOLDOUT_MANIFEST", None)
+
+    result = subprocess.run(
+        ["bash", "scripts/run_l2_sequence_experiments.sh"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 2
+    assert "HOLDOUT_MANIFEST_PATH is required" in result.stderr
+
+
 def test_l2_sequence_runner_dry_run_emits_ablation_matrix(tmp_path: Path) -> None:
     env = os.environ.copy()
     env.update(
@@ -323,6 +387,10 @@ def test_expected_edge_helper_scripts_refresh_candidate_registry() -> None:
         text = script.read_text()
         assert "lob_forge.study_registry" in text
         assert 'candidate_registry.jsonl"' in text
+        assert "lob_forge.study_provenance verify" in text
+        assert "lob_forge.study_provenance write" in text
+        assert "--require-source-files" in text
+        assert "source_worktree_dirty" in text
 
 
 def test_final_holdout_preparation_dry_run_derives_candidate_flow(tmp_path: Path) -> None:
