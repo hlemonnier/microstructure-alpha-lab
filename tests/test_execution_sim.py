@@ -51,6 +51,7 @@ def test_taker_latency_uses_delayed_market_event() -> None:
 
 def test_passive_queue_supports_partial_fill_and_maker_exit() -> None:
     events = [
+        MarketEvent(900, bid=100.0, ask=100.2, bid_size=2, ask_size=2),
         MarketEvent(1000, bid=100.0, ask=100.2, bid_size=2, ask_size=2, trade_side="sell", trade_size=0.5),
         MarketEvent(1100, bid=100.0, ask=100.2, bid_size=2, ask_size=2, trade_side="sell", trade_size=0.75),
         MarketEvent(1200, bid=100.1, ask=100.3, bid_size=2, ask_size=2),
@@ -71,6 +72,52 @@ def test_passive_queue_supports_partial_fill_and_maker_exit() -> None:
     assert fill.partial
     assert fill.maker_exit_price == 100.1
     assert fill.inventory_carry == 0.0
+
+
+def test_passive_limit_rejects_marketable_buy_as_post_only() -> None:
+    events = [MarketEvent(1000, bid=99.0, ask=101.0, bid_size=2.0, ask_size=2.0)]
+    constraints = OrderConstraints(tick_size=0.1, lot_size=0.01, min_quantity=0.01, min_notional=1.0)
+
+    fill = simulate_passive_limit_order(
+        events,
+        side=1,
+        price=102.0,
+        quantity=1.0,
+        constraints=constraints,
+        queue=QueueAssumptions(queue_ahead_size=0.0),
+    )
+
+    assert not fill.accepted
+    assert fill.rejection_reason == "post_only_would_cross"
+    assert fill.filled_size == 0.0
+
+
+def test_passive_limit_does_not_use_trade_flow_from_placement_snapshot() -> None:
+    events = [
+        MarketEvent(
+            1000,
+            bid=99.0,
+            ask=101.0,
+            bid_size=2.0,
+            ask_size=2.0,
+            trade_side="sell",
+            trade_size=2.0,
+        )
+    ]
+    constraints = OrderConstraints(tick_size=0.1, lot_size=0.01, min_quantity=0.01, min_notional=1.0)
+
+    fill = simulate_passive_limit_order(
+        events,
+        side=1,
+        price=99.0,
+        quantity=1.0,
+        constraints=constraints,
+        queue=QueueAssumptions(queue_ahead_size=0.0),
+    )
+
+    assert fill.accepted
+    assert fill.filled_size == 0.0
+    assert fill.fill_time_ms is None
 
 
 def test_passive_order_cancels_when_signal_decays() -> None:
@@ -166,6 +213,146 @@ def test_stateful_execution_never_fills_beyond_available_liquidity() -> None:
     assert result.fills[0].quantity == 0.25
     assert result.fills[0].partial
     assert result.fills[0].available_quantity == 0.25
+    assert result.orders[0].status == "partial"
+    assert result.orders[0].reason == "insufficient_liquidity"
+
+
+def test_stateful_execution_rejects_crossed_passive_order() -> None:
+    event = MarketEvent(1000, bid=99.0, ask=101.0, bid_size=2.0, ask_size=2.0)
+    signal = SignalEvent(
+        1000,
+        target_side=1,
+        target_notional=102.0,
+        order_type="passive",
+        limit_price=102.0,
+    )
+
+    result = simulate_stateful_execution(
+        [event],
+        [signal],
+        config=StatefulExecutionConfig(initial_cash=1000.0, max_position_notional=500.0, max_leverage=1.0),
+    )
+
+    assert result.orders[0].status == "rejected"
+    assert result.orders[0].reason == "post_only_would_cross"
+    assert result.fills == []
+
+
+def test_stateful_execution_defaults_passive_order_to_same_side_best_quote() -> None:
+    events = [
+        MarketEvent(1000, bid=99.0, ask=101.0, bid_size=2.0, ask_size=2.0),
+        MarketEvent(
+            1100,
+            bid=99.0,
+            ask=101.0,
+            bid_size=2.0,
+            ask_size=2.0,
+            trade_side="sell",
+            trade_size=2.0,
+        ),
+    ]
+    signal = SignalEvent(1000, target_side=1, target_notional=99.0, order_type="passive")
+
+    result = simulate_stateful_execution(
+        events,
+        [signal],
+        config=StatefulExecutionConfig(initial_cash=1000.0, max_position_notional=500.0, max_leverage=1.0),
+    )
+
+    assert result.orders[0].limit_price == 99.0
+    assert result.orders[0].status == "filled"
+    assert result.fills[0].liquidity == "maker"
+    assert result.fills[0].avg_price == 99.0
+
+
+def test_stateful_execution_does_not_fill_passive_order_from_same_timestamp_trade() -> None:
+    events = [
+        MarketEvent(
+            1000,
+            bid=99.0,
+            ask=101.0,
+            bid_size=2.0,
+            ask_size=2.0,
+            trade_side="sell",
+            trade_size=2.0,
+        ),
+        MarketEvent(
+            1100,
+            bid=99.0,
+            ask=101.0,
+            bid_size=2.0,
+            ask_size=2.0,
+            trade_side="sell",
+            trade_size=2.0,
+        ),
+    ]
+    signal = SignalEvent(
+        1000,
+        target_side=1,
+        target_notional=99.0,
+        order_type="passive",
+        limit_price=99.0,
+    )
+
+    result = simulate_stateful_execution(
+        events,
+        [signal],
+        config=StatefulExecutionConfig(
+            initial_cash=1000.0,
+            max_position_notional=500.0,
+            max_leverage=1.0,
+            max_order_age_ms=500,
+        ),
+    )
+
+    assert result.orders[0].status == "filled"
+    assert len(result.fills) == 1
+    assert result.fills[0].fill_time_ms == 1100
+
+
+def test_stateful_execution_does_not_backfill_passive_order_into_activation_event() -> None:
+    events = [
+        MarketEvent(1000, bid=99.0, ask=101.0, bid_size=2.0, ask_size=2.0),
+        MarketEvent(
+            1100,
+            bid=99.0,
+            ask=101.0,
+            bid_size=2.0,
+            ask_size=2.0,
+            trade_side="sell",
+            trade_size=2.0,
+        ),
+        MarketEvent(
+            1200,
+            bid=99.0,
+            ask=101.0,
+            bid_size=2.0,
+            ask_size=2.0,
+            trade_side="sell",
+            trade_size=2.0,
+        ),
+    ]
+    signal = SignalEvent(
+        1050,
+        target_side=1,
+        target_notional=99.0,
+        order_type="passive",
+        limit_price=99.0,
+    )
+
+    result = simulate_stateful_execution(
+        events,
+        [signal],
+        config=StatefulExecutionConfig(
+            initial_cash=1000.0,
+            max_position_notional=500.0,
+            max_leverage=1.0,
+            max_order_age_ms=500,
+        ),
+    )
+
+    assert result.orders[0].submit_time_ms == 1050
+    assert result.fills[0].fill_time_ms == 1200
 
 
 def test_stateful_execution_walks_l2_levels_deterministically() -> None:

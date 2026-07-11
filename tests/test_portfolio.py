@@ -40,8 +40,8 @@ def test_fixed_notional_portfolio_reports_risk_metrics() -> None:
 
 def test_inventory_limit_rejects_excess_trade() -> None:
     trades = [
-        Trade(0, 2000, 1, 100.0, 101.0, predicted_edge_bps=1.0),
-        Trade(500, 2500, 1, 100.0, 101.0, predicted_edge_bps=1.0),
+        Trade(0, 2000, -1, 100.0, 99.0, predicted_edge_bps=1.0),
+        Trade(500, 2500, -1, 100.0, 99.0, predicted_edge_bps=1.0),
     ]
     config = PortfolioConfig(
         capital=10_000.0, base_notional=1_000.0, max_notional=1_000.0, max_inventory_notional=1_500.0
@@ -53,7 +53,7 @@ def test_inventory_limit_rejects_excess_trade() -> None:
     assert result.trades[1].rejection_reason == "max_inventory_notional"
 
 
-def test_legacy_portfolio_kill_switch_rejects_later_trades() -> None:
+def test_portfolio_kill_switch_rejects_entries_after_loss_is_realized() -> None:
     trades = [
         Trade(0, 1000, 1, 100.0, 99.0, predicted_edge_bps=1.0),
         Trade(2000, 3000, 1, 100.0, 101.0, predicted_edge_bps=1.0),
@@ -70,6 +70,93 @@ def test_legacy_portfolio_kill_switch_rejects_later_trades() -> None:
     assert result.kill_switch_triggered
     assert result.trades[1].rejected
     assert result.trades[1].rejection_reason == "kill_switch"
+
+
+def test_portfolio_does_not_use_future_exit_pnl_for_kill_switch() -> None:
+    trades = [
+        Trade(0, 100, 1, 100.0, 99.0, predicted_edge_bps=1.0),
+        Trade(50, 150, 1, 100.0, 101.0, predicted_edge_bps=1.0),
+        Trade(100, 200, 1, 100.0, 101.0, predicted_edge_bps=1.0),
+    ]
+    config = PortfolioConfig(
+        capital=10_000.0,
+        base_notional=1_000.0,
+        max_notional=1_000.0,
+        daily_loss_limit=5.0,
+    )
+
+    result = simulate_fixed_notional_portfolio(trades, config)
+
+    assert not result.trades[1].rejected
+    assert result.trades[2].rejected
+    assert result.trades[2].rejection_reason == "kill_switch"
+    assert result.max_concurrency == 2
+    assert result.total_net_pnl == 0.0
+
+
+def test_rolling_kill_switch_uses_exit_order_not_entry_order() -> None:
+    trades = [
+        Trade(0, 200, 1, 100.0, 102.0, predicted_edge_bps=1.0),
+        Trade(10, 100, 1, 100.0, 99.0, predicted_edge_bps=1.0),
+        Trade(150, 250, 1, 100.0, 101.0, predicted_edge_bps=1.0),
+    ]
+    config = PortfolioConfig(
+        capital=10_000.0,
+        base_notional=1_000.0,
+        max_notional=1_000.0,
+        rolling_loss_limit=5.0,
+        rolling_window=2,
+    )
+
+    result = simulate_fixed_notional_portfolio(trades, config)
+
+    assert not result.trades[1].rejected
+    assert result.trades[2].rejected
+    assert result.trades[2].rejection_reason == "kill_switch"
+    assert result.total_net_pnl == 10.0
+
+
+def test_signed_inventory_is_distinct_from_gross_exposure_and_margin() -> None:
+    trades = [
+        Trade(0, 1000, 1, 100.0, 101.0, predicted_edge_bps=1.0),
+        Trade(100, 1500, -1, 100.0, 99.0, predicted_edge_bps=1.0),
+    ]
+    config = PortfolioConfig(
+        capital=10_000.0,
+        base_notional=1_000.0,
+        max_notional=1_000.0,
+        initial_margin_rate=0.1,
+        max_inventory_notional=1_000.0,
+    )
+
+    result = simulate_fixed_notional_portfolio(trades, config)
+
+    assert not result.trades[1].rejected
+    assert result.trades[0].inventory_notional == 1_000.0
+    assert result.trades[1].inventory_notional == 0.0
+    assert result.trades[1].margin_used == 200.0
+    assert result.max_inventory == 1_000.0
+    assert result.max_exposure == 2_000.0
+    assert result.max_leverage == 0.2
+    assert result.max_margin_used == 200.0
+
+
+def test_portfolio_rejects_invalid_trade_inputs() -> None:
+    config = PortfolioConfig(capital=10_000.0, base_notional=1_000.0, max_notional=1_000.0)
+    cases = [
+        (Trade(0, 1000, 0, 100.0, 101.0), "trade side"),
+        (Trade(1000, 1000, 1, 100.0, 101.0), "exit_time_ms"),
+        (Trade(0, 1000, 1, 0.0, 101.0), "trade prices"),
+        (Trade(0, 1000, 1, 100.0, 101.0, notional=-1.0), "trade notional"),
+    ]
+
+    for trade, message in cases:
+        try:
+            simulate_fixed_notional_portfolio([trade], config)
+        except ValueError as exc:
+            assert message in str(exc)
+        else:
+            raise AssertionError(f"expected invalid trade to fail: {trade}")
 
 
 def test_sizing_helpers_are_capped() -> None:

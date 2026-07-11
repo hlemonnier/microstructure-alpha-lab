@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import heapq
 import math
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -43,8 +44,8 @@ class SimulatedTrade:
     gross_pnl: float
     net_pnl: float
     return_on_capital: float
-    inventory_notional: float
-    margin_used: float
+    inventory_notional: float  # Signed net inventory immediately after this entry decision.
+    margin_used: float  # Initial margin on gross active exposure after this entry decision.
     rejected: bool = False
     rejection_reason: str = ""
 
@@ -65,10 +66,10 @@ class PortfolioResult:
     total_net_pnl: float
     return_on_capital: float
     max_leverage: float
-    max_exposure: float
+    max_exposure: float  # Peak gross active notional.
     max_margin_used: float
     max_concurrency: int
-    max_inventory: float
+    max_inventory: float  # Peak absolute signed net inventory.
     daily_sharpe: float
     daily_autocorrelation: float
     calmar_like: float
@@ -99,24 +100,84 @@ class VarianceStabilityReport:
 
 
 def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConfig) -> PortfolioResult:
-    if config.capital <= 0.0:
+    if not math.isfinite(config.capital) or config.capital <= 0.0:
         raise ValueError("capital must be positive")
-    if config.base_notional <= 0.0 or config.max_notional <= 0.0:
+    if (
+        not math.isfinite(config.base_notional)
+        or not math.isfinite(config.max_notional)
+        or config.base_notional <= 0.0
+        or config.max_notional <= 0.0
+    ):
         raise ValueError("notional limits must be positive")
-    if config.initial_margin_rate < 0.0:
+    if not math.isfinite(config.initial_margin_rate) or config.initial_margin_rate < 0.0:
         raise ValueError("initial_margin_rate must be non-negative")
-    if config.inventory_penalty_bps < 0.0:
+    if not math.isfinite(config.inventory_penalty_bps) or config.inventory_penalty_bps < 0.0:
         raise ValueError("inventory_penalty_bps must be non-negative")
+    if (
+        not math.isfinite(config.taker_fee_bps)
+        or not math.isfinite(config.slippage_bps)
+        or config.taker_fee_bps < 0.0
+        or config.slippage_bps < 0.0
+    ):
+        raise ValueError("fees and slippage must be non-negative")
+    if config.max_inventory_notional is not None and (
+        not math.isfinite(config.max_inventory_notional) or config.max_inventory_notional < 0.0
+    ):
+        raise ValueError("max_inventory_notional must be non-negative")
+    if config.daily_loss_limit is not None and not math.isfinite(config.daily_loss_limit):
+        raise ValueError("daily_loss_limit must be finite")
+    if config.rolling_loss_limit is not None and not math.isfinite(config.rolling_loss_limit):
+        raise ValueError("rolling_loss_limit must be finite")
+    if config.rolling_window <= 0:
+        raise ValueError("rolling_window must be positive")
+    for trade in trades:
+        _validate_trade(trade)
+
     simulated: list[SimulatedTrade] = []
-    active: list[SimulatedTrade] = []
+    active: list[tuple[int, int, SimulatedTrade]] = []
     kill_switch = False
     rolling_pnl: list[float] = []
     daily_pnl: dict[str, float] = {}
     daily_counts: dict[str, int] = {}
+    daily_kill_days: set[str] = set()
+    current_inventory = 0.0
+    current_exposure = 0.0
+    max_inventory = 0.0
+    max_exposure = 0.0
 
-    for trade in sorted(trades, key=lambda item: item.entry_time_ms):
-        active = [item for item in active if item.trade.exit_time_ms > trade.entry_time_ms]
-        current_inventory = sum(item.inventory_notional for item in active)
+    def update_peaks() -> None:
+        nonlocal max_inventory, max_exposure
+        max_inventory = max(max_inventory, abs(current_inventory))
+        max_exposure = max(max_exposure, current_exposure)
+
+    def realize(item: SimulatedTrade) -> None:
+        nonlocal current_inventory, current_exposure, kill_switch
+        current_inventory -= item.trade.side * item.notional
+        current_exposure = max(0.0, current_exposure - item.notional)
+        if abs(current_inventory) <= 1e-12 * max(1.0, current_exposure):
+            current_inventory = 0.0
+        update_peaks()
+
+        day = _day(item.trade.exit_time_ms)
+        daily_pnl[day] = daily_pnl.get(day, 0.0) + item.net_pnl
+        daily_counts[day] = daily_counts.get(day, 0) + 1
+        rolling_pnl.append(item.net_pnl)
+        if len(rolling_pnl) > config.rolling_window:
+            rolling_pnl.pop(0)
+        if config.daily_loss_limit is not None and daily_pnl[day] <= -abs(config.daily_loss_limit):
+            daily_kill_days.add(day)
+            kill_switch = True
+        if config.rolling_loss_limit is not None and sum(rolling_pnl) <= -abs(config.rolling_loss_limit):
+            kill_switch = True
+
+    def realize_through(timestamp_ms: int) -> None:
+        while active and active[0][0] <= timestamp_ms:
+            _, _, item = heapq.heappop(active)
+            realize(item)
+
+    for sequence, trade in enumerate(sorted(trades, key=lambda item: item.entry_time_ms)):
+        # Exits at a timestamp are observable before a new entry at that same timestamp.
+        realize_through(trade.entry_time_ms)
         if kill_switch:
             simulated.append(
                 SimulatedTrade(
@@ -127,7 +188,7 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
                     net_pnl=0.0,
                     return_on_capital=0.0,
                     inventory_notional=current_inventory,
-                    margin_used=current_inventory * config.initial_margin_rate,
+                    margin_used=current_exposure * config.initial_margin_rate,
                     rejected=True,
                     rejection_reason="kill_switch",
                 )
@@ -142,7 +203,9 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
                 max_notional=config.max_notional,
             )
         )
-        if config.max_inventory_notional is not None and current_inventory + notional > config.max_inventory_notional:
+        proposed_inventory = current_inventory + trade.side * notional
+        proposed_exposure = current_exposure + notional
+        if config.max_inventory_notional is not None and abs(proposed_inventory) > config.max_inventory_notional:
             simulated.append(
                 SimulatedTrade(
                     trade=trade,
@@ -152,7 +215,7 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
                     net_pnl=0.0,
                     return_on_capital=0.0,
                     inventory_notional=current_inventory,
-                    margin_used=current_inventory * config.initial_margin_rate,
+                    margin_used=current_exposure * config.initial_margin_rate,
                     rejected=True,
                     rejection_reason="max_inventory_notional",
                 )
@@ -163,19 +226,9 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
         gross_return = trade.side * (trade.exit_price - trade.entry_price) / trade.entry_price
         gross_pnl = gross_return * notional
         cost = 2.0 * notional * (config.taker_fee_bps + config.slippage_bps) / 10000.0
-        inventory_penalty = (current_inventory + notional) * config.inventory_penalty_bps / 10000.0
+        inventory_penalty = abs(proposed_inventory) * config.inventory_penalty_bps / 10000.0
         net_pnl = gross_pnl - cost
         net_pnl -= inventory_penalty
-        day = _day(trade.exit_time_ms)
-        daily_pnl[day] = daily_pnl.get(day, 0.0) + net_pnl
-        daily_counts[day] = daily_counts.get(day, 0) + 1
-        rolling_pnl.append(net_pnl)
-        if len(rolling_pnl) > config.rolling_window:
-            rolling_pnl.pop(0)
-        if config.daily_loss_limit is not None and daily_pnl[day] <= -abs(config.daily_loss_limit):
-            kill_switch = True
-        if config.rolling_loss_limit is not None and sum(rolling_pnl) <= -abs(config.rolling_loss_limit):
-            kill_switch = True
 
         item = SimulatedTrade(
             trade=trade,
@@ -184,11 +237,18 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
             gross_pnl=gross_pnl,
             net_pnl=net_pnl,
             return_on_capital=net_pnl / config.capital,
-            inventory_notional=current_inventory + notional,
-            margin_used=(current_inventory + notional) * config.initial_margin_rate,
+            inventory_notional=proposed_inventory,
+            margin_used=proposed_exposure * config.initial_margin_rate,
         )
         simulated.append(item)
-        active.append(item)
+        current_inventory = proposed_inventory
+        current_exposure = proposed_exposure
+        update_peaks()
+        heapq.heappush(active, (trade.exit_time_ms, sequence, item))
+
+    while active:
+        _, _, item = heapq.heappop(active)
+        realize(item)
 
     daily_risk = [
         DailyRisk(
@@ -196,13 +256,12 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
             pnl=pnl,
             return_on_capital=pnl / config.capital,
             trade_count=daily_counts[day],
-            kill_switch_triggered=config.daily_loss_limit is not None and pnl <= -abs(config.daily_loss_limit),
+            kill_switch_triggered=day in daily_kill_days,
         )
         for day, pnl in sorted(daily_pnl.items())
     ]
     daily_returns = [item.return_on_capital for item in daily_risk]
     total_net = sum(item.net_pnl for item in simulated)
-    max_exposure = max((item.inventory_notional for item in simulated), default=0.0)
     max_margin_used = max((item.margin_used for item in simulated), default=0.0)
     max_concurrency = _max_concurrency([item.trade for item in simulated if not item.rejected])
     max_drawdown = _max_drawdown([item.pnl for item in daily_risk])
@@ -215,7 +274,7 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
         max_exposure=max_exposure,
         max_margin_used=max_margin_used,
         max_concurrency=max_concurrency,
-        max_inventory=max_exposure,
+        max_inventory=max_inventory,
         daily_sharpe=_sharpe(daily_returns),
         daily_autocorrelation=autocorrelation(daily_returns),
         calmar_like=(total_net / config.capital) / abs(max_drawdown) if max_drawdown else 0.0,
@@ -360,6 +419,24 @@ def format_variance_stability_report(report: VarianceStabilityReport, *, output_
             f"passed={int(report.passed)}",
         ]
     )
+
+
+def _validate_trade(trade: Trade) -> None:
+    if trade.side not in {-1, 1}:
+        raise ValueError("trade side must be -1 or 1")
+    if trade.exit_time_ms <= trade.entry_time_ms:
+        raise ValueError("trade exit_time_ms must be greater than entry_time_ms")
+    if (
+        not math.isfinite(trade.entry_price)
+        or not math.isfinite(trade.exit_price)
+        or trade.entry_price <= 0.0
+        or trade.exit_price <= 0.0
+    ):
+        raise ValueError("trade prices must be positive and finite")
+    if not math.isfinite(trade.predicted_edge_bps):
+        raise ValueError("trade predicted_edge_bps must be finite")
+    if trade.notional is not None and (not math.isfinite(trade.notional) or trade.notional < 0.0):
+        raise ValueError("trade notional must be non-negative and finite")
 
 
 def _day(timestamp_ms: int) -> str:

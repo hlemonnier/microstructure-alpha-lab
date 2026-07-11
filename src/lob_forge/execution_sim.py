@@ -205,6 +205,7 @@ class _PendingPassiveOrder:
     remaining_quantity: float
     queue_ahead: float
     submit_time_ms: int
+    activation_time_ms: int
     expiry_time_ms: int
     last_update_ms: int
     canceled: bool = False
@@ -351,7 +352,11 @@ def simulate_stateful_execution(
                 orders.append(_order_row(order_id, signal, submit_time, 0, 0.0, "accepted", "already_at_target"))
                 continue
 
-            reference_price = signal.limit_price if signal.limit_price is not None else book.best_price(side)
+            reference_price = (
+                signal.limit_price
+                if signal.limit_price is not None
+                else book.best_price(-side if signal.order_type == "passive" else side)
+            )
             check = apply_order_constraints(
                 side=side,
                 price=reference_price,
@@ -364,6 +369,27 @@ def simulate_stateful_execution(
                 )
                 continue
             requested_qty = check.quantity
+
+            if signal.order_type == "passive" and _post_only_would_cross(
+                side=side,
+                price=check.price,
+                opposite_price=book.best_price(side),
+            ):
+                orders.append(
+                    replace(
+                        _order_row(
+                            order_id,
+                            signal,
+                            submit_time,
+                            side,
+                            requested_qty,
+                            "rejected",
+                            "post_only_would_cross",
+                        ),
+                        limit_price=check.price,
+                    )
+                )
+                continue
 
             projected_inventory = inventory + pending_inventory + side * requested_qty
             projected_notional = abs(projected_inventory) * mark
@@ -384,6 +410,7 @@ def simulate_stateful_execution(
                 if fill_qty <= 0.0:
                     orders.append(_order_row(order_id, signal, submit_time, side, requested_qty, "open", "unfilled"))
                     continue
+                partial_fill = fill_qty + 1e-12 < requested_qty
                 cash, inventory, avg_entry_price, realized_pnl, turnover, fee = _apply_fill(
                     cash=cash,
                     inventory=inventory,
@@ -396,7 +423,17 @@ def simulate_stateful_execution(
                     fee_bps=config.taker_fee_bps,
                     slippage_bps=config.slippage_bps,
                 )
-                orders.append(_order_row(order_id, signal, submit_time, side, requested_qty, "filled", ""))
+                orders.append(
+                    _order_row(
+                        order_id,
+                        signal,
+                        submit_time,
+                        side,
+                        requested_qty,
+                        "partial" if partial_fill else "filled",
+                        "insufficient_liquidity" if partial_fill else "",
+                    )
+                )
                 fills.append(
                     FillLedgerRow(
                         order_id=order_id,
@@ -407,7 +444,7 @@ def simulate_stateful_execution(
                         fee=fee,
                         liquidity="taker",
                         available_quantity=available_qty,
-                        partial=fill_qty + 1e-12 < requested_qty,
+                        partial=partial_fill,
                     )
                 )
                 cash, inventory, avg_entry_price, realized_pnl, turnover, kill_switch = _refresh_kill_switch(
@@ -427,7 +464,10 @@ def simulate_stateful_execution(
                 )
                 continue
 
-            order_row = _order_row(order_id, signal, submit_time, side, requested_qty, "open", "")
+            order_row = replace(
+                _order_row(order_id, signal, submit_time, side, requested_qty, "open", ""),
+                limit_price=check.price,
+            )
             orders.append(order_row)
             pending.append(
                 _PendingPassiveOrder(
@@ -440,6 +480,7 @@ def simulate_stateful_execution(
                     remaining_quantity=requested_qty,
                     queue_ahead=max(0.0, config.queue_ahead_size),
                     submit_time_ms=submit_time,
+                    activation_time_ms=event.timestamp_ms,
                     expiry_time_ms=submit_time + config.max_order_age_ms,
                     last_update_ms=event.timestamp_ms,
                 )
@@ -463,6 +504,12 @@ def simulate_stateful_execution(
             ):
                 _replace_order_status(orders, order.row_index, "canceled", "signal_decay_cancel_replace")
                 pending.remove(order)
+                continue
+            # A signal processed on this market event uses this event's book to
+            # establish its resting price. It therefore cannot also consume
+            # trade flow from the same event, even when its nominal network
+            # submit time fell between two market events.
+            if order.activation_time_ms >= event.timestamp_ms:
                 continue
             if remaining_trade_size <= 0.0 or not _event_hits_passive_order(event, side=order.side, price=order.price):
                 continue
@@ -618,6 +665,23 @@ def simulate_passive_limit_order(
         return PassiveFill(False, 0.0, None, False, True, "rejected", None, 0.0, 0, check.rejection_reason)
     if not events:
         return PassiveFill(True, 0.0, None, False, True, "no_market_event", None, check.quantity, 0)
+    if _post_only_would_cross(
+        side=side,
+        price=check.price,
+        opposite_price=_EventLiquidity.from_event(events[0]).best_price(side),
+    ):
+        return PassiveFill(
+            False,
+            0.0,
+            None,
+            False,
+            True,
+            "rejected",
+            None,
+            0.0,
+            0,
+            "post_only_would_cross",
+        )
 
     queue_ahead = max(0.0, queue.queue_ahead_size)
     remaining = check.quantity
@@ -646,7 +710,8 @@ def simulate_passive_limit_order(
                 canceled = True
                 cancel_reason = "signal_decay_cancel_replace"
                 break
-        if _event_hits_passive_order(event, side=side, price=check.price):
+        # The first event is the placement snapshot, so its trade flow is not causally available.
+        if event.timestamp_ms > start_time and _event_hits_passive_order(event, side=side, price=check.price):
             queue_ahead, remaining, filled_now = _consume_queue(queue_ahead, remaining, event.trade_size)
             filled += filled_now
             notional += filled_now * check.price
@@ -963,6 +1028,10 @@ def _event_hits_passive_order(event: MarketEvent, *, side: int, price: float) ->
     if side == 1:
         return event.trade_side == "sell" and event.bid <= price
     return event.trade_side == "buy" and event.ask >= price
+
+
+def _post_only_would_cross(*, side: int, price: float, opposite_price: float) -> bool:
+    return price >= opposite_price if side == 1 else price <= opposite_price
 
 
 def _consume_queue(queue_ahead: float, remaining: float, trade_size: float) -> tuple[float, float, float]:
