@@ -4,11 +4,13 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
 from lob_forge.edge_model import DEFAULT_EDGE_THRESHOLDS_BPS
+from lob_forge.study_provenance import provenance_path_for, verify_expected_edge_provenance
 
 
 @dataclass(frozen=True)
@@ -86,12 +88,24 @@ def build_expected_edge_candidate_registry(
                 cache_key = (normalized_symbol, horizon_ms, fee_bps)
                 summary = summary_cache.get(cache_key)
                 if summary is None:
-                    summary = _summarize_artifacts(result_path=result_path, audit_path=audit_path)
+                    summary = _summarize_artifacts(
+                        result_path=result_path,
+                        audit_path=audit_path,
+                        plan_path=plan_path,
+                        symbol=normalized_symbol,
+                        horizon_ms=horizon_ms,
+                        taker_fee_bps=fee_bps,
+                    )
                     summary_cache[cache_key] = summary
                 for model_class in model_classes:
                     for feature_set in feature_sets:
                         for threshold in thresholds:
-                            selected_fold_count = summary.selected_fold_counts.get(threshold, 0)
+                            artifact_valid = (
+                                summary.result_exists and summary.audit_exists and not summary.failure_reason
+                            )
+                            selected_fold_count = (
+                                summary.selected_fold_counts.get(threshold, 0) if artifact_valid else 0
+                            )
                             selected = selected_fold_count > 0
                             config = {
                                 "family": "expected_edge_threshold_grid",
@@ -128,17 +142,24 @@ def build_expected_edge_candidate_registry(
                                     status=_candidate_status(summary, selected=selected),
                                     selected=selected,
                                     selected_fold_count=selected_fold_count,
-                                    fold_count=summary.fold_count,
-                                    validation_net_pnl=summary.validation_net_pnl.get(threshold),
-                                    test_net_pnl=summary.test_net_pnl.get(threshold),
-                                    audit_acceptance_passed=summary.audit_acceptance_passed,
-                                    audit_rejection_reasons=summary.audit_rejection_reasons,
+                                    fold_count=summary.fold_count if artifact_valid else 0,
+                                    validation_net_pnl=(
+                                        summary.validation_net_pnl.get(threshold) if artifact_valid else None
+                                    ),
+                                    test_net_pnl=summary.test_net_pnl.get(threshold) if artifact_valid else None,
+                                    audit_acceptance_passed=(
+                                        summary.audit_acceptance_passed if artifact_valid else None
+                                    ),
+                                    audit_rejection_reasons=(summary.audit_rejection_reasons if artifact_valid else ""),
                                     artifact_path=str(result_path) if summary.result_exists else "",
                                     audit_path=str(audit_path) if summary.audit_exists else "",
                                     failure_reason=_candidate_failure_reason(summary),
                                     config_sha256=hashlib.sha256(config_json.encode("utf-8")).hexdigest(),
                                     config_json=config_json,
-                                    audit_p_value=summary.audit_p_value,
+                                    # The audit p-value belongs to the complete
+                                    # validation-selected procedure, not to an
+                                    # individual threshold candidate.
+                                    audit_p_value=None,
                                 )
                             )
     return attempts
@@ -166,6 +187,7 @@ def write_expected_edge_candidate_pvalues(
         "hypothesis_id",
         "metric",
         "p_value",
+        "procedure_sha256",
         "config_sha256",
         "status",
         "artifact_path",
@@ -174,18 +196,22 @@ def write_expected_edge_candidate_pvalues(
     with output_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
-        for attempt in attempts:
-            if attempt.audit_p_value is None:
+        for record in expected_edge_procedure_pvalues(attempts):
+            if record["p_value"] is None:
                 continue
             writer.writerow(
                 {
-                    "hypothesis_id": _attempt_hypothesis_id(attempt),
-                    "metric": "fold_mean_net_pnl_attempted_grid_hac_p_value",
-                    "p_value": _format_float(attempt.audit_p_value),
-                    "config_sha256": attempt.config_sha256,
-                    "status": attempt.status,
-                    "artifact_path": attempt.artifact_path,
-                    "audit_path": attempt.audit_path,
+                    "hypothesis_id": record["hypothesis_id"],
+                    "metric": "validation_selected_procedure_fold_hac_p_value",
+                    "p_value": _format_float(float(str(record["p_value"]))),
+                    "procedure_sha256": record["procedure_sha256"],
+                    # Retained as a compatibility alias for generic p-value
+                    # correction/reporting utilities. It hashes the whole
+                    # procedure and is not a threshold-candidate hash.
+                    "config_sha256": record["procedure_sha256"],
+                    "status": "validation_selected_procedure",
+                    "artifact_path": record["artifact_path"],
+                    "audit_path": record["audit_path"],
                 }
             )
     return output_path
@@ -261,7 +287,15 @@ def _fee_token(fee_bps: float) -> str:
     return value.replace(".", "p")
 
 
-def _summarize_artifacts(*, result_path: Path, audit_path: Path) -> _ArtifactSummary:
+def _summarize_artifacts(
+    *,
+    result_path: Path,
+    audit_path: Path,
+    plan_path: Path,
+    symbol: str,
+    horizon_ms: int,
+    taker_fee_bps: float,
+) -> _ArtifactSummary:
     result_exists = result_path.exists() and result_path.stat().st_size > 0
     audit_exists = audit_path.exists() and audit_path.stat().st_size > 0
     fold_count = 0
@@ -303,6 +337,18 @@ def _summarize_artifacts(*, result_path: Path, audit_path: Path) -> _ArtifactSum
                 failure_reasons.append("audit_parse_error=empty_csv")
         except Exception as exc:
             failure_reasons.append(f"audit_parse_error={type(exc).__name__}: {exc}")
+
+    if result_exists and audit_exists:
+        provenance = verify_expected_edge_provenance(
+            provenance_path_for(result_path),
+            plan_path=plan_path,
+            result_path=result_path,
+            audit_path=audit_path,
+            expected_symbol=symbol,
+            expected_horizon_ms=horizon_ms,
+            expected_taker_fee_bps=taker_fee_bps,
+        )
+        failure_reasons.extend(f"provenance_error={error}" for error in provenance.errors)
 
     return _ArtifactSummary(
         result_exists=result_exists,
@@ -350,6 +396,68 @@ def _attempt_hypothesis_id(attempt: ExpectedEdgeCandidateAttempt) -> str:
         f"{attempt.model_class}:{attempt.feature_set}:"
         f"{attempt.config_sha256[:12]}"
     )
+
+
+def expected_edge_procedure_pvalues(attempts: Sequence[ExpectedEdgeCandidateAttempt]) -> list[dict[str, object]]:
+    """Return one inferential record per validation-selected artifact.
+
+    Thresholds are candidates inside a selection procedure. Replicating the
+    selected procedure's p-value onto every attempted threshold creates fake
+    candidate-level tests, so grouping is by artifact and audit instead.
+    """
+    grouped: dict[tuple[str, str], list[ExpectedEdgeCandidateAttempt]] = {}
+    for attempt in attempts:
+        if attempt.status in {"planned", "incomplete_artifact", "artifact_error"}:
+            continue
+        if not attempt.artifact_path or not attempt.audit_path:
+            continue
+        grouped.setdefault((attempt.artifact_path, attempt.audit_path), []).append(attempt)
+
+    records: list[dict[str, object]] = []
+    for (artifact_path, audit_path), group in sorted(grouped.items()):
+        first = group[0]
+        audit_p_value = _read_audit_p_value(Path(audit_path))
+        config = json.loads(first.config_json)
+        config.pop("edge_threshold_bps", None)
+        config.pop("model_class", None)
+        config.pop("feature_set", None)
+        config["selection_procedure"] = "validation_selected_declared_grid"
+        config["threshold_grid"] = sorted({attempt.edge_threshold_bps for attempt in group})
+        config["model_class_grid"] = sorted({attempt.model_class for attempt in group})
+        config["feature_set_grid"] = sorted({attempt.feature_set for attempt in group})
+        config_json = json.dumps(config, sort_keys=True, separators=(",", ":"))
+        procedure_sha256 = hashlib.sha256(config_json.encode("utf-8")).hexdigest()
+        records.append(
+            {
+                "hypothesis_id": (
+                    f"{first.run_id}:{first.family}:{first.symbol}:{first.horizon_ms}ms:"
+                    f"fee_{_fee_token(first.taker_fee_bps)}:selected_procedure:{procedure_sha256[:12]}"
+                ),
+                "p_value": audit_p_value,
+                "procedure_sha256": procedure_sha256,
+                "artifact_path": artifact_path,
+                "audit_path": audit_path,
+            }
+        )
+    return records
+
+
+def _read_audit_p_value(path: Path) -> float | None:
+    try:
+        with path.open(newline="") as handle:
+            row = next(csv.DictReader(handle), None)
+    except OSError:
+        return None
+    if row is None:
+        return None
+    raw = str(row.get("one_sided_p_value_mean_le_zero", "")).strip()
+    if not raw:
+        return None
+    try:
+        value = float(raw)
+    except ValueError:
+        return None
+    return value if math.isfinite(value) and 0.0 <= value <= 1.0 else None
 
 
 def _format_float(value: float) -> str:

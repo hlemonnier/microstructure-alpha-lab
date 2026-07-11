@@ -12,6 +12,7 @@ else
   PYTHON_BIN="${PYTHON_BIN:-python3}"
 fi
 source scripts/holdout_manifest.sh
+source scripts/source_provenance.sh
 
 RESULT_DIR="${RESULT_DIR:-results/expected_edge_60day_20230516_20230714}"
 PLAN_PATH="${PLAN_PATH:-$RESULT_DIR/run_plan.json}"
@@ -23,6 +24,11 @@ FEES_BPS="${FEES_BPS:-}"
 MAX_LOAD_MEMORY_GB="${MAX_LOAD_MEMORY_GB:-10}"
 MIN_AUDIT_FOLD_COUNT="${MIN_AUDIT_FOLD_COUNT:-20}"
 RERUN_UNDERFOLDED="${RERUN_UNDERFOLDED:-1}"
+
+if [[ "$DRY_RUN" == "0" && "$(source_worktree_dirty)" == "true" ]]; then
+  echo "refusing certified edge jobs from a dirty working tree; commit the exact source first" >&2
+  exit 2
+fi
 
 python3 -m lob_forge.study_features \
   --plan "$PLAN_PATH" \
@@ -105,7 +111,18 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
     safe_fee="$(printf '%s' "$fee" | tr '.' 'p')"
     result="$RESULT_DIR/${symbol}_${horizon_ms}ms_fee_${safe_fee}_edge.csv"
     audit="$RESULT_DIR/${symbol}_${horizon_ms}ms_fee_${safe_fee}_edge_audit.csv"
-    if [[ -s "$result" && -s "$audit" ]]; then
+    provenance="${result}.provenance.json"
+    holdout_manifest="$(holdout_manifest_for "$combined")"
+    if [[ -s "$result" && -s "$audit" && -s "$provenance" ]] && \
+      "$PYTHON_BIN" -m lob_forge.study_provenance verify \
+        --plan "$PLAN_PATH" \
+        --result "$result" \
+        --audit "$audit" \
+        --symbol "$symbol" \
+        --horizon-ms "$horizon_ms" \
+        --taker-fee-bps "$fee" \
+        --output "$provenance" \
+        --require-source-files >/dev/null; then
       if [[ "$RERUN_UNDERFOLDED" == "1" ]] && ! audit_meets_min_fold_count "$audit"; then
         printf 'rerun underfolded symbol=%s horizon_ms=%s fee=%s audit=%s min_audit_fold_count=%s\n' \
           "$symbol" "$horizon_ms" "$fee" "$audit" "$MIN_AUDIT_FOLD_COUNT"
@@ -113,6 +130,8 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
         printf 'skip existing symbol=%s horizon_ms=%s fee=%s\n' "$symbol" "$horizon_ms" "$fee"
         continue
       fi
+    elif [[ -s "$result" || -s "$audit" || -s "$provenance" ]]; then
+      printf 'rerun invalid existing symbol=%s horizon_ms=%s fee=%s\n' "$symbol" "$horizon_ms" "$fee"
     fi
     if [[ "$DRY_RUN" != "0" ]]; then
       printf 'would_run symbol=%s horizon_ms=%s fee=%s combined=%s result=%s\n' \
@@ -123,7 +142,7 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
     result_tmp="$result.tmp.$$"
     audit_tmp="$audit.tmp.$$"
     python3 -m lob_forge.cli edge-walk-forward "$combined" \
-      --holdout-manifest "$(holdout_manifest_for "$combined")" \
+      --holdout-manifest "$holdout_manifest" \
       --train-size "$TRAIN_SIZE" \
       --validation-size "$VALIDATION_SIZE" \
       --test-size "$TEST_SIZE" \
@@ -141,6 +160,16 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
       --cost-safety-multiple 2 \
       > "$audit_tmp"
     mv "$audit_tmp" "$audit"
+    "$PYTHON_BIN" -m lob_forge.study_provenance write \
+      --plan "$PLAN_PATH" \
+      --feature "$combined" \
+      --holdout-manifest "$holdout_manifest" \
+      --result "$result" \
+      --audit "$audit" \
+      --symbol "$symbol" \
+      --horizon-ms "$horizon_ms" \
+      --taker-fee-bps "$fee" \
+      --output "$provenance"
   done
 done < "$COMPLETE_JOBS_FILE"
 

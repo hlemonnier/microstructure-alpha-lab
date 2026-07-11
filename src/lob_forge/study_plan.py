@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Sequence
 
 from lob_forge.binance_vision import iter_dates
 from lob_forge.edge_model import DEFAULT_EDGE_THRESHOLDS_BPS
+from lob_forge.experiments import default_min_tick_for_symbol
 from lob_forge.memory_guard import physical_memory_gb
 
 
@@ -49,6 +50,13 @@ class ExpectedEdgeRunPlan:
     processed_root: str
     raw_root: str
     recommendations: list[str]
+    bucket_ms: int = 1000
+    execution_quote_resolution: str = "raw"
+    feature_threshold: str = "half_spread"
+    large_trade_notional: float = 10_000.0
+    symbol_min_ticks: dict[str, float] = field(default_factory=dict)
+    holdout_split_column: str = "source_date"
+    holdout_values: list[str] = field(default_factory=list)
 
 
 def build_expected_edge_run_plan(
@@ -78,6 +86,13 @@ def build_expected_edge_run_plan(
     model_classes: Sequence[str] = ("ridge_expected_edge",),
     feature_sets: Sequence[str] = ("default_microstructure",),
     selection_metric: str = "validation_net_pnl",
+    bucket_ms: int = 1000,
+    execution_quote_resolution: str = "raw",
+    feature_threshold: str = "half_spread",
+    large_trade_notional: float = 10_000.0,
+    symbol_min_ticks: dict[str, float] | None = None,
+    holdout_split_column: str = "source_date",
+    holdout_values: Sequence[str] | None = None,
 ) -> ExpectedEdgeRunPlan:
     normalized_profile = _normalize_profile(profile)
     clean_symbols = [symbol.strip().upper() for symbol in symbols if symbol.strip()]
@@ -98,6 +113,29 @@ def build_expected_edge_run_plan(
         raise ValueError("study plan needs at least one model class")
     if not clean_feature_sets:
         raise ValueError("study plan needs at least one feature set")
+    if bucket_ms <= 0:
+        raise ValueError("bucket_ms must be positive")
+    if execution_quote_resolution not in {"raw", "bucket"}:
+        raise ValueError("execution_quote_resolution must be raw or bucket")
+    if not feature_threshold.strip():
+        raise ValueError("feature_threshold must be non-empty")
+    if large_trade_notional <= 0.0:
+        raise ValueError("large_trade_notional must be positive")
+    if min(train_size, validation_size, test_size, step_size) <= 0:
+        raise ValueError("train, validation, test, and step sizes must be positive")
+    if step_size < test_size:
+        raise ValueError("step_size must be at least test_size so confirmatory OOS windows do not overlap")
+    resolved_min_ticks = {
+        symbol: float((symbol_min_ticks or {}).get(symbol, default_min_tick_for_symbol(symbol)))
+        for symbol in clean_symbols
+    }
+    if any(value <= 0.0 for value in resolved_min_ticks.values()):
+        raise ValueError("symbol minimum ticks must be positive")
+    if not holdout_split_column.strip():
+        raise ValueError("holdout_split_column must be non-empty")
+    resolved_holdout_values = sorted({value.strip() for value in (holdout_values or [end_date]) if value.strip()})
+    if not resolved_holdout_values:
+        raise ValueError("holdout_values must be non-empty")
 
     dates = list(iter_dates(start_date, end_date))
     total_days = len(dates)
@@ -162,6 +200,13 @@ def build_expected_edge_run_plan(
         processed_root=processed_root,
         raw_root=raw_root,
         recommendations=recommendations,
+        bucket_ms=bucket_ms,
+        execution_quote_resolution=execution_quote_resolution,
+        feature_threshold=feature_threshold,
+        large_trade_notional=large_trade_notional,
+        symbol_min_ticks=resolved_min_ticks,
+        holdout_split_column=holdout_split_column,
+        holdout_values=resolved_holdout_values,
     )
 
 
@@ -187,6 +232,9 @@ def format_expected_edge_run_plan(plan: ExpectedEdgeRunPlan) -> str:
         f"archives={plan.binance_daily_archives} feature_jobs={plan.feature_build_jobs} edge_jobs={plan.edge_eval_jobs} threshold_candidate_attempts={plan.threshold_candidate_attempts}",
         f"edge_thresholds_bps={','.join(format(value, 'g') for value in plan.edge_thresholds_bps)} selection_metric={plan.selection_metric}",
         f"with_book_depth={int(plan.with_book_depth)} edge_streaming={int(plan.edge_streaming)} max_combined_rows_per_symbol_horizon={combined_rows}",
+        f"bucket_ms={plan.bucket_ms} execution_quote_resolution={plan.execution_quote_resolution}",
+        f"feature_threshold={plan.feature_threshold} large_trade_notional={plan.large_trade_notional:g} symbol_min_ticks={json.dumps(plan.symbol_min_ticks, sort_keys=True)}",
+        f"holdout_split_column={plan.holdout_split_column} holdout_values={','.join(plan.holdout_values)}",
         f"physical_ram={ram} min_ram_gb={plan.min_ram_gb:.1f} can_start={int(plan.can_start_on_current_machine)}",
     ]
     for recommendation in plan.recommendations:
@@ -203,6 +251,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--horizons-ms", required=True)
     parser.add_argument("--fees-bps", required=True)
     parser.add_argument("--latency-ms", type=int, required=True)
+    parser.add_argument("--bucket-ms", type=int, default=1000)
+    parser.add_argument("--execution-quote-resolution", choices=["raw", "bucket"], default="raw")
+    parser.add_argument("--feature-threshold", default="half_spread")
+    parser.add_argument("--large-trade-notional", type=float, default=10_000.0)
+    parser.add_argument("--holdout-split-column", default="source_date")
+    parser.add_argument("--holdout-values", default="")
     parser.add_argument("--max-quote-buckets", default="")
     parser.add_argument("--with-book-depth", choices=["0", "1"], default="1")
     parser.add_argument("--train-size", type=int, required=True)
@@ -248,6 +302,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         model_classes=_parse_string_list(args.model_classes),
         feature_sets=_parse_string_list(args.feature_sets),
         selection_metric=args.selection_metric,
+        bucket_ms=args.bucket_ms,
+        execution_quote_resolution=args.execution_quote_resolution,
+        feature_threshold=args.feature_threshold,
+        large_trade_notional=args.large_trade_notional,
+        holdout_split_column=args.holdout_split_column,
+        holdout_values=_parse_string_list(args.holdout_values) or None,
     )
     if args.output:
         output_path = write_expected_edge_run_plan(plan, args.output)

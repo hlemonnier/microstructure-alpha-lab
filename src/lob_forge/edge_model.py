@@ -781,6 +781,8 @@ def _validate_walk_forward_config(
     effective_step = step_size or test_size
     if effective_step <= 0:
         raise ValueError("step_size must be positive")
+    if effective_step < test_size:
+        raise ValueError("step_size must be at least test_size so OOS test windows do not overlap")
     if max_folds is not None and max_folds <= 0:
         raise ValueError("max_folds must be positive")
     return effective_step, edge_thresholds_bps or DEFAULT_EDGE_THRESHOLDS_BPS

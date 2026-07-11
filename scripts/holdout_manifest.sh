@@ -16,6 +16,29 @@ holdout_manifest_for() {
   if [[ "${RECREATE_HOLDOUT_MANIFESTS:-0}" == "1" ]]; then
     rm -f "$manifest"
   fi
+  if [[ -f "$manifest" ]]; then
+    if ! "$python_bin" - "$feature_csv" "$manifest" "$split_column" "${HOLDOUT_VALUES:-}" <<'PY'
+import sys
+
+from lob_forge.holdout import assert_holdout_source_matches, read_holdout_manifest
+
+feature_csv, manifest_path, split_column, requested_values = sys.argv[1:5]
+try:
+    manifest = read_holdout_manifest(manifest_path)
+    assert_holdout_source_matches(feature_csv, manifest)
+    if manifest.split_column != split_column:
+        raise ValueError("holdout split column changed")
+    requested = tuple(sorted({value for value in requested_values.replace(",", " ").split() if value}))
+    if requested and manifest.holdout_values != requested:
+        raise ValueError("holdout values changed")
+except (OSError, ValueError):
+    raise SystemExit(1)
+PY
+    then
+      printf 'stale_holdout_manifest=%s; recreating for current source/split contract\n' "$manifest" >&2
+      rm -f "$manifest"
+    fi
+  fi
   if [[ ! -f "$manifest" ]]; then
     holdout_values="${HOLDOUT_VALUES:-}"
     if [[ -z "$holdout_values" ]]; then

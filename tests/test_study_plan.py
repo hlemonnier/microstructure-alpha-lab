@@ -1,3 +1,5 @@
+import pytest
+
 from lob_forge.edge_model import DEFAULT_EDGE_THRESHOLDS_BPS
 from lob_forge.study_plan import build_expected_edge_run_plan, format_expected_edge_run_plan
 
@@ -142,3 +144,28 @@ def test_study_plan_text_surfaces_risk_and_uncapped_state() -> None:
     assert "edge_thresholds_bps=" in formatted
     assert "max_combined_rows_per_symbol_horizon=uncapped" in formatted
     assert "EDGE_STREAMING=0" in formatted
+
+
+def test_study_plan_rejects_overlapping_confirmatory_test_windows() -> None:
+    with pytest.raises(ValueError, match="OOS windows do not overlap"):
+        build_expected_edge_run_plan(
+            profile="laptop_tiny",
+            start_date="2023-05-16",
+            end_date="2023-05-17",
+            symbols=["BTCUSDT"],
+            horizons_ms=[5000],
+            fees_bps=[0.0],
+            latency_ms=1000,
+            max_quote_buckets=1200,
+            train_size=900,
+            validation_size=450,
+            test_size=450,
+            step_size=225,
+            edge_streaming=True,
+            min_ram_gb=4,
+            max_csv_load_memory_gb=4,
+            out_dir="results/tiny",
+            processed_root="data/processed/tiny",
+            raw_root="data/raw",
+            physical_ram_gb_value=16,
+        )

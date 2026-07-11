@@ -70,7 +70,7 @@ source_worktree_dirty() {
   fi
 
   if git -C "$root_dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    status_output="$(git -C "$root_dir" status --short --untracked-files=no)"
+    status_output="$(git -C "$root_dir" status --short --untracked-files=all)"
     if [[ -n "$status_output" ]]; then
       printf 'true\n'
     else

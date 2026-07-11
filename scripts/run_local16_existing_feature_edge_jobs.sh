@@ -12,10 +12,11 @@ else
   PYTHON_BIN="${PYTHON_BIN:-python3}"
 fi
 source scripts/holdout_manifest.sh
+source scripts/source_provenance.sh
 
 RESULT_DIR="${RESULT_DIR:-results/expected_edge_local16_20230516_20230714}"
 PLAN_PATH="${PLAN_PATH:-$RESULT_DIR/run_plan.json}"
-SOURCE_PROCESSED_ROOT="${SOURCE_PROCESSED_ROOT:-data/processed/expected_edge_60day_20230516_20230714}"
+FEATURE_STATUS_PATH="${FEATURE_STATUS_PATH:-$RESULT_DIR/feature_status.json}"
 DRY_RUN="${DRY_RUN:-1}"
 MAX_JOBS="${MAX_JOBS:-0}"
 MAX_FOLDS="${MAX_FOLDS:-}"
@@ -28,7 +29,17 @@ FEES_BPS="${FEES_BPS:-}"
 
 export LOB_FORGE_MAX_PROCESS_MEMORY_GB
 
-read -r START_DATE END_DATE LATENCY_MS TRAIN_SIZE VALIDATION_SIZE TEST_SIZE STEP_SIZE DEFAULT_FEES <<< "$(
+if [[ "$DRY_RUN" == "0" && "$(source_worktree_dirty)" == "true" ]]; then
+  echo "refusing certified edge jobs from a dirty working tree; commit the exact source first" >&2
+  exit 2
+fi
+
+"$PYTHON_BIN" -m lob_forge.study_features \
+  --plan "$PLAN_PATH" \
+  --output "$FEATURE_STATUS_PATH" \
+  || true
+
+read -r TRAIN_SIZE VALIDATION_SIZE TEST_SIZE STEP_SIZE DEFAULT_FEES <<< "$(
 python3 - "$PLAN_PATH" <<'PY'
 import json
 import sys
@@ -37,9 +48,6 @@ with open(sys.argv[1]) as handle:
     plan = json.load(handle)
 fees = " ".join(format(float(fee), "g") for fee in plan.get("fees_bps", []))
 print(
-    plan["start_date"],
-    plan["end_date"],
-    int(plan.get("latency_ms", 1000)),
     int(plan["train_size"]),
     int(plan["validation_size"]),
     int(plan["test_size"]),
@@ -54,7 +62,9 @@ if [[ -z "$FEES_BPS" ]]; then
 fi
 
 mkdir -p "$RESULT_DIR"
+COMPLETE_JOBS_FILE="$(mktemp)"
 cleanup() {
+  rm -f "$COMPLETE_JOBS_FILE"
   rm -f "$RESULT_DIR"/*.tmp.$$
 }
 trap cleanup EXIT
@@ -81,6 +91,22 @@ raise SystemExit(0 if fold_count >= minimum else 1)
 PY
 }
 
+python3 - "$FEATURE_STATUS_PATH" > "$COMPLETE_JOBS_FILE" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1]) as handle:
+    status = json.load(handle)
+for job in status.get("feature_jobs", []):
+    if job.get("complete"):
+        print("\t".join([job["symbol"], str(job["horizon_ms"]), job["combined_path"]]))
+PY
+
+if [[ ! -s "$COMPLETE_JOBS_FILE" ]]; then
+  echo "no complete feature jobs found in $FEATURE_STATUS_PATH" >&2
+  exit 1
+fi
+
 while IFS=$'\t' read -r symbol horizon_ms combined; do
   if [[ "$MAX_JOBS" != "0" && "$job_count" -ge "$MAX_JOBS" ]]; then
     break
@@ -90,7 +116,18 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
     safe_fee="$(printf '%s' "$fee" | tr '.' 'p')"
     result="$RESULT_DIR/${symbol}_${horizon_ms}ms_fee_${safe_fee}_edge.csv"
     audit="$RESULT_DIR/${symbol}_${horizon_ms}ms_fee_${safe_fee}_edge_audit.csv"
-    if [[ -s "$result" && -s "$audit" ]]; then
+    provenance="${result}.provenance.json"
+    holdout_manifest="$(holdout_manifest_for "$combined")"
+    if [[ -s "$result" && -s "$audit" && -s "$provenance" ]] && \
+      "$PYTHON_BIN" -m lob_forge.study_provenance verify \
+        --plan "$PLAN_PATH" \
+        --result "$result" \
+        --audit "$audit" \
+        --symbol "$symbol" \
+        --horizon-ms "$horizon_ms" \
+        --taker-fee-bps "$fee" \
+        --output "$provenance" \
+        --require-source-files >/dev/null; then
       if [[ "$RERUN_UNDERFOLDED" == "1" ]] && ! audit_meets_min_fold_count "$audit"; then
         printf 'rerun underfolded symbol=%s horizon_ms=%s fee=%s audit=%s min_audit_fold_count=%s\n' \
           "$symbol" "$horizon_ms" "$fee" "$audit" "$MIN_AUDIT_FOLD_COUNT"
@@ -98,6 +135,8 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
         printf 'skip existing symbol=%s horizon_ms=%s fee=%s\n' "$symbol" "$horizon_ms" "$fee"
         continue
       fi
+    elif [[ -s "$result" || -s "$audit" || -s "$provenance" ]]; then
+      printf 'rerun invalid existing symbol=%s horizon_ms=%s fee=%s\n' "$symbol" "$horizon_ms" "$fee"
     fi
     if [[ "$DRY_RUN" != "0" ]]; then
       printf 'would_run symbol=%s horizon_ms=%s fee=%s combined=%s result=%s\n' \
@@ -113,7 +152,7 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
       max_folds_args=(--max-folds "$MAX_FOLDS")
     fi
     python3 -m lob_forge.cli edge-walk-forward "$combined" \
-      --holdout-manifest "$(holdout_manifest_for "$combined")" \
+      --holdout-manifest "$holdout_manifest" \
       --train-size "$TRAIN_SIZE" \
       --validation-size "$VALIDATION_SIZE" \
       --test-size "$TEST_SIZE" \
@@ -132,28 +171,18 @@ while IFS=$'\t' read -r symbol horizon_ms combined; do
       --cost-safety-multiple 2 \
       > "$audit_tmp"
     mv "$audit_tmp" "$audit"
+    "$PYTHON_BIN" -m lob_forge.study_provenance write \
+      --plan "$PLAN_PATH" \
+      --feature "$combined" \
+      --holdout-manifest "$holdout_manifest" \
+      --result "$result" \
+      --audit "$audit" \
+      --symbol "$symbol" \
+      --horizon-ms "$horizon_ms" \
+      --taker-fee-bps "$fee" \
+      --output "$provenance"
   done
-done < <(
-python3 - "$PLAN_PATH" "$SOURCE_PROCESSED_ROOT" "$START_DATE" "$END_DATE" "$LATENCY_MS" <<'PY'
-import json
-import sys
-from pathlib import Path
-
-plan_path, root_arg, start, end, latency = sys.argv[1:6]
-root = Path(root_arg)
-with open(plan_path) as handle:
-    plan = json.load(handle)
-for symbol in plan.get("symbols", []):
-    symbol = str(symbol).upper()
-    for horizon_ms in plan.get("horizons_ms", []):
-        horizon_ms = int(horizon_ms)
-        combined = root / f"{symbol.lower()}_{horizon_ms}ms_latency_{latency}" / f"{symbol}-{start}_{end}-combined-features.csv"
-        if combined.exists() and combined.stat().st_size > 0:
-            print("\t".join([symbol, str(horizon_ms), str(combined)]))
-        else:
-            print(f"missing_combined={combined}", file=sys.stderr)
-PY
-)
+done < "$COMPLETE_JOBS_FILE"
 
 if [[ "$DRY_RUN" == "0" ]]; then
   python3 -m lob_forge.study_registry \

@@ -12,6 +12,7 @@ else
   PYTHON_BIN="${PYTHON_BIN:-python3}"
 fi
 source scripts/holdout_manifest.sh
+source scripts/source_provenance.sh
 
 STUDY_PROFILE="${STUDY_PROFILE:-laptop_tiny}"
 PLAN_ONLY="${PLAN_ONLY:-0}"
@@ -147,6 +148,11 @@ VERIFY_CHECKSUM="${VERIFY_CHECKSUM:-1}"
 EXISTING_FEATURES_ONLY="${EXISTING_FEATURES_ONLY:-0}"
 MAX_FOLDS="${MAX_FOLDS:-}"
 MIN_AUDIT_FOLD_COUNT="${MIN_AUDIT_FOLD_COUNT:-1}"
+FEATURE_THRESHOLD="${FEATURE_THRESHOLD:-half_spread}"
+LARGE_TRADE_NOTIONAL="${LARGE_TRADE_NOTIONAL:-10000}"
+EXECUTION_QUOTE_RESOLUTION="${EXECUTION_QUOTE_RESOLUTION:-raw}"
+HOLDOUT_SPLIT_COLUMN="${HOLDOUT_SPLIT_COLUMN:-source_date}"
+HOLDOUT_VALUES="${HOLDOUT_VALUES:-$END_DATE}"
 
 export WITH_BOOK_DEPTH LOB_FORGE_MAX_PROCESS_MEMORY_GB
 
@@ -160,6 +166,8 @@ printf 'memory_guard=min_ram_gb=%s max_csv_load_gb=%s max_feature_build_gb=%s ed
   "$MIN_RAM_GB" "$MAX_LOAD_MEMORY_GB" "$MAX_FEATURE_BUILD_MEMORY_GB" "$EDGE_STREAMING"
 printf 'runtime_memory_limit_gb=%s\n' "$LOB_FORGE_MAX_PROCESS_MEMORY_GB"
 printf 'edge_thresholds_bps=%s\n' "$EDGE_THRESHOLDS_BPS"
+printf 'feature_threshold=%s large_trade_notional=%s execution_quote_resolution=%s\n' \
+  "$FEATURE_THRESHOLD" "$LARGE_TRADE_NOTIONAL" "$EXECUTION_QUOTE_RESOLUTION"
 printf 'out_dir=%s processed_root=%s verify_checksum=%s existing_features_only=%s max_folds=%s min_audit_fold_count=%s\n' "$OUT_DIR" "$PROCESSED_ROOT" "$VERIFY_CHECKSUM" "$EXISTING_FEATURES_ONLY" "$MAX_FOLDS" "$MIN_AUDIT_FOLD_COUNT"
 
 python3 -m lob_forge.study_plan \
@@ -170,6 +178,12 @@ python3 -m lob_forge.study_plan \
   --horizons-ms "$HORIZONS_MS" \
   --fees-bps "$FEES_BPS" \
   --latency-ms "$LATENCY_MS" \
+  --bucket-ms "$BUCKET_MS" \
+  --execution-quote-resolution "$EXECUTION_QUOTE_RESOLUTION" \
+  --feature-threshold "$FEATURE_THRESHOLD" \
+  --large-trade-notional "$LARGE_TRADE_NOTIONAL" \
+  --holdout-split-column "$HOLDOUT_SPLIT_COLUMN" \
+  --holdout-values "$HOLDOUT_VALUES" \
   --max-quote-buckets "$MAX_QUOTE_BUCKETS" \
   --with-book-depth "$WITH_BOOK_DEPTH" \
   --train-size "$TRAIN_SIZE" \
@@ -197,6 +211,11 @@ python3 -m lob_forge.study_registry \
 if [[ "$PLAN_ONLY" == "1" ]]; then
   printf 'plan_only=1; not starting downloads or edge evaluation\n'
   exit 0
+fi
+
+if [[ "$(source_worktree_dirty)" == "true" ]]; then
+  echo "refusing certified study run from a dirty working tree; commit the exact source first" >&2
+  exit 2
 fi
 
 if [[ "${ALLOW_LOW_RAM:-0}" != "1" ]]; then
@@ -287,14 +306,13 @@ PY
 fi
 
 min_tick_for_symbol() {
-  case "$1" in
-    BTCUSDT) echo "0.1" ;;
-    ETHUSDT) echo "0.01" ;;
-    BNBUSDT) echo "0.01" ;;
-    SOLUSDT) echo "0.001" ;;
-    XRPUSDT) echo "0.0001" ;;
-    *) echo "0.01" ;;
-  esac
+  "$PYTHON_BIN" - "$1" <<'PY'
+import sys
+
+from lob_forge.experiments import default_min_tick_for_symbol
+
+print(default_min_tick_for_symbol(sys.argv[1]))
+PY
 }
 
 build_args_for_max_buckets() {
@@ -347,17 +365,38 @@ run_one() {
 
   mkdir -p "$symbol_dir"
 
-  if [[ "$RESUME" == "1" && -s "$combined" ]]; then
-    printf 'skip existing combined features: %s\n' "$combined"
-  elif [[ "$EXISTING_FEATURES_ONLY" == "1" ]]; then
-    python3 - "$symbol" "$START_DATE" "$END_DATE" "$symbol_dir" "$combined" <<'PY'
+  if [[ "$EXISTING_FEATURES_ONLY" == "1" ]]; then
+    python3 - \
+      "$symbol" "$START_DATE" "$END_DATE" "$symbol_dir" "$combined" \
+      "$BUCKET_MS" "$horizon_ms" "$LATENCY_MS" "$min_tick" "$MAX_QUOTE_BUCKETS" "$WITH_BOOK_DEPTH" \
+      "$FEATURE_THRESHOLD" "$LARGE_TRADE_NOTIONAL" "$EXECUTION_QUOTE_RESOLUTION" <<'PY'
 import sys
 from pathlib import Path
 
 from lob_forge.binance_vision import iter_dates
+from lob_forge.experiments import (
+    expected_feature_build_config,
+    feature_build_is_current,
+    write_combined_feature_manifest,
+)
 from lob_forge.features import combine_feature_csvs
 
-symbol, start, end, symbol_dir_arg, combined_arg = sys.argv[1:6]
+(
+    symbol,
+    start,
+    end,
+    symbol_dir_arg,
+    combined_arg,
+    bucket_ms,
+    horizon_ms,
+    latency_ms,
+    min_tick,
+    max_quote_buckets,
+    with_book_depth,
+    feature_threshold,
+    large_trade_notional,
+    execution_quote_resolution,
+) = sys.argv[1:15]
 symbol_dir = Path(symbol_dir_arg)
 combined = Path(combined_arg)
 inputs = []
@@ -365,25 +404,45 @@ missing = []
 for date_value in iter_dates(start, end):
     feature_csv = symbol_dir / f"{symbol.upper()}-{date_value}-quote-trade-features.csv"
     done_marker = feature_csv.with_suffix(feature_csv.suffix + ".done")
-    if done_marker.exists() and feature_csv.exists() and feature_csv.stat().st_size > 0:
+    build_config = expected_feature_build_config(
+        symbol=symbol,
+        date_value=date_value,
+        bucket_ms=int(bucket_ms),
+        horizon_ms=int(horizon_ms),
+        execution_latency_ms=int(latency_ms),
+        threshold=feature_threshold,
+        min_tick=float(min_tick),
+        large_trade_notional=float(large_trade_notional),
+        max_quote_buckets=int(max_quote_buckets) if max_quote_buckets else None,
+        with_book_depth=with_book_depth == "1",
+        execution_quote_resolution=execution_quote_resolution,
+    )
+    if feature_build_is_current(
+        feature_csv,
+        done_marker,
+        build_config=build_config,
+        input_hashes=None,
+    ):
         inputs.append((feature_csv, {"source_symbol": symbol.upper(), "source_date": date_value}))
     else:
         missing.append(date_value)
 
 if not inputs:
     raise SystemExit(f"no existing daily feature files found in {symbol_dir}")
-
-combine_feature_csvs(inputs, combined)
-print(
-    f"combined_existing_features symbol={symbol.upper()} available_days={len(inputs)} "
-    f"missing_days={len(missing)} output={combined}"
-)
 if missing:
     print("missing_existing_feature_dates=" + ",".join(missing[:20]))
     if len(missing) > 20:
         print(f"missing_existing_feature_dates_more={len(missing) - 20}")
+    raise SystemExit("existing-feature mode requires every planned daily feature to verify")
+
+combine_feature_csvs(inputs, combined)
+write_combined_feature_manifest(combined, [path for path, _metadata in inputs])
+print(f"combined_existing_features symbol={symbol.upper()} days={len(inputs)} output={combined}")
 PY
   else
+    # Always enter the range builder. It reuses only daily features whose
+    # content/configuration marker matches this exact run, then rewrites the
+    # combined CSV. A nonempty combined file alone is not valid provenance.
     # shellcheck disable=SC2046
     python3 -m lob_forge.cli build-range \
       --symbol "$symbol" \
@@ -395,8 +454,10 @@ PY
       --bucket-ms "$BUCKET_MS" \
       --horizon-ms "$horizon_ms" \
       --execution-latency-ms "$LATENCY_MS" \
-      --threshold half_spread \
+      --threshold "$FEATURE_THRESHOLD" \
       --min-tick "$min_tick" \
+      --large-trade-notional "$LARGE_TRADE_NOTIONAL" \
+      --execution-quote-resolution "$EXECUTION_QUOTE_RESOLUTION" \
       --max-feature-build-memory-gb "$MAX_FEATURE_BUILD_MEMORY_GB" \
       --feature-memory-estimate-multiplier "$FEATURE_MEMORY_ESTIMATE_MULTIPLIER" \
       $(build_args_for_book_depth) \
@@ -404,17 +465,29 @@ PY
       $(build_args_for_verify)
   fi
 
+  local holdout_manifest
+  holdout_manifest="$(holdout_manifest_for "$combined")"
+
   for fee_bps in $FEES_BPS; do
     local safe_fee
     safe_fee="$(printf '%s' "$fee_bps" | tr '.' 'p')"
     local result="$OUT_DIR/${symbol}_${horizon_ms}ms_fee_${safe_fee}_edge.csv"
     local audit="$OUT_DIR/${symbol}_${horizon_ms}ms_fee_${safe_fee}_edge_audit.csv"
+    local provenance="${result}.provenance.json"
 
-    if [[ "$RESUME" == "1" && -s "$result" && -s "$audit" ]]; then
+    if [[ "$RESUME" == "1" && -s "$result" && -s "$audit" && -s "$provenance" ]] && \
+      python3 -m lob_forge.study_provenance verify \
+        --plan "$PLAN_PATH" \
+        --result "$result" \
+        --audit "$audit" \
+        --symbol "$symbol" \
+        --horizon-ms "$horizon_ms" \
+        --taker-fee-bps "$fee_bps" \
+        --output "$provenance" >/dev/null; then
       printf 'skip existing result/audit: %s %s\n' "$result" "$audit"
     else
       python3 -m lob_forge.cli edge-walk-forward "$combined" \
-        --holdout-manifest "$(holdout_manifest_for "$combined")" \
+        --holdout-manifest "$holdout_manifest" \
         --train-size "$TRAIN_SIZE" \
         --validation-size "$VALIDATION_SIZE" \
         --test-size "$TEST_SIZE" \
@@ -432,6 +505,17 @@ PY
         --assumed-cost-bps "$fee_bps" \
         --cost-safety-multiple 2 \
         > "$audit"
+
+      python3 -m lob_forge.study_provenance write \
+        --plan "$PLAN_PATH" \
+        --feature "$combined" \
+        --holdout-manifest "$holdout_manifest" \
+        --result "$result" \
+        --audit "$audit" \
+        --symbol "$symbol" \
+        --horizon-ms "$horizon_ms" \
+        --taker-fee-bps "$fee_bps" \
+        --output "$provenance"
     fi
   done
 }

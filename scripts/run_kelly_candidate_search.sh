@@ -34,15 +34,26 @@ MIN_POSITIVE_FOLD_RATE="${MIN_POSITIVE_FOLD_RATE:-0.70}"
 MAX_FOLD_CONTRIBUTION="${MAX_FOLD_CONTRIBUTION:-0.40}"
 KELLY_WINDOW_SIZE="${KELLY_WINDOW_SIZE:-5}"
 MAX_VARIANCE_CV="${MAX_VARIANCE_CV:-0.5}"
+SOURCE_BUCKET_MS="${SOURCE_BUCKET_MS:-1000}"
+SOURCE_MAX_QUOTE_BUCKETS="${SOURCE_MAX_QUOTE_BUCKETS:-}"
+SOURCE_WITH_BOOK_DEPTH="${SOURCE_WITH_BOOK_DEPTH:-1}"
+SOURCE_FEATURE_THRESHOLD="${SOURCE_FEATURE_THRESHOLD:-half_spread}"
+SOURCE_LARGE_TRADE_NOTIONAL="${SOURCE_LARGE_TRADE_NOTIONAL:-10000}"
+SOURCE_EXECUTION_QUOTE_RESOLUTION="${SOURCE_EXECUTION_QUOTE_RESOLUTION:-raw}"
+HOLDOUT_SPLIT_COLUMN="${HOLDOUT_SPLIT_COLUMN:-source_date}"
+HOLDOUT_VALUES="${HOLDOUT_VALUES:-$END_DATE}"
 
 export LOB_FORGE_MAX_PROCESS_MEMORY_GB
 source scripts/holdout_manifest.sh
+source scripts/source_provenance.sh
 
 safe_fee="$(printf '%s' "$FEE_BPS" | tr '.' 'p')"
 symbol_lower="$(printf '%s' "$SYMBOL" | tr '[:upper:]' '[:lower:]')"
 combined="$SOURCE_PROCESSED_ROOT/${symbol_lower}_${HORIZON_MS}ms_latency_${LATENCY_MS}/${SYMBOL}-${START_DATE}_${END_DATE}-combined-features.csv"
 result="$OUT_DIR/${SYMBOL}_${HORIZON_MS}ms_fee_${safe_fee}_balanced_edge.csv"
 audit="$OUT_DIR/${SYMBOL}_${HORIZON_MS}ms_fee_${safe_fee}_balanced_edge_audit.csv"
+plan="$OUT_DIR/run_plan.json"
+provenance="${result}.provenance.json"
 if [[ "$DRY_RUN" == "0" ]]; then
   holdout_manifest="$(holdout_manifest_for "$combined")"
 else
@@ -78,6 +89,41 @@ if [[ "$DRY_RUN" != "0" ]]; then
   exit 0
 fi
 
+if [[ "$(source_worktree_dirty)" == "true" ]]; then
+  echo "refusing certified Kelly search from a dirty working tree; commit the exact source first" >&2
+  exit 2
+fi
+
+"$PYTHON_BIN" -m lob_forge.study_plan \
+  --profile kelly_candidate_search \
+  --start "$START_DATE" \
+  --end "$END_DATE" \
+  --symbols "$SYMBOL" \
+  --horizons-ms "$HORIZON_MS" \
+  --fees-bps "$FEE_BPS" \
+  --latency-ms "$LATENCY_MS" \
+  --bucket-ms "$SOURCE_BUCKET_MS" \
+  --execution-quote-resolution "$SOURCE_EXECUTION_QUOTE_RESOLUTION" \
+  --feature-threshold "$SOURCE_FEATURE_THRESHOLD" \
+  --large-trade-notional "$SOURCE_LARGE_TRADE_NOTIONAL" \
+  --holdout-split-column "$HOLDOUT_SPLIT_COLUMN" \
+  --holdout-values "$HOLDOUT_VALUES" \
+  --max-quote-buckets "$SOURCE_MAX_QUOTE_BUCKETS" \
+  --with-book-depth "$SOURCE_WITH_BOOK_DEPTH" \
+  --train-size "$TRAIN_SIZE" \
+  --validation-size "$VALIDATION_SIZE" \
+  --test-size "$TEST_SIZE" \
+  --step-size "$STEP_SIZE" \
+  --edge-streaming 1 \
+  --edge-thresholds-bps "$EDGE_THRESHOLDS_BPS" \
+  --min-ram-gb 1 \
+  --max-load-memory-gb "$MAX_LOAD_MEMORY_GB" \
+  --max-feature-build-memory-gb 0 \
+  --out-dir "$OUT_DIR" \
+  --processed-root "$SOURCE_PROCESSED_ROOT" \
+  --raw-root data/raw \
+  --output "$plan"
+
 "${command[@]}" > "$result"
 "$PYTHON_BIN" -m lob_forge.cli audit-results "$result" \
   --assumed-cost-bps "$FEE_BPS" \
@@ -86,6 +132,16 @@ fi
   --min-positive-fold-rate "$MIN_POSITIVE_FOLD_RATE" \
   --max-fold-contribution "$MAX_FOLD_CONTRIBUTION" \
   > "$audit"
+"$PYTHON_BIN" -m lob_forge.study_provenance write \
+  --plan "$plan" \
+  --feature "$combined" \
+  --holdout-manifest "$holdout_manifest" \
+  --result "$result" \
+  --audit "$audit" \
+  --symbol "$SYMBOL" \
+  --horizon-ms "$HORIZON_MS" \
+  --taker-fee-bps "$FEE_BPS" \
+  --output "$provenance"
 "$PYTHON_BIN" -m lob_forge.cli kelly-variance-gate "$result" \
   --column validation_net_pnl \
   --min-observations "$MIN_AUDIT_FOLD_COUNT" \

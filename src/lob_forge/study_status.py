@@ -3,12 +3,18 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
 from lob_forge.result_verifier import verify_result_artifacts
-from lob_forge.study_registry import build_expected_edge_candidate_registry, read_expected_edge_candidate_registry
+from lob_forge.study_provenance import provenance_path_for, verify_expected_edge_provenance
+from lob_forge.study_registry import (
+    build_expected_edge_candidate_registry,
+    expected_edge_procedure_pvalues,
+    read_expected_edge_candidate_registry,
+)
 
 
 @dataclass(frozen=True)
@@ -77,6 +83,9 @@ def evaluate_expected_edge_study_status(
             expected_pairs=expected_pairs,
             min_audit_fold_count=min_audit_fold_count,
         )
+    )
+    verifier_errors = tuple(verifier_errors) + tuple(
+        _artifact_provenance_errors(plan_path=plan_path, plan=plan, result_dir=result_dir_path)
     )
     registry_path = result_dir_path / "candidate_registry.jsonl"
     if registry_path.exists() and registry_path.stat().st_size > 0:
@@ -347,11 +356,15 @@ def _candidate_config_pvalue_errors(registry_path: Path, pvalues_path: Path, *, 
         attempts = read_expected_edge_candidate_registry(registry_path)
     except Exception as exc:
         return [f"{registry_path.name}: candidate registry parse failed before p-value join: {exc!r}"]
-    completed_attempts = [
-        attempt for attempt in attempts if attempt.status not in {"planned", "incomplete_artifact", "artifact_error"}
-    ]
-    if not completed_attempts:
+    expected_procedures = expected_edge_procedure_pvalues(attempts)
+    if not expected_procedures:
         return []
+    expected_by_hash = {str(record["procedure_sha256"]): record["p_value"] for record in expected_procedures}
+    for procedure_sha256, p_value in expected_by_hash.items():
+        if p_value is None:
+            errors.append(
+                f"{registry_path.name}: audit is missing a valid p-value for procedure {procedure_sha256[:12]}"
+            )
     try:
         with pvalues_path.open(newline="") as handle:
             rows = list(csv.DictReader(handle))
@@ -359,21 +372,21 @@ def _candidate_config_pvalue_errors(registry_path: Path, pvalues_path: Path, *, 
         return [f"{pvalues_path.name}: could not read {artifact_label}: {exc!r}"]
     if not rows:
         return [f"{pvalues_path.name}: no {artifact_label} rows"]
-    required = {"hypothesis_id", "p_value", "config_sha256"}
+    required = {"hypothesis_id", "p_value", "procedure_sha256"}
     missing_columns = required - set(rows[0])
     if missing_columns:
         return [f"{pvalues_path.name}: missing candidate-link columns {sorted(missing_columns)}"]
 
-    pvalue_configs: set[str] = set()
+    pvalue_procedures: set[str] = set()
     for index, row in enumerate(rows, start=2):
-        config_sha256 = str(row.get("config_sha256") or "").strip()
-        if not config_sha256:
-            errors.append(f"{pvalues_path.name}:{index}: missing config_sha256")
+        procedure_sha256 = str(row.get("procedure_sha256") or "").strip()
+        if not procedure_sha256:
+            errors.append(f"{pvalues_path.name}:{index}: missing procedure_sha256")
             continue
-        if config_sha256 in pvalue_configs:
-            errors.append(f"{pvalues_path.name}:{index}: duplicate config_sha256 {config_sha256}")
+        if procedure_sha256 in pvalue_procedures:
+            errors.append(f"{pvalues_path.name}:{index}: duplicate procedure_sha256 {procedure_sha256}")
             continue
-        pvalue_configs.add(config_sha256)
+        pvalue_procedures.add(procedure_sha256)
         try:
             p_value = float(str(row.get("p_value") or ""))
         except ValueError:
@@ -381,13 +394,52 @@ def _candidate_config_pvalue_errors(registry_path: Path, pvalues_path: Path, *, 
             continue
         if not 0.0 <= p_value <= 1.0:
             errors.append(f"{pvalues_path.name}:{index}: p_value outside [0, 1]")
+            continue
+        expected_p_value = expected_by_hash.get(procedure_sha256)
+        if expected_p_value is not None and not math.isclose(
+            p_value,
+            float(str(expected_p_value)),
+            rel_tol=1e-12,
+            abs_tol=1e-12,
+        ):
+            errors.append(f"{pvalues_path.name}:{index}: p_value does not match procedure audit")
 
-    expected_configs = {attempt.config_sha256 for attempt in completed_attempts if attempt.config_sha256}
-    missing_configs = sorted(expected_configs - pvalue_configs)
-    if missing_configs:
-        preview = ", ".join(config[:12] for config in missing_configs[:10])
-        suffix = "" if len(missing_configs) <= 10 else f", +{len(missing_configs) - 10} more"
-        errors.append(f"{pvalues_path.name}: missing completed candidate config_sha256 rows: {preview}{suffix}")
+    expected_hashes = set(expected_by_hash)
+    missing_hashes = sorted(expected_hashes - pvalue_procedures)
+    extra_hashes = sorted(pvalue_procedures - expected_hashes)
+    if missing_hashes:
+        preview = ", ".join(value[:12] for value in missing_hashes[:10])
+        suffix = "" if len(missing_hashes) <= 10 else f", +{len(missing_hashes) - 10} more"
+        errors.append(f"{pvalues_path.name}: missing validation-selected procedure rows: {preview}{suffix}")
+    if extra_hashes:
+        preview = ", ".join(value[:12] for value in extra_hashes[:10])
+        suffix = "" if len(extra_hashes) <= 10 else f", +{len(extra_hashes) - 10} more"
+        errors.append(f"{pvalues_path.name}: unexpected validation-selected procedure rows: {preview}{suffix}")
+    return errors
+
+
+def _artifact_provenance_errors(*, plan_path: Path, plan: dict[str, Any], result_dir: Path) -> list[str]:
+    errors: list[str] = []
+    for symbol in [str(value).upper() for value in plan.get("symbols", [])]:
+        for horizon_ms in [int(value) for value in plan.get("horizons_ms", [])]:
+            for fee_bps in [float(value) for value in plan.get("fees_bps", [])]:
+                result_name, audit_name = _expected_result_pairs(
+                    {"symbols": [symbol], "horizons_ms": [horizon_ms], "fees_bps": [fee_bps]}
+                )[0]
+                result_path = result_dir / result_name
+                audit_path = result_dir / audit_name
+                if not result_path.exists() or not audit_path.exists():
+                    continue
+                report = verify_expected_edge_provenance(
+                    provenance_path_for(result_path),
+                    plan_path=plan_path,
+                    result_path=result_path,
+                    audit_path=audit_path,
+                    expected_symbol=symbol,
+                    expected_horizon_ms=horizon_ms,
+                    expected_taker_fee_bps=fee_bps,
+                )
+                errors.extend(f"{result_name}: {error}" for error in report.errors)
     return errors
 
 

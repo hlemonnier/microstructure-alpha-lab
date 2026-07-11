@@ -2,10 +2,17 @@ import csv
 import json
 from pathlib import Path
 
+from lob_forge.experiments import (
+    expected_feature_build_config,
+    write_combined_feature_manifest,
+    write_feature_build_marker,
+)
+from lob_forge.holdout import sha256_file
 from lob_forge.study_status import (
     evaluate_expected_edge_study_status,
     format_expected_edge_study_status,
 )
+from lob_forge.study_provenance import write_expected_edge_provenance
 from lob_forge.study_registry import build_expected_edge_candidate_registry, write_expected_edge_candidate_registry
 from lob_forge.study_registry import write_expected_edge_candidate_pvalues
 
@@ -84,7 +91,34 @@ def test_expected_edge_study_status_rejects_candidate_corrections_without_config
 
     assert not status.complete
     assert not status.artifact_verifier_passed
-    assert "pvalue_corrections.csv: missing candidate-link columns ['config_sha256']" in formatted
+    assert "pvalue_corrections.csv: missing candidate-link columns ['procedure_sha256']" in formatted
+
+
+def test_expected_edge_study_status_rejects_pvalue_that_differs_from_audit(tmp_path: Path) -> None:
+    result_dir = tmp_path / "results"
+    result_dir.mkdir()
+    plan_path = _write_plan(
+        result_dir,
+        symbols=["BTCUSDT"],
+        horizons_ms=[5000],
+        fees_bps=[0.0],
+    )
+    _write_edge_result(result_dir / "BTCUSDT_5000ms_fee_0_edge.csv")
+    _write_edge_audit(result_dir / "BTCUSDT_5000ms_fee_0_edge_audit.csv")
+    _write_candidate_registry(plan_path, result_dir)
+    _write_pvalues_from_registry(plan_path, result_dir)
+    pvalues_path = result_dir / "pvalues.csv"
+    with pvalues_path.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+        fieldnames = list(rows[0])
+    rows[0]["p_value"] = "0.2"
+    _write_csv(pvalues_path, fieldnames, rows)
+    _write_pvalue_corrections(result_dir / "pvalue_corrections.csv", pvalues_path)
+
+    status = evaluate_expected_edge_study_status(plan_path=plan_path)
+
+    assert not status.complete
+    assert any("p_value does not match procedure audit" in error for error in status.artifact_verifier_errors)
 
 
 def test_expected_edge_study_status_can_skip_pvalue_requirement(tmp_path: Path) -> None:
@@ -293,9 +327,28 @@ def _write_plan(
             {
                 "profile": "test",
                 "out_dir": str(result_dir),
+                "start_date": "2023-05-16",
+                "end_date": "2023-05-16",
                 "symbols": symbols,
                 "horizons_ms": horizons_ms,
                 "fees_bps": fees_bps,
+                "latency_ms": 1000,
+                "bucket_ms": 1000,
+                "execution_quote_resolution": "raw",
+                "max_quote_buckets": 1200,
+                "with_book_depth": False,
+                "feature_threshold": "half_spread",
+                "large_trade_notional": 10000.0,
+                "symbol_min_ticks": {symbol: 0.1 if symbol == "BTCUSDT" else 0.01 for symbol in symbols},
+                "train_size": 900,
+                "validation_size": 450,
+                "test_size": 450,
+                "step_size": 450,
+                "edge_streaming": True,
+                "edge_thresholds_bps": [0.0, 0.1],
+                "model_classes": ["ridge_expected_edge"],
+                "feature_sets": ["default_microstructure"],
+                "selection_metric": "validation_net_pnl",
             }
         )
     )
@@ -305,8 +358,32 @@ def _write_plan(
 def _write_edge_result(path: Path) -> None:
     _write_csv(
         path,
-        ["fold", "edge_threshold_bps", "val_net_pnl", "test_net_pnl"],
-        [{"fold": "1", "edge_threshold_bps": "0.0", "val_net_pnl": "2.0", "test_net_pnl": "1.0"}],
+        [
+            "fold",
+            "train_rows",
+            "validation_rows",
+            "test_rows",
+            "purged_train_rows",
+            "purged_validation_rows",
+            "edge_threshold_bps",
+            "val_net_pnl",
+            "test_trades",
+            "test_net_pnl",
+        ],
+        [
+            {
+                "fold": "1",
+                "train_rows": "894",
+                "validation_rows": "444",
+                "test_rows": "450",
+                "purged_train_rows": "6",
+                "purged_validation_rows": "6",
+                "edge_threshold_bps": "0.0",
+                "val_net_pnl": "2.0",
+                "test_trades": "2",
+                "test_net_pnl": "1.0",
+            }
+        ],
     )
 
 
@@ -327,7 +404,7 @@ def _write_edge_audit(path: Path) -> None:
             {
                 "inference_grain": "fold_summary",
                 "fold_count": "1",
-                "total_test_rows": "10",
+                "total_test_rows": "450",
                 "total_test_trades": "2",
                 "total_test_net_pnl": "1.0",
                 "one_sided_p_value_mean_le_zero": "0.1",
@@ -395,11 +472,13 @@ def _write_artifact_level_pvalue_corrections(path: Path) -> None:
 
 
 def _write_candidate_registry(plan_path: Path, result_dir: Path) -> None:
+    _write_all_provenance(plan_path, result_dir)
     attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
     write_expected_edge_candidate_registry(attempts, result_dir / "candidate_registry.jsonl")
 
 
 def _write_pvalues_from_registry(plan_path: Path, result_dir: Path) -> None:
+    _write_all_provenance(plan_path, result_dir)
     attempts = build_expected_edge_candidate_registry(plan_path=plan_path, result_dir=result_dir)
     write_expected_edge_candidate_pvalues(attempts, result_dir / "pvalues.csv")
 
@@ -409,3 +488,70 @@ def _write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, str]]) ->
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+
+
+def _write_all_provenance(plan_path: Path, result_dir: Path) -> None:
+    plan = json.loads(plan_path.read_text())
+    holdout = result_dir / "fixture_holdout.json"
+    for symbol in plan.get("symbols", []):
+        for horizon_ms in plan.get("horizons_ms", []):
+            feature_dir = result_dir / f"{str(symbol).lower()}_{horizon_ms}ms_latency_{plan['latency_ms']}"
+            feature_dir.mkdir(parents=True, exist_ok=True)
+            daily = feature_dir / f"{symbol}-2023-05-16-quote-trade-features.csv"
+            daily.write_text("event_time,label\n1,0\n")
+            write_feature_build_marker(
+                daily,
+                daily.with_suffix(daily.suffix + ".done"),
+                build_config=expected_feature_build_config(
+                    symbol=str(symbol),
+                    date_value="2023-05-16",
+                    bucket_ms=int(plan["bucket_ms"]),
+                    horizon_ms=int(horizon_ms),
+                    execution_latency_ms=int(plan["latency_ms"]),
+                    threshold=str(plan["feature_threshold"]),
+                    min_tick=float(plan["symbol_min_ticks"][symbol]),
+                    large_trade_notional=float(plan["large_trade_notional"]),
+                    max_quote_buckets=int(plan["max_quote_buckets"]),
+                    with_book_depth=bool(plan["with_book_depth"]),
+                    execution_quote_resolution=str(plan["execution_quote_resolution"]),
+                ),
+                input_hashes={
+                    "book_ticker_sha256": "book",
+                    "agg_trades_sha256": "trades",
+                    "book_depth_sha256": None,
+                },
+            )
+            feature = feature_dir / f"{symbol}-2023-05-16_2023-05-16-combined-features.csv"
+            feature.write_text("event_time,label\n1,0\n")
+            write_combined_feature_manifest(feature, [daily])
+            feature_sha256 = sha256_file(feature)
+            holdout.write_text(
+                json.dumps(
+                    {
+                        "split_column": "source_date",
+                        "holdout_values": ["2023-05-16"],
+                        "source_sha256": feature_sha256,
+                        "dataset_fingerprint": feature_sha256,
+                    }
+                )
+                + "\n"
+            )
+            for fee_bps in plan.get("fees_bps", []):
+                fee_token = (
+                    str(int(fee_bps)) if float(fee_bps).is_integer() else format(float(fee_bps), "g").replace(".", "p")
+                )
+                result = result_dir / f"{symbol}_{horizon_ms}ms_fee_{fee_token}_edge.csv"
+                audit = result_dir / f"{symbol}_{horizon_ms}ms_fee_{fee_token}_edge_audit.csv"
+                if not result.exists() or not audit.exists():
+                    continue
+                write_expected_edge_provenance(
+                    plan_path=plan_path,
+                    feature_path=feature,
+                    holdout_manifest_path=holdout,
+                    result_path=result,
+                    audit_path=audit,
+                    symbol=symbol,
+                    horizon_ms=int(horizon_ms),
+                    taker_fee_bps=float(fee_bps),
+                    working_tree_dirty=False,
+                )

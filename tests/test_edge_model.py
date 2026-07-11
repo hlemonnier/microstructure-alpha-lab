@@ -162,7 +162,7 @@ def test_streaming_edge_walk_forward_matches_full_read(tmp_path: Path) -> None:
         "train_size": 12,
         "validation_size": 8,
         "test_size": 8,
-        "step_size": 5,
+        "step_size": 8,
         "purge_label_overlap": False,
         "l2": 0.1,
         "taker_fee_bps": 0.0,
@@ -207,7 +207,7 @@ def test_edge_walk_forward_can_cap_fold_count(tmp_path: Path) -> None:
         train_size=12,
         validation_size=8,
         test_size=8,
-        step_size=4,
+        step_size=8,
         purge_label_overlap=False,
         l2=0.1,
         taker_fee_bps=0.0,
@@ -215,6 +215,26 @@ def test_edge_walk_forward_can_cap_fold_count(tmp_path: Path) -> None:
     )
 
     assert [fold.fold for fold in folds] == [1, 2]
+
+
+def test_edge_walk_forward_rejects_overlapping_oos_test_windows(tmp_path: Path) -> None:
+    path = tmp_path / "features.csv"
+    _write_feature_csv(path, _synthetic_rows(52))
+
+    try:
+        run_edge_walk_forward_streaming(
+            path,
+            features=["microprice_deviation", "top_imbalance"],
+            train_size=12,
+            validation_size=8,
+            test_size=8,
+            step_size=4,
+            purge_label_overlap=False,
+        )
+    except ValueError as exc:
+        assert "OOS test windows do not overlap" in str(exc)
+    else:
+        raise AssertionError("expected overlapping OOS windows to be rejected")
 
 
 def test_edge_shadow_decisions_export_oos_rows(tmp_path: Path) -> None:
