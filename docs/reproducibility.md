@@ -99,6 +99,7 @@ MODE=sequence make modal-study
 For repeated local seeds without launching cloud work:
 
 ```bash
+HOLDOUT_MANIFEST_PATH=results/holdout_manifests/bybit_l2_sequence_holdout.json \
 SEEDS=7,11,13 DRY_RUN=0 RESUME=0 bash scripts/run_l2_sequence_experiments.sh
 ```
 
@@ -110,7 +111,7 @@ SEEDS=7,11,13 \
 DRY_RUN=1 bash scripts/run_l2_sequence_experiments.sh
 ```
 
-The named ablations preserve the same holdout-manifest filtering, checkpoint, prediction-export, calibration, and stateful-economic artifact contract as the baseline sequence runs.
+The named ablations preserve the same holdout-manifest filtering, checkpoint, prediction-export, calibration, and stateful-economic artifact contract as the baseline sequence runs. Non-dry sequence runs require `HOLDOUT_MANIFEST_PATH`. Resume skips only an artifact whose inputs, hashes, current semantic version, and exact recorded run configuration still match; incompatible checkpoints are ignored and retrained instead of being loaded into a different experiment.
 
 ## Final Holdout
 
@@ -186,6 +187,19 @@ For neural L2 sequence candidates, freeze the manifest-filtered artifact after t
   --predictions-output <final_holdout_sequence_predictions.csv> \
   --explicit-final-evaluation
 ```
+
+## Serious Expected-Edge Study Provenance
+
+A serious expected-edge run is resumable but fail-closed. The plan predeclares the holdout split column and values. Each daily feature marker binds source archive hashes, the output hash, row cap, bucket, horizon, latency, threshold, tick size, depth setting, and execution-quote resolution. Each combined feature CSV has an ordered-input manifest. Each result has a sidecar that binds the plan and code fingerprint, feature CSV, holdout manifest, planned split sizes, result CSV, and audit CSV. A legacy `.done` marker, a nonempty combined CSV, or a result/audit filename without that sidecar is not completion evidence.
+
+```bash
+PLAN_ONLY=1 STUDY_PROFILE=local16_60day bash scripts/run_60day_expected_edge_study.sh
+CONFIRM_HEAVY=1 STUDY_PROFILE=cloud_full bash scripts/run_60day_expected_edge_study.sh
+MIN_AUDIT_FOLD_COUNT=20 bash scripts/verify_expected_edge_study.sh \
+  results/expected_edge_60day_20230516_20230714
+```
+
+The verifier also requires non-overlapping planned OOS windows and one procedure-level p-value/correction row per completed symbol/horizon/fee artifact. Runs generated from a dirty local working tree are recorded but cannot pass certification; commit the exact code first or use a source package whose content fingerprint is preserved.
 
 ## Heavy Blockers
 

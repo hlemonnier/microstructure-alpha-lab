@@ -137,7 +137,7 @@ hypothesis_id,metric,p_value
 
 The output includes Bonferroni and Benjamini-Hochberg adjusted p-values.
 
-For expected-edge study runs, do not build this file from audit filenames by hand. Refresh the candidate registry after all result/audit artifacts are present and ask the registry writer to emit candidate-linked p-values:
+For expected-edge study runs, do not build this file from audit filenames by hand. Refresh the candidate registry after all provenance-valid result/audit artifacts are present and ask the registry writer to emit procedure-level p-values:
 
 ```bash
 PYTHONPATH=src python3 -m lob_forge.study_registry \
@@ -149,7 +149,7 @@ PYTHONPATH=src python3 -m lob_forge.cli pvalue-correction \
   results/current/pvalues.csv > results/current/pvalue_corrections.csv
 ```
 
-The expected-edge verifier requires each completed candidate/config in `candidate_registry.jsonl` to have a matching `config_sha256` row in both `pvalues.csv` and `pvalue_corrections.csv`; this makes the multiple-testing correction family explicit.
+Thresholds are selected inside each walk-forward procedure, so the artifact audit supplies one p-value for the complete validation-selection procedure, not one independently estimated p-value per threshold. `pvalues.csv` and `pvalue_corrections.csv` therefore contain one `procedure_sha256` row per completed symbol/horizon/fee/model/feature artifact. The procedure hash includes the full threshold grid and selection rule. Copying the same artifact-level p-value onto every threshold candidate is invalid and is rejected by the verifier.
 
 ## Capacity Screen
 
@@ -189,9 +189,9 @@ PYTHONPATH=src python3 -m lob_forge.cli kelly-variance-gate results/current/<art
 
 The command estimates variance across non-overlapping fold windows, reports the coefficient of variation of those window variances, and exits non-zero when the evidence is too thin or unstable. The gated Kelly helper returns zero notional unless this report passes.
 
-The aggregate evidence gate is stricter than variance alone. It scans promoted local16 strategy artifacts plus reproducible Kelly candidate-search artifacts and requires the same nonzero-cost candidate to pass audit acceptance and variance stability. The default cost floor is `0.05` bps, so zero-fee artifacts cannot enable Kelly.
+The aggregate evidence gate is stricter than variance alone. It scans candidate artifacts and requires the same nonzero-cost result to pass content-addressed feature/result provenance, audit acceptance, and variance stability. The default cost floor is `0.05` bps, so zero-fee or legacy unprovenanced artifacts cannot enable Kelly.
 
-Current local evidence has one narrow Kelly-eligible candidate: `results/kelly_candidate_search/BTCUSDT_5000ms_fee_0p05_balanced_edge.csv`. It uses a predeclared balanced threshold grid from `scripts/run_kelly_candidate_search.sh`, passes the audit at 20 folds, has weighted break-even fee `0.100291` bps against the `0.100000` bps safety requirement, and passes variance stability with `variance_cv=0.487520055465` against the `0.5` limit. This is still a local16 capped research artifact, not permission to size real capital before the full cloud study and live fill validation finish.
+The prior local Kelly candidate is now treated as historical exploration because it predates the provenance contract. `scripts/run_kelly_candidate_search.sh` writes a run plan and result sidecar on a fresh run; Kelly remains disabled until that regenerated artifact passes all three gates. This is deliberately fail-closed and does not manufacture replacement empirical evidence.
 
 ## Sequence Model Readiness Gate
 
@@ -250,7 +250,7 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-sequence-experiment \
   --min-l2-rows 1000
 ```
 
-The aggregate evidence gate now inspects these artifact rows; they must report the expected `model_name`, selected `l2_path`, `readiness_passed=1`, `dependency_available=1`, and `pipeline_completed=1`. Sequence artifacts also record holdout manifest path/hash, the filtered development L2 path, holdout row counts, minibatch size, early-stopping patience, best epoch, selected device, class weighting, scheduler gamma, checkpoint path, prediction-export path, Brier/ECE calibration metrics, confusion matrices, and stateful test-set economic smoke fields. `acceptance_passed` remains separate and should only become true when an explicit predictive/economic threshold is defined and met.
+The aggregate evidence gate now inspects these artifact rows; they must report the expected `model_name`, selected `l2_path`, `readiness_passed=1`, `dependency_available=1`, and `pipeline_completed=1`. Sequence artifacts also record hashes for the source and filtered-development L2 files, holdout manifest path/hash, holdout row counts, requested data/readiness caps, requested and effective minibatch settings, device settings, early-stopping patience, best epoch, class weighting, scheduler gamma, checkpoint path, prediction-export path, Brier/ECE calibration metrics, confusion matrices, and stateful test-set economic smoke fields. `acceptance_passed` remains separate and should only become true when an explicit predictive/economic threshold is defined and met.
 
 Before treating a neural sequence run as a final candidate, freeze the manifest-filtered artifact and checkpoint. The freeze step records the checkpoint hash, development L2 hash, development-only standardizer values, and stateful economic settings; the final command then loads the frozen checkpoint and evaluates only manifest-selected holdout L2 rows without refitting preprocessing. Any final-holdout economic CLI values must match the frozen candidate, so they act as assertions rather than post-freeze tuning inputs:
 
@@ -285,7 +285,7 @@ PYTHONPATH=src python3 -m lob_forge.cli l2-pretraining-smoke \
   --window 4
 ```
 
-Current local state: the Bybit true-L2 smoke path is ready, the masked reconstruction pretraining artifact exists, and local Torch smoke artifacts exist for `sequence_transformer` and `sequence_tcn` under `results/model_experiments/`. These prove the gated training/evidence path and artifact contract, not production model edge. Current neural outputs are tiny-sample smoke artifacts and should not be promoted as alpha.
+Current local state: the Bybit true-L2 smoke path and masked reconstruction artifact exist. The older Transformer/TCN CSVs under `results/model_experiments/` predate the flat-at-label-horizon economic contract and verified holdout/checkpoint/prediction hashes, so the evidence gate rejects them until they are regenerated. Even regenerated tiny-sample runs remain smoke artifacts, not production model edge.
 
 The sequence runner also has a deterministic ablation axis. Start with a dry run so the full matrix is visible before any compute is spent:
 
@@ -295,7 +295,7 @@ SEEDS=7,11,13 \
 DRY_RUN=1 bash scripts/run_l2_sequence_experiments.sh
 ```
 
-Each ablation keeps the same baseline/L2 readiness gates, optional holdout-manifest filtering, checkpoint, prediction-export, calibration, and stateful-economic fields as the baseline artifacts.
+Each ablation keeps the same baseline/L2 readiness gates, required holdout-manifest filtering for non-dry runs, checkpoint, prediction-export, calibration, and stateful-economic fields as the baseline artifacts. Resume only skips an exact current-contract artifact; a checkpoint without the matching data/model/training contract is ignored and retrained.
 
 ## Result Auditing
 

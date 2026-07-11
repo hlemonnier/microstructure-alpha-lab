@@ -11,15 +11,18 @@ The current evidence should be read conservatively. The repository supports caus
 - Causal event-time feature construction with explicit decision, entry, and exit timestamps.
 - Chronological and purged walk-forward protocols with runtime guards against selecting by test metrics.
 - Mandatory holdout manifests for CLI research/evidence commands; development runs materialize a content-hash-checked CSV with declared holdout rows physically removed.
-- Stateful execution simulation with cash, inventory, equity, maker/taker fills, partial liquidity, fees, latency, expiry, position/leverage limits, ledgers, and a kill switch.
+- Stateful execution simulation with cash, signed inventory, equity, causal maker/taker fills, post-only crossing rejection, partial liquidity, fees, latency, expiry, position/leverage limits, ledgers, and a kill switch.
 - Dependence-aware inference helpers: HAC/Newey-West, day-level bootstrap, moving/stationary block bootstrap, Sharpe-like and break-even-cost intervals.
-- True-L2 schema, replay validation, normalized tensor path, TCN/Transformer CPU smoke tests with optional holdout-manifest filtering, repeated seeds, named ablations, class weighting, early stopping, checkpoints, calibration metrics, prediction exports, stateful economic smoke fields, frozen sequence-candidate final holdout hooks, and a compact C++ L2 replay equivalence test.
+- Content-addressed serious-study provenance from daily source/config markers through combined-feature manifests, immutable holdout hashes, planned split sizes, result/audit sidecars, and procedure-level multiple-testing records.
+- True-L2 schema, replay validation, normalized tensor path, TCN/Transformer CPU smoke tests with required manifest-filtered development data for certifiable runs, repeated seeds, named ablations, class weighting, early stopping, contract-bound checkpoints, calibration metrics, prediction exports, stateful economic smoke fields, frozen sequence-candidate final holdout hooks, and a compact C++ L2 replay equivalence test.
 
 ## Current Evidence
 
 Tracked docs and smoke artifacts support the cautious conclusion that local Binance quote/trade/depth-band samples show preliminary pre-cost predictability, but ordinary taker costs and adverse-selection assumptions dominate simple strategies. Full multi-month, multi-asset confirmatory runs and large repeated-seed crypto L2 neural experiments remain external-data/cloud-compute work.
 
-The reduced E2E fixture declares the Jan 3 holdout before selection, runs walk-forward only on Jan 1-2 development rows, records the full threshold search family in `artifacts/reduced_e2e/experiment_registry.jsonl`, and feeds the validation-selected rule into the stateful simulator. Full expected-edge study plans now also write `candidate_registry.jsonl`, expanding the symbol/horizon/fee/threshold grid and refreshing planned, selected, evaluated, or incomplete statuses from result and audit artifacts.
+Legacy ignored expected-edge, Kelly, and neural CSVs are not promoted by the current code. They lack the new feature/result provenance or versioned neural economic contract, so the live evidence report keeps those gates red until clean regeneration.
+
+The reduced E2E fixture declares the Jan 3 holdout before selection, runs walk-forward only on Jan 1-2 development rows, records the full threshold search family in `artifacts/reduced_e2e/experiment_registry.jsonl`, and feeds the validation-selected rule into the stateful simulator. Full expected-edge registries now fail closed unless every result/audit pair has a sidecar binding it to the exact plan, verified feature inputs, holdout manifest, code fingerprint, and planned split sizes. Statistical correction uses one p-value per validation-selection procedure; it does not duplicate an artifact p-value across threshold candidates.
 
 ## Verify Locally
 
@@ -40,7 +43,7 @@ Current fast verification in this checkout:
 
 ```text
 .venv/bin/python -m pytest -q
-329 passed
+368 passed
 ```
 
 Reduced fixture-only artifacts:

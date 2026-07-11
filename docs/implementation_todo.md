@@ -25,18 +25,18 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add executable Modal batch runner with persistent cloud volume storage for online full-study execution.
 - [x] Add external-gate readiness checker for Modal/package/full-study/paper-fill prerequisites without starting paid cloud compute.
 - [x] Make the Modal runner prefer `.venv/bin/modal` and distinguish Modal CLI installation from Modal authentication.
-- [x] Add feature-coverage verifier for expected daily markers and combined feature CSVs.
+- [x] Add content/config-verified daily feature markers and ordered-input manifests for combined feature CSVs.
 - [x] Add dry-run-first runner for result evaluation on feature-complete jobs only.
-- [x] Add existing-feature local16 result-matrix smoke runner with a 20-fold completion guard.
+- [x] Add existing-feature local16 result-matrix smoke runner with verified-feature, result-provenance, and 20-fold completion guards.
 - [x] Make existing-feature result runners rerun artifacts whose audit fold count is below the configured evidence threshold.
 - [x] Add runtime process-memory caps for laptop expected-edge profiles so a bad local run fails before exhausting swap.
 - [x] Block accidental `local16_60day` execution, lower its laptop RAM budgets, disable depth by default, and expose a one-command Modal cloud path for the full study.
 - [x] Add OKX public historical-data download-link resolver for L2 acquisition manifests.
 - [x] Add Bybit public history-data orderBook resolver and `.data.zip` importer for L2 acquisition manifests.
 - [x] Add row-capped historical L2 import smoke path for 16 GB laptop runs and allow evidence gates to use OKX or Bybit normalized L2 candidates.
-- [x] Re-run the capped 60-day BTC/ETH local/cloud profile with current holdout-manifest and result-verifier metadata.
+- [ ] Re-run the capped 60-day BTC/ETH profile under the current plan and write valid feature/result provenance sidecars.
 - [ ] Run the full uncapped 60-90 day multi-symbol expected-edge study on a high-RAM/cloud machine.
-- [x] Expand coverage beyond first-hour slices to full-day or sampled multi-session data.
+- [ ] Expand provenance-valid evidence beyond capped intraday slices to full-day or sampled multi-session data.
 
 ## L2 Replay And Live Collection
 
@@ -101,7 +101,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add capped expected-edge sizing.
 - [x] Add capped fractional-Kelly sizing helper with explicit variance input.
 - [x] Add OOS variance-stability gate and gated fractional-Kelly helper that returns zero unless variance evidence passes.
-- [x] Enable fractional Kelly on real strategy artifacts only after the OOS variance-stability gate passes.
+- [ ] Enable fractional Kelly only after the same nonzero-cost artifact passes provenance, audit acceptance, and OOS variance stability.
 - [x] Add daily PnL, daily Sharpe, autocorrelation, and Calmar-like ratios.
 - [x] Add daily loss / rolling PnL kill-switch.
 - [x] Add inventory penalty and max inventory constraints.
@@ -120,7 +120,7 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add executable Torch-backed L2 Transformer/TCN experiment runner and artifact validation gate.
 - [x] Add optional holdout-manifest filtering for L2 Transformer/TCN experiments so serious neural runs train on physically materialized development L2 data only.
 - [x] Add dry-run-first cloud/Modal runner for Transformer/TCN L2 experiment artifacts.
-- [x] Run Transformer/TCN experiments only after baseline and L2 paths are verified.
+- [ ] Regenerate Transformer/TCN artifacts with a verified development holdout, hashed checkpoint/predictions, and flat-at-label-horizon economics.
 - [x] Add masked sequence pretraining batch utility.
 - [x] Run self-supervised order-book pretraining smoke only after true L2 tensor data exists.
 - [x] Add deterministic sequence ablation matrix for class weighting, scheduler, window, depth, models, and seeds.

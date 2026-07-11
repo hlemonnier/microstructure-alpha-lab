@@ -60,7 +60,7 @@ To inspect already-built daily feature coverage:
 bash scripts/verify_expected_edge_features.sh results/expected_edge_60day_20230516_20230714
 ```
 
-This reports `complete=1` only when every expected daily feature marker and combined feature CSV exists.
+This reports `complete=1` only when every daily feature's content hash and build configuration match its marker and every combined CSV matches an ordered-input manifest. Bare legacy `.done` files and arbitrary nonempty combined files fail closed.
 
 To run only complete feature jobs, first dry-run:
 
@@ -94,7 +94,7 @@ reports:
 complete=1
 ```
 
-For the full profile this requires 80 result CSVs, 80 audit CSVs, `pvalues.csv`, `pvalue_corrections.csv`, and passing artifact verification.
+For the full profile this requires 80 result CSVs, 80 audit CSVs, 80 result provenance sidecars, procedure-level `pvalues.csv` and `pvalue_corrections.csv`, and passing artifact verification.
 
 ## Resume
 
@@ -104,7 +104,7 @@ If interrupted, rerun:
 MODE=run SKIP_INSTALL=1 bash scripts/bootstrap_cloud_expected_edge.sh
 ```
 
-The study script skips existing combined feature files and completed result/audit pairs.
+The study script reuses a daily feature only when its source hashes, output hash, and complete build configuration match. It rewrites each combined CSV and its ordered-input manifest, and skips a result/audit pair only when its sidecar still verifies against the current plan, feature file, holdout manifest, result, and audit.
 
 ## Verify Only
 
@@ -123,10 +123,11 @@ bash scripts/run_l2_sequence_experiments.sh
 Execute them deliberately on a Torch-capable environment:
 
 ```bash
+HOLDOUT_MANIFEST_PATH=results/holdout_manifests/bybit_l2_sequence_holdout.json \
 DRY_RUN=0 bash scripts/run_l2_sequence_experiments.sh
 ```
 
-For manifest-filtered neural runs, set `HOLDOUT_MANIFEST_PATH` before launching the same runner. It will pass `--holdout-manifest`, write per-model development L2 CSVs under `results/model_experiments/development_l2/`, and record the manifest hash plus excluded-row counts in each result artifact:
+Certifiable neural runs require `HOLDOUT_MANIFEST_PATH`. The runner passes `--holdout-manifest`, writes per-model development L2 CSVs under `results/model_experiments/development_l2/`, and records the manifest hash plus excluded-row counts in each result artifact:
 
 ```bash
 HOLDOUT_MANIFEST_PATH=results/holdout_manifests/bybit_l2_sequence_holdout.json \
@@ -136,10 +137,11 @@ DRY_RUN=0 bash scripts/run_l2_sequence_experiments.sh
 The bootstrap wrapper exposes the same path:
 
 ```bash
+HOLDOUT_MANIFEST_PATH=results/holdout_manifests/bybit_l2_sequence_holdout.json \
 MODE=sequence SKIP_INSTALL=1 RUN_TESTS=0 bash scripts/bootstrap_cloud_expected_edge.sh
 ```
 
-This writes `results/model_experiments/sequence_transformer_results.csv` and `results/model_experiments/sequence_tcn_results.csv` when `model-readiness-gate` passes. The runner also writes checkpoints and prediction CSVs under `results/model_experiments/checkpoints/` and `results/model_experiments/predictions/`, supports `SEEDS=7,11,13` repeated-seed orchestration, and records calibration plus stateful economic smoke fields in each artifact. The aggregate evidence gate validates the model name, selected L2 path, readiness state, dependency state, and `pipeline_completed=1` in each artifact. `acceptance_passed` is reserved for an explicit predictive/economic acceptance threshold, not for smoke completion.
+This writes `results/model_experiments/sequence_transformer_results.csv` and `results/model_experiments/sequence_tcn_results.csv` when `model-readiness-gate` passes. The runner also writes checkpoints and predictions, supports repeated seeds, and records calibration plus flat-at-label-horizon economics. Resume only reuses artifacts whose hashes and full recorded run configuration match; incompatible checkpoints are ignored and retrained. The aggregate evidence gate requires a verified development holdout with excluded rows, matching source/development-L2, holdout, checkpoint, and prediction hashes, the current economic-semantics version, zero residual inventory, readiness/dependency success, and `pipeline_completed=1`. `acceptance_passed` remains reserved for a separate predictive/economic threshold.
 
 ## Modal Batch Runner
 

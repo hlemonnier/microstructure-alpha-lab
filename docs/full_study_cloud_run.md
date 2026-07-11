@@ -73,7 +73,7 @@ PLAN_ONLY=1 STUDY_PROFILE=local16_60day bash scripts/run_60day_expected_edge_stu
 CONFIRM_HEAVY=1 STUDY_PROFILE=cloud_full bash scripts/plan_expected_edge_study.sh
 ```
 
-The plan writes `run_plan.json` inside the result directory and reports days, archive count, feature jobs, edge-evaluation jobs, capped/uncapped row status, depth usage, RAM gate, and whether the current machine can start the profile.
+The plan writes `run_plan.json` inside the result directory and reports days, archive count, feature jobs, edge-evaluation jobs, capped/uncapped row status, depth usage, the predeclared holdout split/values, RAM gate, and whether the current machine can start the profile.
 
 Check feature coverage separately:
 
@@ -82,7 +82,7 @@ bash scripts/verify_expected_edge_features.sh results/expected_edge_local16_2023
 bash scripts/verify_expected_edge_features.sh results/expected_edge_60day_20230516_20230714
 ```
 
-Feature coverage is complete only when this verifier reports `complete=1`. It checks every expected daily `.done` marker plus each combined feature CSV before result evaluation.
+Feature coverage is complete only when this verifier reports `complete=1`. It verifies each daily output hash and exact build configuration, then verifies every combined CSV against its ordered daily-input manifest. Legacy marker existence alone is not completion evidence.
 
 To evaluate only feature jobs that are already complete, dry-run first:
 
@@ -175,10 +175,11 @@ python3 -m pip install ".[cloud]"
 modal setup
 make modal-study
 MODE=run make modal-study
+HOLDOUT_MANIFEST_PATH=results/holdout_manifests/bybit_l2_sequence_holdout.json \
 MODE=sequence make modal-study
 ```
 
-This uses a Modal Volume for resumable `data/` and `results/` storage. The Modal job defaults to 8 CPU cores, 64 GiB requested RAM, a 128 GiB hard memory limit, 300 GiB ephemeral disk, and a 24-hour timeout. Override with `LOB_FORGE_MODAL_CPU_CORES`, `LOB_FORGE_MODAL_MEMORY_REQUEST_GB`, `LOB_FORGE_MODAL_MEMORY_LIMIT_GB`, or `LOB_FORGE_MODAL_EPHEMERAL_DISK_GB` before invoking the wrapper. The `sequence` mode runs `scripts/run_l2_sequence_experiments.sh` to write Transformer/TCN artifacts after the baseline and L2 gates pass. See [cloud_handoff.md](cloud_handoff.md) for volume download commands and the `LOB_FORGE_MODAL_VOLUME` override.
+This uses a Modal Volume for resumable `data/` and `results/` storage. The Modal job defaults to 8 CPU cores, 64 GiB requested RAM, a 128 GiB hard memory limit, 300 GiB ephemeral disk, and a 24-hour timeout. Override with `LOB_FORGE_MODAL_CPU_CORES`, `LOB_FORGE_MODAL_MEMORY_REQUEST_GB`, `LOB_FORGE_MODAL_MEMORY_LIMIT_GB`, or `LOB_FORGE_MODAL_EPHEMERAL_DISK_GB` before invoking the wrapper. The `sequence` mode requires and forwards the explicit holdout-manifest path, then runs `scripts/run_l2_sequence_experiments.sh` to write Transformer/TCN artifacts after the baseline and L2 gates pass. See [cloud_handoff.md](cloud_handoff.md) for volume download commands and the `LOB_FORGE_MODAL_VOLUME` override.
 
 Before paying for the run, check the operational state:
 
@@ -188,9 +189,9 @@ make external-readiness
 
 This check is expected to stay red until Modal is authenticated, the full cloud study has completed, the immutable final holdout artifact has been written for the frozen selected candidate, and real paper/live fills have been imported.
 
-If the run is interrupted, rerun the same command. The script keeps raw archives, skips existing combined feature files, skips completed result/audit pairs, and daily feature builds use `.done` markers.
+If the run is interrupted, rerun the same command. Raw archives remain reusable. Daily features are reused only after content/config/source-hash verification; combined files and manifests are rewritten from verified inputs; result/audit pairs are skipped only when their provenance sidecar verifies against the current plan and artifacts.
 
-The expected-edge study is complete only when `verify_expected_edge_study.sh` reports `complete=1`. The verifier reads `run_plan.json`, expands every expected symbol/horizon/fee result pair, checks the result CSV, audit CSV, candidate registry, `pvalues.csv`, and `pvalue_corrections.csv`, then runs the artifact verifier. The registry must be refreshed after result generation, and both p-value files must include one candidate/config-linked row per completed threshold-grid attempt using the candidate `config_sha256`; artifact-level p-values alone are not sufficient. The stricter remaining-evidence gate also requires at least 20 audit folds per artifact. For the full profile that means 80 result CSVs and 80 audit CSVs plus the completed candidate/config p-value family. For the laptop quick profile it means 10 result CSVs and 10 audit CSVs.
+The expected-edge study is complete only when `verify_expected_edge_study.sh` reports `complete=1`. The verifier reads `run_plan.json`, expands every expected symbol/horizon/fee cell, verifies each result/audit provenance sidecar and planned split sizes, then checks the candidate registry, `pvalues.csv`, and `pvalue_corrections.csv`. Because threshold choice occurs inside validation, the inference family has one p-value per completed validation-selection procedure, identified by `procedure_sha256`; the threshold grid and selection rule are part of that hash. The stricter remaining-evidence gate also requires at least 20 audit folds per artifact. The full profile therefore needs 80 result CSVs, 80 audits, 80 sidecars, and 80 procedure rows; the laptop quick profile needs 10 of each.
 
 After the full verifier reports `complete=1`, prepare the immutable expected-edge final holdout from the completed run plan and candidate registry. Keep the first pass dry-run so the selected artifact, derived combined feature path, development manifest, candidate JSON, candidate-locked final manifest, and final evaluation command are visible before any immutable artifact is written:
 
@@ -211,10 +212,9 @@ By default the helper refuses to run unless the study status is complete, an aud
 
 Current local feature status after the latest audit:
 
-- laptop quick: `complete=1`, 14/14 daily markers, 2/2 feature jobs.
-- capped local16 feature rebuild path: `complete=0`, 16/120 daily markers, 0/2 feature jobs under `data/processed/expected_edge_local16_20230516_20230714`.
-- capped local16 result gate from existing combined features: `complete=1`, 10/10 result files, 10/10 audit files, 20-fold audit threshold passed in `results/expected_edge_local16_20230516_20230714/`.
-- cloud full: `complete=0`, 202/600 daily markers, 1/10 feature jobs. The currently complete job is BNBUSDT at 5000ms.
+- laptop quick: `complete=0`, 0/14 valid daily markers, 14 legacy-invalid markers, 0/2 verified combined feature jobs.
+- capped local16: `complete=0`, 0/120 valid daily markers (16 legacy-invalid and 104 missing), 0/2 verified combined feature jobs. Its 10 legacy result/audit pairs have no valid sidecars and all 50 registry candidates are `artifact_error`.
+- cloud full: `complete=0`, 0/600 valid daily markers (202 legacy-invalid and 398 missing), 0/10 verified combined feature jobs; three existing combined files are invalid and seven are missing.
 
 If Binance downloads are too slow locally, extract an explicitly partial artifact from already-built daily features instead of pretending the 60-day run completed:
 
@@ -229,16 +229,16 @@ bash scripts/run_60day_expected_edge_study.sh
 
 That command combines only daily feature files with `.done` markers and reports missing dates. It is useful for pipeline validation, but it does not satisfy the full 60-day study gate.
 
-Current local evidence: `results/expected_edge_existing_features_smoke_20230516_20230714/` verifies this mode on the already-built partial feature tree. BTCUSDT has 15 available capped days and ETHUSDT has 31 available capped days. The stricter capped BTC/ETH result gate has now been promoted separately in `results/expected_edge_local16_20230516_20230714/`.
+Current local inventory includes 15 BTCUSDT and 31 ETHUSDT legacy capped daily files in the partial cloud tree, but their markers predate the content/configuration contract. They are inventory only, not verified evidence, until rebuilt with current markers and combined manifests.
 
-If combined 60-day BTC/ETH feature files already exist under the cloud processed root, the local16 result matrix can be smoke-tested without rebuilding features:
+Once the local16 feature verifier reports complete, its result matrix can be smoke-tested without rebuilding those already-verified features:
 
 ```bash
 bash scripts/run_local16_existing_feature_edge_jobs.sh
 DRY_RUN=0 MAX_FOLDS=1 bash scripts/run_local16_existing_feature_edge_jobs.sh
 ```
 
-`MAX_FOLDS=1` should remain labeled as a smoke. It writes the expected file matrix quickly, but `verify_remaining_evidence_gates.sh` keeps the capped 60-day gate red until each audit has at least 20 folds. The current local16 result directory already passes that 20-fold threshold; use `MAX_FOLDS=1` only for future wiring checks.
+`MAX_FOLDS=1` should remain labeled as a smoke. It writes the expected file matrix quickly, but `verify_remaining_evidence_gates.sh` keeps the capped gate red until each provenance-valid audit has at least 20 folds. The runner now refuses incomplete or legacy-invalid feature inputs, requires valid sidecars before skipping results, and writes sidecars for new results. The legacy local16 directory contains 20-fold CSVs but fails the current feature/result provenance contract, so it is not completion evidence.
 
 The existing-feature runners use `RERUN_UNDERFOLDED=1` by default, so a stale smoke artifact is rerun when its audit `fold_count` is below `MIN_AUDIT_FOLD_COUNT`. Use `RERUN_UNDERFOLDED=0` only when intentionally preserving partial smoke files.
 
