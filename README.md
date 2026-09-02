@@ -24,6 +24,18 @@ Legacy ignored expected-edge, Kelly, and neural CSVs are not promoted by the cur
 
 The reduced E2E fixture declares the Jan 3 holdout before selection, runs walk-forward only on Jan 1-2 development rows, records the full threshold search family in `artifacts/reduced_e2e/experiment_registry.jsonl`, and feeds the validation-selected rule into the stateful simulator. Full expected-edge registries now fail closed unless every result/audit pair has a sidecar binding it to the exact plan, verified feature inputs, holdout manifest, code fingerprint, and planned split sizes. Statistical correction uses one p-value per validation-selection procedure; it does not duplicate an artifact p-value across threshold candidates.
 
+## Market Data (Not Included)
+
+Downloaded market data is intentionally excluded from Git. A fresh clone may
+therefore contain only [`data/README.md`](data/README.md); this is expected. The
+source code, tests, and synthetic fixtures remain available, but empirical
+studies must reacquire their external inputs before running.
+
+Use `make laptop-smoke` for a bounded Binance sample or
+`bash scripts/run_bybit_l2_smoke.sh` for a one-day, row-capped Bybit true-L2
+sample. The data README documents the sources, storage layout, checksum
+behavior, and deliberate high-resource workflow.
+
 ## Verify Locally
 
 ```bash

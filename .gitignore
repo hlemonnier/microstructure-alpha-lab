@@ -7,7 +7,8 @@ __pycache__/
 .mypy_cache/
 
 # Local market data. Keep the repo lightweight and reproducible.
-data/
+data/*
+!data/README.md
 results/
 artifacts/
 dist/
