@@ -1,0 +1,34 @@
+{
+  "confirmation": "The unchanged five-percentage-point balanced-accuracy target still requires at least twenty unseen dates and a positive paired date-cluster interval. No claim from this screen alone.",
+  "dates": "The same six development asset/date assessments; labels and decision coverage unchanged.",
+  "decision": "Argmax of source posterior divided by the declared available class-prior estimate. The evaluation metric remains the mean of the three actual class recalls.",
+  "evidence_status": "Development only; no independent confirmation yet.",
+  "experiment_id": "boundary_prior_decisions_20260907",
+  "hypothesis": "Under covariate shift, accurate conditional posteriors need current-domain class frequencies for balanced-accuracy decisions. Training frequencies can be stale. Under pure label shift the opposite may hold, so this is an empirical ablation rather than an assumed correction.",
+  "online": "Initialize exponentially discounted class counts from previous noon frequencies, with effective initial mass half_life/log(2). At each decision decay counts, then add earlier labels whose actual future quote has arrived. Normalize and apply a 0.01 floor by mixing with the uniform distribution.",
+  "planned_trials": 288,
+  "policies": [
+    "training",
+    "previous_noon",
+    "blend_training_previous",
+    "online_300",
+    "online_1800",
+    "online_7200"
+  ],
+  "previous_noon": "For validation use the last training date noon labels; for assessment use the preceding validation noon labels. No current-session future labels are used.",
+  "primary_comparator": "Frozen original validation-selected reference with its original training-prior decision rule.",
+  "probabilities": "Freeze every source posterior. Natural accuracy and log loss cannot change. Only the class decision used for balanced accuracy changes.",
+  "registered_at_utc": "2026-09-07T15:34:02.904871+00:00",
+  "selection": "Select challenger source and prior policy using only preceding validation balanced accuracy, then natural log loss; apply to the next development date.",
+  "sources": [
+    "original_reference",
+    "full_base_7",
+    "full_base_31",
+    "full_event_7",
+    "full_event_31",
+    "full_temporal_7",
+    "pooled_mlp",
+    "pooled_batchensemble"
+  ],
+  "stronger_control": "Validation-selected original/full-day base reference with the same set of available-prior policies."
+}
