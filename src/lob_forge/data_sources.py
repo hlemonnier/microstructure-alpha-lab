@@ -4,6 +4,7 @@ import csv
 import gzip
 import io
 import json
+import math
 import zipfile
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
@@ -256,6 +257,7 @@ class NormalizedL2Row:
     update_id: int | None = None
     venue: str | None = None
     symbol: str | None = None
+    publisher_timestamp: int | None = None
 
 
 @dataclass(frozen=True)
@@ -354,15 +356,20 @@ def validate_l2_row(
         errors.append(ValidationIssue("side", "side must be bid/ask or buy/sell"))
 
     price = _optional_float_field(row, "price")
-    if price is None or price <= 0.0:
+    if price is None or not math.isfinite(price) or price <= 0.0:
         errors.append(ValidationIssue("price", "price must be a positive number"))
 
     size = _optional_float_field(row, "size")
-    if size is None or size < 0.0:
+    if size is None or not math.isfinite(size) or size < 0.0:
         errors.append(ValidationIssue("size", "size must be a non-negative number"))
 
     sequence = _optional_int_field(row, "sequence")
     update_id = _optional_int_field(row, "update_id")
+    for field_name in ("exchange_timestamp", "local_timestamp", "publisher_timestamp", "sequence", "update_id"):
+        raw_value = _value(row, field_name)
+        parsed_value = _optional_int_field(row, field_name)
+        if raw_value not in (None, "") and (parsed_value is None or parsed_value < 0):
+            errors.append(ValidationIssue(field_name, "value must be a finite non-negative integer timestamp or identifier"))
     if should_require_sequence and sequence is None and update_id is None:
         errors.append(ValidationIssue("sequence", "replay-grade source requires sequence or update_id"))
     elif sequence is None and update_id is None:
@@ -403,6 +410,7 @@ def normalize_l2_row(
         update_id=_optional_int_field(row, "update_id"),
         venue=_optional_text_field(row, "venue") or source_id,
         symbol=_optional_text_field(row, "symbol"),
+        publisher_timestamp=_optional_int_field(row, "publisher_timestamp"),
     )
 
 
@@ -776,7 +784,7 @@ def _optional_int_field(row: Mapping[str, object], canonical_field: str) -> int 
     except ValueError:
         try:
             return int(float(text))
-        except ValueError:
+        except (ValueError, OverflowError):
             if "timestamp" in canonical_field or canonical_field.endswith("_time"):
                 return _parse_timestamp_ms(text)
             return None
@@ -821,8 +829,13 @@ def _bybit_orderbook_payload_to_rows(
     event_type = _event_type(payload)
     if event_type not in {"snapshot", "delta"}:
         raise ValueError("Bybit orderbook payload must identify snapshot or delta")
-    exchange_timestamp = _coalesce_int(data.get("cts"), payload.get("ts"))
-    local_timestamp = _coalesce_int(payload.get("ts"))
+    # cts is the matching-engine time; ts is the venue's publishing time.
+    # Neither is a locally observed receipt timestamp in a historical archive.
+    exchange_timestamp = _coalesce_int(data.get("cts"), payload.get("cts"), payload.get("ts"))
+    local_timestamp = _coalesce_int(payload.get("local_timestamp"), payload.get("receive_timestamp"))
+    publisher_timestamp = _coalesce_int(payload.get("ts"))
+    if exchange_timestamp is None:
+        raise ValueError("Bybit orderbook payload requires an exchange timestamp")
     sequence = _coalesce_int(data.get("seq"), payload.get("seq"))
     update_id = _coalesce_int(data.get("u"), payload.get("u"))
     symbol = str(data.get("s") or payload.get("symbol") or default_symbol or "")
@@ -846,6 +859,7 @@ def _bybit_orderbook_payload_to_rows(
                 update_id=update_id,
                 venue="bybit",
                 symbol=symbol or None,
+                publisher_timestamp=publisher_timestamp,
             )
 
 
@@ -858,7 +872,7 @@ def _coalesce_int(*values: object) -> int | None:
         except ValueError:
             try:
                 return int(float(str(value)))
-            except ValueError:
+            except (ValueError, OverflowError):
                 continue
     return None
 

@@ -6,7 +6,7 @@ import shutil
 import time
 import urllib.parse
 import urllib.request
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, time as datetime_time, timezone
 from pathlib import Path
 from typing import Callable, Iterable, Mapping
@@ -22,6 +22,7 @@ from lob_forge.data_sources import (
     validate_bybit_orderbook_data_zip,
     validate_l2_csv,
 )
+from lob_forge.l2_replay import AtomicOrderBookReplayer, iter_l2_events, l2_event_key
 from lob_forge.l2_storage import (
     normalized_l2_csv_path,
     normalized_l2_parquet_path,
@@ -378,13 +379,32 @@ def import_historical_l2_file(
     rows = _iter_source_rows(source_id, input_path, symbol=symbol)
     if max_import_rows is not None:
         rows = _limit_rows(rows, max_import_rows)
-    counted_rows = _counting_rows(rows)
+    # Validate every consumed complete message, not only the schema sample above.
+    def validated_rows():
+        replayer = AtomicOrderBookReplayer()
+        for event in iter_l2_events(rows):
+            if any(row.symbol != symbol or row.venue != source_id for row in event):
+                raise ValueError("historical L2 instrument does not match requested venue/symbol")
+            replayer.apply_event(event)
+            yield from event
+
+    counted_rows = _counting_rows(validated_rows())
     if storage_format == "csv":
         output_path = normalized_l2_csv_path(output_root, venue=source_id, symbol=symbol, session_date=session_date)
-        write_normalized_l2_csv(counted_rows, output_path)
+        temporary_path = output_path.with_suffix(output_path.suffix + ".partial")
+        try:
+            write_normalized_l2_csv(counted_rows, temporary_path)
+            temporary_path.replace(output_path)
+        finally:
+            temporary_path.unlink(missing_ok=True)
     else:
         output_path = normalized_l2_parquet_path(output_root, venue=source_id, symbol=symbol, session_date=session_date)
-        write_normalized_l2_parquet(counted_rows, output_path)
+        temporary_path = output_path.with_suffix(output_path.suffix + ".partial")
+        try:
+            write_normalized_l2_parquet(counted_rows, temporary_path)
+            temporary_path.replace(output_path)
+        finally:
+            temporary_path.unlink(missing_ok=True)
 
     return HistoricalL2ImportResult(
         source_id=source_id,
@@ -394,7 +414,7 @@ def import_historical_l2_file(
         output_path=output_path,
         storage_format=storage_format,
         rows_written=getattr(counted_rows, "count", 0),
-        validation=validation,
+        validation=replace(validation, rows_checked=getattr(counted_rows, "count", 0)),
     )
 
 
@@ -456,34 +476,12 @@ class _counting_rows:
 
 
 def _limit_rows(rows: Iterable[NormalizedL2Row], max_rows: int) -> Iterable[NormalizedL2Row]:
-    emitted = 0
-    current_key: tuple[str, int | None, int | None, int | None] | None = None
-    buffer: list[NormalizedL2Row] = []
-
-    for row in rows:
-        row_key = _normalized_event_key(row)
-        if current_key is None:
-            current_key = row_key
-        if row_key != current_key:
-            if emitted > 0 and emitted + len(buffer) > max_rows:
-                return
-            for buffered_row in buffer:
-                yield buffered_row
-            emitted += len(buffer)
-            if emitted >= max_rows:
-                return
-            buffer = []
-            current_key = row_key
-        buffer.append(row)
-
-    if buffer and (emitted == 0 or emitted + len(buffer) <= max_rows):
-        for buffered_row in buffer:
-            yield buffered_row
+    for event in iter_l2_events(rows, max_rows=max_rows):
+        yield from event
 
 
 def _normalized_event_key(row: NormalizedL2Row) -> tuple[str, int | None, int | None, int | None]:
-    sequence_key = row.update_id if row.update_id is not None else row.sequence
-    return (row.event_type, sequence_key, row.exchange_timestamp, row.local_timestamp)
+    return l2_event_key(row)
 
 
 def _iter_source_rows(source_id: str, path: Path, *, symbol: str) -> Iterable[NormalizedL2Row]:

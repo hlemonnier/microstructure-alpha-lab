@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -117,7 +118,7 @@ int main(int argc, char **argv) {
         Row row = parse_row(split_csv_line(line), columns);
         if ((row.event_type != "snapshot" && row.event_type != "delta") ||
             (row.side != "bid" && row.side != "ask") ||
-            row.price <= 0.0 || row.size < 0.0) {
+            !std::isfinite(row.price) || !std::isfinite(row.size) || row.price <= 0.0 || row.size < 0.0) {
             std::cerr << "invalid row at " << row_index << "\n";
             return 1;
         }
@@ -139,6 +140,7 @@ int main(int argc, char **argv) {
 
         bool reset = false;
         if (row.event_type == "snapshot") {
+            sequence_gap = false;
             const std::string key = std::to_string(row.exchange_timestamp) + "|" + std::to_string(row.sequence) + "|" + std::to_string(row.update_id);
             if (key != active_snapshot_key) {
                 bids.clear();
@@ -146,6 +148,8 @@ int main(int argc, char **argv) {
                 seen_delta_keys.clear();
                 active_snapshot_key = key;
                 reset = true;
+                last_sequence = row.sequence;
+                last_update_id = row.update_id;
             }
             needs_resnapshot = false;
         } else {

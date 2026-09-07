@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Iterable
 
 from lob_forge.data_sources import NormalizedL2Row
@@ -54,7 +55,11 @@ class ReplayValidation:
 
 
 class OrderBookReplayer:
-    """Deterministic market-by-price book builder for normalized L2 rows."""
+    """Row-level replay diagnostic. Use AtomicOrderBookReplayer for observations.
+
+    Intermediate per-row states may be crossed while an exchange message is being
+    expanded. They are deliberately not the source for training or validation.
+    """
 
     def __init__(self, *, max_sequence_step: int = 1) -> None:
         if max_sequence_step <= 0:
@@ -75,6 +80,7 @@ class OrderBookReplayer:
         sequence_gap = self._detect_sequence_gap(row)
 
         if row.event_type == "snapshot":
+            sequence_gap = False
             snapshot_key = (row.exchange_timestamp, row.sequence, row.update_id)
             if snapshot_key != self._active_snapshot_key:
                 self.bids.clear()
@@ -82,6 +88,8 @@ class OrderBookReplayer:
                 self._seen_delta_keys.clear()
                 self._active_snapshot_key = snapshot_key
                 reset = True
+                self.last_sequence = row.sequence
+                self.last_update_id = row.update_id
             self.needs_resnapshot = False
         else:
             self._active_snapshot_key = None
@@ -208,26 +216,25 @@ def validate_l2_replay_contract(
     *,
     max_sequence_step: int = 1,
 ) -> ReplayValidation:
-    replayer = OrderBookReplayer(max_sequence_step=max_sequence_step)
+    replayer = AtomicOrderBookReplayer(max_sequence_step=max_sequence_step)
     errors: list[str] = []
-    seen_updates: set[tuple[str, int, int | None, int | None, str, float]] = set()
-    last_timestamp: int | None = None
     count = 0
-    for count, row in enumerate(rows, start=1):
-        if last_timestamp is not None and row.exchange_timestamp < last_timestamp:
-            errors.append(f"row {count}: exchange_timestamp moved backward")
-        last_timestamp = row.exchange_timestamp
-        update_key = (row.event_type, row.exchange_timestamp, row.sequence, row.update_id, row.side, row.price)
-        if update_key in seen_updates:
-            errors.append(f"row {count}: duplicate update key {update_key}")
-        seen_updates.add(update_key)
-        update = replayer.apply(row, row_index=count)
-        if update.duplicate_update:
-            errors.append(f"row {count}: duplicate update requires resnapshot")
-        if update.sequence_gap:
-            errors.append(f"row {count}: sequence gap requires resnapshot")
-        if update.crossed:
-            errors.append(f"row {count}: crossed book")
+    previous_row = None
+    for event in iter_l2_events(rows):
+        count += len(event)
+        row = event[0]
+        if previous_row is not None:
+            if row.exchange_timestamp < previous_row.exchange_timestamp:
+                errors.append(f"through row {count}: exchange_timestamp moved backward")
+            prior = previous_row.update_id if row.update_id is not None else previous_row.sequence
+            current = row.update_id if row.update_id is not None else row.sequence
+            if row.event_type == "delta" and prior is not None and current is not None and current > prior + max_sequence_step:
+                errors.append(f"through row {count}: sequence gap requires resnapshot")
+        previous_row = row
+        try:
+            replayer.apply_event(event)
+        except ValueError as exc:
+            errors.append(f"through row {count}: {exc}")
     return ReplayValidation(rows_checked=count, errors=tuple(errors))
 
 
@@ -236,7 +243,136 @@ def _validate_row(row: NormalizedL2Row) -> None:
         raise ValueError("event_type must be snapshot or delta")
     if row.side not in {"bid", "ask"}:
         raise ValueError("side must be bid or ask")
-    if row.price <= 0.0:
-        raise ValueError("price must be positive")
-    if row.size < 0.0:
-        raise ValueError("size must be non-negative")
+    if not math.isfinite(row.price) or row.price <= 0.0:
+        raise ValueError("price must be finite and positive")
+    if not math.isfinite(row.size) or row.size < 0.0:
+        raise ValueError("size must be finite and non-negative")
+    for name in ("exchange_timestamp", "local_timestamp", "publisher_timestamp", "sequence", "update_id"):
+        value = getattr(row, name)
+        if value is not None and (not isinstance(value, int) or value < 0):
+            raise ValueError(f"{name} must be a non-negative integer")
+
+
+def l2_event_key(row: NormalizedL2Row) -> tuple:
+    """Identity of one exchange message, shared by ingestion and every tensor reader."""
+    return (row.venue, row.symbol, row.event_type, row.exchange_timestamp,
+            row.local_timestamp, row.sequence, row.update_id)
+
+
+def iter_l2_events(rows: Iterable[NormalizedL2Row], *, max_rows: int | None = None):
+    """Yield whole messages only; a row budget never fabricates a partial book update."""
+    if max_rows is not None and max_rows <= 0:
+        raise ValueError("max_rows must be positive")
+    pending: list[NormalizedL2Row] = []
+    key = None
+    emitted = 0
+    for row in rows:
+        next_key = l2_event_key(row)
+        if pending and next_key != key:
+            if max_rows is not None and emitted + len(pending) > max_rows:
+                return
+            yield pending
+            emitted += len(pending)
+            if max_rows is not None and emitted >= max_rows:
+                return
+            pending = []
+        key = next_key
+        pending.append(row)
+    if pending and (max_rows is None or emitted + len(pending) <= max_rows):
+        yield pending
+
+
+class AtomicOrderBookReplayer:
+    """Strict single-instrument replay. Validate a complete message before committing it.
+
+    Explicit snapshots establish a new sequence epoch. Deltas require continuity;
+    missing/resorted/duplicate messages fail closed. A book may temporarily lose one
+    side, but consumers cannot turn that state into a two-sided observation.
+    """
+
+    def __init__(self, *, max_sequence_step: int = 1) -> None:
+        if max_sequence_step <= 0:
+            raise ValueError("max_sequence_step must be positive")
+        self.max_sequence_step = max_sequence_step
+        self.bids: dict[float, float] = {}
+        self.asks: dict[float, float] = {}
+        self.identity: tuple[str | None, str | None] | None = None
+        self.last_timestamp: int | None = None
+        self.last_local_timestamp: int | None = None
+        self.last_sequence: int | None = None
+        self.last_update_id: int | None = None
+        self.initialized = False
+        self.segment = -1
+
+    def apply_event(self, event: list[NormalizedL2Row]) -> L2BookSnapshot:
+        if not event:
+            raise ValueError("empty L2 event")
+        row = event[0]
+        errors: list[str] = []
+        identity = (row.venue, row.symbol)
+        if not row.venue or not row.symbol:
+            errors.append("L2 event requires venue and symbol")
+        if self.identity is not None and identity != self.identity:
+            errors.append("mixed venue/symbol in one replay stream")
+        if self.last_timestamp is not None and row.exchange_timestamp < self.last_timestamp:
+            errors.append("exchange_timestamp moved backward")
+        if (self.last_local_timestamp is not None and row.local_timestamp is not None
+                and row.local_timestamp < self.last_local_timestamp):
+            errors.append("local_timestamp moved backward")
+        if row.sequence is None and row.update_id is None:
+            errors.append("sequence or update_id is required")
+        seen = set()
+        for item in event:
+            try:
+                _validate_row(item)
+            except ValueError as exc:
+                errors.append(str(exc))
+            if l2_event_key(item) != l2_event_key(row):
+                errors.append("inconsistent message identity")
+            level_key = (item.side, item.price)
+            if level_key in seen:
+                errors.append("duplicate update of side/price in one message")
+            seen.add(level_key)
+        if row.event_type == "delta":
+            if not self.initialized:
+                errors.append("delta requires an initial valid snapshot or resnapshot")
+            primary = row.update_id if row.update_id is not None else row.sequence
+            previous = self.last_update_id if row.update_id is not None else self.last_sequence
+            if self.last_sequence is not None and row.sequence is not None and row.sequence < self.last_sequence:
+                errors.append("secondary sequence moved backward")
+            if previous is not None and primary is not None:
+                if primary <= previous:
+                    errors.append("duplicate update or backward sequence")
+                elif primary > previous + self.max_sequence_step:
+                    errors.append("sequence gap requires resnapshot")
+        bids = {} if row.event_type == "snapshot" else self.bids.copy()
+        asks = {} if row.event_type == "snapshot" else self.asks.copy()
+        if not errors:
+            for item in event:
+                levels = bids if item.side == "bid" else asks
+                if item.size == 0:
+                    levels.pop(item.price, None)
+                else:
+                    levels[item.price] = item.size
+            if bids and asks and max(bids) >= min(asks):
+                errors.append("crossed book after atomic message")
+        if errors:
+            self.initialized = False
+            raise ValueError("; ".join(errors))
+        primary = row.update_id if row.update_id is not None else row.sequence
+        previous = self.last_update_id if row.update_id is not None else self.last_sequence
+        new_epoch = (not self.initialized or previous is None or primary is None
+                     or primary != previous + 1)
+        self.bids, self.asks = bids, asks
+        self.identity = identity
+        self.last_timestamp = row.exchange_timestamp
+        if row.local_timestamp is not None:
+            self.last_local_timestamp = row.local_timestamp
+        self.last_sequence, self.last_update_id = row.sequence, row.update_id
+        self.initialized = True
+        if row.event_type == "snapshot" and new_epoch:
+            self.segment += 1
+        return L2BookSnapshot(
+            bids=[BookLevel(p, s) for p, s in sorted(bids.items(), reverse=True)],
+            asks=[BookLevel(p, s) for p, s in sorted(asks.items())], crossed=False,
+        )
