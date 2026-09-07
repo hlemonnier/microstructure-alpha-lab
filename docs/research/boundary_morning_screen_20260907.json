@@ -1,0 +1,87 @@
+{
+  "computation": "Record fitting/checkpoint time against the 290 seconds between the latest allowed validation label and the first assessment decision. This is a computation check with cached observations, not measured live ingestion latency.",
+  "controls_and_blends": "Six frozen baselines/components, six new fits, and eight fixed 50/50 natural-posterior blends: each fine-tuned neural model with the original per-asset tree or the same-window morning tree. Apply all three prior policies to every procedure.",
+  "dates": [
+    "2023-05-26",
+    "2023-05-30",
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "distinct_assessment_decisions": 70700,
+  "evidence_status": "development_only_on_exposed_dates",
+  "fits": [
+    "six_hours_tree",
+    "full_morning_tree",
+    "six_hours_neural_1e4",
+    "six_hours_neural_3e4",
+    "full_morning_neural_1e4",
+    "full_morning_neural_3e4"
+  ],
+  "hypothesis": "The original gradient-training cutoff is roughly 36 hours before noon. Already released same-day morning labels may improve a pretrained representation and a fresh tree without consuming any noon assessment outcomes.",
+  "information_and_partitions": {
+    "assessment": "Unchanged 12:02:00 <= decision < 13:59:50 and exactly the original 7070 rows per asset/date.",
+    "full_morning_training": "00:02:00 <= decision < 11:30:00, actual future_event_time <= 11:30:00",
+    "selection": "Include epoch zero plus four fine-tuning epochs; select highest mean morning-validation balanced accuracy with full-morning training priors as the decision denominator, then lowest natural log loss. No assessment input is accepted by the fitting function.",
+    "six_hours_training": "05:30:00 <= decision < 11:30:00, actual future_event_time <= 11:30:00",
+    "validation": "11:30:10 <= decision < 11:57:00, actual future_event_time <= 11:57:10"
+  },
+  "input_hashes": {
+    "data/research/boundary_exact_labels_20260907/dataset_manifest.json": "e0b8c5b5658d98b57558c4974fdc45ab43faf08cf93686913ada8a9a357eedb5",
+    "results/boundary_confirmation_exact_labels_20260907/frozen_study.json": "24618c66426aac78d0dac58b5a4a4f931ef941ccb0b356f7977008583139dd01",
+    "results/boundary_pooled_tree_confirmation_20260907/frozen_study.json": "2693130772ef24794f223b884ef99f6cf4c359e80b94c416d6e4d618f495dcf2",
+    "results/boundary_same_day_priors_20260907/frozen_development.json": "f424b5367263eb79b4dc8c7710dfaca892c79d25b82a980fb0ffc82b4cd3887c",
+    "results/boundary_same_day_priors_20260907/priors/2023-05-26/BTCUSDT_original_reference.npz": "ad40145412078f4d71b709994ab10b8f2eea354ff1ecc517658eb4808bf0f2ba",
+    "results/boundary_same_day_priors_20260907/priors/2023-05-26/ETHUSDT_original_reference.npz": "c762ae6b1c7707e5dd42187430475211c797dad6e556134b00711a336c93bc05",
+    "results/boundary_same_day_priors_20260907/priors/2023-05-30/BTCUSDT_original_reference.npz": "8065eaccc0a7fa817722efe5c891284f41af8f172db36c938b14baef8f8c6819",
+    "results/boundary_same_day_priors_20260907/priors/2023-05-30/ETHUSDT_original_reference.npz": "1c35238cf12bbe3c17f4443d8a4ab694c1d372ea26243d9ac772023668135c54",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/BTCUSDT_original_reference.npz": "188f73b12156197bd0f5830cc997d785dbcf8ab3c92ef97041c3a5b4e193883b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/ETHUSDT_original_reference.npz": "eef72f8c82c5dff40f216933d3d46305ff5718386682c2fc7363c52cca648117",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/BTCUSDT_original_reference.npz": "4f933993c79d03577087d3444f4d069c19e122c7900eb6abaa72af3f4996c74f",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/ETHUSDT_original_reference.npz": "ee38dacedb2daa2a7208b5aced550b3fd784877065168e0672d78141037eb82b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/BTCUSDT_original_reference.npz": "3d0379f61d60ddfee343f613bff27f8d3a4d54d7ffc29e3e84c03bf42c7a35b8",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/ETHUSDT_original_reference.npz": "9e1c4fda1b8826b582332acf29cbea9bbc1e8ca94e86cc38a9fb7b511b6cbf83",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "scripts/run_boundary_event_clock_screen.py": "929ff7adac3dd5d31655b521b85b8db01d15c9a4566317c10620fe7fc08f233d",
+    "scripts/run_boundary_morning_screen.py": "7b6d8cccc78f4c9b8ae52406d7611a1072d120319eabf315b3cbfdfaa0ab8d36",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_morning_adaptation.py": "cb42e5af1fbef7677b1b2ea1f0c62a248c64a7e4c2e334bdadf4b43448162ae9",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "tests/test_boundary_morning_adaptation.py": "9ae8e049205edb75cced5450c7487d3c3a7c2cd3c9291c904ea640df9cb78aac"
+  },
+  "interpretation": "All five dates are already exposed; selection remains exploratory and cannot close the discovery gate. Keep the existing five-point balanced-accuracy target and require a separately registered fresh-date confirmation under the continuing nominal error budget.",
+  "loss_contract": "Use morning equal-asset/class weighted CE on logits z + log(original recovery prior) - log(recent training prior). The ordinary forecaster continues to recover natural probabilities using its original prior. This leaves the initial natural forecast unchanged and preserves a consistent posterior contract after fine-tuning.",
+  "manifest": "data/research/boundary_exact_labels_20260907/dataset_manifest.json",
+  "model_fits": 30,
+  "morning_tree_control": "One pooled class-balanced HGB7 per morning window, with the frozen 200-iteration, 0.05-learning-rate, min-leaf-100, L2-10 settings. Recover its natural probabilities using its own morning training priors.",
+  "neural_settings": {
+    "batch_size": 1024,
+    "checkpoint": "The frozen first-round pooled neural checkpoint for this assessment date.",
+    "epochs": 4,
+    "features": "Unchanged 95-column feature schema; do not use new event-clock observations in this recency study.",
+    "gradient_norm_limit": 5,
+    "learning_rates": [
+      0.0001,
+      0.0003
+    ],
+    "normalizer": "Frozen original training quantiles and active-feature mask.",
+    "seed": 20260907,
+    "threads": 2,
+    "weight_decay": 0.01
+  },
+  "policies": [
+    "registered",
+    "morning_full",
+    "forecast_3600"
+  ],
+  "policy_contract": "Registered means each old source original decision rule and the original blend rule for new procedures; morning_full uses the available 00:02-11:30 label frequencies for every procedure; forecast_3600 uses the previously fixed causal one-hour forecast marginal with already available same-day initialization.",
+  "post_fit_asset_date_panels": 600,
+  "primary_run": "results/boundary_confirmation_exact_labels_20260907",
+  "prior_run": "results/boundary_same_day_priors_20260907",
+  "registered_at_utc": "2026-09-07T18:54:47.746999+00:00",
+  "secondary_run": "results/boundary_pooled_tree_confirmation_20260907"
+}
