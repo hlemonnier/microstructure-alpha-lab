@@ -1,0 +1,139 @@
+{
+  "changed_fraction": 0.015728820598006645,
+  "changed_labels": 1818,
+  "checked_at_utc": "2026-09-07T16:26:57.788259+00:00",
+  "manifest_sha256": "d2b702f25f5bb5ac84da48913927061c6cb113764633f34a75c9dcf06a8b4831",
+  "oracle": "Exact decimal labels agree with an independent integer tick-grid calculation on these observed exchange quotes.",
+  "records": [
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 80,
+      "date": "2023-05-16",
+      "rows": 7224,
+      "source_sha256": "8bf50ce155a361aab2d21804d7e0852d8b18e2a5bdcb6373708d47f0dfc2ea30",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 108,
+      "date": "2023-05-17",
+      "rows": 7224,
+      "source_sha256": "eb0c0de75d288dcda788107ea8bc4190d64fffdc79c86c21fe029a28572ee614",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 86,
+      "date": "2023-05-18",
+      "rows": 7224,
+      "source_sha256": "a59913cb34454b9f70989ad3eb130c3c449ebe45bcf7af0c8972128baf959266",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 91,
+      "date": "2023-05-19",
+      "rows": 7224,
+      "source_sha256": "d7cb574e57f87d8c542963689bb99a349c11322a1968a58c53e4ef6cb8ba493d",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 80,
+      "date": "2023-05-20",
+      "rows": 7224,
+      "source_sha256": "e3104cc9cbd4e13baaf06eb6b4feeb7d1f9ef54c3fa7b8846722fe9314d22e7b",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 136,
+      "date": "2023-05-21",
+      "rows": 7224,
+      "source_sha256": "faec62e69219f5c35a5443fa3818838b75ae937b89892700b7ccac1a8a893801",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 107,
+      "date": "2023-05-22",
+      "rows": 7224,
+      "source_sha256": "fd73bd7d52038c9fc80d285f3550ac6997fa61b19b7ad6252c2dc3872ef10ccb",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 120,
+      "date": "2023-05-23",
+      "rows": 7224,
+      "source_sha256": "c1e7b871fee1204a6e0c8682bd40d47777518bea9f412e384d2d7a25ec1a017a",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 86,
+      "date": "2023-05-16",
+      "rows": 7224,
+      "source_sha256": "02b6b50678dd0fcc24f98397f0422774f8da9be41f4dccc43589e8c0084c7958",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 108,
+      "date": "2023-05-17",
+      "rows": 7224,
+      "source_sha256": "917e6a250cb8eebcb8b92e901c89b698e2ccbd40351804da5aa257e4f47002a3",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 145,
+      "date": "2023-05-18",
+      "rows": 7224,
+      "source_sha256": "11b29fbce6e141ad5695b9813af8e94c926e58af7e98ba641f785000990ac971",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 135,
+      "date": "2023-05-19",
+      "rows": 7224,
+      "source_sha256": "153cb5798f95f3cccebc1aa13958f9d38bf421da7311199aec3b7f17b96542f9",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 159,
+      "date": "2023-05-20",
+      "rows": 7224,
+      "source_sha256": "a40b5952ab90428324337d46d57570fae43658b49b4282bab4290dbf82650532",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 108,
+      "date": "2023-05-21",
+      "rows": 7224,
+      "source_sha256": "87593a6e91d4f798d20e7541ae9f8b19834fd168b1e6d5a34ab88657bb4ee594",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 157,
+      "date": "2023-05-22",
+      "rows": 7224,
+      "source_sha256": "0353b76c794234ec4825cee5973fa4df26e849b0fab45eb9c3b6a3bb65ff5053",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "all_changes_are_exact_threshold_ties": true,
+      "changed_labels": 112,
+      "date": "2023-05-23",
+      "rows": 7224,
+      "source_sha256": "adcc758701beade579657504a898f95f5f850017a7ab49027764b1956e7a9152",
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "scope": "Previously exposed development noon data only; no independent predictions have been fitted.",
+  "total_rows": 115584
+}

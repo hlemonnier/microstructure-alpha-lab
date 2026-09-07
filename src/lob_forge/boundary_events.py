@@ -13,6 +13,9 @@ import numpy as np
 import pandas as pd
 
 from lob_forge.features import AGG_TRADE_COLUMNS, BOOK_TICKER_COLUMNS
+from lob_forge.label_math import exact_label_array
+
+FORECAST_SEMANTICS_VERSION = "forecast_raw_events_v2_exact_labels"
 
 EVENT_FEATURES = (
     "event_imbalance_mean",
@@ -170,14 +173,15 @@ def event_frame(quotes: pd.DataFrame, trades: pd.DataFrame, *, min_tick: float) 
     future = np.searchsorted(t, decisions + 5100)
     resolved = future < len(t)
     safe_entry, safe_future = np.minimum(entry, len(t) - 1), np.minimum(future, len(t) - 1)
-    threshold = np.maximum((ask[safe_entry] - bid[safe_entry]) / 2, min_tick)
-    delta = mid[safe_future] - mid[safe_entry]
-    frame["label"] = np.where(resolved, np.where(delta > threshold, 1, np.where(delta < -threshold, -1, 0)), np.nan)
+    labels = exact_label_array(
+        bid[safe_entry], ask[safe_entry], bid[safe_future], ask[safe_future], min_tick=min_tick
+    )
+    frame["label"] = np.where(resolved, labels, np.nan)
     frame["entry_event_time"] = np.where(resolved, t[safe_entry], np.nan)
     frame["future_event_time"] = np.where(resolved, t[safe_future], np.nan)
     frame["entry_mid"] = np.where(resolved, mid[safe_entry], np.nan)
     frame["future_mid"] = np.where(resolved, mid[safe_future], np.nan)
-    frame["feature_semantics_version"] = "forecast_raw_events_v1"
+    frame["feature_semantics_version"] = FORECAST_SEMANTICS_VERSION
     # The last quote bucket is incomplete until a following bucket is observed.
     return frame.iloc[:-1].copy()
 

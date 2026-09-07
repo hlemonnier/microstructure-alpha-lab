@@ -13,7 +13,9 @@ from typing import Iterator
 from lob_forge.memory_guard import assert_feature_build_budget
 
 
-FEATURE_SEMANTICS_VERSION = "bucket_close_raw_ofi_v2"
+from lob_forge.label_math import price_movement_label
+
+FEATURE_SEMANTICS_VERSION = "bucket_close_raw_ofi_exact_labels_v3"
 
 
 BOOK_TICKER_COLUMNS = [
@@ -940,8 +942,7 @@ def build_feature_row(
     microprice = (quote.ask * quote.bid_qty + quote.bid * quote.ask_qty) / size_sum if size_sum else mid
     microprice_deviation = (microprice - mid) / spread if spread else 0.0
 
-    theta = label_threshold(spread=entry.spread, min_tick=min_tick, mode=threshold)
-    label = 1 if delta_mid > theta else -1 if delta_mid < -theta else 0
+    label = price_movement_label(entry.bid, entry.ask, future.bid, future.ask, min_tick=min_tick, mode=threshold)
 
     depth_features = build_depth_feature_values(depth, event_time_ms=decision_time)
 
