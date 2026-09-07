@@ -115,8 +115,8 @@ def build_expected_edge_run_plan(
         raise ValueError("study plan needs at least one feature set")
     if bucket_ms <= 0:
         raise ValueError("bucket_ms must be positive")
-    if execution_quote_resolution not in {"raw", "bucket"}:
-        raise ValueError("execution_quote_resolution must be raw or bucket")
+    if execution_quote_resolution != "raw":
+        raise ValueError("execution_quote_resolution must be raw; bucket-retained execution is not causal")
     if not feature_threshold.strip():
         raise ValueError("feature_threshold must be non-empty")
     if large_trade_notional <= 0.0:
@@ -252,7 +252,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--fees-bps", required=True)
     parser.add_argument("--latency-ms", type=int, required=True)
     parser.add_argument("--bucket-ms", type=int, default=1000)
-    parser.add_argument("--execution-quote-resolution", choices=["raw", "bucket"], default="raw")
+    parser.add_argument("--execution-quote-resolution", choices=["raw"], default="raw")
     parser.add_argument("--feature-threshold", default="half_spread")
     parser.add_argument("--large-trade-notional", type=float, default=10_000.0)
     parser.add_argument("--holdout-split-column", default="source_date")

@@ -100,8 +100,8 @@ def construct_causal_samples(
 
         entry_target = decision_time + latency_ms
         exit_target = entry_target + horizon_ms
-        entry_pos = bisect_left(times, entry_target)
-        exit_pos = bisect_left(times, exit_target)
+        entry_pos = max(feature_pos, bisect_left(times, entry_target))
+        exit_pos = max(entry_pos, bisect_left(times, exit_target))
         if entry_pos >= len(ordered_events) or exit_pos >= len(ordered_events):
             continue
 
@@ -145,9 +145,9 @@ def purged_walk_forward_indices(
     if latency_buffer < 0 or embargo < 0:
         raise ValueError("latency_buffer and embargo must be non-negative")
     purge = max(0, sequence_length - 1 + prediction_horizon + latency_buffer)
-    step = step_size or test_size
-    if step <= 0:
-        raise ValueError("step_size must be positive")
+    step = test_size if step_size is None else step_size
+    if step < test_size:
+        raise ValueError("step_size must be at least test_size to avoid repeated OOS observations")
     total = train_size + validation_size + test_size
     splits: list[PurgedSplit] = []
     start = 0

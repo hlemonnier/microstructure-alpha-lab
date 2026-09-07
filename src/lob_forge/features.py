@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import csv
 import io
+import math
 import zipfile
-from bisect import bisect_left
 from bisect import bisect_right
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -11,6 +11,9 @@ from pathlib import Path
 from typing import Iterator
 
 from lob_forge.memory_guard import assert_feature_build_budget
+
+
+FEATURE_SEMANTICS_VERSION = "bucket_close_raw_ofi_v2"
 
 
 BOOK_TICKER_COLUMNS = [
@@ -85,6 +88,7 @@ EXECUTION_PATH_COLUMNS = [
 
 
 FEATURE_COLUMNS = [
+    "feature_semantics_version",
     "bucket_start_ms",
     "decision_time",
     "feature_cutoff_time",
@@ -92,6 +96,7 @@ FEATURE_COLUMNS = [
     "quote_event_time",
     "local_receive_time",
     "update_id",
+    "quote_age_ms",
     "bid",
     "ask",
     "bid_qty",
@@ -101,6 +106,7 @@ FEATURE_COLUMNS = [
     "relative_spread",
     "top_imbalance",
     "microprice",
+    "weighted_midprice",
     "microprice_deviation",
     "quote_updates_in_bucket",
     *QUOTE_CONTEXT_COLUMNS,
@@ -121,13 +127,19 @@ FEATURE_COLUMNS = [
     "entry_lag_ms",
     "future_lag_ms",
     "entry_event_time",
+    "entry_update_id",
     "entry_bid",
     "entry_ask",
+    "entry_bid_qty",
+    "entry_ask_qty",
     "entry_mid",
     "entry_spread",
     "future_event_time",
+    "future_update_id",
     "future_bid",
     "future_ask",
+    "future_bid_qty",
+    "future_ask_qty",
     "future_mid",
     "future_spread",
     *EXECUTION_PATH_COLUMNS,
@@ -148,6 +160,8 @@ class QuoteBucket:
     update_count: int = 1
     decision_time_ms: int | None = None
     local_receive_time: int | None = None
+    # Sum of every raw top-of-book transition in this completed bucket.
+    raw_ofi: float | None = None
 
     @property
     def mid(self) -> float:
@@ -336,8 +350,8 @@ def build_quote_trade_dataset(
         raise ValueError("horizon_ms must be positive")
     if execution_latency_ms < 0:
         raise ValueError("execution_latency_ms must be >= 0")
-    if execution_quote_resolution not in {"raw", "bucket"}:
-        raise ValueError("execution_quote_resolution must be raw or bucket")
+    if execution_quote_resolution != "raw":
+        raise ValueError("execution_quote_resolution must be raw; legacy bucket-retained execution is not causal")
     assert_feature_build_budget(
         [book_ticker_zip, agg_trades_zip, book_depth_zip],
         max_memory_gb=max_feature_build_memory_gb,
@@ -362,7 +376,7 @@ def build_quote_trade_dataset(
             Path(agg_trades_zip),
             bucket_ms=bucket_ms,
             start_bucket_ms=first_bucket,
-            end_time_ms=last_decision_time,
+            end_time_ms=last_decision_time - 1,
             large_trade_notional=large_trade_notional,
         )
     depth_snapshots: list[DepthSnapshot] = []
@@ -371,14 +385,13 @@ def build_quote_trade_dataset(
         depth_snapshots = load_depth_snapshots(
             Path(book_depth_zip),
             start_time_ms=first_bucket,
-            end_time_ms=last_decision_time,
+            end_time_ms=last_decision_time - 1,
         )
         depth_snapshot_times = [snapshot.snapshot_time_ms for snapshot in depth_snapshots]
 
     output_path = Path(output_csv)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    quote_event_times = [quote.event_time for quote in quote_buckets]
     quote_contexts = build_quote_contexts(quote_buckets, rolling_window=5)
     raw_resolutions = (
         resolve_raw_execution_quote_resolutions(
@@ -387,8 +400,6 @@ def build_quote_trade_dataset(
             execution_latency_ms=execution_latency_ms,
             horizon_ms=horizon_ms,
         )
-        if execution_quote_resolution == "raw"
-        else []
     )
     rows_written = 0
     with output_path.open("w", newline="") as handle:
@@ -398,26 +409,12 @@ def build_quote_trade_dataset(
             decision_time = quote.decision_time
             entry_target_time = decision_time + execution_latency_ms
             future_target_time = decision_time + execution_latency_ms + horizon_ms
-            if execution_quote_resolution == "raw":
-                resolution = raw_resolutions[idx]
-                if resolution is None:
-                    break
-                entry = resolution.entry
-                future = resolution.future
-                execution_path = resolution.execution_path
-            else:
-                entry_idx = bisect_left(quote_event_times, entry_target_time)
-                if entry_idx >= len(quote_buckets):
-                    break
-                entry = quote_buckets[entry_idx]
-                future_idx = bisect_left(quote_event_times, future_target_time)
-                if future_idx >= len(quote_buckets):
-                    break
-                future = quote_buckets[future_idx]
-                execution_path = summarize_execution_path(
-                    quote_buckets[entry_idx + 1 : future_idx + 1],
-                    entry=entry,
-                )
+            resolution = raw_resolutions[idx]
+            if resolution is None:
+                break
+            entry = resolution.entry
+            future = resolution.future
+            execution_path = resolution.execution_path
             row = build_feature_row(
                 quote=quote,
                 entry=entry,
@@ -426,7 +423,7 @@ def build_quote_trade_dataset(
                 trade=(
                     trade_index.aggregate_until(
                         bucket_start_ms=quote.bucket_start_ms,
-                        decision_time_ms=decision_time,
+                        decision_time_ms=decision_time - 1,
                     )
                     if trade_index is not None
                     else TradeBucket()
@@ -434,7 +431,7 @@ def build_quote_trade_dataset(
                 depth=latest_depth_snapshot(
                     depth_snapshots,
                     depth_snapshot_times,
-                    decision_time,
+                    decision_time - 1,
                 ),
                 quote_context=quote_contexts[idx],
                 execution_latency_ms=execution_latency_ms,
@@ -541,27 +538,29 @@ def iter_quote_buckets(
     bucket_ms: int,
     max_quote_buckets: int | None = None,
 ) -> Iterator[QuoteBucket]:
+    """Emit completed [start, close) buckets, decided at the observable close.
+
+    A trailing partial bucket is not a completed observation. Empty buckets
+    produce no sample; that decision is itself knowable at the bucket close.
+    """
+    if bucket_ms <= 0 or (max_quote_buckets is not None and max_quote_buckets <= 0):
+        raise ValueError("bucket_ms and max_quote_buckets must be positive")
     current: QuoteBucket | None = None
+    previous: QuoteBucket | None = None
     emitted = 0
-    for row in iter_zip_dict_rows(book_ticker_zip, BOOK_TICKER_COLUMNS):
-        event_time = int(row["event_time"])
+    for quote in iter_quote_events(book_ticker_zip):
+        event_time = quote.event_time
         bucket_start = event_time - (event_time % bucket_ms)
-        quote = QuoteBucket(
-            bucket_start_ms=bucket_start,
-            decision_time_ms=event_time,
-            event_time=event_time,
-            update_id=int(row["update_id"]),
-            bid=float(row["best_bid_price"]),
-            ask=float(row["best_ask_price"]),
-            bid_qty=float(row["best_bid_qty"]),
-            ask_qty=float(row["best_ask_qty"]),
-            local_receive_time=None,
-        )
+        quote.bucket_start_ms = bucket_start
+        quote.decision_time_ms = bucket_start + bucket_ms
+        quote.raw_ofi = compute_quote_ofi(previous, quote) if previous is not None else 0.0
+        previous = quote
         if current is None:
             current = quote
             continue
         if bucket_start == current.bucket_start_ms:
             quote.update_count = current.update_count + 1
+            quote.raw_ofi += current.raw_ofi or 0.0
             current = quote
             continue
         yield current
@@ -570,14 +569,15 @@ def iter_quote_buckets(
             return
         current = quote
 
-    if current is not None:
-        yield current
-
-
 def iter_quote_events(book_ticker_zip: Path) -> Iterator[QuoteBucket]:
+    previous_key: tuple[int, int] | None = None
     for row in iter_zip_dict_rows(book_ticker_zip, BOOK_TICKER_COLUMNS):
         event_time = int(row["event_time"])
-        yield QuoteBucket(
+        key = (event_time, int(row["update_id"]))
+        if previous_key is not None and (key <= previous_key or key[1] <= previous_key[1]):
+            raise ValueError("bookTicker events must have increasing update IDs and nondecreasing timestamps")
+        previous_key = key
+        quote = QuoteBucket(
             bucket_start_ms=event_time,
             decision_time_ms=event_time,
             event_time=event_time,
@@ -589,6 +589,11 @@ def iter_quote_events(book_ticker_zip: Path) -> Iterator[QuoteBucket]:
             update_count=1,
             local_receive_time=None,
         )
+        if not all(math.isfinite(v) for v in (quote.bid, quote.ask, quote.bid_qty, quote.ask_qty)):
+            raise ValueError("bookTicker prices and quantities must be finite")
+        if quote.bid <= 0 or quote.ask <= quote.bid or min(quote.bid_qty, quote.ask_qty) < 0:
+            raise ValueError("bookTicker requires positive uncrossed quotes and nonnegative quantities")
+        yield quote
 
 
 def resolve_raw_execution_quote_resolutions(
@@ -604,18 +609,21 @@ def resolve_raw_execution_quote_resolutions(
         raise ValueError("horizon_ms must be positive")
     entries: list[QuoteBucket | None] = [None] * len(quote_buckets)
     futures: list[QuoteBucket | None] = [None] * len(quote_buckets)
-    requests: list[tuple[int, int, int, str]] = []
+    requests: list[tuple[int, int, int, int, str]] = []
     for index, quote in enumerate(quote_buckets):
         entry_target_time = quote.decision_time + execution_latency_ms
         future_target_time = entry_target_time + horizon_ms
-        requests.append((entry_target_time, 0, index, "entry"))
-        requests.append((future_target_time, 1, index, "future"))
+        # At zero latency a supplied event-time decision may share a timestamp
+        # with earlier updates. It can never execute before its feature event.
+        min_entry_update = quote.update_id if entry_target_time == quote.event_time else -1
+        requests.append((entry_target_time, min_entry_update, 0, index, "entry"))
+        requests.append((future_target_time, -1, 1, index, "future"))
     requests.sort()
 
     request_index = 0
     for raw_quote in iter_quote_events(book_ticker_zip):
-        while request_index < len(requests) and raw_quote.event_time >= requests[request_index][0]:
-            _, _, index, kind = requests[request_index]
+        while request_index < len(requests) and (raw_quote.event_time, raw_quote.update_id) >= requests[request_index][:2]:
+            _, _, _, index, kind = requests[request_index]
             if kind == "entry":
                 entries[index] = raw_quote
             else:
@@ -626,13 +634,14 @@ def resolve_raw_execution_quote_resolutions(
         for index, (entry, future) in enumerate(zip(entries, futures))
         if entry is not None and future is not None
     ]
-    accumulators.sort(key=lambda item: (item.entry.event_time, item.future.event_time, item.index))
+    accumulators.sort(key=lambda item: (item.entry.event_time, item.entry.update_id, item.index))
     active: list[_ExecutionPathAccumulator] = []
     next_accumulator = 0
     for raw_quote in iter_quote_events(book_ticker_zip):
         while (
             next_accumulator < len(accumulators)
-            and accumulators[next_accumulator].entry.event_time < raw_quote.event_time
+            and (accumulators[next_accumulator].entry.event_time, accumulators[next_accumulator].entry.update_id)
+            < (raw_quote.event_time, raw_quote.update_id)
         ):
             active.append(accumulators[next_accumulator])
             next_accumulator += 1
@@ -640,7 +649,7 @@ def resolve_raw_execution_quote_resolutions(
             continue
         still_active: list[_ExecutionPathAccumulator] = []
         for accumulator in active:
-            if raw_quote.event_time > accumulator.future.event_time:
+            if (raw_quote.event_time, raw_quote.update_id) > (accumulator.future.event_time, accumulator.future.update_id):
                 continue
             accumulator.update(raw_quote)
             still_active.append(accumulator)
@@ -675,8 +684,13 @@ def aggregate_agg_trades(
 
         price = float(row["price"])
         qty = float(row["quantity"])
+        if not all(math.isfinite(x) for x in (price, qty)) or price <= 0 or qty < 0:
+            raise ValueError("trade price/quantity must be finite with positive price and non-negative quantity")
         notional = price * qty
-        is_buyer_maker = row["is_buyer_maker"].strip().lower() == "true"
+        maker = row["is_buyer_maker"].strip().lower()
+        if maker not in {"true", "false"}:
+            raise ValueError("is_buyer_maker must be true or false")
+        is_buyer_maker = maker == "true"
 
         bucket = buckets.setdefault(bucket_start, TradeBucket())
         bucket.trade_count += 1
@@ -711,8 +725,13 @@ def build_trade_bucket_index(
 
         price = float(row["price"])
         qty = float(row["quantity"])
+        if not all(math.isfinite(x) for x in (price, qty)) or price <= 0 or qty < 0:
+            raise ValueError("trade price/quantity must be finite with positive price and non-negative quantity")
         notional = price * qty
-        is_buyer_maker = row["is_buyer_maker"].strip().lower() == "true"
+        maker = row["is_buyer_maker"].strip().lower()
+        if maker not in {"true", "false"}:
+            raise ValueError("is_buyer_maker must be true or false")
+        is_buyer_maker = maker == "true"
         events_by_bucket.setdefault(bucket_start, []).append(
             TradeEvent(
                 timestamp_ms=timestamp,
@@ -751,6 +770,8 @@ def load_depth_snapshots(
         percentage = int(abs(float(row["percentage"])))
         depth = float(row["depth"])
         notional = float(row["notional"])
+        if not all(math.isfinite(x) and x >= 0 for x in (depth, notional)):
+            raise ValueError("depth and notional must be finite and non-negative")
         if float(row["percentage"]) < 0:
             current.bid_depth_by_pct[percentage] = depth
             current.bid_notional_by_pct[percentage] = notional
@@ -778,11 +799,11 @@ def build_quote_contexts(
 
     for idx, quote in enumerate(quote_buckets):
         if idx == 0:
-            quote_ofi = 0.0
+            quote_ofi = quote.raw_ofi if quote.raw_ofi is not None else 0.0
             mid_return_1 = 0.0
         else:
             previous = quote_buckets[idx - 1]
-            quote_ofi = compute_quote_ofi(previous, quote)
+            quote_ofi = quote.raw_ofi if quote.raw_ofi is not None else compute_quote_ofi(previous, quote)
             mid_return_1 = (quote.mid - previous.mid) / previous.mid if previous.mid else 0.0
 
         ofi_values.append(quote_ofi)
@@ -925,13 +946,15 @@ def build_feature_row(
     depth_features = build_depth_feature_values(depth, event_time_ms=decision_time)
 
     return {
+        "feature_semantics_version": FEATURE_SEMANTICS_VERSION,
         "bucket_start_ms": quote.bucket_start_ms,
         "decision_time": decision_time,
-        "feature_cutoff_time": decision_time,
+        "feature_cutoff_time": decision_time - 1 if decision_time > quote.event_time else decision_time,
         "event_time": decision_time,
         "quote_event_time": quote.event_time,
         "local_receive_time": quote.local_receive_time or "",
         "update_id": quote.update_id,
+        "quote_age_ms": decision_time - quote.event_time,
         "bid": _fmt(quote.bid),
         "ask": _fmt(quote.ask),
         "bid_qty": _fmt(quote.bid_qty),
@@ -941,6 +964,7 @@ def build_feature_row(
         "relative_spread": _fmt(spread / mid if mid else 0.0),
         "top_imbalance": _fmt(top_imbalance),
         "microprice": _fmt(microprice),
+        "weighted_midprice": _fmt(microprice),
         "microprice_deviation": _fmt(microprice_deviation),
         "quote_updates_in_bucket": quote.update_count,
         "quote_ofi": _fmt(quote_context.quote_ofi),
@@ -969,13 +993,19 @@ def build_feature_row(
         "entry_lag_ms": entry.event_time - entry_target_time,
         "future_lag_ms": future.event_time - future_target_time,
         "entry_event_time": entry.event_time,
+        "entry_update_id": entry.update_id,
         "entry_bid": _fmt(entry.bid),
         "entry_ask": _fmt(entry.ask),
+        "entry_bid_qty": _fmt(entry.bid_qty),
+        "entry_ask_qty": _fmt(entry.ask_qty),
         "entry_mid": _fmt(entry_mid),
         "entry_spread": _fmt(entry.spread),
         "future_event_time": future.event_time,
+        "future_update_id": future.update_id,
         "future_bid": _fmt(future.bid),
         "future_ask": _fmt(future.ask),
+        "future_bid_qty": _fmt(future.bid_qty),
+        "future_ask_qty": _fmt(future.ask_qty),
         "future_mid": _fmt(future_mid),
         "future_spread": _fmt(future.spread),
         "horizon_min_ask": _fmt(execution_path.horizon_min_ask),
@@ -1110,4 +1140,6 @@ def _root_sum_squares(values: list[float]) -> float:
 
 
 def _fmt(value: float) -> str:
+    if not math.isfinite(value):
+        raise ValueError("feature calculations must be finite")
     return f"{value:.12g}"

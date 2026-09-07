@@ -6,12 +6,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from lob_forge.binance_vision import download_archive, iter_dates
-from lob_forge.features import build_quote_trade_dataset, combine_feature_csvs
+from lob_forge.features import FEATURE_SEMANTICS_VERSION, build_quote_trade_dataset, combine_feature_csvs
 from lob_forge.holdout import sha256_file
 
 
-FEATURE_BUILD_MARKER_VERSION = 1
-COMBINED_FEATURE_MANIFEST_VERSION = 1
+FEATURE_BUILD_MARKER_VERSION = 2
+COMBINED_FEATURE_MANIFEST_VERSION = 2
 DEFAULT_SYMBOL_MIN_TICKS = {
     "BTCUSDT": 0.1,
     "ETHUSDT": 0.01,
@@ -49,6 +49,7 @@ def expected_feature_build_config(
     execution_quote_resolution: str,
 ) -> dict[str, object]:
     return {
+        "feature_semantics_version": FEATURE_SEMANTICS_VERSION,
         "symbol": symbol.upper(),
         "date": date_value,
         "bucket_ms": bucket_ms,

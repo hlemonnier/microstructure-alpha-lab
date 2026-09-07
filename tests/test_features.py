@@ -35,6 +35,7 @@ def test_build_quote_trade_dataset(tmp_path: Path) -> None:
             ["2", "100.1", "4.0", "100.3", "3.0", "1500", "1500"],
             ["3", "100.4", "6.0", "100.6", "2.0", "2000", "2000"],
             ["4", "100.5", "6.0", "100.7", "2.0", "3000", "3000"],
+            ["5", "100.6", "6.0", "100.8", "2.0", "4000", "4000"],
         ],
     )
     _write_zip_csv(
@@ -71,19 +72,19 @@ def test_build_quote_trade_dataset(tmp_path: Path) -> None:
     assert rows[0]["label"] == "1"
     assert rows[0]["trade_count"] == "2"
     assert float(rows[0]["trade_imbalance"]) < 0
-    assert rows[0]["decision_time"] == "1500"
+    assert rows[0]["decision_time"] == "2000"
     assert rows[0]["event_time"] == rows[0]["decision_time"]
     assert rows[0]["quote_event_time"] == "1500"
     assert rows[0]["local_receive_time"] == ""
-    assert rows[0]["entry_mid"] == "100.2"
+    assert rows[0]["entry_mid"] == "100.5"
     assert rows[0]["future_mid"] == "100.6"
     assert rows[0]["depth_snapshot_age_ms"] == "-1"
-    assert rows[0]["quote_ofi"] == "0"
+    assert rows[0]["quote_ofi"] == "6"
     assert rows[1]["quote_ofi"] == "9"
     assert rows[1]["quote_ofi_normalized"] == "1.125"
     assert float(rows[1]["mid_return_1"]) > 0
     assert rows[0]["maker_long_fillable"] == "0"
-    assert rows[0]["maker_short_fillable"] == "1"
+    assert rows[0]["maker_short_fillable"] == "0"
     assert rows[0]["horizon_max_bid"] == "100.5"
 
 
@@ -122,7 +123,7 @@ def test_trade_after_decision_time_does_not_change_features(tmp_path: Path) -> N
     _write_zip_csv(
         adversarial_trades_zip,
         "adversarial.csv",
-        base_rows + [["2", "101.0", "99.0", "11", "11", "1750", "true"]],
+        base_rows + [["2", "101.0", "99.0", "11", "11", "2001", "true"]],
     )
 
     for trades_zip, output in [(clean_trades_zip, clean_output), (adversarial_trades_zip, adversarial_output)]:
@@ -150,7 +151,7 @@ def test_trade_after_decision_time_does_not_change_features(tmp_path: Path) -> N
         "large_trade_count",
         "label",
     ]
-    assert clean_rows[0]["decision_time"] == "1500"
+    assert clean_rows[0]["decision_time"] == "2000"
     assert {field: clean_rows[0][field] for field in comparable_fields} == {
         field: adversarial_rows[0][field] for field in comparable_fields
     }
@@ -178,7 +179,7 @@ def test_build_quote_trade_dataset_resolves_execution_on_raw_quotes(tmp_path: Pa
             ["2", "100.1", "4.0", "100.3", "3.0", "1050", "1050"],
             ["3", "101.0", "6.0", "101.2", "2.0", "1480", "1480"],
             ["4", "99.0", "6.0", "99.2", "2.0", "1910", "1910"],
-            ["5", "102.0", "6.0", "102.2", "2.0", "2100", "2100"],
+            ["5", "102.0", "6.0", "102.2", "2.0", "2200", "2200"],
         ],
     )
     _write_zip_csv(
@@ -203,12 +204,12 @@ def test_build_quote_trade_dataset_resolves_execution_on_raw_quotes(tmp_path: Pa
         rows = list(csv.DictReader(handle))
 
     assert len(rows) == 1
-    assert rows[0]["decision_time"] == "900"
-    assert rows[0]["entry_target_time"] == "1100"
+    assert rows[0]["decision_time"] == "1000"
+    assert rows[0]["entry_target_time"] == "1200"
     assert rows[0]["entry_event_time"] == "1480"
-    assert rows[0]["entry_lag_ms"] == "380"
+    assert rows[0]["entry_lag_ms"] == "280"
     assert rows[0]["entry_mid"] == "101.1"
-    assert rows[0]["future_event_time"] == "2100"
+    assert rows[0]["future_event_time"] == "2200"
     assert rows[0]["future_lag_ms"] == "0"
     assert rows[0]["future_mid"] == "102.1"
     assert rows[0]["horizon_min_ask"] == "99.2"
@@ -216,59 +217,16 @@ def test_build_quote_trade_dataset_resolves_execution_on_raw_quotes(tmp_path: Pa
     assert rows[0]["maker_long_fill_event_time"] == "1910"
 
 
-def test_build_quote_trade_dataset_keeps_bucket_execution_fallback(tmp_path: Path) -> None:
-    book_zip = tmp_path / "bookTicker.zip"
-    trades_zip = tmp_path / "aggTrades.zip"
-    output = tmp_path / "features.csv"
-
-    _write_zip_csv(
-        book_zip,
-        "BTCUSDT-bookTicker-2023-05-16.csv",
-        [
-            [
-                "update_id",
-                "best_bid_price",
-                "best_bid_qty",
-                "best_ask_price",
-                "best_ask_qty",
-                "transaction_time",
-                "event_time",
-            ],
-            ["1", "100.0", "5.0", "100.2", "2.0", "900", "900"],
-            ["2", "100.1", "4.0", "100.3", "3.0", "1050", "1050"],
-            ["3", "101.0", "6.0", "101.2", "2.0", "1480", "1480"],
-            ["4", "99.0", "6.0", "99.2", "2.0", "1910", "1910"],
-            ["5", "102.0", "6.0", "102.2", "2.0", "2100", "2100"],
-        ],
-    )
-    _write_zip_csv(
-        trades_zip,
-        "BTCUSDT-aggTrades-2023-05-16.csv",
-        [
-            ["agg_trade_id", "price", "quantity", "first_trade_id", "last_trade_id", "transact_time", "is_buyer_maker"],
-        ],
-    )
-
-    build_quote_trade_dataset(
-        book_ticker_zip=book_zip,
-        agg_trades_zip=trades_zip,
-        output_csv=output,
-        bucket_ms=1000,
-        horizon_ms=1000,
-        execution_latency_ms=200,
-        threshold="zero",
-        execution_quote_resolution="bucket",
-    )
-
-    with output.open() as handle:
-        rows = list(csv.DictReader(handle))
-
-    assert len(rows) == 1
-    assert rows[0]["decision_time"] == "900"
-    assert rows[0]["entry_target_time"] == "1100"
-    assert rows[0]["entry_event_time"] == "1910"
-    assert rows[0]["entry_lag_ms"] == "810"
-    assert rows[0]["entry_mid"] == "99.1"
+def test_build_quote_trade_dataset_rejects_noncausal_bucket_execution(tmp_path: Path) -> None:
+    try:
+        build_quote_trade_dataset(
+            book_ticker_zip=tmp_path / "unused.zip", output_csv=tmp_path / "unused.csv",
+            execution_quote_resolution="bucket",
+        )
+    except ValueError as exc:
+        assert "not causal" in str(exc)
+    else:
+        raise AssertionError("retained last quote is not an executable future stopping time")
 
 
 def test_build_quote_trade_dataset_refuses_feature_memory_budget(tmp_path: Path) -> None:
@@ -336,6 +294,7 @@ def test_build_quote_trade_dataset_with_depth_bands(tmp_path: Path) -> None:
             ["1", "100.0", "5.0", "100.2", "2.0", "1684195200000", "1684195200000"],
             ["2", "100.1", "4.0", "100.3", "3.0", "1684195201000", "1684195201000"],
             ["3", "100.4", "6.0", "100.6", "2.0", "1684195202000", "1684195202000"],
+            ["4", "100.5", "6.0", "100.7", "2.0", "1684195203000", "1684195203000"],
         ],
     )
     _write_zip_csv(
@@ -382,7 +341,7 @@ def test_build_quote_trade_dataset_with_depth_bands(tmp_path: Path) -> None:
         rows = list(csv.DictReader(handle))
 
     assert len(rows) == 2
-    assert rows[0]["depth_snapshot_age_ms"] == "0"
+    assert rows[0]["depth_snapshot_age_ms"] == "1000"
     assert rows[0]["bid_depth_1pct"] == "10"
     assert rows[0]["ask_depth_1pct"] == "5"
     assert rows[0]["depth_imbalance_1pct"] == "0.333333333333"
