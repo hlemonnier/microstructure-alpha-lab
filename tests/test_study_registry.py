@@ -73,7 +73,8 @@ def test_expected_edge_candidate_pvalues_cover_completed_attempt_grid(tmp_path: 
     assert rows[0]["procedure_sha256"] == rows[0]["config_sha256"]
     assert rows[0]["procedure_sha256"] not in {attempt.config_sha256 for attempt in attempts}
     assert {row["p_value"] for row in rows} == {"0.04"}
-    assert rows[0]["metric"] == "validation_selected_procedure_fold_hac_p_value"
+    assert rows[0]["metric"] == "validation_selected_procedure_fold_mean_p_value"
+    assert rows[0]["inference_method"] == "legacy_hac_z_proxy"
 
 
 def test_expected_edge_candidate_registry_cli_writes_jsonl(tmp_path: Path) -> None:

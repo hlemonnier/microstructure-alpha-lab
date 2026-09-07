@@ -3,6 +3,8 @@ import json
 import os
 from contextlib import redirect_stdout
 from pathlib import Path
+from dataclasses import replace
+import pytest
 
 from lob_forge.cli import main as cli_main
 from lob_forge.holdout import (
@@ -18,10 +20,135 @@ from lob_forge.holdout import (
     write_development_csv,
     write_final_holdout_result,
     write_holdout_manifest,
+    reserve_final_holdout_evaluation,
+    verify_final_holdout_result,
 )
 
 
 FIXTURE_GIT_COMMIT = "a" * 40
+
+
+def test_final_holdout_reservation_blocks_overlapping_data_across_candidates_and_manifests(tmp_path: Path) -> None:
+    source = tmp_path / "source.csv"
+    source.write_text("date,partition,label\nd1,first,1\nd2,second,-1\nd3,second,0\n")
+    manifest = build_holdout_manifest(
+        source, split_column="date", holdout_values=["d2"],
+        created_at_utc="2026-09-07T00:00:00Z", git_commit=FIXTURE_GIT_COMMIT,
+        candidate_sha256="a" * 64,
+    )
+    reserve_final_holdout_evaluation(manifest=manifest, candidate_sha256="a" * 64, explicit_final_evaluation=True)
+    for altered in (
+        replace(manifest, notes="different notes", candidate_sha256="b" * 64),
+        replace(manifest, split_column="partition", holdout_values=("second",), candidate_sha256="b" * 64),
+    ):
+        with pytest.raises(FileExistsError, match="already reserved/evaluated"):
+            reserve_final_holdout_evaluation(manifest=altered, candidate_sha256="b" * 64, explicit_final_evaluation=True)
+    # A predeclared disjoint future segment can be evaluated separately.
+    disjoint = replace(manifest, holdout_values=("d3",), candidate_sha256="c" * 64)
+    reserve_final_holdout_evaluation(manifest=disjoint, candidate_sha256="c" * 64, explicit_final_evaluation=True)
+
+
+def test_copying_the_same_data_within_a_study_does_not_reset_exposure(tmp_path: Path) -> None:
+    sources = [tmp_path / name / "source.csv" for name in ("original", "copy")]
+    for source in sources:
+        source.parent.mkdir()
+        source.write_text("date,label\nheldout,1\n")
+    first = build_holdout_manifest(
+        sources[0], split_column="date", holdout_values=["heldout"],
+        created_at_utc="2026-09-07T00:00:00Z", git_commit=FIXTURE_GIT_COMMIT,
+        candidate_sha256="a" * 64, source_root=tmp_path,
+    )
+    reserve_final_holdout_evaluation(
+        manifest=first, candidate_sha256="a" * 64, explicit_final_evaluation=True, source_root=tmp_path,
+    )
+    second = replace(first, source_path="copy/source.csv", candidate_sha256="b" * 64)
+    with pytest.raises(FileExistsError):
+        reserve_final_holdout_evaluation(
+            manifest=second, candidate_sha256="b" * 64, explicit_final_evaluation=True, source_root=tmp_path,
+        )
+
+
+def test_generated_feature_holdout_requires_current_semantics_and_build_provenance(tmp_path: Path) -> None:
+    from lob_forge.features import FEATURE_SEMANTICS_VERSION
+    from lob_forge.experiments import write_feature_build_marker
+    source = tmp_path / "features.csv"
+    source.write_text("date,bucket_start_ms,quote_updates_in_bucket,quote_ofi\nheldout,0,1,2\n")
+
+    def manifest_for_source():
+        return build_holdout_manifest(
+            source, split_column="date", holdout_values=["heldout"],
+            created_at_utc="2026-09-07T00:00:00Z", git_commit=FIXTURE_GIT_COMMIT,
+            candidate_sha256="a" * 64,
+        )
+
+    with pytest.raises(ValueError, match="obsolete feature semantics"):
+        reserve_final_holdout_evaluation(manifest=manifest_for_source(), candidate_sha256="a" * 64, explicit_final_evaluation=True)
+    source.write_text("date,bucket_start_ms,quote_updates_in_bucket,quote_ofi,feature_semantics_version\n"
+                      f"heldout,0,1,2,{FEATURE_SEMANTICS_VERSION}\n")
+    with pytest.raises(ValueError, match="current build marker"):
+        reserve_final_holdout_evaluation(manifest=manifest_for_source(), candidate_sha256="a" * 64, explicit_final_evaluation=True)
+    write_feature_build_marker(source, source.with_suffix(".csv.done"), build_config={}, input_hashes={})
+    token = reserve_final_holdout_evaluation(manifest=manifest_for_source(), candidate_sha256="a" * 64, explicit_final_evaluation=True)
+    assert token["reservation_id"]
+
+
+def test_final_holdout_verified_result_binds_source_candidate_and_completed_ledger(tmp_path: Path) -> None:
+    source = tmp_path / "source.csv"
+    source.write_text("date,label\nholdout,1\n")
+    candidate = {"feature": "signal", "threshold": 0.0}
+    candidate_path = tmp_path / "candidate.json"
+    candidate_path.write_text(json.dumps(candidate))
+    digest = canonical_json_sha256(candidate)
+    manifest = build_holdout_manifest(
+        source, split_column="date", holdout_values=["holdout"],
+        created_at_utc="2026-09-07T00:00:00Z", git_commit=FIXTURE_GIT_COMMIT, candidate_sha256=digest,
+    )
+    token = reserve_final_holdout_evaluation(manifest=manifest, candidate_sha256=digest, explicit_final_evaluation=True)
+    output = tmp_path / "result.json"
+    write_final_holdout_result(
+        manifest=manifest, candidate_sha256=digest, explicit_final_evaluation=True,
+        output_path=output, candidate_path=candidate_path, reservation=token,
+        metrics={"candidate": candidate, "candidate_sha256": digest, "net_pnl": -1.0},
+    )
+    assert verify_final_holdout_result(output) == (True, ())
+    original = output.read_text()
+    payload = json.loads(original)
+    payload["metrics"]["net_pnl"] = 1000.0
+    output.write_text(json.dumps(payload))
+    assert not verify_final_holdout_result(output)[0]
+    output.write_text(original)
+    candidate_path.write_text(json.dumps({**candidate, "threshold": 2.0}))
+    assert not verify_final_holdout_result(output)[0]
+
+
+def test_holdout_schema_only_payload_is_not_evidence(tmp_path: Path) -> None:
+    from lob_forge.evidence_gates import _final_holdout_result_gate_for_path
+    output = tmp_path / "forged.json"
+    output.write_text(json.dumps({
+        "manifest": {"candidate_sha256": "a" * 64}, "candidate_sha256": "a" * 64,
+        "final_evaluation": True,
+        "metrics": {"candidate_sha256": "a" * 64, "rows": 1, "stateful_simulator": True},
+    }))
+    assert not _final_holdout_result_gate_for_path(result_path=output, todo="test").passed
+
+
+def test_development_labels_are_purged_when_their_endpoints_cross_holdout(tmp_path: Path) -> None:
+    source = tmp_path / "source.csv"
+    source.write_text(
+        "split,event_time,future_event_time,label\n"
+        "train,0,8,1\ntrain,8,10,1\nholdout,10,20,-1\ntrain,20,21,0\n"
+    )
+    manifest = build_holdout_manifest(
+        source, split_column="split", holdout_values=["holdout"],
+        created_at_utc="2026-09-07T00:00:00Z", git_commit=FIXTURE_GIT_COMMIT,
+    )
+    rows = read_development_rows(source, manifest)
+    assert [row["event_time"] for row in rows] == ["0", "20"]
+    result = write_development_csv(source, manifest, tmp_path / "development.csv")
+    assert result.purged_label_rows == 1
+    assert result.source_rows == result.development_rows + result.excluded_holdout_rows
+    with pytest.raises(ValueError, match="overwrite"):
+        write_development_csv(source, manifest, source)
 
 
 def test_holdout_manifest_is_hash_locked(tmp_path: Path) -> None:

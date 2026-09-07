@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from lob_forge.holdout import sha256_file, verify_holdout_manifest_file
+from lob_forge.holdout import sha256_file, verify_holdout_manifest_file, verify_final_holdout_result
 from lob_forge.live_validation import has_observed_fill, read_shadow_decisions, validate_shadow_fill_predictions
 from lob_forge.ml_models import (
     L2TensorReadiness,
@@ -252,11 +252,16 @@ def _final_holdout_result_gate_for_path(*, result_path: Path, todo: str) -> Evid
         except (KeyError, TypeError, ValueError):
             final_inventory = math.nan
         sequence_contract = (
-            candidate_type == "l2_sequence_torch_v2"
+            candidate_type == "l2_sequence_torch_v3"
             and metrics.get("economic_simulation_version") == SEQUENCE_ECONOMICS_VERSION
             and math.isfinite(final_inventory)
             and abs(final_inventory) <= 1e-9
         )
+        candidate = metrics.get("candidate", {})
+        sequence_contract = sequence_contract and isinstance(candidate, dict) and all(
+            name in candidate for name in ("economic_latency_ms", "policy_json", "class_priors_json")
+        )
+    provenance_valid, provenance_errors = verify_final_holdout_result(result_path)
     checks = {
         "final_evaluation": final_evaluation,
         "candidate_sha256": bool(re.fullmatch(r"[0-9a-fA-F]{64}", candidate_sha256)),
@@ -265,6 +270,7 @@ def _final_holdout_result_gate_for_path(*, result_path: Path, todo: str) -> Evid
         "stateful_simulator": stateful_simulator,
         "rows": rows > 0,
         "sequence_contract": sequence_contract,
+        "holdout_provenance": provenance_valid,
     }
     evidence = (
         f"result_path={result_path} "
@@ -273,7 +279,8 @@ def _final_holdout_result_gate_for_path(*, result_path: Path, todo: str) -> Evid
         f"manifest_candidate_match={int(checks['manifest_candidate_match'])} "
         f"metrics_candidate_match={int(checks['metrics_candidate_match'])} "
         f"stateful_simulator={int(stateful_simulator)} rows={rows:.12g} "
-        f"sequence_contract={int(sequence_contract)}"
+        f"sequence_contract={int(sequence_contract)} "
+        f"holdout_provenance={int(provenance_valid)} errors={';'.join(provenance_errors) or 'none'}"
     )
     if all(checks.values()):
         return EvidenceGate(
@@ -462,6 +469,8 @@ def _shadow_gate(
             max_price_error=max_price_error,
             max_size_error=max_size_error,
             max_fill_rate_error=max_fill_rate_error,
+            min_observed_coverage=1.0,
+            min_observations=min_shadow_observations,
         )
     except Exception as exc:
         return EvidenceGate(
@@ -477,6 +486,8 @@ def _shadow_gate(
         f"mean_abs_price_error={report.validation.mean_abs_price_error:.12g} "
         f"mean_abs_size_error={report.validation.mean_abs_size_error:.12g} "
         f"fill_rate_error={report.validation.fill_rate_error:.12g} "
+        f"fill_mismatch_rate={report.validation.fill_mismatch_rate:.12g} "
+        f"observed_coverage={report.observed_coverage:.12g} unobserved_decisions={len(report.unobserved_decisions)} "
         f"max_price_error={max_price_error if max_price_error is not None else 'none'} "
         f"max_size_error={max_size_error if max_size_error is not None else 'none'} "
         f"max_fill_rate_error={max_fill_rate_error if max_fill_rate_error is not None else 'none'}"
@@ -934,11 +945,20 @@ def _pretraining_artifact_status(artifact_path: Path, *, selected_l2_path: Path)
     pipeline_completed = _truthy_csv_value(row.get("pipeline_completed", row.get("passed", "0")))
     artifact_l2_path = row.get("l2_path", "")
     l2_match = artifact_l2_path == str(selected_l2_path)
+    learned = _truthy_csv_value(row.get("learned_pretraining"))
+    model_kind = row.get("model_kind", "legacy_unverified")
+    learned_contract = (
+        learned and model_kind == "masked_l2_encoder_v1"
+        and _artifact_hash_matches(row.get("l2_path", ""), row.get("l2_sha256", ""))
+        and _artifact_hash_matches(row.get("checkpoint_path", ""), row.get("checkpoint_sha256", ""))
+        and _artifact_hash_matches(row.get("training_manifest_path", ""), row.get("training_manifest_sha256", ""))
+    )
     evidence = (
         f"artifact_present=1 pipeline_completed={int(pipeline_completed)} "
-        f"artifact_l2_match={int(l2_match)} artifact={artifact_path}"
+        f"artifact_l2_match={int(l2_match)} learned_pretraining={int(learned)} "
+        f"model_kind={model_kind} learned_contract={int(learned_contract)} artifact={artifact_path}"
     )
-    return pipeline_completed and l2_match, evidence
+    return pipeline_completed and l2_match and learned_contract, evidence
 
 
 def _truthy_csv_value(value: str | None) -> bool:

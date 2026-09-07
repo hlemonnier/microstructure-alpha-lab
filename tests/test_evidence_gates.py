@@ -1,5 +1,6 @@
 import csv
 import json
+import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -9,7 +10,10 @@ from lob_forge.evidence_gates import (
     format_evidence_gate_report,
     verify_l2_sequence_experiment_artifact,
 )
-from lob_forge.holdout import build_holdout_manifest, sha256_file, write_development_csv, write_holdout_manifest
+from lob_forge.holdout import (
+    build_holdout_manifest, sha256_file, write_development_csv, write_holdout_manifest,
+    canonical_json_sha256, reserve_final_holdout_evaluation, write_final_holdout_result,
+)
 from lob_forge.ml_models import SEQUENCE_ECONOMICS_VERSION
 from lob_forge.study_plan import build_expected_edge_run_plan, write_expected_edge_run_plan
 
@@ -416,11 +420,13 @@ def test_shadow_evidence_gate_validates_only_explicit_observations(tmp_path: Pat
     )
 
     gate = next(gate for gate in report.gates if gate.gate_id == "real_shadow_fill_validation")
-    assert gate.passed
+    assert not gate.passed
     assert "observed_shadow_rows=1 matched=1" in gate.evidence
+    assert "observed_coverage=0.5" in gate.evidence
+    assert "unobserved_decisions=1" in gate.evidence
 
 
-def test_evidence_gates_pass_pretraining_when_artifact_matches_l2(tmp_path: Path) -> None:
+def test_mean_imputation_completion_does_not_certify_learned_pretraining(tmp_path: Path) -> None:
     capped_plan = _write_plan(tmp_path / "capped" / "run_plan.json", profile="local16_60day")
     full_plan = _write_plan(tmp_path / "full" / "run_plan.json", profile="cloud_full")
     audit = tmp_path / "audit.csv"
@@ -449,7 +455,8 @@ def test_evidence_gates_pass_pretraining_when_artifact_matches_l2(tmp_path: Path
     )
 
     pretraining_gate = next(gate for gate in report.gates if gate.gate_id == "self_supervised_l2_pretraining")
-    assert pretraining_gate.passed
+    assert not pretraining_gate.passed
+    assert "learned_pretraining=0" in pretraining_gate.evidence
     assert "pipeline_completed=1" in pretraining_gate.evidence
     assert "artifact_l2_match=1" in pretraining_gate.evidence
 
@@ -521,7 +528,10 @@ def test_sequence_model_gate_requires_pipeline_completed_artifacts(tmp_path: Pat
             pretraining_artifact=pretraining,
         )
     gate = next(gate for gate in report.gates if gate.gate_id == "sequence_transformer_tcn_experiments")
-    assert gate.passed
+    if importlib.util.find_spec("torch") is None:
+        assert not gate.passed
+    else:
+        assert gate.passed
     assert "pipeline_completed=1" in gate.evidence
 
     _write_sequence_model_artifact(
@@ -772,23 +782,25 @@ def _write_kelly(path: Path, values: list[float]) -> None:
 
 def _write_final_holdout_result(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    candidate_sha256 = "a" * 64
-    path.write_text(
-        json.dumps(
-            {
-                "candidate_sha256": candidate_sha256,
-                "final_evaluation": True,
-                "manifest": {"candidate_sha256": candidate_sha256},
-                "metrics": {
-                    "candidate_sha256": candidate_sha256,
-                    "rows": 10,
-                    "stateful_simulator": True,
-                    "net_pnl": -1.25,
-                },
-            },
-            sort_keys=True,
-        )
-        + "\n"
+    source = path.with_suffix(".source.csv")
+    source.write_text("date,label\nheldout,1\n")
+    candidate = {"feature": "signal", "threshold": 0.5}
+    candidate_path = path.with_suffix(".candidate.json")
+    candidate_path.write_text(json.dumps(candidate))
+    candidate_sha256 = canonical_json_sha256(candidate)
+    manifest = build_holdout_manifest(
+        source, split_column="date", holdout_values=["heldout"],
+        created_at_utc="2026-09-07T00:00:00Z", git_commit="a" * 40,
+        candidate_sha256=candidate_sha256,
+    )
+    reservation = reserve_final_holdout_evaluation(
+        manifest=manifest, candidate_sha256=candidate_sha256, explicit_final_evaluation=True,
+    )
+    write_final_holdout_result(
+        manifest=manifest, candidate_sha256=candidate_sha256, explicit_final_evaluation=True,
+        candidate_path=candidate_path, reservation=reservation, output_path=path,
+        metrics={"candidate": candidate, "candidate_sha256": candidate_sha256,
+                 "rows": 1, "stateful_simulator": True, "net_pnl": -1.25},
     )
 
 
@@ -834,6 +846,9 @@ def _write_l2(path: Path) -> None:
         {"event_type": "delta", "side": "bid", "price": "100.0", "size": "0.8", "sequence": "2", "venue": "bybit"},
         {"event_type": "delta", "side": "ask", "price": "101.0", "size": "0.6", "sequence": "2", "venue": "bybit"},
     ]
+    for row in rows:
+        row["exchange_timestamp"] = str(1700000000000 + int(row["sequence"]))
+        row["symbol"] = "BTCUSDT"
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
@@ -857,6 +872,8 @@ def _write_pretraining_artifact(path: Path, *, l2_path: Path) -> None:
             "zero_reconstruction_mse": "1.0",
             "mean_abs_error": "0.2",
             "pipeline_completed": "1",
+            "model_kind": "observed_mean_imputation_baseline",
+            "learned_pretraining": "0",
         }
     ]
     with path.open("w", newline="") as handle:

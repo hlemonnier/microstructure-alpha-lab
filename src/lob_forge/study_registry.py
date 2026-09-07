@@ -186,6 +186,7 @@ def write_expected_edge_candidate_pvalues(
     fields = [
         "hypothesis_id",
         "metric",
+        "inference_method",
         "p_value",
         "procedure_sha256",
         "config_sha256",
@@ -202,7 +203,8 @@ def write_expected_edge_candidate_pvalues(
             writer.writerow(
                 {
                     "hypothesis_id": record["hypothesis_id"],
-                    "metric": "validation_selected_procedure_fold_hac_p_value",
+                    "metric": "validation_selected_procedure_fold_mean_p_value",
+                    "inference_method": record["inference_method"],
                     "p_value": _format_float(float(str(record["p_value"]))),
                     "procedure_sha256": record["procedure_sha256"],
                     # Retained as a compatibility alias for generic p-value
@@ -417,6 +419,9 @@ def expected_edge_procedure_pvalues(attempts: Sequence[ExpectedEdgeCandidateAtte
     for (artifact_path, audit_path), group in sorted(grouped.items()):
         first = group[0]
         audit_p_value = _read_audit_p_value(Path(audit_path))
+        with Path(audit_path).open(newline="") as handle:
+            audit_row = next(csv.DictReader(handle), {})
+        inference_method = audit_row.get("p_value_method") or "legacy_hac_z_proxy"
         config = json.loads(first.config_json)
         config.pop("edge_threshold_bps", None)
         config.pop("model_class", None)
@@ -434,6 +439,7 @@ def expected_edge_procedure_pvalues(attempts: Sequence[ExpectedEdgeCandidateAtte
                     f"fee_{_fee_token(first.taker_fee_bps)}:selected_procedure:{procedure_sha256[:12]}"
                 ),
                 "p_value": audit_p_value,
+                "inference_method": inference_method,
                 "procedure_sha256": procedure_sha256,
                 "artifact_path": artifact_path,
                 "audit_path": audit_path,
