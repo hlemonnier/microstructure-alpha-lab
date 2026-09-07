@@ -1,7 +1,7 @@
 import pytest
 
 np = pytest.importorskip("numpy")
-pytest.importorskip("pandas")
+pd = pytest.importorskip("pandas")
 
 from lob_forge.boundary_weighted_boost import asset_class_weights, recover_natural_posterior  # noqa: E402
 
@@ -31,3 +31,25 @@ def test_natural_probability_recovery_inverts_class_weighting_per_asset():
         np.testing.assert_allclose(recover_natural_posterior(p, prior, class_balanced=False), p)
     with pytest.raises(ValueError, match="positive"):
         recover_natural_posterior(p, np.array([0, 0.5, 0.5]), class_balanced=True)
+
+
+def test_fitted_balanced_tree_restores_asset_priors_with_no_predictive_features(tmp_path):
+    pytest.importorskip("sklearn")
+    joblib = pytest.importorskip("joblib")
+    from lob_forge.boundary_weighted_boost import fit_weighted_boost
+
+    x = {s: pd.DataFrame({"observed": np.zeros(600)}) for s in ["BTCUSDT", "ETHUSDT"]}
+    y = {
+        "BTCUSDT": np.repeat([-1, 0, 1], [100, 200, 300]),
+        "ETHUSDT": np.repeat([-1, 0, 1], [300, 200, 100]),
+    }
+    model = fit_weighted_boost(x, y, leaves=7, class_balanced=True)
+    path = tmp_path / "model.joblib"
+    joblib.dump(model, path)
+    restored = joblib.load(path)
+    for index, symbol in enumerate(model.symbols):
+        actual = model.predict_proba(x[symbol].iloc[:5], symbol)
+        np.testing.assert_allclose(actual, np.tile(model.priors[index], (5, 1)), atol=1e-7)
+        np.testing.assert_array_equal(actual, restored.predict_proba(x[symbol].iloc[:5], symbol))
+    with pytest.raises(ValueError, match="schema"):
+        model.predict_proba(pd.DataFrame({"future_target": [0.0]}), "BTCUSDT")
