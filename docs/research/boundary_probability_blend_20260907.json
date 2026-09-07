@@ -1,0 +1,19 @@
+{
+  "confirmation": "No substantial claim from these six reused asset/date assessments.",
+  "decision_policy": "Equal blend of training class priors and previous noon frequencies, already registered and causally evaluated.",
+  "evidence_status": "Development only; explicitly reused dates.",
+  "experiment_id": "boundary_probability_blend_20260907",
+  "hypothesis": "Average the complementary pooled neural and full-day boosted-tree posteriors to reduce model variance.",
+  "neural": "pooled_mlp from the frozen pooled-neural experiment",
+  "neural_weights": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "planned_trials": 30,
+  "registered_at_utc": "2026-09-07T15:41:14.461747+00:00",
+  "selection": "Compare mean development balanced accuracy, with natural log loss as tiebreak, to freeze a single weight before independent evaluation. These development outcomes are not independent evidence.",
+  "tree": "full_day/event_cross/hgb_7 from the frozen event experiment"
+}
