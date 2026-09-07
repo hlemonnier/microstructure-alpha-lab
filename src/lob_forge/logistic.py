@@ -13,6 +13,7 @@ from lob_forge.baselines import (
     Metrics,
     compute_metrics,
     evaluate_economics,
+    pool_metrics,
 )
 from lob_forge.protocol import assert_valid_selection_metric
 
@@ -31,6 +32,7 @@ class SoftmaxModel:
     features: list[str]
     standardizer: Standardizer
     weights: list[list[float]]
+    class_weights: tuple[float, ...] = (1.0, 1.0, 1.0)
 
 
 @dataclass(frozen=True)
@@ -83,9 +85,9 @@ def run_logistic_walk_forward(
         raise ValueError("no rows available for logistic walk-forward evaluation")
     if train_size <= 0 or validation_size <= 0 or test_size <= 0:
         raise ValueError("train_size, validation_size, and test_size must be positive")
-    effective_step = step_size or test_size
-    if effective_step <= 0:
-        raise ValueError("step_size must be positive")
+    effective_step = test_size if step_size is None else step_size
+    if effective_step < test_size:
+        raise ValueError("step_size must be at least test_size to avoid repeated OOS observations")
 
     feature_names = _available_features(rows, features)
     threshold_values = alpha_thresholds or DEFAULT_ALPHA_THRESHOLDS
@@ -162,12 +164,14 @@ def fit_softmax_model(
     l2: float = 0.001,
     class_weighting: str = "balanced",
 ) -> SoftmaxModel:
+    if not rows:
+        raise ValueError("cannot fit softmax on empty rows")
     if epochs <= 0:
         raise ValueError("epochs must be positive")
-    if learning_rate <= 0:
-        raise ValueError("learning_rate must be positive")
-    if l2 < 0:
-        raise ValueError("l2 must be non-negative")
+    if not math.isfinite(learning_rate) or learning_rate <= 0:
+        raise ValueError("learning_rate must be finite and positive")
+    if not math.isfinite(l2) or l2 < 0:
+        raise ValueError("l2 must be finite and non-negative")
     if class_weighting not in {"balanced", "none"}:
         raise ValueError("class_weighting must be one of: balanced, none")
 
@@ -197,7 +201,12 @@ def fit_softmax_model(
                     gradient += l2 * weights[class_idx][feature_idx]
                 weights[class_idx][feature_idx] -= step * gradient
 
-    return SoftmaxModel(features=features, standardizer=standardizer, weights=weights)
+    counts = [y_indices.count(index) for index in range(len(CLASSES))]
+    class_weights = tuple(
+        len(rows) / (len(CLASSES) * count) if class_weighting == "balanced" and count else 1.0
+        for count in counts
+    )
+    return SoftmaxModel(features=features, standardizer=standardizer, weights=weights, class_weights=class_weights)
 
 
 def select_logistic_threshold(
@@ -258,15 +267,36 @@ def predict_side(model: SoftmaxModel, row: dict[str, str], alpha_threshold: floa
 
 
 def predict_probabilities(model: SoftmaxModel, row: dict[str, str]) -> list[float]:
+    """Undo training class weights to return original-prior probabilities.
+
+    This reverses the weighted loss's posterior tilt; it is not a claim of
+    empirical calibration or invariance to deployment prior shift.
+    """
+    if len(model.class_weights) != len(CLASSES) or any(
+        not math.isfinite(weight) or weight <= 0 for weight in model.class_weights
+    ):
+        raise ValueError("class weights must be finite and positive for each class")
+    weighted = predict_balanced_scores(model, row)
+    values = [probability / weight for probability, weight in zip(weighted, model.class_weights)]
+    total = sum(values)
+    return [value / total for value in values]
+
+
+def predict_balanced_scores(model: SoftmaxModel, row: dict[str, str]) -> list[float]:
+    """Raw softmax scores under the class-weighted training distribution."""
     x = [1.0, *standardize_row(row, model.features, model.standardizer)]
     return _softmax([_dot(class_weights, x) for class_weights in model.weights])
 
 
 def fit_standardizer(rows: list[dict[str, str]], features: list[str]) -> Standardizer:
+    if not rows:
+        raise ValueError("cannot standardize empty training rows")
     means: list[float] = []
     scales: list[float] = []
     for feature in features:
         values = [float(row[feature]) for row in rows]
+        if not all(math.isfinite(value) for value in values):
+            raise ValueError(f"non-finite training feature: {feature}")
         mean = sum(values) / len(values)
         variance = sum((value - mean) ** 2 for value in values) / len(values)
         scale = variance**0.5
@@ -276,10 +306,13 @@ def fit_standardizer(rows: list[dict[str, str]], features: list[str]) -> Standar
 
 
 def standardize_row(row: dict[str, str], features: list[str], standardizer: Standardizer) -> list[float]:
-    return [
+    result = [
         (float(row[feature]) - mean) / scale
         for feature, mean, scale in zip(features, standardizer.means, standardizer.scales)
     ]
+    if not all(math.isfinite(value) for value in result):
+        raise ValueError("non-finite model feature")
+    return result
 
 
 def format_logistic_walk_forward_results(folds: list[LogisticWalkForwardFold]) -> str:
@@ -377,8 +410,8 @@ def format_logistic_walk_forward_results(folds: list[LogisticWalkForwardFold]) -
                 "",
                 "",
                 "",
-                _fmt(weighted_test_macro_f1 / total_test_rows if total_test_rows else 0.0),
-                _fmt(weighted_test_bal_acc / total_test_rows if total_test_rows else 0.0),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).macro_f1),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).balanced_accuracy),
                 _fmt(weighted_test_accuracy / total_test_rows if total_test_rows else 0.0),
                 _fmt(weighted_test_coverage / total_test_rows if total_test_rows else 0.0),
                 str(total_test_signals),

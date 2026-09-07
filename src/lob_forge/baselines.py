@@ -11,7 +11,6 @@ from lob_forge.protocol import assert_valid_selection_metric
 
 CLASSES = [-1, 0, 1]
 DEFAULT_FEATURES = [
-    "microprice_deviation",
     "top_imbalance",
     "top_imbalance_mean_5",
     "quote_ofi_normalized",
@@ -41,6 +40,7 @@ class Metrics:
     balanced_accuracy: float
     macro_f1: float
     coverage: float
+    confusion_counts: tuple[int, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -321,9 +321,9 @@ def run_walk_forward_thresholds(
         raise ValueError("no rows available for walk-forward evaluation")
     if train_size <= 0 or validation_size <= 0 or test_size <= 0:
         raise ValueError("train_size, validation_size, and test_size must be positive")
-    effective_step = step_size or test_size
-    if effective_step <= 0:
-        raise ValueError("step_size must be positive")
+    effective_step = test_size if step_size is None else step_size
+    if effective_step < test_size:
+        raise ValueError("step_size must be at least test_size to avoid repeated OOS observations")
 
     feature_names = _available_features(rows, features)
     threshold_values = thresholds or DEFAULT_THRESHOLDS
@@ -408,9 +408,9 @@ def run_calendar_walk_forward_thresholds(
         raise ValueError("calendar walk-forward requires a source_date column")
     if train_days <= 0 or validation_days <= 0 or test_days <= 0:
         raise ValueError("train_days, validation_days, and test_days must be positive")
-    effective_step = step_days or test_days
-    if effective_step <= 0:
-        raise ValueError("step_days must be positive")
+    effective_step = test_days if step_days is None else step_days
+    if effective_step < test_days:
+        raise ValueError("step_days must be at least test_days to avoid repeated OOS observations")
 
     feature_names = _available_features(rows, features)
     threshold_values = thresholds or DEFAULT_THRESHOLDS
@@ -507,9 +507,9 @@ def run_conditional_walk_forward_thresholds(
         raise ValueError("regime_bins must be positive")
     if min_validation_trades < 0:
         raise ValueError("min_validation_trades cannot be negative")
-    effective_step = step_size or test_size
-    if effective_step <= 0:
-        raise ValueError("step_size must be positive")
+    effective_step = test_size if step_size is None else step_size
+    if effective_step < test_size:
+        raise ValueError("step_size must be at least test_size to avoid repeated OOS observations")
 
     feature_names = _available_features(rows, features)
     selected_regime_features = _available_regime_features(rows, regime_features)
@@ -1266,6 +1266,8 @@ def compute_metrics(y_true: list[int], y_pred: list[int]) -> Metrics:
         raise ValueError("y_true and y_pred length mismatch")
     if not y_true:
         raise ValueError("cannot compute metrics on empty input")
+    if any(value not in CLASSES for value in [*y_true, *y_pred]):
+        raise ValueError("labels must use the economic classes -1, 0, 1")
 
     correct = sum(1 for true, pred in zip(y_true, y_pred) if true == pred)
     recalls: list[float] = []
@@ -1287,7 +1289,31 @@ def compute_metrics(y_true: list[int], y_pred: list[int]) -> Metrics:
         balanced_accuracy=sum(recalls) / len(recalls),
         macro_f1=sum(f1s) / len(f1s),
         coverage=non_flat / len(y_pred),
+        confusion_counts=tuple(
+            sum(true == actual and pred == predicted for true, pred in zip(y_true, y_pred))
+            for actual in CLASSES for predicted in CLASSES
+        ),
     )
+
+
+def pool_metrics(metrics: list[Metrics]) -> Metrics:
+    """Pool class counts, since fold-averaged F1/recall are not pooled scores."""
+    if not metrics or any(len(metric.confusion_counts) != 9 for metric in metrics):
+        raise ValueError("pooled metrics require per-class confusion counts")
+    counts = tuple(sum(metric.confusion_counts[i] for metric in metrics) for i in range(9))
+    n = sum(counts)
+    if n == 0:
+        raise ValueError("cannot pool empty predictions")
+    recalls = []
+    f1s = []
+    for k in range(3):
+        tp = counts[3 * k + k]
+        actual = sum(counts[3 * k : 3 * k + 3])
+        predicted = sum(counts[3 * i + k] for i in range(3))
+        recalls.append(tp / actual if actual else 0.0)
+        f1s.append(2 * tp / (actual + predicted) if actual + predicted else 0.0)
+    return Metrics(n, sum(counts[3*k+k] for k in range(3))/n, sum(recalls)/3,
+        sum(f1s)/3, 1-sum(counts[3*i+1] for i in range(3))/n, counts)
 
 
 def format_baseline_results(results: list[BaselineResult], *, top: int = 10) -> str:
@@ -1504,8 +1530,8 @@ def format_walk_forward_results(folds: list[WalkForwardFoldResult]) -> str:
                 "",
                 "",
                 "",
-                _fmt(weighted_test_macro_f1 / total_test_rows if total_test_rows else 0.0),
-                _fmt(weighted_test_bal_acc / total_test_rows if total_test_rows else 0.0),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).macro_f1),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).balanced_accuracy),
                 _fmt(weighted_test_accuracy / total_test_rows if total_test_rows else 0.0),
                 _fmt(weighted_test_coverage / total_test_rows if total_test_rows else 0.0),
                 str(total_test_signals),
@@ -1626,8 +1652,8 @@ def format_calendar_walk_forward_results(folds: list[CalendarWalkForwardFoldResu
                 "",
                 "",
                 "",
-                _fmt(weighted_test_macro_f1 / total_test_rows if total_test_rows else 0.0),
-                _fmt(weighted_test_bal_acc / total_test_rows if total_test_rows else 0.0),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).macro_f1),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).balanced_accuracy),
                 _fmt(weighted_test_accuracy / total_test_rows if total_test_rows else 0.0),
                 _fmt(weighted_test_coverage / total_test_rows if total_test_rows else 0.0),
                 str(total_test_signals),
@@ -1750,8 +1776,8 @@ def format_conditional_walk_forward_results(folds: list[ConditionalWalkForwardFo
                 "",
                 "",
                 "",
-                _fmt(weighted_test_macro_f1 / total_test_rows if total_test_rows else 0.0),
-                _fmt(weighted_test_bal_acc / total_test_rows if total_test_rows else 0.0),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).macro_f1),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).balanced_accuracy),
                 _fmt(weighted_test_accuracy / total_test_rows if total_test_rows else 0.0),
                 _fmt(weighted_test_coverage / total_test_rows if total_test_rows else 0.0),
                 str(total_test_signals),

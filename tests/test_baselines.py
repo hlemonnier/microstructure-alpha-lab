@@ -327,7 +327,7 @@ def test_run_walk_forward_thresholds_purges_label_overlap(tmp_path) -> None:
     assert folds[0].purged_validation_rows == 1
     assert folds[0].validation_rows == 3
     assert folds[0].test_rows == 4
-    assert folds[0].result.feature == "microprice_deviation"
+    assert folds[0].result.feature == "top_imbalance"
 
 
 def test_calendar_walk_forward_splits_by_source_date(tmp_path) -> None:

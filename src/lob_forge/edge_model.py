@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import csv
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Sequence
 
-from lob_forge.baselines import DEFAULT_FEATURES, EconomicMetrics, Metrics, compute_metrics, evaluate_economics
+from lob_forge.baselines import DEFAULT_FEATURES, EconomicMetrics, Metrics, compute_metrics, evaluate_economics, pool_metrics
 from lob_forge.live_validation import ShadowDecision, write_shadow_decisions
 from lob_forge.logistic import Standardizer, fit_standardizer, standardize_row
 from lob_forge.protocol import assert_valid_selection_metric
@@ -249,6 +250,8 @@ def run_edge_shadow_decisions_streaming(
                 taker_fee_bps=taker_fee_bps,
                 slippage_bps=slippage_bps,
             )
+            if fold_fit.result.name == "always_flat":
+                side, predicted_edge_bps = 0, 0.0
             if side == 0 and not include_flat:
                 continue
             intended_price = _intended_order_price(row, side=side, order_type=order_type)
@@ -263,7 +266,7 @@ def run_edge_shadow_decisions_streaming(
                     timestamp_ms=_event_time_ms(row),
                     venue=venue,
                     symbol=symbol.upper(),
-                    model_name=model_name,
+                    model_name="always_flat" if fold_fit.result.name == "always_flat" else model_name,
                     predicted_side=side,
                     predicted_edge_bps=predicted_edge_bps,
                     order_type=order_type,
@@ -421,10 +424,9 @@ def predict_side(
     taker_fee_bps: float,
     slippage_bps: float,
 ) -> int:
-    long_gross_bps, short_gross_bps = predict_gross_edges_bps(model, row)
-    estimated_cost_bps = 2.0 * (taker_fee_bps + slippage_bps)
-    long_net_bps = long_gross_bps - estimated_cost_bps
-    short_net_bps = short_gross_bps - estimated_cost_bps
+    long_net_bps, short_net_bps = predict_net_edges_bps(
+        model, row, taker_fee_bps=taker_fee_bps, slippage_bps=slippage_bps
+    )
     if long_net_bps > edge_threshold_bps and long_net_bps >= short_net_bps:
         return 1
     if short_net_bps > edge_threshold_bps and short_net_bps > long_net_bps:
@@ -440,8 +442,10 @@ def predict_net_edges_bps(
     slippage_bps: float,
 ) -> tuple[float, float]:
     long_gross_bps, short_gross_bps = predict_gross_edges_bps(model, row)
-    estimated_cost_bps = 2.0 * (taker_fee_bps + slippage_bps)
-    return long_gross_bps - estimated_cost_bps, short_gross_bps - estimated_cost_bps
+    if any(not math.isfinite(value) or value < 0 for value in (taker_fee_bps, slippage_bps)):
+        raise ValueError("taker_fee_bps and slippage_bps must be finite and non-negative")
+    cost = taker_fee_bps + slippage_bps
+    return (1.0-cost/10_000.0)*long_gross_bps-2.0*cost, (1.0+cost/10_000.0)*short_gross_bps-2.0*cost
 
 
 def predict_gross_edges_bps(model: EdgeModel, row: dict[str, str]) -> tuple[float, float]:
@@ -544,8 +548,8 @@ def format_edge_walk_forward_results(folds: list[EdgeWalkForwardFold]) -> str:
                 "",
                 "",
                 "",
-                _fmt(weighted_test_macro_f1 / total_test_rows if total_test_rows else 0.0),
-                _fmt(weighted_test_bal_acc / total_test_rows if total_test_rows else 0.0),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).macro_f1),
+                _fmt(pool_metrics([fold.result.test for fold in folds]).balanced_accuracy),
                 _fmt(weighted_test_accuracy / total_test_rows if total_test_rows else 0.0),
                 _fmt(weighted_test_coverage / total_test_rows if total_test_rows else 0.0),
                 str(total_test_signals),
@@ -666,52 +670,64 @@ def _make_constant_result(
 
 
 def _fit_ridge_weights(x_rows: list[list[float]], y_values: list[float], *, l2: float) -> list[float]:
-    feature_count = len(x_rows[0])
-    matrix = [[0.0 for _ in range(feature_count)] for _ in range(feature_count)]
-    vector = [0.0 for _ in range(feature_count)]
-    for x, y in zip(x_rows, y_values):
-        for row_idx in range(feature_count):
-            vector[row_idx] += x[row_idx] * y
-            for col_idx in range(feature_count):
-                matrix[row_idx][col_idx] += x[row_idx] * x[col_idx]
-    for idx in range(1, feature_count):
-        matrix[idx][idx] += l2
-    return _solve_linear_system(matrix, vector)
+    """Solve the augmented least-squares problem using Householder QR.
 
-
-def _solve_linear_system(matrix: list[list[float]], vector: list[float]) -> list[float]:
-    n = len(vector)
-    augmented = [row[:] + [value] for row, value in zip(matrix, vector)]
-    for col in range(n):
-        pivot = max(range(col, n), key=lambda row_idx: abs(augmented[row_idx][col]))
-        if abs(augmented[pivot][col]) < 1e-12:
-            augmented[col][col] += 1e-8
-            pivot = col
-        augmented[col], augmented[pivot] = augmented[pivot], augmented[col]
-        pivot_value = augmented[col][col]
-        if abs(pivot_value) < 1e-12:
-            raise ValueError("singular ridge system")
-        for idx in range(col, n + 1):
-            augmented[col][idx] /= pivot_value
-        for row_idx in range(n):
-            if row_idx == col:
-                continue
-            factor = augmented[row_idx][col]
-            for idx in range(col, n + 1):
-                augmented[row_idx][idx] -= factor * augmented[col][idx]
-    return [augmented[row_idx][n] for row_idx in range(n)]
+    This avoids squaring the condition number in X.T @ X. The intercept is
+    unpenalized. A singular unregularized fit fails rather than adding hidden
+    jitter or returning an arbitrary coefficient vector.
+    """
+    columns = len(x_rows[0])
+    if len(x_rows) != len(y_values) or any(len(row) != columns for row in x_rows):
+        raise ValueError("ridge design and target dimensions do not match")
+    if not math.isfinite(l2) or l2 < 0:
+        raise ValueError("l2 must be finite and non-negative")
+    if not all(math.isfinite(v) for row in x_rows for v in row) or not all(math.isfinite(v) for v in y_values):
+        raise ValueError("ridge inputs must be finite")
+    matrix = [list(row) for row in x_rows]
+    target = list(y_values)
+    if l2 > 0:
+        penalty = math.sqrt(l2)
+        for column in range(1, columns):
+            matrix.append([penalty if j == column else 0.0 for j in range(columns)])
+            target.append(0.0)
+    if len(matrix) < columns:
+        raise ValueError("singular unregularized ridge design; use positive l2")
+    for column in range(columns):
+        vector = [matrix[i][column] for i in range(column, len(matrix))]
+        norm = math.hypot(*vector)
+        if norm <= 1e-12:
+            raise ValueError("singular unregularized ridge design; use positive l2")
+        vector = [v/norm for v in vector]
+        vector[0] += math.copysign(1.0, vector[0])
+        scale = math.hypot(*vector)
+        vector = [v/scale for v in vector]
+        for j in range(column, columns):
+            projection = 2*math.fsum(v*matrix[column+i][j] for i,v in enumerate(vector))
+            for i,v in enumerate(vector):
+                matrix[column+i][j] -= projection*v
+        projection = 2*math.fsum(v*target[column+i] for i,v in enumerate(vector))
+        for i,v in enumerate(vector):
+            target[column+i] -= projection*v
+    weights = [0.0]*columns
+    for i in range(columns-1, -1, -1):
+        weights[i] = (target[i]-math.fsum(matrix[i][j]*weights[j] for j in range(i+1,columns)))/matrix[i][i]
+    return weights
 
 
 def _long_taker_gross_bps(row: dict[str, str]) -> float:
     entry = float(row.get("entry_ask") or row["ask"])
     exit_price = float(row["future_bid"])
-    return 10_000.0 * (exit_price - entry) / entry if entry else 0.0
+    if not all(math.isfinite(x) and x > 0 for x in (entry, exit_price)):
+        raise ValueError("edge targets require finite positive executable prices")
+    return 10_000.0 * (exit_price - entry) / entry
 
 
 def _short_taker_gross_bps(row: dict[str, str]) -> float:
     entry = float(row.get("entry_bid") or row["bid"])
     exit_price = float(row["future_ask"])
-    return 10_000.0 * (entry - exit_price) / entry if entry else 0.0
+    if not all(math.isfinite(x) and x > 0 for x in (entry, exit_price)):
+        raise ValueError("edge targets require finite positive executable prices")
+    return 10_000.0 * (entry - exit_price) / entry
 
 
 def _evaluate_predictor(rows: list[dict[str, str]], predictor: Callable[[dict[str, str]], int]) -> Metrics:
@@ -778,7 +794,7 @@ def _validate_walk_forward_config(
         raise ValueError("train_size, validation_size, and test_size must be positive")
     if l2 < 0:
         raise ValueError("l2 must be non-negative")
-    effective_step = step_size or test_size
+    effective_step = test_size if step_size is None else step_size
     if effective_step <= 0:
         raise ValueError("step_size must be positive")
     if effective_step < test_size:
