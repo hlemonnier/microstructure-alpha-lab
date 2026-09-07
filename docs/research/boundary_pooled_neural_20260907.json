@@ -1,0 +1,47 @@
+{
+  "architecture": "Two ReLU hidden layers of width 64. For the four-member model, linear layers share the main weight matrix but have member-specific multiplicative input/output vectors and biases; output heads are independent. This is an inspired BatchEnsemble implementation, not a claimed exact TabM replication.",
+  "batch_size": 1024,
+  "checkpoint": "Best preceding-noon validation balanced accuracy, averaged equally across training assets; tie by natural log loss. Assessment cannot choose epoch.",
+  "confirmation": "The original substantial-gain gate remains unfulfilled. This screen cannot establish independent confirmation.",
+  "constant_features": "Drop columns that are constant in training only, before fitting the quantile transform.",
+  "epochs": 12,
+  "evidence_status": "Development only; no reserved evaluation observations opened.",
+  "experiment_id": "boundary_pooled_neural_20260907",
+  "features": "Frozen event_cross features, full-day eligible data, four training dates per fold.",
+  "gradient_norm_limit": 5.0,
+  "hidden_size": 64,
+  "hypothesis": "Shared cross-asset training, robust quantile normalization and parameter-sharing neural ensembles can reduce variance and improve transfer between activity regimes.",
+  "initialization": "Independent output heads; first input adapters are standard normal, all later multiplicative adapters start at one. The single-member control is an ordinary two-hidden-layer MLP.",
+  "learning_rate": 0.001,
+  "loss": "Average the cross-entropy losses of all ensemble members; weight by inverse class frequency within each training asset and equalize asset mass. Average member probabilities only for prediction.",
+  "normalization": "Training-only QuantileTransformer with 1024 quantiles, normal output, at most 100000 training observations, fixed seed; explicit asset indicator appended after normalization.",
+  "planned_model_fits": 12,
+  "posterior": "Convert balanced class posteriors to natural posteriors using the corresponding asset training priors.",
+  "primary_metric": "Unchanged three-class balanced accuracy; ordinary accuracy and natural log loss secondary.",
+  "references": [
+    "https://arxiv.org/abs/1803.06917",
+    "https://proceedings.iclr.cc/paper_files/paper/2025/file/c1ba41c694834aeef91ae161711d4939-Paper-Conference.pdf"
+  ],
+  "registered_at_utc": "2026-09-07T15:20:28.960314+00:00",
+  "seed": 20260907,
+  "splits": "Same May 21/22/23 development assessments, with preceding four training dates and one validation date.",
+  "threads": 2,
+  "variants": [
+    {
+      "members": 1,
+      "name": "individual_mlp",
+      "pooled": false
+    },
+    {
+      "members": 1,
+      "name": "pooled_mlp",
+      "pooled": true
+    },
+    {
+      "members": 4,
+      "name": "pooled_batchensemble",
+      "pooled": true
+    }
+  ],
+  "weight_decay": 0.01
+}
