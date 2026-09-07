@@ -1,0 +1,29 @@
+{
+  "event": "Both complete round-one procedures have been inspected before this record.",
+  "future_use": "These dates may now support development and diagnostics, but must never be counted again as unseen confirmation.",
+  "now_exposed_dates": [
+    "2023-05-24",
+    "2023-05-25",
+    "2023-05-26",
+    "2023-05-27",
+    "2023-05-28",
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11",
+    "2023-06-12"
+  ],
+  "recorded_at_utc": "2026-09-07T18:02:04.102649+00:00",
+  "research_gate_passed": false,
+  "summary_sha256": "acbd8312944d068dd8599a2c86634822425602fcd9a0b63dd93b004f7a826325"
+}

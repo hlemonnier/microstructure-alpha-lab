@@ -1,0 +1,5314 @@
+{
+  "evidence_status": "development_only_on_exposed_confirmation_dates",
+  "identity": {
+    "dependencies": {
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "pyarrow": "17.0.0",
+      "scikit-learn": "1.5.2"
+    },
+    "input_hashes": {
+      "data/research/boundary_exact_labels_20260907/dataset_manifest.json": "e0b8c5b5658d98b57558c4974fdc45ab43faf08cf93686913ada8a9a357eedb5",
+      "docs/research/boundary_confirmation_evidence_20260907.json": "acbd8312944d068dd8599a2c86634822425602fcd9a0b63dd93b004f7a826325",
+      "docs/research/boundary_confirmation_exposure_20260907.json": "28eef1021db79142d6779e244b94e966be1813a23c8f654e3e6db7a33c93e400",
+      "results/boundary_confirmation_exact_labels_20260907/frozen_study.json": "24618c66426aac78d0dac58b5a4a4f931ef941ccb0b356f7977008583139dd01",
+      "results/boundary_pooled_tree_confirmation_20260907/frozen_study.json": "2693130772ef24794f223b884ef99f6cf4c359e80b94c416d6e4d618f495dcf2",
+      "scripts/run_boundary_same_day_priors.py": "2402cbe7a3fabd6391bf10a2a1b119a37cd3cfd1fc0ab0176e6ec593ec47710d",
+      "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+      "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+      "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+      "tests/test_boundary_adaptive_priors.py": "640d9731e0461c28a8696c6b5e050068b691cf557b9731e0de1d549062aae855"
+    },
+    "protocol_sha256": "4fff028eff7454eab524dfb6eaae183295c3a0a74b603559404cb6bd2c70cb62",
+    "python": "3.12.14"
+  },
+  "leaderboard": [
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5393076585274709,
+        "ETHUSDT": 0.5320810491410486
+      },
+      "mean_delta_to_own_registered_policy": 0.01180144126349642,
+      "mean_delta_to_registered_reference": 0.02960959689585286,
+      "mean_delta_to_same_policy_matched_control": 0.019602189416911973,
+      "means": {
+        "balanced_accuracy": 0.5356943538342598,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.5052726068301667,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5360946104103637,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.014521754803733466
+        },
+        {
+          "balanced_accuracy": 0.4880176936428123,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.036112231019099605
+        },
+        {
+          "balanced_accuracy": 0.5403611198337663,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.012877870072295627
+        },
+        {
+          "balanced_accuracy": 0.5904111316752199,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.04350124849999082
+        },
+        {
+          "balanced_accuracy": 0.5786879846098139,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.04335232462244182
+        },
+        {
+          "balanced_accuracy": 0.567266663790994,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.028793227555161727
+        },
+        {
+          "balanced_accuracy": 0.522839543966392,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.03702348828015306
+        },
+        {
+          "balanced_accuracy": 0.5286317314706768,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.02571285468810014
+        },
+        {
+          "balanced_accuracy": 0.548459126370006,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.02192653999575972
+        },
+        {
+          "balanced_accuracy": 0.5252982049996384,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.035264763637212926
+        },
+        {
+          "balanced_accuracy": 0.6150585635585164,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.06135361571112441
+        },
+        {
+          "balanced_accuracy": 0.57304764458103,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.05745459207455239
+        },
+        {
+          "balanced_accuracy": 0.5412582938136028,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.015619291595844964
+        },
+        {
+          "balanced_accuracy": 0.43536023671854673,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.022536565014124682
+        },
+        {
+          "balanced_accuracy": 0.5161025221088975,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.03543797937025986
+        },
+        {
+          "balanced_accuracy": 0.5129307626661883,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.006096434849891363
+        },
+        {
+          "balanced_accuracy": 0.49226519820289394,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.022825245400627997
+        },
+        {
+          "balanced_accuracy": 0.5108057745693547,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.03143424559919733
+        },
+        {
+          "balanced_accuracy": 0.5582112196837496,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.07017236347442646
+        },
+        {
+          "balanced_accuracy": 0.5327790500127327,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.015248431681308072
+        }
+      ],
+      "policy": "forecast_3600",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5386873524200109,
+        "ETHUSDT": 0.5320134304872373
+      },
+      "mean_delta_to_own_registered_policy": 0.009785081722064121,
+      "mean_delta_to_registered_reference": 0.029265634515217166,
+      "mean_delta_to_same_policy_matched_control": 0.019258227036276287,
+      "means": {
+        "balanced_accuracy": 0.5353503914536241,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.5043537399798117,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5349744732410484,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.013401617634418217
+        },
+        {
+          "balanced_accuracy": 0.4854005150047876,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.03349505238107492
+        },
+        {
+          "balanced_accuracy": 0.5422123601165499,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.014729110355079233
+        },
+        {
+          "balanced_accuracy": 0.5912796405121854,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.04436975733695636
+        },
+        {
+          "balanced_accuracy": 0.5795785582345188,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.04424289824714672
+        },
+        {
+          "balanced_accuracy": 0.5662517997951568,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.027778363559324504
+        },
+        {
+          "balanced_accuracy": 0.5214835451099018,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.03566748942366288
+        },
+        {
+          "balanced_accuracy": 0.529292097312023,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.026373220529446406
+        },
+        {
+          "balanced_accuracy": 0.5487847008914868,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.022252114517240407
+        },
+        {
+          "balanced_accuracy": 0.5204858170254907,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.030452375663065245
+        },
+        {
+          "balanced_accuracy": 0.6133434503418569,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.059638502494464785
+        },
+        {
+          "balanced_accuracy": 0.5713090482153735,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.055715995708895905
+        },
+        {
+          "balanced_accuracy": 0.5405255755025727,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.014886573284814908
+        },
+        {
+          "balanced_accuracy": 0.4390346227768278,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.018862178955843578
+        },
+        {
+          "balanced_accuracy": 0.5163137358026643,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.03564919306402661
+        },
+        {
+          "balanced_accuracy": 0.5140887221144517,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.0072543942981547205
+        },
+        {
+          "balanced_accuracy": 0.4911505575419222,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.021710604739656303
+        },
+        {
+          "balanced_accuracy": 0.5113552036701288,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.03198367469997143
+        },
+        {
+          "balanced_accuracy": 0.5576094565110441,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.06957060030172096
+        },
+        {
+          "balanced_accuracy": 0.532533949352491,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.015003331021066435
+        }
+      ],
+      "policy": "forecast_3600",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5361668776848054,
+        "ETHUSDT": 0.5280421628626237
+      },
+      "mean_delta_to_own_registered_policy": 0.006539210542154507,
+      "mean_delta_to_registered_reference": 0.026019763335307554,
+      "mean_delta_to_same_policy_matched_control": 0.027133208312111367,
+      "means": {
+        "balanced_accuracy": 0.5321045202737145,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.4932129970362821,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5320736638536538,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.010500808247023652
+        },
+        {
+          "balanced_accuracy": 0.4895952552504143,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.037689792626701635
+        },
+        {
+          "balanced_accuracy": 0.5349847794608885,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.007501529699417808
+        },
+        {
+          "balanced_accuracy": 0.5578778675991142,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.010967984423885191
+        },
+        {
+          "balanced_accuracy": 0.5773803080337289,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.04204464804635688
+        },
+        {
+          "balanced_accuracy": 0.5654049722985538,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02693153606272153
+        },
+        {
+          "balanced_accuracy": 0.5252219718712602,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.03940591618502126
+        },
+        {
+          "balanced_accuracy": 0.5308082858829222,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.027889409100345652
+        },
+        {
+          "balanced_accuracy": 0.5481244148839821,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.021591828509735844
+        },
+        {
+          "balanced_accuracy": 0.49824441474872194,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.008210973386296422
+        },
+        {
+          "balanced_accuracy": 0.6064558597484133,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.05275091190102127
+        },
+        {
+          "balanced_accuracy": 0.5502084446782995,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.03461539217182197
+        },
+        {
+          "balanced_accuracy": 0.5483976014691891,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.022758599251431366
+        },
+        {
+          "balanced_accuracy": 0.4509506228940141,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.0069461788386573076
+        },
+        {
+          "balanced_accuracy": 0.514673595154396,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.034009052415758384
+        },
+        {
+          "balanced_accuracy": 0.5175256799099144,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.01069135209361749
+        },
+        {
+          "balanced_accuracy": 0.49302314168428246,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.023583188882016548
+        },
+        {
+          "balanced_accuracy": 0.5006498917414204,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.021278362771263076
+        },
+        {
+          "balanced_accuracy": 0.558527252875779,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.07048839666645573
+        },
+        {
+          "balanced_accuracy": 0.5419623814353414,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.024431763103916704
+        }
+      ],
+      "policy": "labels_3600",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5357908639427447,
+        "ETHUSDT": 0.5283005571537711
+      },
+      "mean_delta_to_own_registered_policy": 0.008152797977494571,
+      "mean_delta_to_registered_reference": 0.025960953609851005,
+      "mean_delta_to_same_policy_matched_control": 0.02004741839299713,
+      "means": {
+        "balanced_accuracy": 0.5320457105482579,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.502394092942744,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5320057507107615,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.010432895104131312
+        },
+        {
+          "balanced_accuracy": 0.47628252373089097,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.0243770611071783
+        },
+        {
+          "balanced_accuracy": 0.5389341383555599,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.01145088859408916
+        },
+        {
+          "balanced_accuracy": 0.5861665791609707,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.03925669598574172
+        },
+        {
+          "balanced_accuracy": 0.5754735035528811,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.040137843565509035
+        },
+        {
+          "balanced_accuracy": 0.5673743293997491,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.028900893163916808
+        },
+        {
+          "balanced_accuracy": 0.5189910061217703,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.03317495043553137
+        },
+        {
+          "balanced_accuracy": 0.5222765652308178,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.019357688448241206
+        },
+        {
+          "balanced_accuracy": 0.5467690908027568,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.020236504428510493
+        },
+        {
+          "balanced_accuracy": 0.5180408015328963,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.02800736017047084
+        },
+        {
+          "balanced_accuracy": 0.6096538052136188,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.055948857366226734
+        },
+        {
+          "balanced_accuracy": 0.5692087279738706,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.05361567546739299
+        },
+        {
+          "balanced_accuracy": 0.5386221025883844,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.01298310037062661
+        },
+        {
+          "balanced_accuracy": 0.4357138264519773,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.0221829752806941
+        },
+        {
+          "balanced_accuracy": 0.5152662579058047,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.03460171516716706
+        },
+        {
+          "balanced_accuracy": 0.5055011666295989,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.0013331611866980175
+        },
+        {
+          "balanced_accuracy": 0.4872726551947229,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.01783270239245699
+        },
+        {
+          "balanced_accuracy": 0.5099874762925374,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.030615947322380016
+        },
+        {
+          "balanced_accuracy": 0.5593559642986119,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.0713171080892887
+        },
+        {
+          "balanced_accuracy": 0.5280179398169775,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.01048732148555287
+        }
+      ],
+      "policy": "forecast_900",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5358244280413412,
+        "ETHUSDT": 0.5280932962366316
+      },
+      "mean_delta_to_own_registered_policy": 0.006393552407426485,
+      "mean_delta_to_registered_reference": 0.025874105200579534,
+      "mean_delta_to_same_policy_matched_control": 0.019960569983725657,
+      "means": {
+        "balanced_accuracy": 0.5319588621389866,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.5017409373798304,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5335462418524435,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.011973386245813289
+        },
+        {
+          "balanced_accuracy": 0.4783847120209922,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.026479249397279553
+        },
+        {
+          "balanced_accuracy": 0.5387538086341386,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.011270558872667813
+        },
+        {
+          "balanced_accuracy": 0.5865401841622131,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.03963030098698417
+        },
+        {
+          "balanced_accuracy": 0.576262729593767,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.04092706960639497
+        },
+        {
+          "balanced_accuracy": 0.5657883618666444,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02731492563081217
+        },
+        {
+          "balanced_accuracy": 0.5183927929914535,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.03257673730521454
+        },
+        {
+          "balanced_accuracy": 0.5230731661285322,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.020154289345955645
+        },
+        {
+          "balanced_accuracy": 0.5468908347411491,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.020358248366902754
+        },
+        {
+          "balanced_accuracy": 0.5139399151960643,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.02390647383363881
+        },
+        {
+          "balanced_accuracy": 0.6096951764324122,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.055990228585020174
+        },
+        {
+          "balanced_accuracy": 0.5706843217130341,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.05509126920655649
+        },
+        {
+          "balanced_accuracy": 0.5390437034352586,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.013404701217500814
+        },
+        {
+          "balanced_accuracy": 0.4379868344021999,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.019909967330471567
+        },
+        {
+          "balanced_accuracy": 0.5144442513672047,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.03377970862856708
+        },
+        {
+          "balanced_accuracy": 0.5058076867277008,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.0010266410885960697
+        },
+        {
+          "balanced_accuracy": 0.48307200075968904,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.013632047957423121
+        },
+        {
+          "balanced_accuracy": 0.5095672332637801,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.030195704293622727
+        },
+        {
+          "balanced_accuracy": 0.5590382656929054,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.07099940948358219
+        },
+        {
+          "balanced_accuracy": 0.5282650217981466,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.010734403466721998
+        }
+      ],
+      "policy": "forecast_900",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5355952662862278,
+        "ETHUSDT": 0.5272600900458538
+      },
+      "mean_delta_to_own_registered_policy": 0.0075347655952774885,
+      "mean_delta_to_registered_reference": 0.02534292122763392,
+      "mean_delta_to_same_policy_matched_control": 0.026456366204437733,
+      "means": {
+        "balanced_accuracy": 0.5314276781660409,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.49228359652145653,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5330457744581774,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.01147291885154722
+        },
+        {
+          "balanced_accuracy": 0.4813297450480079,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.029424282424295234
+        },
+        {
+          "balanced_accuracy": 0.532360131692916,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.004876881931445254
+        },
+        {
+          "balanced_accuracy": 0.5591769007503484,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.012267017575119443
+        },
+        {
+          "balanced_accuracy": 0.5766932825020523,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.04135762251468039
+        },
+        {
+          "balanced_accuracy": 0.5675741281715314,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.029100691935699086
+        },
+        {
+          "balanced_accuracy": 0.5260043913848267,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.04018833569858771
+        },
+        {
+          "balanced_accuracy": 0.5328213908821624,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.029902514099585775
+        },
+        {
+          "balanced_accuracy": 0.5488936563326058,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.02236106995835946
+        },
+        {
+          "balanced_accuracy": 0.49811005990864177,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.008076618546216302
+        },
+        {
+          "balanced_accuracy": 0.6064436330259046,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.052738685178512545
+        },
+        {
+          "balanced_accuracy": 0.5518838665627231,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.03629081405624557
+        },
+        {
+          "balanced_accuracy": 0.5478448261623561,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.022205823944598302
+        },
+        {
+          "balanced_accuracy": 0.43724962137117923,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.020647180361492184
+        },
+        {
+          "balanced_accuracy": 0.515431670976647,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.03476712823800934
+        },
+        {
+          "balanced_accuracy": 0.5163090109185631,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.00947468310226618
+        },
+        {
+          "balanced_accuracy": 0.4935036539365212,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.024063701134255266
+        },
+        {
+          "balanced_accuracy": 0.5015943620933034,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.02222283312314602
+        },
+        {
+          "balanced_accuracy": 0.560058570863943,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.07201971465461976
+        },
+        {
+          "balanced_accuracy": 0.5422248862784064,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.024694267946981763
+        }
+      ],
+      "policy": "labels_3600",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5356037356699799,
+        "ETHUSDT": 0.5255010079359254
+      },
+      "mean_delta_to_own_registered_policy": 0.004987062071392681,
+      "mean_delta_to_registered_reference": 0.024467614864545732,
+      "mean_delta_to_same_policy_matched_control": 0.022127601563148032,
+      "means": {
+        "balanced_accuracy": 0.5305523718029526,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.49934229518607165,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5439144457180549,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.02234159011142478
+        },
+        {
+          "balanced_accuracy": 0.4679278640347276,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.016022401411014908
+        },
+        {
+          "balanced_accuracy": 0.530910623673813,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.0034273739123423796
+        },
+        {
+          "balanced_accuracy": 0.5598350668504282,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.012925183675199126
+        },
+        {
+          "balanced_accuracy": 0.578738880940671,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.043403220953299126
+        },
+        {
+          "balanced_accuracy": 0.558051713103979,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.019578276868146782
+        },
+        {
+          "balanced_accuracy": 0.4927160998603899,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.006900044174150938
+        },
+        {
+          "balanced_accuracy": 0.5318019028368107,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.02888302605423415
+        },
+        {
+          "balanced_accuracy": 0.5574541965903164,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.03092161021607004
+        },
+        {
+          "balanced_accuracy": 0.4988430715983718,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.008809630235946359
+        },
+        {
+          "balanced_accuracy": 0.615151077610778,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.06144612976338604
+        },
+        {
+          "balanced_accuracy": 0.5662289502320335,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.05063589772555582
+        },
+        {
+          "balanced_accuracy": 0.5496795338246243,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.024040531606866422
+        },
+        {
+          "balanced_accuracy": 0.4349962498373453,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.022900551895326082
+        },
+        {
+          "balanced_accuracy": 0.5071422561277874,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.0264777133891497
+        },
+        {
+          "balanced_accuracy": 0.5233315705033129,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.016497242687016023
+        },
+        {
+          "balanced_accuracy": 0.4957668739202252,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.026326921117959284
+        },
+        {
+          "balanced_accuracy": 0.4854481180268993,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.006076589056741938
+        },
+        {
+          "balanced_accuracy": 0.5650482343952998,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.07700937818597658
+        },
+        {
+          "balanced_accuracy": 0.5480607063731848,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.030530088041760273
+        }
+      ],
+      "policy": "labels_cumulative",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5344498236503057,
+        "ETHUSDT": 0.5265394669042955
+      },
+      "mean_delta_to_own_registered_policy": 0.004929335545740529,
+      "mean_delta_to_registered_reference": 0.024409888338893578,
+      "mean_delta_to_same_policy_matched_control": 0.027772958055061015,
+      "means": {
+        "balanced_accuracy": 0.5304946452773005,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.4931349099757997,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5291364967115169,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.007563641104886665
+        },
+        {
+          "balanced_accuracy": 0.48676848211246515,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.03486301948875245
+        },
+        {
+          "balanced_accuracy": 0.5384768878037545,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.010993638042283704
+        },
+        {
+          "balanced_accuracy": 0.5752976294348844,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.028387746259655344
+        },
+        {
+          "balanced_accuracy": 0.5738955270429023,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.03855986705553022
+        },
+        {
+          "balanced_accuracy": 0.5667879561302216,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.028314519894389323
+        },
+        {
+          "balanced_accuracy": 0.5173301633420859,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.03151410765584706
+        },
+        {
+          "balanced_accuracy": 0.519263594270559,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.016344717487982385
+        },
+        {
+          "balanced_accuracy": 0.5466095476061287,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.02007696123188235
+        },
+        {
+          "balanced_accuracy": 0.5142133611559697,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.024179919793544224
+        },
+        {
+          "balanced_accuracy": 0.605560559736529,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.0518556118891369
+        },
+        {
+          "balanced_accuracy": 0.5540308338899063,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.03843778138342874
+        },
+        {
+          "balanced_accuracy": 0.5379629199562916,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.012323917738533752
+        },
+        {
+          "balanced_accuracy": 0.457183621186498,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.0007131805461734197
+        },
+        {
+          "balanced_accuracy": 0.5124435129726566,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.03177897023401885
+        },
+        {
+          "balanced_accuracy": 0.5004742355263878,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.006360092289909025
+        },
+        {
+          "balanced_accuracy": 0.48343705113822666,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.013997098335960773
+        },
+        {
+          "balanced_accuracy": 0.5065709118402695,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.027199382870112088
+        },
+        {
+          "balanced_accuracy": 0.5568585090920786,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.06881965288275538
+        },
+        {
+          "balanced_accuracy": 0.5275911045966784,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.010060486265253799
+        }
+      ],
+      "policy": "hybrid_900",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5341039802131757,
+        "ETHUSDT": 0.5262695701139394
+      },
+      "mean_delta_to_own_registered_policy": 0.006293862592794265,
+      "mean_delta_to_registered_reference": 0.0241020182251507,
+      "mean_delta_to_same_policy_matched_control": 0.027465087941318134,
+      "means": {
+        "balanced_accuracy": 0.5301867751635576,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.4935277033371991,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5273870806972117,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.0058142250905815485
+        },
+        {
+          "balanced_accuracy": 0.4879891283619926,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.036083665738279896
+        },
+        {
+          "balanced_accuracy": 0.539165039653676,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.011681789892205363
+        },
+        {
+          "balanced_accuracy": 0.5751096213487945,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.028199738173565525
+        },
+        {
+          "balanced_accuracy": 0.5733226674051018,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.03798700741772987
+        },
+        {
+          "balanced_accuracy": 0.5660103276617438,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02753689142591148
+        },
+        {
+          "balanced_accuracy": 0.5182249106604292,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.03240885497419027
+        },
+        {
+          "balanced_accuracy": 0.5196538155212338,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.016734938738657168
+        },
+        {
+          "balanced_accuracy": 0.5464316144590049,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.01989902808475852
+        },
+        {
+          "balanced_accuracy": 0.5166062696277222,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.026572828265296666
+        },
+        {
+          "balanced_accuracy": 0.6073609089157712,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.05365596106837922
+        },
+        {
+          "balanced_accuracy": 0.5546277163714279,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.039034663864950414
+        },
+        {
+          "balanced_accuracy": 0.5379981012146868,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.012359098996928997
+        },
+        {
+          "balanced_accuracy": 0.44998863185986593,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.007908169872805515
+        },
+        {
+          "balanced_accuracy": 0.5121669040422849,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.031502361303647225
+        },
+        {
+          "balanced_accuracy": 0.49853478181496763,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.008299546001329261
+        },
+        {
+          "balanced_accuracy": 0.48381594992485527,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.014375997122589357
+        },
+        {
+          "balanced_accuracy": 0.5058135935159597,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.026442064545802335
+        },
+        {
+          "balanced_accuracy": 0.5561212067747363,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.06808235056541317
+        },
+        {
+          "balanced_accuracy": 0.5274072334396863,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.00987661510826171
+        }
+      ],
+      "policy": "hybrid_900",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5338335075200945,
+        "ETHUSDT": 0.5250983866843473
+      },
+      "mean_delta_to_own_registered_policy": 0.005573034531457419,
+      "mean_delta_to_registered_reference": 0.023381190163813854,
+      "mean_delta_to_same_policy_matched_control": 0.02104117686241615,
+      "means": {
+        "balanced_accuracy": 0.5294659471022208,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.49782706746480576,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.541262811985745,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.019689956379114804
+        },
+        {
+          "balanced_accuracy": 0.4648241438365126,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.012918681212799932
+        },
+        {
+          "balanced_accuracy": 0.5319838109742372,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.004500561212766485
+        },
+        {
+          "balanced_accuracy": 0.5627059079299441,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.015796024754715088
+        },
+        {
+          "balanced_accuracy": 0.5790244027048899,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.04368874271751794
+        },
+        {
+          "balanced_accuracy": 0.5605826338337971,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02210919759796487
+        },
+        {
+          "balanced_accuracy": 0.4905816110144364,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.004765555328197529
+        },
+        {
+          "balanced_accuracy": 0.5299221538973011,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.027003277114724555
+        },
+        {
+          "balanced_accuracy": 0.5571813170244617,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.03064873065021534
+        },
+        {
+          "balanced_accuracy": 0.49878124829682763,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.008747806934402136
+        },
+        {
+          "balanced_accuracy": 0.6137836397170968,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.06007869186970477
+        },
+        {
+          "balanced_accuracy": 0.5669318186444454,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.051338766137967784
+        },
+        {
+          "balanced_accuracy": 0.5484568742256983,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.022817872007940443
+        },
+        {
+          "balanced_accuracy": 0.4245677847816265,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.0333290169510449
+        },
+        {
+          "balanced_accuracy": 0.5071013337068897,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.02643679096825205
+        },
+        {
+          "balanced_accuracy": 0.5204449555712345,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.013610627754937599
+        },
+        {
+          "balanced_accuracy": 0.49512995384769687,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.025690001045430982
+        },
+        {
+          "balanced_accuracy": 0.48323200320490145,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.0038604742347441157
+        },
+        {
+          "balanced_accuracy": 0.5646497211989812,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.07661086498965791
+        },
+        {
+          "balanced_accuracy": 0.5481708156476922,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.030640197316267603
+        }
+      ],
+      "policy": "labels_cumulative",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5294088682648215,
+        "ETHUSDT": 0.5218299637881045
+      },
+      "mean_delta_to_own_registered_policy": 5.410629490309321e-05,
+      "mean_delta_to_registered_reference": 0.019534659088056138,
+      "mean_delta_to_same_policy_matched_control": 0.03856669932626786,
+      "means": {
+        "balanced_accuracy": 0.5256194160264631,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.47910134268039145,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5240876090679008,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.0025147534612705025
+        },
+        {
+          "balanced_accuracy": 0.49211645165684825,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.04021098903313561
+        },
+        {
+          "balanced_accuracy": 0.5343738594328797,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.0068906096714090315
+        },
+        {
+          "balanced_accuracy": 0.5562927763631285,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.009382893187899422
+        },
+        {
+          "balanced_accuracy": 0.5722551462170502,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.03691948622967817
+        },
+        {
+          "balanced_accuracy": 0.5672130165224405,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02873958028660828
+        },
+        {
+          "balanced_accuracy": 0.5121316807344912,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.0263156250482523
+        },
+        {
+          "balanced_accuracy": 0.5156871811252003,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.012768304342623715
+        },
+        {
+          "balanced_accuracy": 0.5419740529266233,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.015441466552376937
+        },
+        {
+          "balanced_accuracy": 0.5121722014661216,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.022138760103696115
+        },
+        {
+          "balanced_accuracy": 0.5919061587388514,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.038201210891459336
+        },
+        {
+          "balanced_accuracy": 0.5381396920128287,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.022546639506351163
+        },
+        {
+          "balanced_accuracy": 0.5354803303880411,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.009841328170283214
+        },
+        {
+          "balanced_accuracy": 0.4589212423323311,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": 0.0010244405996596984
+        },
+        {
+          "balanced_accuracy": 0.5018157482529664,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.02115120551432878
+        },
+        {
+          "balanced_accuracy": 0.4906141398260133,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.016220187990283574
+        },
+        {
+          "balanced_accuracy": 0.48242301900543527,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.01298306620316933
+        },
+        {
+          "balanced_accuracy": 0.4981930622294242,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.01882153325926686
+        },
+        {
+          "balanced_accuracy": 0.5594935736690894,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.07145471745976611
+        },
+        {
+          "balanced_accuracy": 0.5270973785615964,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.009566760230171834
+        }
+      ],
+      "policy": "labels_900",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5301023351785477,
+        "ETHUSDT": 0.5210282842845722
+      },
+      "mean_delta_to_own_registered_policy": 0.0,
+      "mean_delta_to_registered_reference": 0.01948055279315305,
+      "mean_delta_to_same_policy_matched_control": 0.01315382283366604,
+      "means": {
+        "balanced_accuracy": 0.52556530973156,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.5170781869088359,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5409601579553545,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.01938730234872421
+        },
+        {
+          "balanced_accuracy": 0.4539404875449631,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.0020350249212504057
+        },
+        {
+          "balanced_accuracy": 0.5744647686830886,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.04698151892161789
+        },
+        {
+          "balanced_accuracy": 0.5581498288588931,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.011239945683664154
+        },
+        {
+          "balanced_accuracy": 0.5788486073724406,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.04351294738506867
+        },
+        {
+          "balanced_accuracy": 0.5653402878188174,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.026866851582985185
+        },
+        {
+          "balanced_accuracy": 0.47957084375876824,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.006245211927470712
+        },
+        {
+          "balanced_accuracy": 0.5319492739847737,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.029030397202197078
+        },
+        {
+          "balanced_accuracy": 0.5564884379289885,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.02995585155474223
+        },
+        {
+          "balanced_accuracy": 0.5061419471826374,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.01610850582021195
+        },
+        {
+          "balanced_accuracy": 0.4523781987953696,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.10132674905202244
+        },
+        {
+          "balanced_accuracy": 0.5770144009553952,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.06142134844891772
+        },
+        {
+          "balanced_accuracy": 0.5319411048253346,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.006302102607576743
+        },
+        {
+          "balanced_accuracy": 0.4707294383371211,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": 0.012832636604449693
+        },
+        {
+          "balanced_accuracy": 0.5088152605838853,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.028150717845247586
+        },
+        {
+          "balanced_accuracy": 0.551003549928371,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.044169222112074136
+        },
+        {
+          "balanced_accuracy": 0.508973285927045,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.03953333312477908
+        },
+        {
+          "balanced_accuracy": 0.509783950251314,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.030412421281156538
+        },
+        {
+          "balanced_accuracy": 0.5307380996192558,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.042699243409932586
+        },
+        {
+          "balanced_accuracy": 0.5240742643193829,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.006543645987958258
+        }
+      ],
+      "policy": "registered",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5301145274520178,
+        "ETHUSDT": 0.520733990527577
+      },
+      "mean_delta_to_own_registered_policy": 0.0015313464190341007,
+      "mean_delta_to_registered_reference": 0.019339502051390532,
+      "mean_delta_to_same_policy_matched_control": 0.03837154228960225,
+      "means": {
+        "balanced_accuracy": 0.5254242589897975,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.4795962084901143,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5245480362557828,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.0029751806491526422
+        },
+        {
+          "balanced_accuracy": 0.49199400518620795,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.04008854256249525
+        },
+        {
+          "balanced_accuracy": 0.5342436077697829,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.006760358008312151
+        },
+        {
+          "balanced_accuracy": 0.5584723883256127,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.011562505150383762
+        },
+        {
+          "balanced_accuracy": 0.5705768030064674,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.03524114301909542
+        },
+        {
+          "balanced_accuracy": 0.5661276958677768,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02765425963194451
+        },
+        {
+          "balanced_accuracy": 0.5141626269952664,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.028346571309027402
+        },
+        {
+          "balanced_accuracy": 0.5165094815132106,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.01359060473063406
+        },
+        {
+          "balanced_accuracy": 0.5432220989836165,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.016689512609370127
+        },
+        {
+          "balanced_accuracy": 0.5131876186953783,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.023154177332952774
+        },
+        {
+          "balanced_accuracy": 0.5944776120531201,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.040772664205728115
+        },
+        {
+          "balanced_accuracy": 0.5394631029766741,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.023870050470196524
+        },
+        {
+          "balanced_accuracy": 0.5350508952850123,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.009411893067254429
+        },
+        {
+          "balanced_accuracy": 0.45372343033833606,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.004173371394335351
+        },
+        {
+          "balanced_accuracy": 0.5034928363053427,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.022828293566705016
+        },
+        {
+          "balanced_accuracy": 0.49034687895324913,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.01648744886304776
+        },
+        {
+          "balanced_accuracy": 0.4833412004385267,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.0139012476362608
+        },
+        {
+          "balanced_accuracy": 0.49417611428982394,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.01480458531966658
+        },
+        {
+          "balanced_accuracy": 0.5552422991781142,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.067203442968791
+        },
+        {
+          "balanced_accuracy": 0.5261264473786478,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.008595829047223225
+        }
+      ],
+      "policy": "labels_900",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5284603351020569,
+        "ETHUSDT": 0.5193254900394698
+      },
+      "mean_delta_to_own_registered_policy": 0.0,
+      "mean_delta_to_registered_reference": 0.01780815563235643,
+      "mean_delta_to_same_policy_matched_control": 0.011481425672869425,
+      "means": {
+        "balanced_accuracy": 0.5238929125707633,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.5147643739819584,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5389044644515729,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.017331608844942725
+        },
+        {
+          "balanced_accuracy": 0.4476361255911203,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.00426933703259233
+        },
+        {
+          "balanced_accuracy": 0.573284645291557,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.045801395530086275
+        },
+        {
+          "balanced_accuracy": 0.5553479864213932,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.008438103246164175
+        },
+        {
+          "balanced_accuracy": 0.5796646674937803,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.044329007506408336
+        },
+        {
+          "balanced_accuracy": 0.5655854897916632,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02711205355583096
+        },
+        {
+          "balanced_accuracy": 0.47422542418756575,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.011590631498673176
+        },
+        {
+          "balanced_accuracy": 0.531469142427268,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.02855026564469143
+        },
+        {
+          "balanced_accuracy": 0.5564442701448968,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.02991168377065051
+        },
+        {
+          "balanced_accuracy": 0.5058023748811753,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.01576893351874986
+        },
+        {
+          "balanced_accuracy": 0.4529794741003952,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.10072547374699684
+        },
+        {
+          "balanced_accuracy": 0.5758834844596162,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.06029043195313866
+        },
+        {
+          "balanced_accuracy": 0.5308596257849691,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.005220623567211313
+        },
+        {
+          "balanced_accuracy": 0.45991171512760914,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": 0.0020149133949377285
+        },
+        {
+          "balanced_accuracy": 0.5093802418606339,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.028715699121996313
+        },
+        {
+          "balanced_accuracy": 0.5487772368462283,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.04194290902993136
+        },
+        {
+          "balanced_accuracy": 0.5112261407942038,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.04178618799193784
+        },
+        {
+          "balanced_accuracy": 0.5090478539386392,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.029676324968481743
+        },
+        {
+          "balanced_accuracy": 0.5306880852940339,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04264922908471075
+        },
+        {
+          "balanced_accuracy": 0.5207398025269456,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.00320918419552102
+        }
+      ],
+      "policy": "registered",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.526311405644843,
+        "ETHUSDT": 0.5194863086595872
+      },
+      "mean_delta_to_own_registered_policy": -0.0026664525793448192,
+      "mean_delta_to_registered_reference": 0.016814100213808227,
+      "mean_delta_to_same_policy_matched_control": 0.01913137718022418,
+      "means": {
+        "balanced_accuracy": 0.5228988571522152,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.49346543283779887,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.523276167087116,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.001703311480485803
+        },
+        {
+          "balanced_accuracy": 0.4694113547338137,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.01750589211010098
+        },
+        {
+          "balanced_accuracy": 0.5232763446051543,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.004206905156316443
+        },
+        {
+          "balanced_accuracy": 0.577152923976266,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.030243040801037124
+        },
+        {
+          "balanced_accuracy": 0.5660243008411863,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.030688640853814286
+        },
+        {
+          "balanced_accuracy": 0.5642680534975006,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02579461726166843
+        },
+        {
+          "balanced_accuracy": 0.5060403054738247,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.020224249787585857
+        },
+        {
+          "balanced_accuracy": 0.5079113706622849,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.0049924938797083485
+        },
+        {
+          "balanced_accuracy": 0.538660979814506,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.012128393440259677
+        },
+        {
+          "balanced_accuracy": 0.49968537217950476,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.009651930817079268
+        },
+        {
+          "balanced_accuracy": 0.6043491019868339,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.0506441541394419
+        },
+        {
+          "balanced_accuracy": 0.5557738046885201,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.04018075218204259
+        },
+        {
+          "balanced_accuracy": 0.5341986704139373,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.008559668196179482
+        },
+        {
+          "balanced_accuracy": 0.43057321365755563,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.027323588075115757
+        },
+        {
+          "balanced_accuracy": 0.5076024969070199,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.02693795416838221
+        },
+        {
+          "balanced_accuracy": 0.5000468059505512,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.006787521865745688
+        },
+        {
+          "balanced_accuracy": 0.47625650003860487,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.0068165472363389545
+        },
+        {
+          "balanced_accuracy": 0.5034612683972537,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.0240897394270963
+        },
+        {
+          "balanced_accuracy": 0.5518721402869932,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.06383328407766997
+        },
+        {
+          "balanced_accuracy": 0.5181359678458759,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.0006053495144512921
+        }
+      ],
+      "policy": "forecast_300",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5262236337012304,
+        "ETHUSDT": 0.5187657988184639
+      },
+      "mean_delta_to_own_registered_policy": -0.0013981963109162443,
+      "mean_delta_to_registered_reference": 0.01640995932144019,
+      "mean_delta_to_same_policy_matched_control": 0.018727236287856143,
+      "means": {
+        "balanced_accuracy": 0.5224947162598471,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.4934929064334187,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5240663888945879,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.0024935332879577055
+        },
+        {
+          "balanced_accuracy": 0.46897760764640695,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.017072145022694274
+        },
+        {
+          "balanced_accuracy": 0.520400793471407,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.0070824562900636545
+        },
+        {
+          "balanced_accuracy": 0.5735848053686042,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.02667492219337525
+        },
+        {
+          "balanced_accuracy": 0.5664003262934325,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.031064666306060584
+        },
+        {
+          "balanced_accuracy": 0.5649958880904309,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.026522451854598617
+        },
+        {
+          "balanced_accuracy": 0.5055186625846922,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.019702606898453323
+        },
+        {
+          "balanced_accuracy": 0.5072293735728707,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.004310496790294105
+        },
+        {
+          "balanced_accuracy": 0.5393089947231093,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.012776408348863011
+        },
+        {
+          "balanced_accuracy": 0.4995686796702362,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.009535238307810695
+        },
+        {
+          "balanced_accuracy": 0.6040984289798519,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.05039348113245984
+        },
+        {
+          "balanced_accuracy": 0.5555367136302747,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.03994366112379705
+        },
+        {
+          "balanced_accuracy": 0.5331479003705702,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.0075088981528124155
+        },
+        {
+          "balanced_accuracy": 0.42693504953984834,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.030961752192823072
+        },
+        {
+          "balanced_accuracy": 0.5090890634672569,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.028424520728619257
+        },
+        {
+          "balanced_accuracy": 0.4981606596979042,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.008673668118392708
+        },
+        {
+          "balanced_accuracy": 0.47981492648742585,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.010374973685159938
+        },
+        {
+          "balanced_accuracy": 0.5032858782627538,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.02391434929259645
+        },
+        {
+          "balanced_accuracy": 0.5519726415309306,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.06393378532160743
+        },
+        {
+          "balanced_accuracy": 0.5178015429143479,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.00027092458292327093
+        }
+      ],
+      "policy": "forecast_300",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5205605390090735,
+        "ETHUSDT": 0.5188928872858576
+      },
+      "mean_delta_to_own_registered_policy": -0.005838596584094309,
+      "mean_delta_to_registered_reference": 0.01364195620905874,
+      "mean_delta_to_same_policy_matched_control": 0.00545299822431059,
+      "means": {
+        "balanced_accuracy": 0.5197267131474657,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.5105018042476536,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5169871351974713,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.004585720409158944
+        },
+        {
+          "balanced_accuracy": 0.43669387166206697,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.015211590961645705
+        },
+        {
+          "balanced_accuracy": 0.5523045587696064,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.024821309008135672
+        },
+        {
+          "balanced_accuracy": 0.5813371201072286,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.03442723693199967
+        },
+        {
+          "balanced_accuracy": 0.5745027339168549,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.03916707392948293
+        },
+        {
+          "balanced_accuracy": 0.5649567199233705,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.026483283687538217
+        },
+        {
+          "balanced_accuracy": 0.4768976152311427,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.008918440455096183
+        },
+        {
+          "balanced_accuracy": 0.522528579228752,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.019609702446175437
+        },
+        {
+          "balanced_accuracy": 0.5507493646065635,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.02421677823231716
+        },
+        {
+          "balanced_accuracy": 0.4962770988083899,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.006243657445964362
+        },
+        {
+          "balanced_accuracy": 0.5269801040992507,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.02672484374814138
+        },
+        {
+          "balanced_accuracy": 0.5395717921251051,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.023978739618627565
+        },
+        {
+          "balanced_accuracy": 0.5478040691111588,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.02216506689340092
+        },
+        {
+          "balanced_accuracy": 0.44072949941458106,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.017167302318090327
+        },
+        {
+          "balanced_accuracy": 0.44915022268421056,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.031514320054427086
+        },
+        {
+          "balanced_accuracy": 0.5160544481568892,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.009220120340592275
+        },
+        {
+          "balanced_accuracy": 0.5071749794353405,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.037735026633074625
+        },
+        {
+          "balanced_accuracy": 0.5084410201004231,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.029069491130265745
+        },
+        {
+          "balanced_accuracy": 0.5399549015955054,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.051916045386182275
+        },
+        {
+          "balanced_accuracy": 0.5454384287754022,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.027907810443977554
+        }
+      ],
+      "policy": "training",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5189538172522102,
+        "ETHUSDT": 0.5178356284079869
+      },
+      "mean_delta_to_own_registered_policy": -0.005498189740664785,
+      "mean_delta_to_registered_reference": 0.012309965891691647,
+      "mean_delta_to_same_policy_matched_control": 0.004121007906943498,
+      "means": {
+        "balanced_accuracy": 0.5183947228300985,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.5083528569428711,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5183808830276642,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.0031919725789660847
+        },
+        {
+          "balanced_accuracy": 0.4349995280457896,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.016905934577923054
+        },
+        {
+          "balanced_accuracy": 0.5512603232830243,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.023777073521553616
+        },
+        {
+          "balanced_accuracy": 0.5804200517501079,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.033510168574878985
+        },
+        {
+          "balanced_accuracy": 0.5751482756781108,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.03981261569073885
+        },
+        {
+          "balanced_accuracy": 0.5684665489709801,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.029993112735147875
+        },
+        {
+          "balanced_accuracy": 0.4711195160126005,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.014696539673638404
+        },
+        {
+          "balanced_accuracy": 0.5217032872343478,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.018784410451771205
+        },
+        {
+          "balanced_accuracy": 0.5531782983833131,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.026645712009066846
+        },
+        {
+          "balanced_accuracy": 0.4965370561318483,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.006503614769422822
+        },
+        {
+          "balanced_accuracy": 0.5282905738482007,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.025414373999191442
+        },
+        {
+          "balanced_accuracy": 0.5334210462450304,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.017827993738552816
+        },
+        {
+          "balanced_accuracy": 0.5483703631206889,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.02273136090293104
+        },
+        {
+          "balanced_accuracy": 0.42862083989231237,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.02927596184035905
+        },
+        {
+          "balanced_accuracy": 0.44976373064523445,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.0309008120934032
+        },
+        {
+          "balanced_accuracy": 0.5127780052957566,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.005943677479459675
+        },
+        {
+          "balanced_accuracy": 0.5056685412049119,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.036228588402646006
+        },
+        {
+          "balanced_accuracy": 0.5096547089205749,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.03028317995041746
+        },
+        {
+          "balanced_accuracy": 0.5374443386409856,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04940548243166243
+        },
+        {
+          "balanced_accuracy": 0.5426685402704892,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.025137921939064556
+        }
+      ],
+      "policy": "training",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5207888101474242,
+        "ETHUSDT": 0.5113955186872714
+      },
+      "mean_delta_to_own_registered_policy": 0.0036806775194538734,
+      "mean_delta_to_registered_reference": 0.010007407478940881,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.5160921644173478,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.48637839144944517,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5237923922157035,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.0022195366090733137
+        },
+        {
+          "balanced_accuracy": 0.46584749338732645,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.013942030763613805
+        },
+        {
+          "balanced_accuracy": 0.5255524938333205,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.0019307559281502296
+        },
+        {
+          "balanced_accuracy": 0.5696587533637774,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.02274887018854843
+        },
+        {
+          "balanced_accuracy": 0.561071684431935,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.025736024444562966
+        },
+        {
+          "balanced_accuracy": 0.555645019106011,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.01717158287017878
+        },
+        {
+          "balanced_accuracy": 0.4930692481817417,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.007253192495502742
+        },
+        {
+          "balanced_accuracy": 0.507259454001332,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.00434057721875547
+        },
+        {
+          "balanced_accuracy": 0.5227316890695242,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.0038008973047221617
+        },
+        {
+          "balanced_accuracy": 0.4955558147521584,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.005522373389732854
+        },
+        {
+          "balanced_accuracy": 0.5920924894638853,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.038387541616493215
+        },
+        {
+          "balanced_accuracy": 0.5435855322848642,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.027992479778386536
+        },
+        {
+          "balanced_accuracy": 0.5234694975141723,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.002169504703585512
+        },
+        {
+          "balanced_accuracy": 0.4375444824648343,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.02035231926783712
+        },
+        {
+          "balanced_accuracy": 0.4868407452607165,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.006176202522078872
+        },
+        {
+          "balanced_accuracy": 0.502543070251984,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.00429125756431295
+        },
+        {
+          "balanced_accuracy": 0.4716162496187135,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.0021762968164475704
+        },
+        {
+          "balanced_accuracy": 0.488953139071825,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.009581610101667692
+        },
+        {
+          "balanced_accuracy": 0.5409917154627806,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.05295285925345733
+        },
+        {
+          "balanced_accuracy": 0.5140223246103506,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.003508293721073974
+        }
+      ],
+      "policy": "forecast_3600",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5200147479431732,
+        "ETHUSDT": 0.5117866894467893
+      },
+      "mean_delta_to_own_registered_policy": -0.00799219387578221,
+      "mean_delta_to_registered_reference": 0.009815961756574221,
+      "mean_delta_to_same_policy_matched_control": 0.03144098065698399,
+      "means": {
+        "balanced_accuracy": 0.5159007186949811,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.4773648631908193,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5208006528213451,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.0007722027852851143
+        },
+        {
+          "balanced_accuracy": 0.46122284356953924,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.009317380945826598
+        },
+        {
+          "balanced_accuracy": 0.5150396825181474,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.012443567243323295
+        },
+        {
+          "balanced_accuracy": 0.5614947363613472,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.01458485318611813
+        },
+        {
+          "balanced_accuracy": 0.5596895502077526,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.024353890220380592
+        },
+        {
+          "balanced_accuracy": 0.5649120936831226,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.026438657447290292
+        },
+        {
+          "balanced_accuracy": 0.49928074220245666,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.013464686516217766
+        },
+        {
+          "balanced_accuracy": 0.500213266052149,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.0027056107304276322
+        },
+        {
+          "balanced_accuracy": 0.5347766759308084,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.008244089556562084
+        },
+        {
+          "balanced_accuracy": 0.49305888884142945,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.003025447479003962
+        },
+        {
+          "balanced_accuracy": 0.5935663138342511,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.039861365986859076
+        },
+        {
+          "balanced_accuracy": 0.5401818802768602,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.024588827770382626
+        },
+        {
+          "balanced_accuracy": 0.528183874810619,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.0025448725928611804
+        },
+        {
+          "balanced_accuracy": 0.431638889218929,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.026257912513742432
+        },
+        {
+          "balanced_accuracy": 0.5015754163728792,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.02091087363424146
+        },
+        {
+          "balanced_accuracy": 0.4813308104194093,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.02550351739688761
+        },
+        {
+          "balanced_accuracy": 0.4718003297460579,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.0023603769437919864
+        },
+        {
+          "balanced_accuracy": 0.4972794132819718,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.017907884311814393
+        },
+        {
+          "balanced_accuracy": 0.5483552094569428,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.06031635324761958
+        },
+        {
+          "balanced_accuracy": 0.5136131042936054,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.003917514037819203
+        }
+      ],
+      "policy": "hybrid_300",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5197951345592446,
+        "ETHUSDT": 0.5119213477842101
+      },
+      "mean_delta_to_own_registered_policy": -0.009707068559832688,
+      "mean_delta_to_registered_reference": 0.00977348423332036,
+      "mean_delta_to_same_policy_matched_control": 0.031398503133730125,
+      "means": {
+        "balanced_accuracy": 0.5158582411717273,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.47662758774819397,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5187246258538032,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.0028482297528269473
+        },
+        {
+          "balanced_accuracy": 0.46297019351715646,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.011064730893443786
+        },
+        {
+          "balanced_accuracy": 0.5156065579986667,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.011876691762803981
+        },
+        {
+          "balanced_accuracy": 0.5600753112867052,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.013165428111476196
+        },
+        {
+          "balanced_accuracy": 0.5595902948834948,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.024254634896122784
+        },
+        {
+          "balanced_accuracy": 0.563038307927382,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.02456487169154975
+        },
+        {
+          "balanced_accuracy": 0.49849570895206896,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.012679653265830065
+        },
+        {
+          "balanced_accuracy": 0.49971990253048304,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.003198974252093506
+        },
+        {
+          "balanced_accuracy": 0.5344399966043137,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.007907410230067413
+        },
+        {
+          "balanced_accuracy": 0.4904529568984109,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.00041951553598540414
+        },
+        {
+          "balanced_accuracy": 0.5917272890774036,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.038022341230011525
+        },
+        {
+          "balanced_accuracy": 0.543056417129834,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.027463364623356357
+        },
+        {
+          "balanced_accuracy": 0.526125381204958,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.00048637898720010897
+        },
+        {
+          "balanced_accuracy": 0.43390676470005557,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.023990037032615846
+        },
+        {
+          "balanced_accuracy": 0.501565372866122,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.020900830127484393
+        },
+        {
+          "balanced_accuracy": 0.48133249787804455,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.025501829938252313
+        },
+        {
+          "balanced_accuracy": 0.4729655713905031,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.0035256185882371616
+        },
+        {
+          "balanced_accuracy": 0.4985718749519876,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.01920034598183029
+        },
+        {
+          "balanced_accuracy": 0.5507687605921782,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.06272990438285497
+        },
+        {
+          "balanced_accuracy": 0.5140310371909742,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.003499581140450403
+        }
+      ],
+      "policy": "hybrid_300",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5168870764933321,
+        "ETHUSDT": 0.511660353352978
+      },
+      "mean_delta_to_own_registered_policy": 0.001862228025261141,
+      "mean_delta_to_registered_reference": 0.00818895798474815,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.5142737149231551,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.5040848071116996,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5144882238610784,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.007084631745551739
+        },
+        {
+          "balanced_accuracy": 0.44732313853914385,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.004582324084568851
+        },
+        {
+          "balanced_accuracy": 0.5368662303518821,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.009382980590411427
+        },
+        {
+          "balanced_accuracy": 0.5690802280554966,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.022170344880267645
+        },
+        {
+          "balanced_accuracy": 0.5595902902959922,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.024254630308620184
+        },
+        {
+          "balanced_accuracy": 0.5557890417410818,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.01731560550524952
+        },
+        {
+          "balanced_accuracy": 0.4757529359192404,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.01006311976699853
+        },
+        {
+          "balanced_accuracy": 0.5064711823128043,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.003552305530227673
+        },
+        {
+          "balanced_accuracy": 0.5276831051598623,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.0011505187856159504
+        },
+        {
+          "balanced_accuracy": 0.4921364740888492,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.0021030327264237314
+        },
+        {
+          "balanced_accuracy": 0.5678883181643509,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.014183370316958877
+        },
+        {
+          "balanced_accuracy": 0.5439531716421495,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.02836011913567188
+        },
+        {
+          "balanced_accuracy": 0.5308615229718605,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.005222520754102733
+        },
+        {
+          "balanced_accuracy": 0.4481448609437494,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.009751940788922026
+        },
+        {
+          "balanced_accuracy": 0.4746682215533419,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.00599632118529575
+        },
+        {
+          "balanced_accuracy": 0.5140260849063507,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.007191757090053763
+        },
+        {
+          "balanced_accuracy": 0.4824188472543828,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.01297889445211689
+        },
+        {
+          "balanced_accuracy": 0.48868670537390557,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.009315176403748238
+        },
+        {
+          "balanced_accuracy": 0.5288155186786669,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04077666246934375
+        },
+        {
+          "balanced_accuracy": 0.5208301966489122,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.003299578317487617
+        }
+      ],
+      "policy": "training",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5176275889250055,
+        "ETHUSDT": 0.5071953848707823
+      },
+      "mean_delta_to_own_registered_policy": 0.0,
+      "mean_delta_to_registered_reference": 0.006326729959487009,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.512411486897894,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.5057729969950027,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5286327157262873,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.007059860119657202
+        },
+        {
+          "balanced_accuracy": 0.46050074039934186,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.008595277775629212
+        },
+        {
+          "balanced_accuracy": 0.5422488726984471,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.014765622936976364
+        },
+        {
+          "balanced_accuracy": 0.5559125439166152,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.00900266074138617
+        },
+        {
+          "balanced_accuracy": 0.5595902902959922,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.024254630308620184
+        },
+        {
+          "balanced_accuracy": 0.5554952967328971,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.017021860497064834
+        },
+        {
+          "balanced_accuracy": 0.47822839213926416,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.007587663546974793
+        },
+        {
+          "balanced_accuracy": 0.504079142066469,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.0011602652838924588
+        },
+        {
+          "balanced_accuracy": 0.5307040456515075,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.004171459277261147
+        },
+        {
+          "balanced_accuracy": 0.4968404148357852,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.0068069734733597065
+        },
+        {
+          "balanced_accuracy": 0.4971993908050386,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.05650555704235341
+        },
+        {
+          "balanced_accuracy": 0.5439531716421495,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.02836011913567188
+        },
+        {
+          "balanced_accuracy": 0.5308615229718605,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.005222520754102733
+        },
+        {
+          "balanced_accuracy": 0.4481448609437494,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.009751940788922026
+        },
+        {
+          "balanced_accuracy": 0.4843677055941055,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.003703162855467873
+        },
+        {
+          "balanced_accuracy": 0.5197933708375674,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.012959043021270489
+        },
+        {
+          "balanced_accuracy": 0.4813229188412037,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.011882966038937764
+        },
+        {
+          "balanced_accuracy": 0.48868670537390557,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.009315176403748238
+        },
+        {
+          "balanced_accuracy": 0.5288155186786669,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04077666246934375
+        },
+        {
+          "balanced_accuracy": 0.512852117807025,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.004678500524399609
+        }
+      ],
+      "policy": "registered",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5162116512294138,
+        "ETHUSDT": 0.5077849330811077
+      },
+      "mean_delta_to_own_registered_policy": -0.0004131947426331328,
+      "mean_delta_to_registered_reference": 0.005913535216853875,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.5119982921552608,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.4829618069925064,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5209820529578162,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.0005908026488139484
+        },
+        {
+          "balanced_accuracy": 0.4611986978798188,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.009293235256106175
+        },
+        {
+          "balanced_accuracy": 0.5218097595403166,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.005673490221154043
+        },
+        {
+          "balanced_accuracy": 0.5652417000943663,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.018331816919137267
+        },
+        {
+          "balanced_accuracy": 0.5589301716551575,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.023594511667785478
+        },
+        {
+          "balanced_accuracy": 0.5531616634521984,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.014688227216366145
+        },
+        {
+          "balanced_accuracy": 0.48824499123203785,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.002428935545798927
+        },
+        {
+          "balanced_accuracy": 0.501646010585139,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.00127286619743755
+        },
+        {
+          "balanced_accuracy": 0.5189747112484385,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.0075578751258078
+        },
+        {
+          "balanced_accuracy": 0.48823460773654415,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.0017988336258813742
+        },
+        {
+          "balanced_accuracy": 0.5915974326001916,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.03789248475279949
+        },
+        {
+          "balanced_accuracy": 0.5425709405418496,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.026977888035372044
+        },
+        {
+          "balanced_accuracy": 0.5190579189722669,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.006581083245490893
+        },
+        {
+          "balanced_accuracy": 0.4347175623884335,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.02317923934423788
+        },
+        {
+          "balanced_accuracy": 0.48342131903501245,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.002756776296374802
+        },
+        {
+          "balanced_accuracy": 0.49166958267709115,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.015164745139205738
+        },
+        {
+          "balanced_accuracy": 0.46602285851840836,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.003417094283857558
+        },
+        {
+          "balanced_accuracy": 0.4872121496896473,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.007840620719489988
+        },
+        {
+          "balanced_accuracy": 0.5379774383320578,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04993858212273461
+        },
+        {
+          "balanced_accuracy": 0.507294273968424,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.010236344363000638
+        }
+      ],
+      "policy": "forecast_900",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5133651192637643,
+        "ETHUSDT": 0.503484421215845
+      },
+      "mean_delta_to_own_registered_policy": -0.003986716658089309,
+      "mean_delta_to_registered_reference": 0.002340013301397699,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.5084247702398047,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.46040515359406664,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.527897585074649,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.006324729468018764
+        },
+        {
+          "balanced_accuracy": 0.470559695242488,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.01865423261877533
+        },
+        {
+          "balanced_accuracy": 0.5225477546939525,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.004935495067518225
+        },
+        {
+          "balanced_accuracy": 0.5086604211049816,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.03824946207024743
+        },
+        {
+          "balanced_accuracy": 0.5591940385838086,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.023858378596436636
+        },
+        {
+          "balanced_accuracy": 0.5473903117523573,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.008916875516525036
+        },
+        {
+          "balanced_accuracy": 0.4840639819937377,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.0017520736925012714
+        },
+        {
+          "balanced_accuracy": 0.5105335667088973,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.00761468992632075
+        },
+        {
+          "balanced_accuracy": 0.531505974022455,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.004973387648208705
+        },
+        {
+          "balanced_accuracy": 0.49029644128351235,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.0002629999210868317
+        },
+        {
+          "balanced_accuracy": 0.5466352461778221,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.007069701669569939
+        },
+        {
+          "balanced_accuracy": 0.49292787835972507,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.02266517414675251
+        },
+        {
+          "balanced_accuracy": 0.5302604524081145,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.004621450190356702
+        },
+        {
+          "balanced_accuracy": 0.4448937770207042,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.01300302471196721
+        },
+        {
+          "balanced_accuracy": 0.4860369402330177,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.005372397494380066
+        },
+        {
+          "balanced_accuracy": 0.5172708685315217,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.010436540715224818
+        },
+        {
+          "balanced_accuracy": 0.4738915495355023,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.00445159673323639
+        },
+        {
+          "balanced_accuracy": 0.46577838799692317,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": -0.013593140973234219
+        },
+        {
+          "balanced_accuracy": 0.5402685282277646,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.05222967201844142
+        },
+        {
+          "balanced_accuracy": 0.517882005844158,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.00035138751273333657
+        }
+      ],
+      "policy": "labels_cumulative",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5114941327389114,
+        "ETHUSDT": 0.5049420877526848
+      },
+      "mean_delta_to_own_registered_policy": 0.0021333533073911214,
+      "mean_delta_to_registered_reference": 0.0021333533073911214,
+      "mean_delta_to_same_policy_matched_control": -0.00787405417154976,
+      "means": {
+        "balanced_accuracy": 0.508218110245798,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.47723885342962796,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5214728775917797,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -9.997801485045477e-05
+        },
+        {
+          "balanced_accuracy": 0.4635700820547749,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.011664619431062256
+        },
+        {
+          "balanced_accuracy": 0.4979937286249174,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.02948952113655326
+        },
+        {
+          "balanced_accuracy": 0.5604688082171281,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.01355892504189915
+        },
+        {
+          "balanced_accuracy": 0.5501519163505503,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.014816256363178293
+        },
+        {
+          "balanced_accuracy": 0.544068661910263,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.0055952256744307705
+        },
+        {
+          "balanced_accuracy": 0.48728510263839536,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.0014690469521564387
+        },
+        {
+          "balanced_accuracy": 0.5040438180416638,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.001124941259087242
+        },
+        {
+          "balanced_accuracy": 0.5140333844540774,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.0124992019201689
+        },
+        {
+          "balanced_accuracy": 0.48896139029458413,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.001072051067841362
+        },
+        {
+          "balanced_accuracy": 0.5871084334998065,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.033403485652414355
+        },
+        {
+          "balanced_accuracy": 0.5388503992036426,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.023257346697165115
+        },
+        {
+          "balanced_accuracy": 0.5175707313785256,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.008068270839232283
+        },
+        {
+          "balanced_accuracy": 0.43860596506891725,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.01929083666375417
+        },
+        {
+          "balanced_accuracy": 0.4725936845194908,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.008070858219146826
+        },
+        {
+          "balanced_accuracy": 0.48593054007689085,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.02090378773940607
+        },
+        {
+          "balanced_accuracy": 0.4611110827949214,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.008328870007344502
+        },
+        {
+          "balanced_accuracy": 0.4848104290060049,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.005438900035847544
+        },
+        {
+          "balanced_accuracy": 0.5344228965137585,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04638404030443527
+        },
+        {
+          "balanced_accuracy": 0.5113082726758684,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.006222345655556183
+        }
+      ],
+      "policy": "forecast_3600",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5068213247383087,
+        "ETHUSDT": 0.5053481891385052
+      },
+      "mean_delta_to_own_registered_policy": 0.0,
+      "mean_delta_to_registered_reference": 0.0,
+      "mean_delta_to_same_policy_matched_control": -0.006326729959487009,
+      "means": {
+        "balanced_accuracy": 0.5060847569384069,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.5043941073755047,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5215728556066301,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4519054626237127,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5274832497614708,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.546909883175229,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.535335659987372,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5384734362358323,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4858160556862389,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5029188767825765,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5265325863742463,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4900334413624255,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5537049478473921,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5155930525064776,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5256390022177578,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.45789680173267144,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4806645427386377,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5068343278162969,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4694399528022659,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.47937152897015733,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4880388562093232,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5175306183314246,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.0
+        }
+      ],
+      "policy": "registered",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5068213247383087,
+        "ETHUSDT": 0.5053481891385052
+      },
+      "mean_delta_to_own_registered_policy": 0.0,
+      "mean_delta_to_registered_reference": 0.0,
+      "mean_delta_to_same_policy_matched_control": -0.00818895798474815,
+      "means": {
+        "balanced_accuracy": 0.5060847569384069,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.5043941073755047,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5215728556066301,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4519054626237127,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5274832497614708,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.546909883175229,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.535335659987372,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5384734362358323,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4858160556862389,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5029188767825765,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5265325863742463,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4900334413624255,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5537049478473921,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5155930525064776,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5256390022177578,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.45789680173267144,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4806645427386377,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5068343278162969,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4694399528022659,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.47937152897015733,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.4880388562093232,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.0
+        },
+        {
+          "balanced_accuracy": 0.5175306183314246,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.0
+        }
+      ],
+      "policy": "training",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5091789902686414,
+        "ETHUSDT": 0.5007636336545648
+      },
+      "mean_delta_to_own_registered_policy": -0.007440174936290818,
+      "mean_delta_to_registered_reference": -0.0011134449768038096,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.5049713119616032,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.4450313374931958,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5253062002032871,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.0037333445966569734
+        },
+        {
+          "balanced_accuracy": 0.47859964525196974,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.026694182628257096
+        },
+        {
+          "balanced_accuracy": 0.5155171142455386,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.011966135515932175
+        },
+        {
+          "balanced_accuracy": 0.5065136853128149,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.04039619786241411
+        },
+        {
+          "balanced_accuracy": 0.5532172419805546,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.017881581993182627
+        },
+        {
+          "balanced_accuracy": 0.55638742936141,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.01791399312557762
+        },
+        {
+          "balanced_accuracy": 0.4912311827348407,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.005415127048601753
+        },
+        {
+          "balanced_accuracy": 0.5051518593409583,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.002232982558381724
+        },
+        {
+          "balanced_accuracy": 0.5239747919963889,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.002557794377857414
+        },
+        {
+          "balanced_accuracy": 0.48150766510476206,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.008525776257663431
+        },
+        {
+          "balanced_accuracy": 0.539490633471919,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.014214314375473158
+        },
+        {
+          "balanced_accuracy": 0.4869585089149847,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.02863454359149284
+        },
+        {
+          "balanced_accuracy": 0.524035065550271,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.0016039366674868716
+        },
+        {
+          "balanced_accuracy": 0.4444179416302232,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.013478860102448198
+        },
+        {
+          "balanced_accuracy": 0.464369013108622,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.01629552963001568
+        },
+        {
+          "balanced_accuracy": 0.5045741272757605,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.0022602005405364944
+        },
+        {
+          "balanced_accuracy": 0.4720739535973195,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": 0.0026340007950536037
+        },
+        {
+          "balanced_accuracy": 0.477733374310362,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": -0.0016381546597953878
+        },
+        {
+          "balanced_accuracy": 0.5324163518278092,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04437749561848603
+        },
+        {
+          "balanced_accuracy": 0.5159504540122668,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.0015801643191578618
+        }
+      ],
+      "policy": "labels_3600",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5073178156402818,
+        "ETHUSDT": 0.5016001817833159
+      },
+      "mean_delta_to_own_registered_policy": -0.0016257582266081233,
+      "mean_delta_to_registered_reference": -0.0016257582266081233,
+      "mean_delta_to_same_policy_matched_control": -0.007539293443461999,
+      "means": {
+        "balanced_accuracy": 0.5044589987117988,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.47434489223529697,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5161947385135448,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.005378117093085444
+        },
+        {
+          "balanced_accuracy": 0.4613260383243397,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.009420575700627043
+        },
+        {
+          "balanced_accuracy": 0.4933293952161775,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.03415385454529318
+        },
+        {
+          "balanced_accuracy": 0.5565329628879936,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.00962307971276466
+        },
+        {
+          "balanced_accuracy": 0.5493086915215475,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.013973031534175562
+        },
+        {
+          "balanced_accuracy": 0.5428159008313902,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.004342464595557927
+        },
+        {
+          "balanced_accuracy": 0.48412456607599935,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.0016914896102395716
+        },
+        {
+          "balanced_accuracy": 0.49792778844778696,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.00499108833478959
+        },
+        {
+          "balanced_accuracy": 0.5143591866634396,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.012173399710806665
+        },
+        {
+          "balanced_accuracy": 0.4818707613756087,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.008162679986816829
+        },
+        {
+          "balanced_accuracy": 0.5847227318707947,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.03101778402340266
+        },
+        {
+          "balanced_accuracy": 0.5369408337870154,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.021347781280537825
+        },
+        {
+          "balanced_accuracy": 0.5155208477590695,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.010118154458688355
+        },
+        {
+          "balanced_accuracy": 0.43546057562426044,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.022436226108410978
+        },
+        {
+          "balanced_accuracy": 0.46879375594568107,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.011870786792956556
+        },
+        {
+          "balanced_accuracy": 0.47258985050856095,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.03424447730773597
+        },
+        {
+          "balanced_accuracy": 0.45610897379920745,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.013330979003058463
+        },
+        {
+          "balanced_accuracy": 0.48332334698775037,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.003951818017593034
+        },
+        {
+          "balanced_accuracy": 0.5338026756988963,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04576381948957314
+        },
+        {
+          "balanced_accuracy": 0.504126352396912,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.013404265934512716
+        }
+      ],
+      "policy": "forecast_900",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5080171915027325,
+        "ETHUSDT": 0.49951776844124945
+      },
+      "mean_delta_to_own_registered_policy": -0.008644006925902961,
+      "mean_delta_to_registered_reference": -0.002317276966415953,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.503767479971991,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.47575336655577105,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5065673395310442,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.015005516075586034
+        },
+        {
+          "balanced_accuracy": 0.45680741812034475,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.00490195549663211
+        },
+        {
+          "balanced_accuracy": 0.5081247730427314,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.019358476718739304
+        },
+        {
+          "balanced_accuracy": 0.5578379764398205,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": 0.010928093264591487
+        },
+        {
+          "balanced_accuracy": 0.5496345852213627,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.014298925233990623
+        },
+        {
+          "balanced_accuracy": 0.5494369480878497,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.010963511852017438
+        },
+        {
+          "balanced_accuracy": 0.4775729335381379,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.008243122148100995
+        },
+        {
+          "balanced_accuracy": 0.4907563664055755,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.012162510377001057
+        },
+        {
+          "balanced_accuracy": 0.512582747476638,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.013949838897608313
+        },
+        {
+          "balanced_accuracy": 0.4738505879290128,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.01618285343341269
+        },
+        {
+          "balanced_accuracy": 0.58414361248933,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.030438664641938007
+        },
+        {
+          "balanced_accuracy": 0.5343064493844543,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.018713396877976685
+        },
+        {
+          "balanced_accuracy": 0.514305159217149,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.011333843000608801
+        },
+        {
+          "balanced_accuracy": 0.42813470128763165,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.02976210044503974
+        },
+        {
+          "balanced_accuracy": 0.4777629006255577,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.002901642113079944
+        },
+        {
+          "balanced_accuracy": 0.48319337712931865,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.023640950686978218
+        },
+        {
+          "balanced_accuracy": 0.45907820779808506,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.010361745004180856
+        },
+        {
+          "balanced_accuracy": 0.48300033449276303,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.0036288055226056937
+        },
+        {
+          "balanced_accuracy": 0.5315261539655373,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.04348729775621407
+        },
+        {
+          "balanced_accuracy": 0.4967270272574754,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.020803591073949218
+        }
+      ],
+      "policy": "forecast_300",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.507162733059164,
+        "ETHUSDT": 0.4982806413853149
+      },
+      "mean_delta_to_own_registered_policy": -0.009689799675654443,
+      "mean_delta_to_registered_reference": -0.003363069716167434,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.5027216872222395,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.45448610106208526,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5153830982971197,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.006189757309510491
+        },
+        {
+          "balanced_accuracy": 0.46142972170435226,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.009524259080639585
+        },
+        {
+          "balanced_accuracy": 0.5103984288245142,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.017084820936956513
+        },
+        {
+          "balanced_accuracy": 0.5395970137655524,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.00731286940967657
+        },
+        {
+          "balanced_accuracy": 0.5555584777981284,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.020222817810756355
+        },
+        {
+          "balanced_accuracy": 0.5529266357668559,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.01445319953102353
+        },
+        {
+          "balanced_accuracy": 0.485734374177452,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -8.168150878690161e-05
+        },
+        {
+          "balanced_accuracy": 0.49298011499705463,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.009938761785521943
+        },
+        {
+          "balanced_accuracy": 0.5178664815851804,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.008666104789065876
+        },
+        {
+          "balanced_accuracy": 0.48113650044240175,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.008896940920023744
+        },
+        {
+          "balanced_accuracy": 0.5631049056056372,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.009399957758245092
+        },
+        {
+          "balanced_accuracy": 0.5128159451950054,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.00277710731147221
+        },
+        {
+          "balanced_accuracy": 0.5117213265176377,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.013917675700120091
+        },
+        {
+          "balanced_accuracy": 0.4244136742183646,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.033483127514306765
+        },
+        {
+          "balanced_accuracy": 0.474522028143879,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.006142514594758647
+        },
+        {
+          "balanced_accuracy": 0.4727554242355776,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.0340789035807193
+        },
+        {
+          "balanced_accuracy": 0.45974485458782255,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.009695098214443365
+        },
+        {
+          "balanced_accuracy": 0.48352347192729883,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.004151942957141469
+        },
+        {
+          "balanced_accuracy": 0.5365513535265984,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.048512497317275194
+        },
+        {
+          "balanced_accuracy": 0.5022699131283571,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.015260705203067493
+        }
+      ],
+      "policy": "hybrid_900",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5050139268318532,
+        "ETHUSDT": 0.49820325125641585
+      },
+      "mean_delta_to_own_registered_policy": -0.022284323526628826,
+      "mean_delta_to_registered_reference": -0.004476167894272393,
+      "mean_delta_to_same_policy_matched_control": 0.04508399481352539,
+      "means": {
+        "balanced_accuracy": 0.5016085890441346,
+        "log_loss": 0.8749625627366842,
+        "macro_f1": 0.4518894779883443,
+        "natural_accuracy": 0.5896322489391796
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5113634939481279,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.010209361658502336
+        },
+        {
+          "balanced_accuracy": 0.4464733288843207,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.00543213373939197
+        },
+        {
+          "balanced_accuracy": 0.49896700778590664,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.0285162419755641
+        },
+        {
+          "balanced_accuracy": 0.5344867493900245,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.012423133785204488
+        },
+        {
+          "balanced_accuracy": 0.5461470326873972,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.01081137270002519
+        },
+        {
+          "balanced_accuracy": 0.5645617579578679,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.026088321722035623
+        },
+        {
+          "balanced_accuracy": 0.48593388114079145,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.00011782545455252258
+        },
+        {
+          "balanced_accuracy": 0.4883276069074568,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.014591269875119744
+        },
+        {
+          "balanced_accuracy": 0.5246336867831953,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.0018988995910509954
+        },
+        {
+          "balanced_accuracy": 0.4779200875247157,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.012113353837709784
+        },
+        {
+          "balanced_accuracy": 0.5591481978346484,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.005443249987256427
+        },
+        {
+          "balanced_accuracy": 0.5151767221912062,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.00041633031527138487
+        },
+        {
+          "balanced_accuracy": 0.5180352029711117,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.007603799246646115
+        },
+        {
+          "balanced_accuracy": 0.4238627154704877,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.03403408626218374
+        },
+        {
+          "balanced_accuracy": 0.4843405467710565,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.003676004032418828
+        },
+        {
+          "balanced_accuracy": 0.4579714876735219,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.048862840142775005
+        },
+        {
+          "balanced_accuracy": 0.4641021264505846,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.005337826351681341
+        },
+        {
+          "balanced_accuracy": 0.4891229334539596,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.009751404483802212
+        },
+        {
+          "balanced_accuracy": 0.5390721627053203,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.05103330649599719
+        },
+        {
+          "balanced_accuracy": 0.5025250523509898,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.015005565980434843
+        }
+      ],
+      "policy": "labels_300",
+      "source": "original_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5033959272215311,
+        "ETHUSDT": 0.49845891189136565
+      },
+      "mean_delta_to_own_registered_policy": -0.024637890175111574,
+      "mean_delta_to_registered_reference": -0.005157337381958525,
+      "mean_delta_to_same_policy_matched_control": 0.044402825325839244,
+      "means": {
+        "balanced_accuracy": 0.5009274195564484,
+        "log_loss": 0.8754743780461094,
+        "macro_f1": 0.45018103877086696,
+        "natural_accuracy": 0.5892362093352193
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5091367410728352,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.01243611453379495
+        },
+        {
+          "balanced_accuracy": 0.44211719253001125,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.009788270093701423
+        },
+        {
+          "balanced_accuracy": 0.49793743113459854,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.029545818626872195
+        },
+        {
+          "balanced_accuracy": 0.535401777596293,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.011508105578935945
+        },
+        {
+          "balanced_accuracy": 0.5453379867527617,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.010002326765389646
+        },
+        {
+          "balanced_accuracy": 0.5624030345410996,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.023929598305267363
+        },
+        {
+          "balanced_accuracy": 0.4836164484199877,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.0021996072662512356
+        },
+        {
+          "balanced_accuracy": 0.4882602160455812,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.0146586607369954
+        },
+        {
+          "balanced_accuracy": 0.5250984347284064,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.0014341516458398762
+        },
+        {
+          "balanced_accuracy": 0.47742012841807524,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.01261331294435028
+        },
+        {
+          "balanced_accuracy": 0.5594512818576555,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.005746334010263421
+        },
+        {
+          "balanced_accuracy": 0.5152135016920412,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.0003795508144364135
+        },
+        {
+          "balanced_accuracy": 0.5187039704745149,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.006935031743242948
+        },
+        {
+          "balanced_accuracy": 0.4182597361440459,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.039637065588625564
+        },
+        {
+          "balanced_accuracy": 0.4833378135453377,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": 0.0026732708067000732
+        },
+        {
+          "balanced_accuracy": 0.45737569792383936,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.0494586298924575
+        },
+        {
+          "balanced_accuracy": 0.46566993903967824,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.0037700137625876484
+        },
+        {
+          "balanced_accuracy": 0.4903565968149701,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.010985067844812735
+        },
+        {
+          "balanced_accuracy": 0.5400391088465908,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.05200025263726765
+        },
+        {
+          "balanced_accuracy": 0.5034113535506446,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.014119264780780016
+        }
+      ],
+      "policy": "labels_300",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.49816201828999834,
+        "ETHUSDT": 0.4940316819517232
+      },
+      "mean_delta_to_own_registered_policy": -0.009987906817546185,
+      "mean_delta_to_registered_reference": -0.009987906817546185,
+      "mean_delta_to_same_policy_matched_control": -0.007670629851130232,
+      "means": {
+        "balanced_accuracy": 0.49609685012086074,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.46743880338260146,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5059903307959971,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.015582524810633103
+        },
+        {
+          "balanced_accuracy": 0.4509868652950447,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.0009185973286679472
+        },
+        {
+          "balanced_accuracy": 0.4822874241606874,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.04519582560078336
+        },
+        {
+          "balanced_accuracy": 0.5466346693994981,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.0002752137757308648
+        },
+        {
+          "balanced_accuracy": 0.5418957170950489,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.0065600571076768754
+        },
+        {
+          "balanced_accuracy": 0.5389087210040704,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.0004352847682381755
+        },
+        {
+          "balanced_accuracy": 0.47398265227655795,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.011833403409680976
+        },
+        {
+          "balanced_accuracy": 0.48846127911753917,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.014457597665037403
+        },
+        {
+          "balanced_accuracy": 0.5077621711325185,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.01877041524172779
+        },
+        {
+          "balanced_accuracy": 0.46777126632564925,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.022262175036776244
+        },
+        {
+          "balanced_accuracy": 0.577608137027033,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": 0.023903189179640905
+        },
+        {
+          "balanced_accuracy": 0.5252009621006712,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": 0.009607909594193609
+        },
+        {
+          "balanced_accuracy": 0.5068427912829141,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.018796210934843682
+        },
+        {
+          "balanced_accuracy": 0.4280240894494254,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.02987271228324606
+        },
+        {
+          "balanced_accuracy": 0.46444621378260975,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.016218328956027928
+        },
+        {
+          "balanced_accuracy": 0.46392380525381455,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.042910522562482345
+        },
+        {
+          "balanced_accuracy": 0.4496158036002227,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.0198241492020432
+        },
+        {
+          "balanced_accuracy": 0.48080991249120875,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.0014383835210514118
+        },
+        {
+          "balanced_accuracy": 0.5260258348572467,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.03798697864792355
+        },
+        {
+          "balanced_accuracy": 0.4947583559694573,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.022772262361967333
+        }
+      ],
+      "policy": "forecast_300",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.4962346967638352,
+        "ETHUSDT": 0.4958722750363041
+      },
+      "mean_delta_to_own_registered_policy": -0.010031271038337309,
+      "mean_delta_to_registered_reference": -0.010031271038337309,
+      "mean_delta_to_same_policy_matched_control": -0.012371284339735007,
+      "means": {
+        "balanced_accuracy": 0.49605348590006954,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.43152209033429845,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.524687324072418,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": 0.003114468465787834
+        },
+        {
+          "balanced_accuracy": 0.4588033470751255,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.0068978844514128446
+        },
+        {
+          "balanced_accuracy": 0.47302250751516717,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.05446074224630351
+        },
+        {
+          "balanced_accuracy": 0.4906168983167327,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.05629298485849624
+        },
+        {
+          "balanced_accuracy": 0.539658098736284,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.004322438748911972
+        },
+        {
+          "balanced_accuracy": 0.5406226846162795,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.0021492483804472218
+        },
+        {
+          "balanced_accuracy": 0.478472605497707,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.007343450188531941
+        },
+        {
+          "balanced_accuracy": 0.5060635376344012,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": 0.003144660851824549
+        },
+        {
+          "balanced_accuracy": 0.5224976663297676,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.004034920044478807
+        },
+        {
+          "balanced_accuracy": 0.4815144932670683,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.008518948095357165
+        },
+        {
+          "balanced_accuracy": 0.532995276187276,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.020709671660116058
+        },
+        {
+          "balanced_accuracy": 0.4784950158197723,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.03709803668670528
+        },
+        {
+          "balanced_accuracy": 0.5254254326274233,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.00021356959033463907
+        },
+        {
+          "balanced_accuracy": 0.4456214963613148,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.012275305371356598
+        },
+        {
+          "balanced_accuracy": 0.4661976133422506,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.014466929396387024
+        },
+        {
+          "balanced_accuracy": 0.5044905700645489,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.002343757751747999
+        },
+        {
+          "balanced_accuracy": 0.45870013938179577,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.010739813420470146
+        },
+        {
+          "balanced_accuracy": 0.4820617641147993,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.0026902351446419503
+        },
+        {
+          "balanced_accuracy": 0.49277424649528445,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.004735390285961261
+        },
+        {
+          "balanced_accuracy": 0.5183490005459762,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": 0.0008183822145516051
+        }
+      ],
+      "policy": "labels_cumulative",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.49315770596473457,
+        "ETHUSDT": 0.49116339305359374
+      },
+      "mean_delta_to_own_registered_policy": -0.013924207429242835,
+      "mean_delta_to_registered_reference": -0.01392420742924284,
+      "mean_delta_to_same_policy_matched_control": -0.012810762452439029,
+      "means": {
+        "balanced_accuracy": 0.4921605495091641,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.4180727719496602,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5172708484920687,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.0043020071145614125
+        },
+        {
+          "balanced_accuracy": 0.4696860942970118,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.01778063167329913
+        },
+        {
+          "balanced_accuracy": 0.47662220112953435,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.05086104863193633
+        },
+        {
+          "balanced_accuracy": 0.49131905491123673,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.055590828263992254
+        },
+        {
+          "balanced_accuracy": 0.5302992610392434,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": -0.005036398948128573
+        },
+        {
+          "balanced_accuracy": 0.5460661940993633,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.00759275786353103
+        },
+        {
+          "balanced_accuracy": 0.4918534937791189,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": 0.0060374380928799876
+        },
+        {
+          "balanced_accuracy": 0.5023394858447385,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.0005793909378380979
+        },
+        {
+          "balanced_accuracy": 0.5159398865762919,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.010592699797954463
+        },
+        {
+          "balanced_accuracy": 0.4763594675240531,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.013673973838372377
+        },
+        {
+          "balanced_accuracy": 0.5338973678361744,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.019807580011217685
+        },
+        {
+          "balanced_accuracy": 0.48114450334318715,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.03444854916329043
+        },
+        {
+          "balanced_accuracy": 0.51898275375872,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.0066562484590377835
+        },
+        {
+          "balanced_accuracy": 0.44954000265968075,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.008356799072990667
+        },
+        {
+          "balanced_accuracy": 0.4321901777283378,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.048474365010299864
+        },
+        {
+          "balanced_accuracy": 0.4833880863378077,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.02344624147848917
+        },
+        {
+          "balanced_accuracy": 0.45650320865185745,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.012936744150408463
+        },
+        {
+          "balanced_accuracy": 0.48397086304707243,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.004599334076915068
+        },
+        {
+          "balanced_accuracy": 0.48758517364287335,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": -0.0004536825664498423
+        },
+        {
+          "balanced_accuracy": 0.4982528654849101,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.019277752846514534
+        }
+      ],
+      "policy": "labels_3600",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.4925804855135835,
+        "ETHUSDT": 0.4894866416107638
+      },
+      "mean_delta_to_own_registered_policy": -0.015051193376233363,
+      "mean_delta_to_registered_reference": -0.015051193376233365,
+      "mean_delta_to_same_policy_matched_control": -0.01168812366006593,
+      "means": {
+        "balanced_accuracy": 0.49103356356217354,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.42972519132403286,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.5120121588197946,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.009560696786835687
+        },
+        {
+          "balanced_accuracy": 0.4596302819538501,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.007724819330137411
+        },
+        {
+          "balanced_accuracy": 0.4682377147229286,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.05924553503854213
+        },
+        {
+          "balanced_accuracy": 0.5200462738608322,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.02686360931439674
+        },
+        {
+          "balanced_accuracy": 0.5423005147567537,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.006964854769381634
+        },
+        {
+          "balanced_accuracy": 0.5427391952190314,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.004265758983199086
+        },
+        {
+          "balanced_accuracy": 0.48439485298504814,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.0014212027011907546
+        },
+        {
+          "balanced_accuracy": 0.4912557597140417,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.011663117068534873
+        },
+        {
+          "balanced_accuracy": 0.5120920819596819,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.014440504414564459
+        },
+        {
+          "balanced_accuracy": 0.47583226968727166,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.014201171675153862
+        },
+        {
+          "balanced_accuracy": 0.541376643701228,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.012328304146164148
+        },
+        {
+          "balanced_accuracy": 0.4893538949291465,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.026239157577331085
+        },
+        {
+          "balanced_accuracy": 0.5107772425494723,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.014861759668285568
+        },
+        {
+          "balanced_accuracy": 0.4309901042098657,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.026906697522805723
+        },
+        {
+          "balanced_accuracy": 0.45374385844513576,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.02692068429350189
+        },
+        {
+          "balanced_accuracy": 0.4570302622418713,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.04980406557442557
+        },
+        {
+          "balanced_accuracy": 0.45244743895169903,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.01699251385056691
+        },
+        {
+          "balanced_accuracy": 0.48436625681130635,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.004994727841148988
+        },
+        {
+          "balanced_accuracy": 0.5014668402733868,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.013427984064063675
+        },
+        {
+          "balanced_accuracy": 0.49057762545112593,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.026952992880298676
+        }
+      ],
+      "policy": "hybrid_900",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.4907835775248325,
+        "ETHUSDT": 0.483321855875558
+      },
+      "mean_delta_to_own_registered_policy": -0.02535877019769873,
+      "mean_delta_to_registered_reference": -0.01903204023821172,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.4870527167001952,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.4185489848842067,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.511419345442516,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.010153510164114199
+        },
+        {
+          "balanced_accuracy": 0.4537332842415936,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.0018278216178809203
+        },
+        {
+          "balanced_accuracy": 0.49452360077671387,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.03295964898475687
+        },
+        {
+          "balanced_accuracy": 0.5074369241862775,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.03947295898895148
+        },
+        {
+          "balanced_accuracy": 0.5460875802228314,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": 0.010751920235459456
+        },
+        {
+          "balanced_accuracy": 0.5520121547587665,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.013538718522934257
+        },
+        {
+          "balanced_accuracy": 0.4675024913946265,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.018313564291612378
+        },
+        {
+          "balanced_accuracy": 0.4806145406462511,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.022304336136325487
+        },
+        {
+          "balanced_accuracy": 0.5097343460009864,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.016798240373259832
+        },
+        {
+          "balanced_accuracy": 0.46608386011889036,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.023949581243535134
+        },
+        {
+          "balanced_accuracy": 0.5343901985221168,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.01931474932527527
+        },
+        {
+          "balanced_accuracy": 0.4848349760572903,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.030758076449187294
+        },
+        {
+          "balanced_accuracy": 0.5027315989002539,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.022907403317504016
+        },
+        {
+          "balanced_accuracy": 0.38712629907470086,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.07077050265797058
+        },
+        {
+          "balanced_accuracy": 0.45084817353346796,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.02981636920516967
+        },
+        {
+          "balanced_accuracy": 0.4492157707615746,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.05761855705472227
+        },
+        {
+          "balanced_accuracy": 0.4497121981965083,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.019727754605757597
+        },
+        {
+          "balanced_accuracy": 0.4732932764998665,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": -0.0060782524702908125
+        },
+        {
+          "balanced_accuracy": 0.523478756793128,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.03543990058380486
+        },
+        {
+          "balanced_accuracy": 0.49627495787554354,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.021255660455881037
+        }
+      ],
+      "policy": "labels_900",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.4885714036687058,
+        "ETHUSDT": 0.4803480724072885
+      },
+      "mean_delta_to_own_registered_policy": -0.027951748859896774,
+      "mean_delta_to_registered_reference": -0.021625018900409767,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.48445973803799713,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.4359856975478197,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.49266007349848195,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.028912782108148266
+        },
+        {
+          "balanced_accuracy": 0.4367619245133054,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.015143538110407279
+        },
+        {
+          "balanced_accuracy": 0.48371811967657974,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.04376513008489097
+        },
+        {
+          "balanced_accuracy": 0.5214903902930835,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.025419492882145456
+        },
+        {
+          "balanced_accuracy": 0.5331060611686249,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": -0.002229598818747125
+        },
+        {
+          "balanced_accuracy": 0.5484146960135801,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.009941259777747846
+        },
+        {
+          "balanced_accuracy": 0.46196450336172734,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.023851552324511582
+        },
+        {
+          "balanced_accuracy": 0.4747946421375401,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.028124234645036522
+        },
+        {
+          "balanced_accuracy": 0.5014850023120385,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.02504758406220778
+        },
+        {
+          "balanced_accuracy": 0.45202432875903187,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.03800911260339365
+        },
+        {
+          "balanced_accuracy": 0.5516852859773108,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.002019661870081235
+        },
+        {
+          "balanced_accuracy": 0.48949630606772443,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.026096746438753177
+        },
+        {
+          "balanced_accuracy": 0.4949126546057031,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.0307263476120547
+        },
+        {
+          "balanced_accuracy": 0.3979665216153443,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.059930280117327095
+        },
+        {
+          "balanced_accuracy": 0.461537608763398,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.01912693397523965
+        },
+        {
+          "balanced_accuracy": 0.4528306738255326,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.05400365399076429
+        },
+        {
+          "balanced_accuracy": 0.4493339695196306,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.020105983282635298
+        },
+        {
+          "balanced_accuracy": 0.477294542117195,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": -0.0020769868529623425
+        },
+        {
+          "balanced_accuracy": 0.5240277134704316,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.0359888572611084
+        },
+        {
+          "balanced_accuracy": 0.48368974306367946,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.03384087526774515
+        }
+      ],
+      "policy": "hybrid_300",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.47934731998480495,
+        "ETHUSDT": 0.4767504752496049
+      },
+      "mean_delta_to_own_registered_policy": -0.028035859321202006,
+      "mean_delta_to_registered_reference": -0.028035859321202,
+      "mean_delta_to_same_policy_matched_control": -0.009003819082990284,
+      "means": {
+        "balanced_accuracy": 0.478048897617205,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.3988253487140918,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.504087630421295,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.017485225185335213
+        },
+        {
+          "balanced_accuracy": 0.45894383890948787,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": 0.007038376285775194
+        },
+        {
+          "balanced_accuracy": 0.46140985479270835,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.06607339496876236
+        },
+        {
+          "balanced_accuracy": 0.48815469247969656,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.05875519069553245
+        },
+        {
+          "balanced_accuracy": 0.5174546749467407,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": -0.01788098504063132
+        },
+        {
+          "balanced_accuracy": 0.542135618369656,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.003662182133823688
+        },
+        {
+          "balanced_accuracy": 0.4775572056852574,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.00825885000098156
+        },
+        {
+          "balanced_accuracy": 0.47951658388256,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.023402292900016525
+        },
+        {
+          "balanced_accuracy": 0.5032045601795828,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.02332802619466348
+        },
+        {
+          "balanced_accuracy": 0.4647883270876211,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.025245114274804414
+        },
+        {
+          "balanced_accuracy": 0.524180252867263,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.029524694980128996
+        },
+        {
+          "balanced_accuracy": 0.4834370954597801,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.03215595704669749
+        },
+        {
+          "balanced_accuracy": 0.5063214919985726,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.019317510219185208
+        },
+        {
+          "balanced_accuracy": 0.4047926318994916,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.05310416983317981
+        },
+        {
+          "balanced_accuracy": 0.4261997558879642,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.05446478685067341
+        },
+        {
+          "balanced_accuracy": 0.42980062642324424,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.07703370139305268
+        },
+        {
+          "balanced_accuracy": 0.4466046274697322,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.02283532533253374
+        },
+        {
+          "balanced_accuracy": 0.48179091495485615,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": 0.002419385984698791
+        },
+        {
+          "balanced_accuracy": 0.4882898588989317,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.0002510026896084816
+        },
+        {
+          "balanced_accuracy": 0.47230770972965697,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.045222908601767614
+        }
+      ],
+      "policy": "labels_900",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.47422719808594105,
+        "ETHUSDT": 0.4737548453786998
+      },
+      "mean_delta_to_own_registered_policy": -0.032093735206086514,
+      "mean_delta_to_registered_reference": -0.03209373520608651,
+      "mean_delta_to_same_policy_matched_control": -0.01046871630567675,
+      "means": {
+        "balanced_accuracy": 0.4739910217323204,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.4140448221212106,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.48953282701123957,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.03204002859539065
+        },
+        {
+          "balanced_accuracy": 0.43342822362215994,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.018477239001552764
+        },
+        {
+          "balanced_accuracy": 0.4386393040818315,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.08884394567963924
+        },
+        {
+          "balanced_accuracy": 0.49785280827401224,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.049057074901216774
+        },
+        {
+          "balanced_accuracy": 0.5143892034977315,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": -0.02094645648964047
+        },
+        {
+          "balanced_accuracy": 0.53763658717258,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": -0.0008368490632522652
+        },
+        {
+          "balanced_accuracy": 0.4673358487075978,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.01848020697864114
+        },
+        {
+          "balanced_accuracy": 0.4706334917518863,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.03228538503069028
+        },
+        {
+          "balanced_accuracy": 0.4950132886146753,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.03151929775957099
+        },
+        {
+          "balanced_accuracy": 0.45253747188881943,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.03749596947360606
+        },
+        {
+          "balanced_accuracy": 0.5330361148181904,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.02066883302920175
+        },
+        {
+          "balanced_accuracy": 0.4788188914739502,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.0367741610325274
+        },
+        {
+          "balanced_accuracy": 0.4971060208553597,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.028532981362398097
+        },
+        {
+          "balanced_accuracy": 0.41304077021065444,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.044856031522016976
+        },
+        {
+          "balanced_accuracy": 0.4444662709168307,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.03619827182180693
+        },
+        {
+          "balanced_accuracy": 0.4334030642825899,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.07343126353370702
+        },
+        {
+          "balanced_accuracy": 0.4408595928679717,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.028580359934294197
+        },
+        {
+          "balanced_accuracy": 0.477484140202878,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": -0.0018873887672793688
+        },
+        {
+          "balanced_accuracy": 0.495396331387654,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.007357475178330797
+        },
+        {
+          "balanced_accuracy": 0.4692101830077958,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.04832043532362876
+        }
+      ],
+      "policy": "hybrid_300",
+      "source": "original_reference"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.4584246827003488,
+        "ETHUSDT": 0.45462450576086944
+      },
+      "mean_delta_to_own_registered_policy": -0.05588689266728479,
+      "mean_delta_to_registered_reference": -0.04956016270779777,
+      "mean_delta_to_same_policy_matched_control": 0.0,
+      "means": {
+        "balanced_accuracy": 0.4565245942306092,
+        "log_loss": 0.9352611891628915,
+        "macro_f1": 0.3873183881615708,
+        "natural_accuracy": 0.5579101838755304
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.47047503513960204,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.051097820467028154
+        },
+        {
+          "balanced_accuracy": 0.39416343020504685,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.05774203241866582
+        },
+        {
+          "balanced_accuracy": 0.4432704593603907,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.08421279040107998
+        },
+        {
+          "balanced_accuracy": 0.487915935438611,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.05899394773661795
+        },
+        {
+          "balanced_accuracy": 0.5064752058479446,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": -0.028860454139427366
+        },
+        {
+          "balanced_accuracy": 0.5458696113863086,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": 0.007396175150476303
+        },
+        {
+          "balanced_accuracy": 0.4394525125093325,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.04636354317690644
+        },
+        {
+          "balanced_accuracy": 0.450364506689642,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.052554370092934566
+        },
+        {
+          "balanced_accuracy": 0.48487467767218784,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.04165790870205846
+        },
+        {
+          "balanced_accuracy": 0.41626197378871765,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.07377146757370787
+        },
+        {
+          "balanced_accuracy": 0.5172853022461193,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.0364196456012727
+        },
+        {
+          "balanced_accuracy": 0.47177376631163026,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.04381928619484732
+        },
+        {
+          "balanced_accuracy": 0.46835699933821173,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.05728200287954607
+        },
+        {
+          "balanced_accuracy": 0.34781872889444676,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.11007807283822463
+        },
+        {
+          "balanced_accuracy": 0.42820092966433027,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.052463613074307386
+        },
+        {
+          "balanced_accuracy": 0.40626431205496016,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.10057001576133673
+        },
+        {
+          "balanced_accuracy": 0.42704963342042174,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.04239031938184418
+        },
+        {
+          "balanced_accuracy": 0.46448373666895126,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": -0.014887792301206071
+        },
+        {
+          "balanced_accuracy": 0.5028340054327185,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": 0.014795149223395254
+        },
+        {
+          "balanced_accuracy": 0.45730112254260924,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.06022949578881537
+        }
+      ],
+      "policy": "labels_300",
+      "source": "matched_data_control"
+    },
+    {
+      "asset_dates": 40,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.44761978461050217,
+        "ETHUSDT": 0.4519393325216778
+      },
+      "mean_delta_to_own_registered_policy": -0.056305198372316956,
+      "mean_delta_to_registered_reference": -0.056305198372316956,
+      "mean_delta_to_same_policy_matched_control": -0.006745035664519181,
+      "means": {
+        "balanced_accuracy": 0.4497795585660899,
+        "log_loss": 0.9601141394341426,
+        "macro_f1": 0.3713894965261299,
+        "natural_accuracy": 0.5448585572842999
+      },
+      "paired_dates": [
+        {
+          "balanced_accuracy": 0.4639712810149761,
+          "date": "2023-05-24",
+          "delta_to_registered_reference": -0.057601574591654076
+        },
+        {
+          "balanced_accuracy": 0.40374575071079133,
+          "date": "2023-05-25",
+          "delta_to_registered_reference": -0.04815971191292137
+        },
+        {
+          "balanced_accuracy": 0.4121572064454537,
+          "date": "2023-05-26",
+          "delta_to_registered_reference": -0.11532604331601698
+        },
+        {
+          "balanced_accuracy": 0.4711299694997494,
+          "date": "2023-05-27",
+          "delta_to_registered_reference": -0.07577991367547957
+        },
+        {
+          "balanced_accuracy": 0.49077346618085427,
+          "date": "2023-05-28",
+          "delta_to_registered_reference": -0.04456219380651774
+        },
+        {
+          "balanced_accuracy": 0.5348885175474835,
+          "date": "2023-05-29",
+          "delta_to_registered_reference": -0.003584918688348815
+        },
+        {
+          "balanced_accuracy": 0.44222369665767547,
+          "date": "2023-05-30",
+          "delta_to_registered_reference": -0.043592359028563454
+        },
+        {
+          "balanced_accuracy": 0.4481320234321599,
+          "date": "2023-05-31",
+          "delta_to_registered_reference": -0.054786853350416664
+        },
+        {
+          "balanced_accuracy": 0.4829386354218864,
+          "date": "2023-06-01",
+          "delta_to_registered_reference": -0.04359395095235988
+        },
+        {
+          "balanced_accuracy": 0.4130280285456238,
+          "date": "2023-06-02",
+          "delta_to_registered_reference": -0.07700541281680165
+        },
+        {
+          "balanced_accuracy": 0.4939441877417524,
+          "date": "2023-06-03",
+          "delta_to_registered_reference": -0.059760760105639604
+        },
+        {
+          "balanced_accuracy": 0.47042075469496814,
+          "date": "2023-06-04",
+          "delta_to_registered_reference": -0.045172297811509415
+        },
+        {
+          "balanced_accuracy": 0.4770133786226779,
+          "date": "2023-06-05",
+          "delta_to_registered_reference": -0.048625623595079936
+        },
+        {
+          "balanced_accuracy": 0.3641796680748025,
+          "date": "2023-06-06",
+          "delta_to_registered_reference": -0.0937171336578689
+        },
+        {
+          "balanced_accuracy": 0.4111089126236672,
+          "date": "2023-06-07",
+          "delta_to_registered_reference": -0.06955563011497046
+        },
+        {
+          "balanced_accuracy": 0.38702781895153876,
+          "date": "2023-06-08",
+          "delta_to_registered_reference": -0.11980650886475813
+        },
+        {
+          "balanced_accuracy": 0.43137642607074844,
+          "date": "2023-06-09",
+          "delta_to_registered_reference": -0.03806352673151747
+        },
+        {
+          "balanced_accuracy": 0.46901351039308103,
+          "date": "2023-06-10",
+          "delta_to_registered_reference": -0.010358018577076356
+        },
+        {
+          "balanced_accuracy": 0.4843177988965899,
+          "date": "2023-06-11",
+          "delta_to_registered_reference": -0.0037210573127332836
+        },
+        {
+          "balanced_accuracy": 0.44420013979531925,
+          "date": "2023-06-12",
+          "delta_to_registered_reference": -0.07333047853610536
+        }
+      ],
+      "policy": "labels_300",
+      "source": "original_reference"
+    }
+  ],
+  "model_fits": 0,
+  "natural_posterior_metrics_unchanged": true,
+  "post_fit_trials": 1760,
+  "recorded_at_utc": "2026-09-07T18:14:29.219708+00:00",
+  "substantial_gain_confirmed": false,
+  "summary_path": "results/boundary_same_day_priors_20260907/summary.json",
+  "summary_sha256": "60cae5449b85ace7fa0b4583c383f9ae8233b73de2ec30c35245d357beda9813"
+}

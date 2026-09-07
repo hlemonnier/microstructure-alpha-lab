@@ -1,0 +1,80 @@
+{
+  "confirmation_summary_sha256": "acbd8312944d068dd8599a2c86634822425602fcd9a0b63dd93b004f7a826325",
+  "economic_performance_confirmed": false,
+  "procedures": {
+    "original_blend": {
+      "interval": {
+        "block_length": 1,
+        "bootstrap_resamples": 20000,
+        "lower": -0.003890370476583417,
+        "marginal_interval_coverage": 0.9875,
+        "mean": 0.01780815563235643,
+        "registered_procedures": 2,
+        "round_alpha": 0.025,
+        "round_number": 1,
+        "scope": "Nominal alpha spending: round j receives 0.05/2**j, split across its registered procedures. The union-bound allocation assumes each bootstrap interval has its stated coverage; it does not guarantee that approximation under arbitrary market dependence.",
+        "seed": 20260907,
+        "upper": 0.033334535527084756
+      },
+      "original_gates": {
+        "at_least_twenty_dates": true,
+        "both_assets_improve": true,
+        "date_cluster_lower_bound_positive": true,
+        "log_loss_ratio_at_most_1_01": true,
+        "mean_balanced_accuracy_gain_at_least_five_points": false
+      },
+      "research_discovery_gate_passed": false,
+      "three_day_sensitivity": {
+        "block_length": 3,
+        "bootstrap_resamples": 20000,
+        "lower": 0.0009657588036490817,
+        "marginal_interval_coverage": 0.9875,
+        "mean": 0.01780815563235643,
+        "registered_procedures": 2,
+        "round_alpha": 0.025,
+        "round_number": 1,
+        "scope": "Nominal alpha spending: round j receives 0.05/2**j, split across its registered procedures. The union-bound allocation assumes each bootstrap interval has its stated coverage; it does not guarantee that approximation under arbitrary market dependence.",
+        "seed": 20260907,
+        "upper": 0.03041384482705003
+      }
+    },
+    "pooled_balanced_tree_blend": {
+      "interval": {
+        "block_length": 1,
+        "bootstrap_resamples": 20000,
+        "lower": -0.0022259049515678,
+        "marginal_interval_coverage": 0.9875,
+        "mean": 0.01948055279315305,
+        "registered_procedures": 2,
+        "round_alpha": 0.025,
+        "round_number": 1,
+        "scope": "Nominal alpha spending: round j receives 0.05/2**j, split across its registered procedures. The union-bound allocation assumes each bootstrap interval has its stated coverage; it does not guarantee that approximation under arbitrary market dependence.",
+        "seed": 20260907,
+        "upper": 0.03417513440043299
+      },
+      "original_gates": {
+        "at_least_twenty_dates": true,
+        "both_assets_improve": true,
+        "date_cluster_lower_bound_positive": true,
+        "log_loss_ratio_at_most_1_01": true,
+        "mean_balanced_accuracy_gain_at_least_five_points": false
+      },
+      "research_discovery_gate_passed": false,
+      "three_day_sensitivity": {
+        "block_length": 3,
+        "bootstrap_resamples": 20000,
+        "lower": 0.002149392370636988,
+        "marginal_interval_coverage": 0.9875,
+        "mean": 0.01948055279315305,
+        "registered_procedures": 2,
+        "round_alpha": 0.025,
+        "round_number": 1,
+        "scope": "Nominal alpha spending: round j receives 0.05/2**j, split across its registered procedures. The union-bound allocation assumes each bootstrap interval has its stated coverage; it does not guarantee that approximation under arbitrary market dependence.",
+        "seed": 20260907,
+        "upper": 0.03133438032631485
+      }
+    }
+  },
+  "protocol_sha256": "c9e63640ad96c38f8d6cf65a19a8853c2a9de14bd97c151a46867a72401b814b",
+  "substantial_predictive_gain_confirmed": false
+}
