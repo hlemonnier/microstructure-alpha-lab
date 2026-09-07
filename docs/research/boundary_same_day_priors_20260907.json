@@ -1,0 +1,94 @@
+{
+  "comparison": "Report all 44 fixed source/policy combinations across the same 40 asset/date panels; show source-specific registered control, original registered reference, and matched-data control using the same policy. Ranking and selecting on these exposed outcomes is exploratory.",
+  "confirmation_requirement": "Any selected procedure needs a separately registered fresh-date round and the continuing nominal error budget. These 20 dates cannot count again as unseen confirmation.",
+  "dates": [
+    "2023-05-24",
+    "2023-05-25",
+    "2023-05-26",
+    "2023-05-27",
+    "2023-05-28",
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11",
+    "2023-06-12"
+  ],
+  "decision_rule": "argmax of unchanged natural posterior divided by causal estimated class prior. Natural argmax accuracy and natural posterior log loss must remain exactly unchanged.",
+  "evidence_status": "development_only_on_exposed_confirmation_dates",
+  "forecast_history": "Current and earlier known noon probabilities, with 60 pseudocounts initialized to the available cumulative same-day label estimate at the first query. Weight is one per observed forecast, with clock-time exponential decay between forecasts.",
+  "hybrids": "Equal average of same-half-life available-label and forecast estimates.",
+  "input_hashes": {
+    "data/research/boundary_exact_labels_20260907/dataset_manifest.json": "e0b8c5b5658d98b57558c4974fdc45ab43faf08cf93686913ada8a9a357eedb5",
+    "docs/research/boundary_confirmation_evidence_20260907.json": "acbd8312944d068dd8599a2c86634822425602fcd9a0b63dd93b004f7a826325",
+    "docs/research/boundary_confirmation_exposure_20260907.json": "28eef1021db79142d6779e244b94e966be1813a23c8f654e3e6db7a33c93e400",
+    "results/boundary_confirmation_exact_labels_20260907/frozen_study.json": "24618c66426aac78d0dac58b5a4a4f931ef941ccb0b356f7977008583139dd01",
+    "results/boundary_pooled_tree_confirmation_20260907/frozen_study.json": "2693130772ef24794f223b884ef99f6cf4c359e80b94c416d6e4d618f495dcf2",
+    "scripts/run_boundary_same_day_priors.py": "2402cbe7a3fabd6391bf10a2a1b119a37cd3cfd1fc0ab0176e6ec593ec47710d",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "tests/test_boundary_adaptive_priors.py": "640d9731e0461c28a8696c6b5e050068b691cf557b9731e0de1d549062aae855"
+  },
+  "label_history": "Own-asset same-day exact labels from 00:02 UTC, observed quote age <=1000ms, each released only when its actual future_event_time <= query_time. Exponential age uses original decision_time, not delayed release time.",
+  "label_initial_prior": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+  ],
+  "manifest": "data/research/boundary_exact_labels_20260907/dataset_manifest.json",
+  "motivation": "June 3 exposed a large neutral-regime balanced-decision failure. This family evaluates available same-day label frequencies and forecast marginals. No same-day future labels or unreleased outcomes may enter a decision.",
+  "new_model_fits": 0,
+  "policies": [
+    "registered",
+    "training",
+    "labels_cumulative",
+    "labels_300",
+    "labels_900",
+    "labels_3600",
+    "forecast_300",
+    "forecast_900",
+    "forecast_3600",
+    "hybrid_300",
+    "hybrid_900"
+  ],
+  "post_fit_trials": 1760,
+  "prior_floor_formula": "0.001 + 0.997 * normalized_estimate",
+  "prior_pseudocounts": 60,
+  "registered_at_utc": "2026-09-07T18:11:36.464756+00:00",
+  "sources": [
+    {
+      "name": "original_reference",
+      "prediction": "original_reference",
+      "run": "results/boundary_confirmation_exact_labels_20260907"
+    },
+    {
+      "name": "matched_data_control",
+      "prediction": "matched_data_control",
+      "run": "results/boundary_confirmation_exact_labels_20260907"
+    },
+    {
+      "name": "original_blend",
+      "prediction": "candidate",
+      "run": "results/boundary_confirmation_exact_labels_20260907"
+    },
+    {
+      "name": "pooled_balanced_tree_blend",
+      "prediction": "candidate",
+      "run": "results/boundary_pooled_tree_confirmation_20260907"
+    }
+  ],
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}
