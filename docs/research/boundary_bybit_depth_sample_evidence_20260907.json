@@ -1,0 +1,28 @@
+{
+  "artifact_bytes": 11464318,
+  "artifact_path": "data/research/boundary_l2_preflight_20260907/bybit/2023-06-03_BTCUSDT_depth25.npz",
+  "artifact_sha256": "6117e4ab9375d1f8aff616c3f07124438193be9e7390ce72d6700d231aa4c796",
+  "atomic_uncrossed_book_checks": true,
+  "complete_depth_rows": [
+    86393,
+    86393
+  ],
+  "delays_ms": [
+    100,
+    500
+  ],
+  "depth": 25,
+  "evidence_status": "source_feasibility_only_on_exposed_date",
+  "first_publisher_time": 1685750401450,
+  "last_publisher_time": 1685836801450,
+  "messages": 850387,
+  "model_fits": 0,
+  "protocol_sha256": "0fdceea086a52fe1a6eb504bb2e295fb97c1ab350dfabcaecad8b07e214de29b",
+  "rows": 86394,
+  "save_reload_parity": true,
+  "seconds": 43.743438666977454,
+  "semantics": "bybit_ob500_atomic_publisher_delay_v1",
+  "sequence_continuity_checks": true,
+  "snapshots": 2,
+  "strict_publisher_delay_checks": true
+}

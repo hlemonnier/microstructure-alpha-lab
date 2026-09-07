@@ -1,0 +1,34 @@
+{
+  "alternative_preflight": {
+    "okx": {
+      "path": "data/research/boundary_l2_preflight_20260907/okx.json",
+      "size_mb_reported": 216.24,
+      "status": "public_resolver_returned_url"
+    },
+    "tardis": {
+      "date": "2023-06-01",
+      "no_market_observations_downloaded": true,
+      "status": "HEAD404_GET403_Cloudflare_block"
+    }
+  },
+  "assessment": "No fitted models or label inspection. Check provider byte count, ZIP CRC, JSON message schema, snapshots, timestamps and sequencing. Store a local SHA256 as provenance; no independent provider SHA256 is claimed. Existing Binance target and decision universe are not changed.",
+  "dataset": "orderbook_500",
+  "date": "2023-06-03",
+  "evidence_status": "source_feasibility_only_on_exposed_date",
+  "max_download_bytes": 70000000,
+  "metadata_hashes": {
+    "data/research/boundary_l2_preflight_20260907/bybit.json": "1d67aa9115ae3595b07df14a38c3fd18ab321ba1914627dae1a3a7387c411bec",
+    "data/research/boundary_l2_preflight_20260907/okx.json": "edcaac99df81b54d775708d462a94959798085bbc8abd94597a56287eeba8056"
+  },
+  "provider_reported_bytes": 66201865,
+  "registered_at_utc": "2026-09-07T21:37:12.374831+00:00",
+  "source": "bybit",
+  "sources": [
+    "https://www.bybit.com/derivatives/en/history-data",
+    "https://bybit-exchange.github.io/docs/v5/market/orderbook",
+    "https://www.okx.com/en-gb/historical-data",
+    "https://docs.tardis.dev/downloadable-csv-files/api"
+  ],
+  "symbol": "BTCUSDT",
+  "url": "https://quote-saver.bycsi.com/orderbook/linear/BTCUSDT/2023-06-03_BTCUSDT_ob500.data.zip"
+}

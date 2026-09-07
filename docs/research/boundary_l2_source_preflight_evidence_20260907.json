@@ -1,0 +1,33 @@
+{
+  "compressed_bytes": 66201865,
+  "evidence_status": "source_feasibility_only_on_exposed_date",
+  "first_publisher_time": 1685750401450,
+  "last_publisher_time": 1685836801450,
+  "level_updates": 14620044,
+  "limitation": "Historical messages contain publisher ts, increasing update u and cross sequence seq. Receive and matching-engine timestamps must not be invented. Full atomic depth reconstruction still needs validation before feature use.",
+  "local_receive_timestamp_messages": 0,
+  "matching_engine_timestamp_messages": 0,
+  "maximum_levels_in_one_side_message": 927,
+  "message_types": {
+    "delta": 850385,
+    "snapshot": 2
+  },
+  "messages": 850387,
+  "model_fits": 0,
+  "protocol_sha256": "3dd05f20e4617b8de18d6c1882a519832264f0f5c1fec8ead1a1cd9e210058fd",
+  "provider_reported_bytes_match": true,
+  "publisher_gap_ms_quantiles": {
+    "max": 501.0,
+    "median": 100.0,
+    "min": 37.0,
+    "p95": 101.0,
+    "p99": 200.0
+  },
+  "reconstruction_validated": false,
+  "seconds": 7.816365000006044,
+  "sequence_and_clock_errors": {},
+  "source_path": "data/research/boundary_l2_preflight_20260907/bybit/2023-06-03_BTCUSDT_ob500.data.zip",
+  "source_sha256": "135397b202ccaf6172824082bdd559dd0d3e023e156670ebaea1a7cbee063023",
+  "uncompressed_bytes": 415336985,
+  "zip_crc_verified_by_complete_member_read": true
+}

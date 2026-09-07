@@ -1,0 +1,57 @@
+{
+  "acquisition": "Resolve exactly one official Bybit orderbook500 archive for every fixed symbol/date. Record raw provider metadata and validate total final-archive bytes before any new download. HTTPS provider-host allowlist, per-file provider-size limit, exact byte parity, complete ZIP-member CRC verification, local SHA256 provenance. No independent provider SHA256 is claimed.",
+  "added_publisher_delays_ms": [
+    100,
+    500
+  ],
+  "assessment": "Observation preparation only. These already exposed dates cannot establish independent accuracy gain. A subsequent model protocol must compare added venue BBO with added price-level depth at matched delay and preserve the Binance five-second target.",
+  "causality": "publisher_time + declared_delay < decision. No matching-engine or receive timestamp is invented. Original observation/label files remain untouched; only the original decision_time column enters depth preparation.",
+  "checks_before_registration": "The full June3BTC archive reconstructed850387 messages without sequence or atomic-book errors.86393of86394 requested rows have25levels on both sides under both delays; only the initial unavailable row lacks depth. Exact save/reload parity passed. Two new replay/delay tests and556 full direct tests pass. Ruff passes.",
+  "coverage": "Require first publisher time no later than UTCdaystart+5min and last no earlier than UTCdayend-5min; retain all original decisions and explicit availability. File capture intervals may extend a few seconds past midnight; strict sampling prevents future observations entering a decision.",
+  "dates": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11"
+  ],
+  "depth": 25,
+  "evidence_status": "development_only_on_exposed_dates",
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "docs/research/boundary_bybit_depth_sample_20260907.json": "0fdceea086a52fe1a6eb504bb2e295fb97c1ab350dfabcaecad8b07e214de29b",
+    "docs/research/boundary_bybit_depth_sample_evidence_20260907.json": "af9461ff22e058de0a435955725c47291a1060ab8f0f92a75f6a108a9bff7043",
+    "scripts/prepare_boundary_bybit_depth.py": "2bae13b857df2934d00d1b27785c37d976ce948d61b0a7a9664eed86b00b3871",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_bybit_depth.py": "89b09ee4d7a721146f39d56bff02de04969ff1e675c1423fd060208637c09a67",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/data_sources.py": "51ee46e6f9217a50f05dface55d4aa1334d95c6ccf3656a7a416550f75b98ff7",
+    "src/lob_forge/l2_ingest.py": "c9ecbba7163f17f5ccc802944ff99641b21edd4553cd673c20fa63ee396a03bd",
+    "tests/test_boundary_bybit_depth.py": "8e09fdcc689d43a9f935c421222c5f838a2661bec32b0d00f01320a11bf4ad1d"
+  },
+  "max_final_archive_bytes": 4294967296,
+  "model_fits": 0,
+  "registered_at_utc": "2026-09-07T21:49:44.498856+00:00",
+  "representation": "Replay every native message atomically, requiring a valid snapshot, consecutive update u, increasing cross sequence seq and nondecreasing publisher ts. Only complete uncrossed messages can affect observations. Save top25 ask-price/ask-quantity/bid-price/bid-quantity, source publisher times, u, seq and complete-depth availability at every original Binance decision time, at added100ms and500ms delays.",
+  "source_manifest": "data/research/boundary_event_clock_20260907/dataset_manifest.json",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "verified_existing_archives": {
+    "BTCUSDT/2023-06-03": {
+      "path": "data/research/boundary_l2_preflight_20260907/bybit/2023-06-03_BTCUSDT_ob500.data.zip",
+      "sha256": "135397b202ccaf6172824082bdd559dd0d3e023e156670ebaea1a7cbee063023"
+    }
+  }
+}

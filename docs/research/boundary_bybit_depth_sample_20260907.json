@@ -1,0 +1,27 @@
+{
+  "added_publisher_delays_ms": [
+    100,
+    500
+  ],
+  "archive": "data/research/boundary_l2_preflight_20260907/bybit/2023-06-03_BTCUSDT_ob500.data.zip",
+  "causality": "publisher_time + assumed_delay < Binance decision. All same-millisecond updates excluded at an exact boundary. Missing, duplicate, reordered or crossed atomic updates reject the stream before later states can be used. No matching-engine or local receipt time is invented.",
+  "checks_before_registration": "Two tests pass against the existing atomic replayer and hand-specified delayed states, including resets after errors and future-prefix invariance. Full source scan found zero continuity/time errors and validated ZIP CRC and provider byte count.",
+  "date": "2023-06-03",
+  "depth": 25,
+  "evidence_status": "source_feasibility_only_on_exposed_date",
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "data/research/boundary_l2_preflight_20260907/bybit/2023-06-03_BTCUSDT_ob500.data.zip": "135397b202ccaf6172824082bdd559dd0d3e023e156670ebaea1a7cbee063023",
+    "docs/research/boundary_l2_source_preflight_20260907.json": "3dd05f20e4617b8de18d6c1882a519832264f0f5c1fec8ead1a1cd9e210058fd",
+    "docs/research/boundary_l2_source_preflight_evidence_20260907.json": "873bc8f3aa798585c5b3aa0d81b0d782cda151ba4aa48159519a361b7273d1a0",
+    "src/lob_forge/boundary_bybit_depth.py": "89b09ee4d7a721146f39d56bff02de04969ff1e675c1423fd060208637c09a67",
+    "src/lob_forge/data_sources.py": "51ee46e6f9217a50f05dface55d4aa1334d95c6ccf3656a7a416550f75b98ff7",
+    "src/lob_forge/l2_replay.py": "2d6084f333253631252c586d2771be92ad07fefeeba37faf48477b3dc6b707ab",
+    "tests/test_boundary_bybit_depth.py": "8e09fdcc689d43a9f935c421222c5f838a2661bec32b0d00f01320a11bf4ad1d"
+  },
+  "input_manifest": "data/research/boundary_event_clock_20260907/dataset_manifest.json",
+  "model_fits": 0,
+  "observations": "Sample full atomic Bybit states at the original one-second Binance decision times. Keep all requested rows, explicit unavailable depth masks, publisher timestamps, update IDs and cross sequences. No labels are read.",
+  "registered_at_utc": "2026-09-07T21:45:15.414364+00:00",
+  "symbol": "BTCUSDT"
+}
