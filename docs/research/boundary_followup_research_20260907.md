@@ -38,7 +38,7 @@ A separately [registered matched-control extension](boundary_morning_controls_20
 
 ## Validation and evidence status
 
-The implementation suite passes 531 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 19 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
+The implementation suite passes 535 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 20 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
 
 Both fixed screens are complete. Their outcomes remain developmental, with no substantial-gain or economic-performance claim.
 
@@ -62,10 +62,16 @@ Four extra May 19/20 sessions extend the event-clock preparation to 48 sessions.
 
 The [complete history results](boundary_regime_evidence_20260907.json) show 56.9760% balanced accuracy for the fourteen-day/fourteen-second blend, versus 56.7972% for the same-policy four-day dense clock blend: **+0.1788 points**. Gains are positive in both assets (+0.1730 BTC and +0.1846 ETH points) and all three dates, but small. Natural log loss is 0.765140 versus 0.766778. The wider/four-second blend improves only +0.0471 points. The recent/four-second blend is +0.0387 points overall, with BTC positive and ETH negative. It is a useful faster development control, not an accuracy discovery. Each sparse cohort has approximately 86,000 training rows per asset, versus about 301,000 in the wider/four-second cohort.
 
-## Intraday context: registered and running
+## Intraday context: modest accuracy and log-loss gains
 
 The [context protocol](boundary_context_screen_20260907.json) adds five-, fifteen- and sixty-minute activity state to the same forecast. The first representation has 220 columns and uses only observed counts, notional flow, return variance, depth, spread and signed state, plus activity differences and session age. The second has 235 columns and adds strictly released own class-frequency estimates and peer neutral-frequency estimates. Each outcome enters only after its actual future quote timestamp; exponential age follows its originating decision. The algorithm resets at coverage breaks.
 
-Four mathematical/causality tests pass, including explicit scalar-estimator agreement, strict release boundaries, future-record invariance, unchanged original rows and invalid-history handling. A full May 29 session comparison preserves all 86,097 eligible rows per asset and all 168 original columns exactly. The frozen study uses four recent days sampled every four seconds, the same validation, three exposed assessment dates, twelve fits and 192 fixed model/policy/asset/date panels. Its feature ablation separates longer activity history from released-outcome context.
+Four mathematical/causality tests pass, including explicit scalar-estimator agreement, strict release boundaries, future-record invariance, unchanged original rows and invalid-history handling. A full May 29 session comparison preserves all 86,097 eligible rows per asset and all 168 original columns exactly. The frozen study uses four recent days sampled every four seconds, the same validation, three exposed assessment dates, twelve fits and 192 fixed model/policy/asset/date panels. Its feature ablation separates longer activity history from released-outcome context. The complete [context results](boundary_context_evidence_20260907.json) give the activity-only blend 57.1421% balanced accuracy versus 56.8359% for the matched recent/four-second clock blend: **+0.3062 points**. Natural accuracy is 66.4922% versus 66.2140%, and log loss is 0.763114 versus 0.769702. The released-outcome blend reaches 57.0836% balanced accuracy and a better 0.760082 log loss. These are modest improvements on the same three exposed dates, not independent discovery evidence.
+
+## Move-size distribution: target preparation registered
+
+The next [target-preparation protocol](boundary_distribution_targets_20260907.json) keeps the same five-second raw quote endpoints and exact threshold, but retains nine signed magnitude bins during training. Exact zero receives its own bin; other bins split moves at one, two and four times the threshold. Grouping bins back into three classes must exactly reproduce every existing label. Separate target files cannot enter the observation schema.
+
+[Imani et al.](https://arxiv.org/abs/2402.13425) study optimization benefits from histogram distribution losses, and [Stewart et al.](https://proceedings.mlr.press/v206/stewart23a.html) analyze how loss formulation can affect learned features. The proposed exact hard-bin experiment differs from the Gaussian histogram-loss method and does not inherit an empirical market gain from either paper. Three target tests verify exact boundaries, direction symmetry, arbitrary precision, coarse-label aggregation and the class-weight posterior recovery identity.
 
 Any selected combination still requires a fresh, separately registered confirmation round and the continuing nominal research error budget.
