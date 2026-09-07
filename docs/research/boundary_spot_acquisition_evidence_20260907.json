@@ -1,0 +1,52 @@
+{
+  "aggregate_id_gaps": 0,
+  "aggregate_trades": 15087179,
+  "all_official_sha256_verified": true,
+  "compressed_bytes": 217134806,
+  "identity": {
+    "input_hashes": {
+      "scripts/acquire_boundary_spot.py": "774ad44ea2e884ac16caadb80dbf0f8a8a0bf2b5826d94d96d8d897191664668",
+      "scripts/prepare_boundary_event_clock.py": "8a46c988f47ac8b638a4b4b330c2951d66225a47774bbb9a7330a1cc811bca36",
+      "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+      "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+      "src/lob_forge/boundary_spot_data.py": "677ecdba899cde8a2aef86514f0beb4e1802b283427aee7aa9efc6bdf6840562",
+      "tests/test_boundary_spot_data.py": "1d310bafcff86e0ced23d9f4ae68eab6ec36983cf6ef4a59cda2133d18e72f35"
+    },
+    "protocol_sha256": "c446e2dd08a867a42e34a53c29394419a9829590dc4bb2d3159f9620f356d5be"
+  },
+  "maximum_intertrade_gap_ms": 24822,
+  "session_hashes": {
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-29.zip": "8a63e882f0e97610d452a709b8bd7349a71d293bd2964a9c8bf608e5b5996b1a",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-30.zip": "f1ab5cd886bbc83319d487dd5e38a1ba48e5fa13b4b743c93ea5067c3afaee85",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-31.zip": "bdd5ff1e392e71f43ec62beffbbaecc4f81f9c89a6d5a9b2c5ccd4d1aac85c5d",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-01.zip": "b209a79e0dfcbc599e9da01eeccfb683ef8a90a0db4336771418910727da3a35",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-02.zip": "1435eaadc2b3dd30b0f57b2183df3ff2786433df1046b8c19e4f19b87ea55061",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-03.zip": "c0d90bae75202208268a61612f0123ab03dd6a9274bd7837886e07aace6a562d",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-04.zip": "bac9190b5d3b7c8a8d52969da365897d8290760602d2537dfce66fb9a133f4c0",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-05.zip": "4aa2f7a1ee5a695a06204fcac11cd744e8d8aec6e77b8403d105b5d334b0f156",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-06.zip": "92bfb414a768d65121c991e4c30adf71c595b0ddc1b132efbe1a729d74bc8eef",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-07.zip": "9185304c5895f4a046c293a62a70913a442b7428e77482bb7848b928923f6fbc",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-08.zip": "9c78e033bedf3a42f464e66840a05c46a67994fc0285bda7c8561925683b71ec",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-09.zip": "236f5a1295047393fbff0dc8a2cffba1c54e3dc50b066d171508f64ec6f72993",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-10.zip": "7bd18ba7d8f742cd6be5625b1c1d9da7401dd80d0d2f2d7bdd73d604db67e40e",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-11.zip": "86fcaa4bf53d3ccdb1b3d479af8fac054ec1e6f07dc720dd66709307d6018506",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-29.zip": "1b8e039b5983767f5632109aa2c1626cd577a24a0ea50dcdab1a684e57919d0a",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-30.zip": "09c9bf95f8da1f819d1ed1d875669c66bd64a6a7d733defa290e7cc11292b80e",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-31.zip": "5c3138b2563dac711b1a1dc3e0fdc260c1c69f542db8fdeb60a630d6da40177a",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-01.zip": "4009dd62a94b91ed91b29da315496bf6de9afd0c9223339722003d118e56ed6b",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-02.zip": "13df958f262062ce2566b216ea20174955035f4e6dc330e245dbd1f9bc20a39d",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-03.zip": "53a57bdf78f09f7e9c350560d594a5024e3cf485b5b772078c20c3d27cabfe27",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-04.zip": "f3031ce910b503f5b893c8d683fb1f3a3757e99c3dc6111f87dc5a4db18c5fff",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-05.zip": "7b47a9749c94c7a53b0f1054bd751d704db22195b8f5721fb5a41f5c8b40eafc",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-06.zip": "fc6926a6791c27fc30264d3b76d7b3bd71c6f78d0160da371b535aa49bb0741f",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-07.zip": "da3d58f9f7c32cc784d8d70383f4735011570338c3985d085eac568973d29611",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-08.zip": "020edcdabe5b79a343f2dbdf07907d15c0f61e7092346dc877fc0a648d41180d",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-09.zip": "9860f38b711edbfebe3cb4d0ff274d73fe1b71bf27e6aa85d30f6e2fb6865924",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-10.zip": "f130663fab6855a800fbf173593ea0e7270af2256b725ba8e40e887621084651",
+    "data/research/boundary_spot_raw_20260907/archives/data/spot/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-11.zip": "6ef822699f6e62d1a5daf10375a2d95e0d9ceb686874323632945d384dbd53e0"
+  },
+  "sessions": 28,
+  "source_manifest": "data/research/boundary_spot_raw_20260907/source_manifest.json",
+  "source_manifest_sha256": "dcdc6bb722c1ef3f26ad431f0a923c2008ace5581bd11e0f1fa32b8dee0da960",
+  "timestamp_unit": "milliseconds"
+}

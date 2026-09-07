@@ -1,0 +1,53 @@
+{
+  "dataset": "aggTrades",
+  "dates": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11"
+  ],
+  "frequency": "daily",
+  "input_hashes": {
+    "scripts/acquire_boundary_spot.py": "774ad44ea2e884ac16caadb80dbf0f8a8a0bf2b5826d94d96d8d897191664668",
+    "scripts/prepare_boundary_event_clock.py": "8a46c988f47ac8b638a4b4b330c2951d66225a47774bbb9a7330a1cc811bca36",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_spot_data.py": "677ecdba899cde8a2aef86514f0beb4e1802b283427aee7aa9efc6bdf6840562",
+    "tests/test_boundary_spot_data.py": "1d310bafcff86e0ced23d9f4ae68eab6ec36983cf6ef4a59cda2133d18e72f35"
+  },
+  "known_limits": "These are spot trades, not a reconstructed spot order book, exchange delivery timestamps or executions for a strategy. Spot aggregate records group a single taker order. Feature experiments will impose explicit 100ms and 500ms added information delays and preserve every original assessment row and target.",
+  "market": "spot",
+  "maximum_total_compressed_bytes": 1073741824,
+  "planned_archives": 28,
+  "purpose": "Test whether independently observed spot trade flow and spot/perpetual price-basis state add forecast information beyond the existing perpetual BBO and aggregate trades. All dates are already exposed; the new source cannot create an independent holdout.",
+  "registered_at_utc": "2026-09-07T20:26:00.597813+00:00",
+  "source_contract": "Official Binance Vision eight-column, headerless spot aggregate trades. 2023 trade timestamps must be milliseconds and lie in the named UTC day. Keep the first data row, maker side and aggregate IDs. Fetch official SHA256 and HEAD bytes before accepting each archive; validate chronological times, increasing aggregate IDs, positive finite price/quantity and day-boundary coverage.",
+  "sources": [
+    {
+      "scope": "Official archive schema and checksum specification; spot switches to microsecond timestamps starting January 2025, outside this registered 2023 study.",
+      "url": "https://github.com/binance/binance-public-data"
+    },
+    {
+      "scope": "Spot aggregate-trade stream is aggregated for a single taker order and published in real time; no historical receive-time guarantee is inferred.",
+      "url": "https://github.com/binance/binance-spot-api-docs/blob/master/web-socket-streams.md"
+    },
+    {
+      "scope": "Evidence that Binance perpetuals lead volatility transmission is a counterargument to assuming spot leadership. Incremental conditional five-second information must be measured here.",
+      "url": "https://arxiv.org/abs/2107.00298"
+    }
+  ],
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}
