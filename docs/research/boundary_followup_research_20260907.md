@@ -38,7 +38,7 @@ A separately [registered matched-control extension](boundary_morning_controls_20
 
 ## Validation and evidence status
 
-The implementation suite passes 564 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 33 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
+The implementation suite passes 568 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 35 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
 
 Both fixed screens are complete. Their outcomes remain developmental, with no substantial-gain or economic-performance claim.
 
@@ -122,12 +122,24 @@ The [next experiment definition](boundary_newton_definition_20260907.json) was c
 
 The [fixed screen](boundary_newton_screen_20260907.json) uses XGBoost 2.1.3 with 400 rounds, depth three or six, histogram splits, learning rate 0.05 and L2 penalty 10. Both depths use asset/class-balanced loss; depth six also tests natural log loss with equal asset weight only. Balanced posteriors are inverted with each asset's training class prior. The Hessian-mass minimum of 30 is not a minimum row count. Training-only clipping matches the earlier HGB procedure; the algorithms are not claimed to have equal capacity or compute cost.
 
-A new seven-leaf HGB on the union distinguishes feature combination from algorithm changes. Fixed 50/50 blends and thirteen saved controls bring the experiment to 21 fits and 360 panels. Native model serialization, original checkpoint identity and input parity are required. No new tree accepts validation or assessment observations during fitting; every model uses a fixed round count. The complete family must finish before scores are inspected.
+A new seven-leaf HGB on the union distinguishes feature combination from algorithm changes. Fixed 50/50 blends and thirteen saved controls bring the experiment to 21 fits and 360 panels. Native model serialization, original checkpoint identity and input parity are required. No new tree accepts validation or assessment observations during fitting; every model uses a fixed round count. All fits and panels completed before score inspection.
+
+The [complete results](boundary_newton_evidence_20260907.json) reject a large accuracy gain from this family. The combined HGB/original-neural blend is best among new sources at 57.2667% balanced accuracy, below the spot tree's 57.2806%. The combined deep-XGBoost/HGB blend reaches 57.2002%, with log loss 0.760385. On original context alone, the shallow XGBoost tree reaches 57.0144%, whereas the deeper balanced tree falls to 56.2661%. Greater capacity is not an accuracy improvement in this test.
+
+Before Newton scores were inspected, a [zero-fit comparator extension](boundary_newton_control_extension_20260907.json) added the strongest completed depth blend, omitted from the original thirteen baselines. Its [twelve extra panels](boundary_newton_control_extension_evidence_20260907.json) verify exact label and clock agreement and preserve the original 360-panel result. That control reaches 57.3006%, above every new Newton-family source. The combined experiment therefore has 21 new fits and 372 panels including the separate comparator extension.
 
 On this macOS environment, the installed XGBoost package initially lacked a discoverable OpenMP runtime. The process uses the already installed scikit-learn runtime through a scoped loader path; no system configuration or package binary changed:
 
     DYLD_LIBRARY_PATH="$PWD/.venv/lib/python3.12/site-packages/sklearn/.dylibs" PYTHONPATH=src OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 .venv/bin/python scripts/run_boundary_newton_screen.py --run
 
 The same loader prefix is used for the dependency-complete test run. Optional tests explicitly report a skip when the native runtime is unavailable; they do not silently substitute another learner.
+
+## Causal deviations from venue price premiums
+
+The [basis-state definition](boundary_basis_definition_20260907.json), committed before Newton score inspection, distinguishes a venue's persistent price premium from its current deviation. [Albers et al.](https://arxiv.org/abs/2108.09750) motivate mean divergence across crypto venues at subsecond horizons. This exponential-history experiment uses a different five-second target and does not inherit their empirical results.
+
+Two observed logarithmic bases are used: Bybit mid-price versus Binance mid-price, and Bybit mid-price versus the latest available spot trade. Exponential half lives are ten, sixty and three hundred seconds. Mean and variance use strictly earlier observations; the current value enters only after its innovation is computed. Features include the past level, innovation, standardized innovation, volatility and availability. Missing sources have zero statistical weight, and day or one-second coverage breaks reset state. The standard-deviation floor is 0.001 basis points. No label enters these calculations.
+
+The 32 own and six peer fields expand the exact 399-column union to 437. Four tests verify explicit historical weighting, resets, missing observations, prefix invariance, invariance to a constant premium, logarithmic units, unchanged labels and simultaneous peer joins. A full paired May 29 comparison preserves all original features, labels and timestamps. The [registered screen](boundary_basis_screen_20260907.json) compares the existing HGB, neural and deep-XGBoost learners, including a new neural control on the unchanged union. It fixes twelve fits and 252 panels on the same three development dates. All models must finish before outcomes are revealed.
 
 Any selected combination still requires a fresh, separately registered confirmation round and the continuing nominal research error budget.
