@@ -20,7 +20,7 @@ from lob_forge.boundary_confirmation_family import family_interval
 from lob_forge.boundary_confirmation_integrity import verify_frozen_fold
 from lob_forge.boundary_event_inputs import load_event_inputs
 from lob_forge.boundary_pooled import PooledForecaster
-from lob_forge.boundary_weighted_boost import fit_weighted_boost
+from lob_forge.boundary_weighted_boost import assert_matching_asset_priors, fit_weighted_boost
 from run_boundary_confirmation import noon, reveal, save_predictions, write_json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,7 +48,7 @@ def run_fold(day, primary, output, primary_identity, identity):
     joblib.dump(model, path)
     restored = joblib.load(path)
     neural = PooledForecaster.load(source / "neural")
-    np.testing.assert_array_equal(restored.priors, neural.priors)
+    assert_matching_asset_priors(restored.priors, neural.priors)
     for asset, symbol in enumerate(SYMBOLS):
         validation = x[symbol, source_record["validation_date"]].iloc[:128]
         np.testing.assert_array_equal(model.predict_proba(validation, symbol), restored.predict_proba(validation, symbol))
@@ -144,7 +144,7 @@ def run(protocol_path, output):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--protocol", type=Path, default=ROOT / "docs/research/boundary_pooled_tree_confirmation_20260907.json")
+    parser.add_argument("--protocol", type=Path, default=ROOT / "docs/research/boundary_pooled_tree_confirmation_20260907_priors_check_revision.json")
     parser.add_argument("--output", type=Path, default=ROOT / "results/boundary_pooled_tree_confirmation_20260907")
     parser.add_argument("--run", action="store_true")
     args = parser.parse_args()

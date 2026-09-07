@@ -6,6 +6,17 @@ pd = pytest.importorskip("pandas")
 from lob_forge.boundary_weighted_boost import asset_class_weights, recover_natural_posterior  # noqa: E402
 
 
+def test_tree_array_and_neural_mapping_priors_are_compared_by_asset():
+    from lob_forge.boundary_weighted_boost import assert_matching_asset_priors
+
+    tree = np.array([[0.2, 0.6, 0.2], [0.1, 0.7, 0.2]])
+    neural = {1: tree[1].copy(), 0: tree[0].copy()}
+    assert_matching_asset_priors(tree, neural)
+    neural[0] = np.array([0.3, 0.5, 0.2])
+    with pytest.raises(AssertionError):
+        assert_matching_asset_priors(tree, neural)
+
+
 def test_weighted_loss_gives_equal_asset_class_mass_and_unit_mean_weight():
     y = np.array([-1, 0, 0, 0, 1, 1, -1, -1, 0, 1])
     a = np.array([0] * 6 + [1] * 4)

@@ -13,6 +13,14 @@ import numpy as np
 import pandas as pd
 
 
+def assert_matching_asset_priors(tree_priors, neural_priors):
+    """Compare numerical priors across the tree array and neural mapping formats."""
+    if len(tree_priors) != len(neural_priors) or set(neural_priors) != set(range(len(tree_priors))):
+        raise ValueError("Tree and neural checkpoints require the same indexed assets")
+    for asset, values in enumerate(tree_priors):
+        np.testing.assert_array_equal(values, neural_priors[asset])
+
+
 def asset_class_weights(labels, assets, *, class_balanced):
     y, a = np.asarray(labels), np.asarray(assets)
     if y.ndim != 1 or a.shape != y.shape or not len(y) or not np.isin(y, [-1, 0, 1]).all():
