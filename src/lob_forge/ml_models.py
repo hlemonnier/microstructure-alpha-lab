@@ -7,8 +7,10 @@ import math
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
+from lob_forge.data_sources import normalize_l2_row
+from lob_forge.l2_replay import AtomicOrderBookReplayer, iter_l2_events, l2_event_key
 from lob_forge.execution_sim import MarketEvent, SignalEvent, StatefulExecutionConfig, simulate_stateful_execution
 from lob_forge.holdout import (
     HoldoutManifest,
@@ -37,8 +39,8 @@ OPTIONAL_MODEL_DEPENDENCIES = {
     "xgboost": ("xgboost_classifier",),
     "torch": ("sequence_mlp", "sequence_tcn", "sequence_transformer", "lob_cnn"),
 }
-SEQUENCE_ECONOMICS_VERSION = "flat_to_flat_label_horizon_v2"
-SEQUENCE_CHECKPOINT_CONTRACT_VERSION = 2
+SEQUENCE_ECONOMICS_VERSION = "persistent_l2_payoff_policy_v3"
+SEQUENCE_CHECKPOINT_CONTRACT_VERSION = 3
 
 
 @dataclass(frozen=True)
@@ -86,6 +88,7 @@ class L2TensorReadiness:
     require_delta: bool
     allow_fi2010: bool
     venue_values: tuple[str, ...]
+    validation_errors: tuple[str, ...] = ()
 
     @property
     def is_fi2010_only(self) -> bool:
@@ -105,7 +108,7 @@ class L2TensorReadiness:
             return False
         if not self.has_sequence:
             return False
-        if self.crossed_updates or self.sequence_gaps:
+        if self.crossed_updates or self.sequence_gaps or self.validation_errors:
             return False
         if self.is_fi2010_only:
             return self.allow_fi2010
@@ -130,6 +133,8 @@ class L2MaskedPretrainingReport:
     zero_reconstruction_mse: float
     mean_abs_error: float
     pipeline_completed: bool
+    model_kind: str = "observed_mean_imputation_baseline"
+    learned_pretraining: bool = False
 
     @property
     def passed(self) -> bool:
@@ -210,6 +215,9 @@ class L2SequenceExperimentReport:
     test_stateful_final_inventory: float
     pipeline_completed: bool
     acceptance_passed: bool
+    economic_latency_ms: int = 0
+    policy_json: str = ""
+    class_priors_json: str = ""
 
     @property
     def passed(self) -> bool:
@@ -237,6 +245,9 @@ class L2SequenceFinalHoldoutReport:
     stateful_final_inventory: float
     economic_simulation_version: str
     predictions_output_path: str
+    economic_latency_ms: int = 0
+    policy_json: str = ""
+    class_priors_json: str = ""
 
 
 @dataclass(frozen=True)
@@ -434,7 +445,9 @@ def fit_xgboost_classifier(
         eval_metric="mlogloss",
         random_state=random_state,
     )
-    return model.fit(x_rows, y_rows)
+    model.fit(x_rows, y_rows)
+    model.lob_forge_class_mapping_ = {0: -1, 1: 0, 2: 1}
+    return model
 
 
 def predict_sklearn_probabilities(
@@ -443,7 +456,8 @@ def predict_sklearn_probabilities(
     if not hasattr(model, "predict_proba"):
         raise ValueError("model does not expose predict_proba")
     x_rows = [[float(row.get(feature, 0.0) or 0.0) for feature in features] for row in rows]
-    class_values = [int(value) for value in model.classes_]
+    mapping = getattr(model, "lob_forge_class_mapping_", {})
+    class_values = [mapping.get(int(value), int(value)) for value in model.classes_]
     return [
         {klass: float(probability) for klass, probability in zip(class_values, row_probabilities)}
         for row_probabilities in model.predict_proba(x_rows)
@@ -521,11 +535,18 @@ def build_torch_sequence_classifier(
     class CausalTCN(nn.Module):
         def __init__(self) -> None:
             super().__init__()
-            self.blocks = nn.Sequential(
-                CausalBlock(feature_count, hidden_size, dilation=1),
-                CausalBlock(hidden_size, hidden_size, dilation=2),
-            )
-            self.receptive_field = 1 + 2 * (3 - 1) * (1 + 2)
+            blocks: list[Any] = []
+            receptive_field = 1
+            dilation = 1
+            while receptive_field < window:
+                blocks.append(CausalBlock(feature_count if not blocks else hidden_size, hidden_size, dilation=dilation))
+                receptive_field += 4 * dilation
+                dilation *= 2
+            if not blocks:
+                blocks.append(CausalBlock(feature_count, hidden_size, dilation=1))
+                receptive_field = 5
+            self.blocks = nn.Sequential(*blocks)
+            self.receptive_field = receptive_field
             self.head = nn.Linear(hidden_size, class_count)
 
         def forward(self, tensor: Any) -> Any:
@@ -627,7 +648,7 @@ def build_masked_pretraining_batch(
     return masked, targets, mask
 
 
-def run_l2_masked_pretraining_smoke(
+def run_l2_mean_imputation_smoke(
     l2_path: Path | str,
     output_path: Path | str,
     *,
@@ -639,9 +660,9 @@ def run_l2_masked_pretraining_smoke(
 ) -> L2MaskedPretrainingReport:
     """Run a dependency-free masked reconstruction baseline on true L2 tensors.
 
-    This is a self-supervised pretraining smoke artifact: it verifies that the
-    L2 tensor path can produce masked sequence targets and records a deterministic
-    mean-imputation reconstruction baseline. It does not claim neural pretraining.
+    This observed-coordinate mean-imputation baseline verifies tensor/mask wiring.
+    It learns no encoder, transfers no representation, and cannot satisfy the
+    neural-pretraining evidence gate.
     """
     if depth <= 0:
         raise ValueError("depth must be positive")
@@ -669,7 +690,15 @@ def run_l2_masked_pretraining_smoke(
     sequences = [snapshots[index : index + window] for index in range(0, len(snapshots) - window + 1)]
     masked, targets, mask = build_masked_pretraining_batch(sequences, mask_probability=mask_probability)
     feature_count = len(sequences[0][0])
-    feature_means = _feature_means(targets, feature_count=feature_count)
+    # Estimate imputation only from revealed coordinates. The masked targets
+    # cannot train the baseline that is scored against them.
+    revealed: list[list[float]] = [[] for _ in range(feature_count)]
+    for sequence, sequence_mask in zip(targets, mask):
+        for row, row_mask in zip(sequence, sequence_mask):
+            for index, value in enumerate(row):
+                if not row_mask[index]:
+                    revealed[index].append(value)
+    feature_means = [math.fsum(values) / len(values) if values else 0.0 for values in revealed]
 
     masked_values = 0
     squared_error = 0.0
@@ -707,6 +736,12 @@ def run_l2_masked_pretraining_smoke(
     )
     write_l2_masked_pretraining_report(report, output_path)
     return report
+
+
+
+def run_l2_masked_pretraining_smoke(*args, **kwargs) -> L2MaskedPretrainingReport:
+    """Compatibility alias for the mean-imputation baseline; no neural pretraining."""
+    return run_l2_mean_imputation_smoke(*args, **kwargs)
 
 
 def _prepare_sequence_l2_training_source(
@@ -771,6 +806,7 @@ def run_l2_torch_sequence_experiment(
     economic_target_notional: float = 100.0,
     economic_taker_fee_bps: float = 1.0,
     economic_slippage_bps: float = 0.0,
+    economic_latency_ms: int = 0,
 ) -> L2SequenceExperimentReport:
     if model_name not in {"sequence_tcn", "sequence_transformer"}:
         raise ValueError("model_name must be sequence_tcn or sequence_transformer")
@@ -794,8 +830,12 @@ def run_l2_torch_sequence_experiment(
         raise ValueError("class_weighting must be none or balanced")
     if not 0.0 < lr_scheduler_gamma <= 1.0:
         raise ValueError("lr_scheduler_gamma must be in (0, 1]")
-    if economic_target_notional <= 0.0:
-        raise ValueError("economic_target_notional must be positive")
+    if not math.isfinite(economic_target_notional) or economic_target_notional <= 0.0:
+        raise ValueError("economic_target_notional must be finite and positive")
+    if economic_latency_ms < 0:
+        raise ValueError("economic_latency_ms must be non-negative")
+    if not math.isfinite(flat_threshold_bps) or flat_threshold_bps < 0:
+        raise ValueError("flat_threshold_bps must be finite and non-negative")
 
     source_l2_path = Path(l2_path)
     baseline_audit_path = Path(baseline_audit_path)
@@ -839,7 +879,7 @@ def run_l2_torch_sequence_experiment(
     feature_count = len(sequences[0][0])
     train_count, validation_count, test_count, purge_gap = _purged_sequential_split_counts(
         len(sequences),
-        purge_gap=window + label_horizon - 1,
+        purge_gap=window + label_horizon,
     )
     validation_start = train_count + purge_gap
     validation_end = validation_start + validation_count
@@ -875,7 +915,7 @@ def run_l2_torch_sequence_experiment(
         class_count=3,
     ).to(torch_device)
     class_weights = _torch_class_weights(train_labels, torch, torch_device) if class_weighting == "balanced" else None
-    loss_fn = nn.CrossEntropyLoss(weight=class_weights)
+    loss_fn = nn.CrossEntropyLoss(weight=class_weights, reduction="none")
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     scheduler = torch.optim.lr_scheduler.StepLR(
         optimizer,
@@ -916,6 +956,10 @@ def run_l2_torch_sequence_experiment(
         "seed": seed,
         "class_weighting": class_weighting,
         "lr_scheduler_gamma": lr_scheduler_gamma,
+        "economic_target_notional": economic_target_notional,
+        "economic_taker_fee_bps": economic_taker_fee_bps,
+        "economic_slippage_bps": economic_slippage_bps,
+        "economic_latency_ms": economic_latency_ms,
     }
     best_state: dict[str, Any] | None = None
     best_epoch = 0
@@ -958,6 +1002,10 @@ def run_l2_torch_sequence_experiment(
                 best_validation_loss = float(payload.get("best_validation_loss", math.inf))
                 stale_epochs = int(payload.get("stale_epochs", 0))
                 start_epoch = int(payload.get("epoch", 0)) + 1
+                if "torch_rng_state" in payload:
+                    torch.set_rng_state(payload["torch_rng_state"].cpu())
+                if selected_device == "cuda" and "cuda_rng_state" in payload:
+                    torch.cuda.set_rng_state_all(payload["cuda_rng_state"])
                 resumed_from_checkpoint = True
     for epoch in range(start_epoch, epochs + 1):
         model.train()
@@ -967,12 +1015,19 @@ def run_l2_torch_sequence_experiment(
         for start in range(0, x_train.shape[0], effective_batch_size):
             batch_indices = indices[start : start + effective_batch_size]
             optimizer.zero_grad()
-            loss = loss_fn(model(x_train[batch_indices]), y_train[batch_indices])
+            loss = loss_fn(model(x_train[batch_indices]), y_train[batch_indices]).mean()
+            if not bool(torch.isfinite(loss)):
+                raise ValueError("non-finite sequence training loss")
             loss.backward()
             optimizer.step()
         model.eval()
         with torch.no_grad():
-            validation_loss = float(loss_fn(model(x_validation), y_validation).item())
+            validation_logits_for_loss = model(x_validation)
+            if class_weights is not None:
+                validation_logits_for_loss = validation_logits_for_loss - torch.log(class_weights)
+            validation_loss = float(nn.functional.cross_entropy(validation_logits_for_loss, y_validation).item())
+        if not math.isfinite(validation_loss):
+            raise ValueError("non-finite sequence validation loss")
         if validation_loss < best_validation_loss - 1e-12:
             best_validation_loss = validation_loss
             best_epoch = epoch
@@ -1007,8 +1062,19 @@ def run_l2_torch_sequence_experiment(
         test_logits = model(x_test)
         validation_probabilities = torch.softmax(validation_logits, dim=1).detach().cpu().tolist()
         test_probabilities = torch.softmax(test_logits, dim=1).detach().cpu().tolist()
-        validation_predictions = validation_logits.argmax(dim=1).detach().cpu().tolist()
-        test_predictions = test_logits.argmax(dim=1).detach().cpu().tolist()
+    class_priors = [train_labels.count(k) / len(train_labels) for k in range(3)]
+    validation_probabilities = _restore_class_probabilities(validation_probabilities, class_priors, class_weighting)
+    test_probabilities = _restore_class_probabilities(test_probabilities, class_priors, class_weighting)
+    validation_predictions = [max(range(3), key=row.__getitem__) for row in validation_probabilities]
+    test_predictions = [max(range(3), key=row.__getitem__) for row in test_probabilities]
+    policy = _fit_sequence_payoff_policy(
+        snapshots, validation_end_indices, validation_probabilities,
+        label_horizon=label_horizon, target_notional=economic_target_notional,
+        taker_fee_bps=economic_taker_fee_bps, slippage_bps=economic_slippage_bps,
+        latency_ms=economic_latency_ms,
+        calibration_stop_index=sequence_end_indices[test_start] - window,
+    )
+    trading_predictions = [_predict_sequence_payoff_side(policy, row) for row in test_probabilities]
 
     validation_accuracy, validation_macro_f1, validation_balanced_accuracy, validation_confusion = (
         _classification_report(
@@ -1042,15 +1108,18 @@ def run_l2_torch_sequence_experiment(
             test_predictions=test_predictions,
             test_probabilities=test_probabilities,
             test_end_indices=test_end_indices,
+            validation_trading_predictions=[_predict_sequence_payoff_side(policy, row) for row in validation_probabilities],
+            test_trading_predictions=trading_predictions,
         )
     economic = _sequence_stateful_economics(
         snapshots,
         test_end_indices,
-        test_predictions,
+        trading_predictions,
         label_horizon=label_horizon,
         target_notional=economic_target_notional,
         taker_fee_bps=economic_taker_fee_bps,
         slippage_bps=economic_slippage_bps,
+        latency_ms=economic_latency_ms,
     )
     report = L2SequenceExperimentReport(
         model_name=model_name,
@@ -1125,6 +1194,9 @@ def run_l2_torch_sequence_experiment(
         test_stateful_final_inventory=float(economic["final_inventory"]),
         pipeline_completed=readiness.passed and test_count > 0 and math.isfinite(test_macro_f1),
         acceptance_passed=False,
+        economic_latency_ms=economic_latency_ms,
+        policy_json=json.dumps(policy, sort_keys=True, allow_nan=False),
+        class_priors_json=json.dumps(class_priors, allow_nan=False),
     )
     write_l2_sequence_experiment_report(report, output_path)
     return report
@@ -1205,6 +1277,7 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
         "test_stateful_final_inventory",
         "pipeline_completed",
         "acceptance_passed",
+        "economic_latency_ms", "policy_json", "class_priors_json",
     ]
     with output_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -1282,6 +1355,9 @@ def write_l2_sequence_experiment_report(report: L2SequenceExperimentReport, path
                 "test_stateful_final_inventory": f"{report.test_stateful_final_inventory:.12g}",
                 "pipeline_completed": int(report.pipeline_completed),
                 "acceptance_passed": int(report.acceptance_passed),
+                "economic_latency_ms": report.economic_latency_ms,
+                "policy_json": report.policy_json,
+                "class_priors_json": report.class_priors_json,
             }
         )
     return output_path
@@ -1343,6 +1419,10 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
         raise ValueError("sequence artifact holdout manifest no longer verifies against its source L2")
     if row.get("holdout_manifest_sha256") != sha256_file(holdout_manifest_path):
         raise ValueError("sequence artifact holdout_manifest_sha256 does not match manifest content")
+    if not row.get("policy_json") or not row.get("class_priors_json"):
+        raise ValueError("sequence artifact requires frozen payoff policy and class priors")
+    policy = _validated_sequence_policy(json.loads(row["policy_json"]))
+    class_priors = _validated_class_priors(json.loads(row["class_priors_json"]))
     depth = _csv_int(row.get("depth"))
     window = _csv_int(row.get("window"))
     label_horizon = _csv_int(row.get("label_horizon"))
@@ -1356,7 +1436,7 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
         max_snapshots=snapshots_cap,
         include_time_delta=True,
     )
-    sequences, _, _ = _l2_direction_sequences(
+    sequences, training_labels, _ = _l2_direction_sequences(
         snapshots,
         window=window,
         label_horizon=label_horizon,
@@ -1366,11 +1446,37 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
     feature_count = len(sequences[0][0])
     train_count, validation_count, test_count, purge_gap = _purged_sequential_split_counts(
         len(sequences),
-        purge_gap=window + label_horizon - 1,
+        purge_gap=window + label_horizon,
     )
     standardizer = _fit_sequence_standardizer(sequences[:train_count])
+    recomputed_priors = [training_labels[:train_count].count(k) / train_count for k in range(3)]
+    if any(not math.isclose(a, b, abs_tol=1e-12) for a, b in zip(class_priors, recomputed_priors)):
+        raise ValueError("sequence class priors do not match frozen training labels")
+    import torch
+    try:
+        payload = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+    except Exception as exc:
+        raise ValueError("sequence checkpoint cannot be read as a training checkpoint") from exc
+    contract = payload.get("experiment_contract", {})
+    expected_contract = {
+        "contract_version": SEQUENCE_CHECKPOINT_CONTRACT_VERSION,
+        "model_name": model_name, "training_l2_sha256": row["development_l2_sha256"],
+        "depth": depth, "window": window, "label_horizon": label_horizon,
+        "feature_count": feature_count, "flat_threshold_bps": flat_threshold_bps,
+        "economic_latency_ms": _csv_int(row.get("economic_latency_ms")),
+        "class_weighting": row.get("class_weighting"),
+    }
+    if any(contract.get(key) != value for key, value in expected_contract.items()):
+        raise ValueError("sequence checkpoint does not match frozen data/model/economic contract")
+    for field in ("economic_target_notional", "economic_taker_fee_bps", "economic_slippage_bps"):
+        value = _csv_float(row.get(field))
+        if not math.isfinite(value) or not math.isclose(value, float(contract.get(field, math.nan)), rel_tol=0.0, abs_tol=1e-12):
+            raise ValueError(f"sequence checkpoint {field} does not match frozen economics")
+    state = payload.get("best_model_state") or payload.get("model_state")
+    if not isinstance(state, dict) or not state or any(not bool(torch.isfinite(value).all()) for value in state.values()):
+        raise ValueError("sequence checkpoint must contain finite trained model parameters")
     return {
-        "candidate_type": "l2_sequence_torch_v2",
+        "candidate_type": "l2_sequence_torch_v3",
         "economic_simulation_version": SEQUENCE_ECONOMICS_VERSION,
         "model_name": model_name,
         "source_artifact": str(artifact),
@@ -1393,6 +1499,8 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
         "standardizer_means": list(standardizer.means),
         "standardizer_stds": list(standardizer.stds),
         "training_rows_checked": training_rows_checked,
+        "max_rows": _csv_int(row.get("max_rows")),
+        "max_snapshots": _csv_int(row.get("max_snapshots")),
         "training_snapshots": len(snapshots),
         "training_sequence_count": len(sequences),
         "purge_gap": purge_gap,
@@ -1413,6 +1521,9 @@ def freeze_l2_sequence_candidate(artifact_path: Path | str) -> dict[str, object]
         "economic_slippage_bps": _csv_float(row.get("economic_slippage_bps"), default=0.0),
         "selection_grain": "manifest_filtered_development_l2",
         "selection_method": "frozen_checkpoint_from_sequence_artifact",
+        "economic_latency_ms": _csv_int(row.get("economic_latency_ms")),
+        "policy_json": json.dumps(policy, sort_keys=True, allow_nan=False),
+        "class_priors_json": json.dumps(class_priors, allow_nan=False),
     }
 
 
@@ -1423,15 +1534,21 @@ def evaluate_l2_sequence_final_holdout(
     candidate: dict[str, object],
     predictions_output_path: Path | str | None = None,
     device: str = "auto",
-    max_rows: int = 100000,
-    max_snapshots: int = 2000,
+    max_rows: int | None = None,
+    max_snapshots: int | None = None,
     economic_target_notional: float | None = None,
     economic_taker_fee_bps: float | None = None,
     economic_slippage_bps: float | None = None,
+    economic_latency_ms: int | None = None,
 ) -> L2SequenceFinalHoldoutReport:
+    frozen_max_rows, frozen_max_snapshots = validate_sequence_final_holdout_overrides(
+        candidate, max_rows=max_rows, max_snapshots=max_snapshots,
+        economic_target_notional=economic_target_notional, economic_taker_fee_bps=economic_taker_fee_bps,
+        economic_slippage_bps=economic_slippage_bps, economic_latency_ms=economic_latency_ms, device=device,
+    )
     model_name = _candidate_string(candidate, "model_name")
-    if candidate.get("candidate_type") != "l2_sequence_torch_v2":
-        raise ValueError("frozen sequence candidate candidate_type must be l2_sequence_torch_v2")
+    if candidate.get("candidate_type") != "l2_sequence_torch_v3":
+        raise ValueError("frozen sequence candidate candidate_type must be l2_sequence_torch_v3")
     if candidate.get("economic_simulation_version") != SEQUENCE_ECONOMICS_VERSION:
         raise ValueError("frozen sequence candidate uses a stale economic simulation contract")
     if model_name not in {"sequence_tcn", "sequence_transformer"}:
@@ -1483,11 +1600,13 @@ def evaluate_l2_sequence_final_holdout(
     )
 
     rows = read_holdout_rows(source_l2_path, manifest)
-    snapshots, rows_checked = _load_l2_top_n_vectors_from_rows(
-        rows,
+    selected_keys = {l2_event_key(normalize_l2_row(row, require_sequence=True)) for row in rows}
+    snapshots, rows_checked = _load_l2_top_n_vectors(
+        source_l2_path,
+        selected_event_keys=selected_keys,
         depth=depth,
-        max_rows=max_rows,
-        max_snapshots=max_snapshots,
+        max_rows=frozen_max_rows,
+        max_snapshots=frozen_max_snapshots,
         include_time_delta=True,
     )
     sequences, labels, end_indices = _l2_direction_sequences(
@@ -1526,7 +1645,14 @@ def evaluate_l2_sequence_final_holdout(
     with torch.no_grad():
         logits = model(x_holdout)
         probabilities = torch.softmax(logits, dim=1).detach().cpu().tolist()
-        predictions = logits.argmax(dim=1).detach().cpu().tolist()
+    class_priors = _validated_class_priors(json.loads(_candidate_string(candidate, "class_priors_json")))
+    policy = _validated_sequence_policy(json.loads(_candidate_string(candidate, "policy_json")))
+    latency_ms = cast(int, candidate["economic_latency_ms"])
+    if latency_ms < 0:
+        raise ValueError("frozen economic_latency_ms must be non-negative")
+    probabilities = _restore_class_probabilities(probabilities, class_priors, str(candidate["class_weighting"]))
+    predictions = [max(range(3), key=row.__getitem__) for row in probabilities]
+    trading_predictions = [_predict_sequence_payoff_side(policy, row) for row in probabilities]
     accuracy, macro_f1, balanced_accuracy, confusion = _classification_report(labels, predictions)
     brier_score, ece = _classification_probability_report(labels, predictions, probabilities)
     prediction_path = Path(predictions_output_path) if predictions_output_path is not None else None
@@ -1537,15 +1663,17 @@ def evaluate_l2_sequence_final_holdout(
             predictions=predictions,
             probabilities=probabilities,
             end_indices=end_indices,
+            trading_predictions=trading_predictions,
         )
     economic = _sequence_stateful_economics(
         snapshots,
         end_indices,
-        predictions,
+        trading_predictions,
         label_horizon=label_horizon,
         target_notional=frozen_target_notional,
         taker_fee_bps=frozen_taker_fee_bps,
         slippage_bps=frozen_slippage_bps,
+        latency_ms=latency_ms,
     )
     return L2SequenceFinalHoldoutReport(
         model_name=model_name,
@@ -1567,6 +1695,9 @@ def evaluate_l2_sequence_final_holdout(
         stateful_final_inventory=float(economic["final_inventory"]),
         economic_simulation_version=SEQUENCE_ECONOMICS_VERSION,
         predictions_output_path=str(prediction_path) if prediction_path is not None else "",
+        economic_latency_ms=latency_ms,
+        policy_json=json.dumps(policy, sort_keys=True, allow_nan=False),
+        class_priors_json=json.dumps(class_priors, allow_nan=False),
     )
 
 
@@ -1604,7 +1735,7 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             "test_stateful_break_even_fee_bps",
             "test_stateful_final_inventory",
             "pipeline_completed",
-            "acceptance_passed",
+            "acceptance_passed", "economic_latency_ms", "policy_json", "class_priors_json",
         ]
         values = [
             report.model_name,
@@ -1638,9 +1769,15 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"{report.test_stateful_break_even_fee_bps:.12g}",
             f"{report.test_stateful_final_inventory:.12g}",
             str(int(report.pipeline_completed)),
-            str(int(report.acceptance_passed)),
+            str(int(report.acceptance_passed)), str(report.economic_latency_ms),
+            report.policy_json, report.class_priors_json,
         ]
-        return ",".join(fields) + "\n" + ",".join(values)
+        import io
+        output = io.StringIO()
+        writer = csv.writer(output, lineterminator="\n")
+        writer.writerow(fields)
+        writer.writerow(values)
+        return output.getvalue().rstrip("\n")
     if output_format != "text":
         raise ValueError("output_format must be text or csv")
     return "\n".join(
@@ -1710,6 +1847,8 @@ def format_l2_sequence_experiment_report(report: L2SequenceExperimentReport, *, 
             f"economic_taker_fee_bps={report.economic_taker_fee_bps:.12g}",
             f"economic_slippage_bps={report.economic_slippage_bps:.12g}",
             f"economic_simulation_version={report.economic_simulation_version}",
+            f"economic_latency_ms={report.economic_latency_ms}",
+            f"payoff_policy=conditional_payoff_v1;class_priors={report.class_priors_json}",
             f"test_stateful_trades={report.test_stateful_trades}",
             f"test_stateful_turnover={report.test_stateful_turnover:.12g}",
             f"test_stateful_net_pnl={report.test_stateful_net_pnl:.12g}",
@@ -1737,7 +1876,7 @@ def write_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, path: 
         "mean_reconstruction_mse",
         "zero_reconstruction_mse",
         "mean_abs_error",
-        "pipeline_completed",
+        "pipeline_completed", "model_kind", "learned_pretraining",
     ]
     with output_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -1757,6 +1896,7 @@ def write_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, path: 
                 "zero_reconstruction_mse": f"{report.zero_reconstruction_mse:.12g}",
                 "mean_abs_error": f"{report.mean_abs_error:.12g}",
                 "pipeline_completed": int(report.pipeline_completed),
+                "model_kind": report.model_kind, "learned_pretraining": int(report.learned_pretraining),
             }
         )
     return output_path
@@ -1778,7 +1918,7 @@ def format_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, *, ou
             "mean_reconstruction_mse",
             "zero_reconstruction_mse",
             "mean_abs_error",
-            "pipeline_completed",
+            "pipeline_completed", "model_kind", "learned_pretraining",
         ]
         values = [
             str(report.l2_path),
@@ -1794,7 +1934,7 @@ def format_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, *, ou
             f"{report.mean_reconstruction_mse:.12g}",
             f"{report.zero_reconstruction_mse:.12g}",
             f"{report.mean_abs_error:.12g}",
-            str(int(report.pipeline_completed)),
+            str(int(report.pipeline_completed)), report.model_kind, str(int(report.learned_pretraining)),
         ]
         return ",".join(fields) + "\n" + ",".join(values)
     if output_format != "text":
@@ -1815,6 +1955,7 @@ def format_l2_masked_pretraining_report(report: L2MaskedPretrainingReport, *, ou
             f"zero_reconstruction_mse={report.zero_reconstruction_mse:.12g}",
             f"mean_abs_error={report.mean_abs_error:.12g}",
             f"pipeline_completed={int(report.pipeline_completed)}",
+            f"model_kind={report.model_kind}", f"learned_pretraining={int(report.learned_pretraining)}",
         ]
     )
 
@@ -1873,109 +2014,43 @@ def evaluate_baseline_readiness(path: Path | str, *, min_fold_count: int = 20) -
 
 
 def evaluate_l2_tensor_readiness(
-    path: Path | str,
-    *,
-    min_rows: int = 1000,
-    require_delta: bool = True,
-    allow_fi2010: bool = False,
-    max_rows: int = 100000,
+    path: Path | str, *, min_rows: int = 1000, require_delta: bool = True,
+    allow_fi2010: bool = False, max_rows: int = 100000,
 ) -> L2TensorReadiness:
-    if min_rows <= 0:
-        raise ValueError("min_rows must be positive")
-    if max_rows <= 0:
-        raise ValueError("max_rows must be positive")
+    if min_rows <= 0 or max_rows <= 0:
+        raise ValueError("min_rows and max_rows must be positive")
     path = Path(path)
-    rows_checked = 0
-    has_snapshot = False
-    has_delta = False
-    has_sequence = False
-    has_bid = False
-    has_ask = False
-    crossed_updates = 0
-    sequence_gaps = 0
+    count = 0
+    errors: list[str] = []
+    kinds: set[str] = set()
+    sides: set[str] = set()
     venues: set[str] = set()
-    last_sequence: int | None = None
-    bids: dict[float, float] = {}
-    asks: dict[float, float] = {}
-    current_event_key: tuple[str, int | None, str, str] | None = None
-    current_event_type = ""
-    current_sequence: int | None = None
-    pending_levels: list[tuple[str, float, float]] = []
-
-    def flush_event() -> None:
-        nonlocal crossed_updates, sequence_gaps, last_sequence
-        nonlocal current_event_type, current_sequence, pending_levels
-        if not pending_levels:
-            return
-        if current_sequence is not None and last_sequence is not None and current_sequence > last_sequence + 1:
-            sequence_gaps += 1
-        if current_sequence is not None:
-            last_sequence = max(last_sequence, current_sequence) if last_sequence is not None else current_sequence
-        if current_event_type == "snapshot":
-            bids.clear()
-            asks.clear()
-        for side, price, size in pending_levels:
-            levels = bids if side == "bid" else asks if side == "ask" else None
-            if levels is None:
-                continue
-            if size <= 0.0:
-                levels.pop(price, None)
-            else:
-                levels[price] = size
-        if bids and asks and max(bids) >= min(asks):
-            crossed_updates += 1
-        pending_levels = []
-
-    with path.open(newline="") as handle:
-        reader = csv.DictReader(handle)
-        required = {"event_type", "side", "price", "size"}
-        missing = required - set(reader.fieldnames or [])
-        if missing:
-            raise ValueError(f"normalized L2 file missing columns: {', '.join(sorted(missing))}")
-        for row in reader:
-            if rows_checked >= max_rows:
-                break
-            rows_checked += 1
-            event_type = row.get("event_type", "")
-            side = row.get("side", "")
-            price = float(row.get("price", "0") or 0.0)
-            size = float(row.get("size", "0") or 0.0)
-            sequence = _optional_int(row.get("update_id") or row.get("sequence"))
-            venue = row.get("venue", "")
-            if venue:
-                venues.add(venue)
-            has_snapshot = has_snapshot or event_type == "snapshot"
-            has_delta = has_delta or event_type == "delta"
-            has_bid = has_bid or side == "bid"
-            has_ask = has_ask or side == "ask"
-            has_sequence = has_sequence or sequence is not None
-            event_key = (
-                event_type,
-                sequence,
-                row.get("exchange_timestamp", ""),
-                row.get("local_timestamp", ""),
-            )
-            if current_event_key is not None and event_key != current_event_key:
-                flush_event()
-            current_event_key = event_key
-            current_event_type = event_type
-            current_sequence = sequence
-            pending_levels.append((side, price, size))
-    flush_event()
+    has_sequence = False
+    replayer = AtomicOrderBookReplayer()
+    try:
+        with path.open(newline="") as handle:
+            raw_rows = csv.DictReader(handle)
+            normalized = (normalize_l2_row(row, require_sequence=True) for row in raw_rows)
+            for event in iter_l2_events(normalized, max_rows=max_rows):
+                count += len(event)
+                kinds.add(event[0].event_type)
+                sides.update(row.side for row in event)
+                venues.update(row.venue for row in event if row.venue)
+                has_sequence |= event[0].sequence is not None or event[0].update_id is not None
+                try:
+                    replayer.apply_event(event)
+                except ValueError as exc:
+                    errors.append(str(exc))
+    except ValueError as exc:
+        errors.append(str(exc))
     return L2TensorReadiness(
-        path=path,
-        rows_checked=rows_checked,
-        has_snapshot=has_snapshot,
-        has_delta=has_delta,
-        has_sequence=has_sequence,
-        has_bid=has_bid,
-        has_ask=has_ask,
-        crossed_updates=crossed_updates,
-        sequence_gaps=sequence_gaps,
-        min_rows=min_rows,
-        require_delta=require_delta,
-        allow_fi2010=allow_fi2010,
-        venue_values=tuple(sorted(venues)),
+        path=path, rows_checked=count, has_snapshot="snapshot" in kinds,
+        has_delta="delta" in kinds, has_sequence=has_sequence,
+        has_bid="bid" in sides, has_ask="ask" in sides,
+        crossed_updates=sum("crossed book" in e for e in errors),
+        sequence_gaps=sum("sequence" in e or "duplicate" in e for e in errors),
+        min_rows=min_rows, require_delta=require_delta, allow_fi2010=allow_fi2010,
+        venue_values=tuple(sorted(venues)), validation_errors=tuple(errors),
     )
 
 
@@ -2053,160 +2128,73 @@ def _model_spec_by_name(model_name: str) -> ModelSpec:
         raise ValueError(f"unknown model {model_name!r}; expected one of: {valid}") from exc
 
 
+class L2SnapshotVector(list):
+    """Numeric tensor source with execution metadata kept outside model features."""
+    def __init__(self, values, *, timestamp_ms: int, local_timestamp_ms: int | None = None,
+                 bids=(), asks=(), segment: int = 0, event_index: int = 0, mid_return_bps: float = 0.0):
+        super().__init__(values)
+        self.timestamp_ms = timestamp_ms
+        self.local_timestamp_ms = local_timestamp_ms
+        self.bids = tuple(bids)
+        self.asks = tuple(asks)
+        self.segment = segment
+        self.event_index = event_index
+        self.mid_return_bps = mid_return_bps
+
+
 def _load_l2_top_n_vectors(
-    path: Path,
-    *,
-    depth: int,
-    max_rows: int,
-    max_snapshots: int,
-    include_time_delta: bool = False,
+    path: Path, *, depth: int, max_rows: int, max_snapshots: int,
+    include_time_delta: bool = False, selected_event_keys: set[tuple] | None = None,
 ) -> tuple[list[list[float]], int]:
-    snapshots: list[list[float]] = []
-    rows_checked = 0
-    bids: dict[float, float] = {}
-    asks: dict[float, float] = {}
-    current_event_key: tuple[str, int | None, str, str] | None = None
-    current_event_type = ""
-    current_exchange_timestamp = ""
-    previous_snapshot_timestamp: int | None = None
-    pending_levels: list[tuple[str, float, float]] = []
-
-    def flush_event() -> None:
-        nonlocal pending_levels, previous_snapshot_timestamp
-        if not pending_levels:
-            return
-        if current_event_type == "snapshot":
-            bids.clear()
-            asks.clear()
-        for side, price, size in pending_levels:
-            levels = bids if side == "bid" else asks if side == "ask" else None
-            if levels is None:
-                continue
-            if size <= 0.0:
-                levels.pop(price, None)
-            else:
-                levels[price] = size
-        pending_levels = []
-        if not bids or not asks:
-            return
-        if max(bids) >= min(asks):
-            return
-        vector = _book_vector(bids, asks, depth=depth)
-        if include_time_delta:
-            timestamp = _optional_int(current_exchange_timestamp) or previous_snapshot_timestamp or 0
-            delta_ms = 0 if previous_snapshot_timestamp is None else max(0, timestamp - previous_snapshot_timestamp)
-            vector.append(math.log1p(delta_ms))
-            previous_snapshot_timestamp = timestamp
-        snapshots.append(vector)
-
     with path.open(newline="") as handle:
-        reader = csv.DictReader(handle)
-        required = {"event_type", "side", "price", "size"}
-        missing = required - set(reader.fieldnames or [])
-        if missing:
-            raise ValueError(f"normalized L2 file missing columns: {', '.join(sorted(missing))}")
-        for row in reader:
-            if rows_checked >= max_rows or len(snapshots) >= max_snapshots:
-                break
-            rows_checked += 1
-            event_type = row.get("event_type", "")
-            sequence = _optional_int(row.get("update_id") or row.get("sequence"))
-            event_key = (
-                event_type,
-                sequence,
-                row.get("exchange_timestamp", ""),
-                row.get("local_timestamp", ""),
-            )
-            if current_event_key is not None and event_key != current_event_key:
-                flush_event()
-            current_event_key = event_key
-            current_event_type = event_type
-            current_exchange_timestamp = row.get("exchange_timestamp", "")
-            pending_levels.append(
-                (
-                    row.get("side", ""),
-                    float(row.get("price", "0") or 0.0),
-                    float(row.get("size", "0") or 0.0),
-                )
-            )
-    if len(snapshots) < max_snapshots:
-        flush_event()
-    return snapshots, rows_checked
+        return _load_l2_top_n_vectors_from_rows(
+            csv.DictReader(handle), depth=depth, max_rows=max_rows,
+            max_snapshots=max_snapshots, include_time_delta=include_time_delta,
+            selected_event_keys=selected_event_keys,
+        )
 
 
 def _load_l2_top_n_vectors_from_rows(
-    rows: list[dict[str, str]],
-    *,
-    depth: int,
-    max_rows: int,
-    max_snapshots: int,
-    include_time_delta: bool = False,
+    rows, *, depth: int, max_rows: int, max_snapshots: int,
+    include_time_delta: bool = False, selected_event_keys: set[tuple] | None = None,
 ) -> tuple[list[list[float]], int]:
+    if depth <= 0 or max_rows <= 0 or max_snapshots <= 0:
+        raise ValueError("depth, max_rows, and max_snapshots must be positive")
     snapshots: list[list[float]] = []
-    rows_checked = 0
-    bids: dict[float, float] = {}
-    asks: dict[float, float] = {}
-    current_event_key: tuple[str, int | None, str, str] | None = None
-    current_event_type = ""
-    current_exchange_timestamp = ""
-    previous_snapshot_timestamp: int | None = None
-    pending_levels: list[tuple[str, float, float]] = []
-
-    def flush_event() -> None:
-        nonlocal pending_levels, previous_snapshot_timestamp
-        if not pending_levels:
-            return
-        if current_event_type == "snapshot":
-            bids.clear()
-            asks.clear()
-        for side, price, size in pending_levels:
-            levels = bids if side == "bid" else asks if side == "ask" else None
-            if levels is None:
-                continue
-            if size <= 0.0:
-                levels.pop(price, None)
-            else:
-                levels[price] = size
-        pending_levels = []
-        if not bids or not asks:
-            return
-        if max(bids) >= min(asks):
-            return
-        vector = _book_vector(bids, asks, depth=depth)
-        if include_time_delta:
-            timestamp = _optional_int(current_exchange_timestamp) or previous_snapshot_timestamp or 0
-            delta_ms = 0 if previous_snapshot_timestamp is None else max(0, timestamp - previous_snapshot_timestamp)
-            vector.append(math.log1p(delta_ms))
-            previous_snapshot_timestamp = timestamp
-        snapshots.append(vector)
-
-    for row in rows:
-        if rows_checked >= max_rows or len(snapshots) >= max_snapshots:
+    consumed = 0
+    replayer = AtomicOrderBookReplayer()
+    previous_time = None
+    previous_mid = None
+    previous_segment = None
+    normalized = (normalize_l2_row(row, require_sequence=True) for row in rows)
+    for event_index, event in enumerate(iter_l2_events(normalized)):
+        selected = selected_event_keys is None or l2_event_key(event[0]) in selected_event_keys
+        if selected and consumed + len(event) > max_rows:
             break
-        rows_checked += 1
-        event_type = row.get("event_type", "")
-        sequence = _optional_int(row.get("update_id") or row.get("sequence"))
-        event_key = (
-            event_type,
-            sequence,
-            row.get("exchange_timestamp", ""),
-            row.get("local_timestamp", ""),
-        )
-        if current_event_key is not None and event_key != current_event_key:
-            flush_event()
-        current_event_key = event_key
-        current_event_type = event_type
-        current_exchange_timestamp = row.get("exchange_timestamp", "")
-        pending_levels.append(
-            (
-                row.get("side", ""),
-                float(row.get("price", "0") or 0.0),
-                float(row.get("size", "0") or 0.0),
-            )
-        )
-    if len(snapshots) < max_snapshots:
-        flush_event()
-    return snapshots, rows_checked
+        book = replayer.apply_event(event)
+        row = event[0]
+        if selected:
+            consumed += len(event)
+        if not book.bids or not book.asks:
+            continue
+        vector = _book_vector(replayer.bids, replayer.asks, depth=depth)
+        mid = (book.bids[0].price + book.asks[0].price) / 2.0
+        same_segment = previous_segment == replayer.segment
+        dt = row.exchange_timestamp - previous_time if previous_time is not None and same_segment else 0
+        mid_return = 10000.0 * math.log(mid / previous_mid) if previous_mid and same_segment else 0.0
+        previous_time, previous_mid, previous_segment = row.exchange_timestamp, mid, replayer.segment
+        if include_time_delta:
+            vector.append(math.log1p(dt))
+        if selected:
+            snapshots.append(L2SnapshotVector(
+                vector, timestamp_ms=row.exchange_timestamp, local_timestamp_ms=row.local_timestamp,
+                bids=[(level.price, level.size) for level in book.bids],
+                asks=[(level.price, level.size) for level in book.asks],
+                segment=replayer.segment, event_index=event_index, mid_return_bps=mid_return,
+            ))
+            if len(snapshots) >= max_snapshots:
+                break
+    return snapshots, consumed
 
 
 def _book_vector(bids: dict[float, float], asks: dict[float, float], *, depth: int) -> list[float]:
@@ -2249,6 +2237,12 @@ def _l2_direction_sequences(
     labels: list[int] = []
     end_indices: list[int] = []
     for end_index in range(window - 1, len(snapshots) - label_horizon):
+        footprint = snapshots[end_index - window + 1 : end_index + label_horizon + 1]
+        if hasattr(footprint[0], "segment"):
+            if len({getattr(row, "segment") for row in footprint}) != 1:
+                continue
+            if any(getattr(right, "event_index") != getattr(left, "event_index") + 1 for left, right in zip(footprint, footprint[1:])):
+                continue
         current_mid = _top_mid_from_vector(snapshots[end_index])
         future_mid = _top_mid_from_vector(snapshots[end_index + label_horizon])
         if current_mid <= 0.0:
@@ -2278,7 +2272,19 @@ def _top_mid_from_vector(vector: list[float]) -> float:
 
 
 def _stationarize_l2_sequences(sequences: list[list[list[float]]]) -> list[list[list[float]]]:
-    return [[_stationary_l2_vector(row) for row in sequence] for sequence in sequences]
+    output = []
+    for sequence in sequences:
+        transformed = []
+        previous_mid = None
+        for row in sequence:
+            mid = _top_mid_from_vector(row)
+            ret = getattr(row, "mid_return_bps", None)
+            if ret is None:
+                ret = 10000.0 * math.log(mid / previous_mid) if previous_mid and mid > 0 else 0.0
+            transformed.append([*_stationary_l2_vector(row), ret])
+            previous_mid = mid
+        output.append(transformed)
+    return output
 
 
 def _stationary_l2_vector(vector: list[float]) -> list[float]:
@@ -2310,19 +2316,14 @@ def _fit_sequence_standardizer(sequences: list[list[list[float]]]) -> SequenceSt
     if not sequences:
         raise ValueError("cannot fit sequence standardizer on empty data")
     feature_count = len(sequences[0][0])
-    totals = [0.0] * feature_count
-    squared_totals = [0.0] * feature_count
-    count = 0
-    for sequence in sequences:
-        for row in sequence:
-            count += 1
-            for index, value in enumerate(row):
-                totals[index] += value
-                squared_totals[index] += value * value
-    if count == 0:
-        raise ValueError("cannot fit sequence standardizer on empty data")
-    means = [total / count for total in totals]
-    variances = [max(squared_totals[index] / count - means[index] ** 2, 0.0) for index in range(feature_count)]
+    flat_rows = [row for sequence in sequences for row in sequence]
+    if not flat_rows or any(len(row) != feature_count for row in flat_rows):
+        raise ValueError("inconsistent or empty sequence dimensions")
+    if any(not math.isfinite(value) for row in flat_rows for value in row):
+        raise ValueError("sequence features must be finite")
+    means = [math.fsum(row[index] for row in flat_rows) / len(flat_rows) for index in range(feature_count)]
+    variances = [math.fsum((row[index] - means[index]) ** 2 for row in flat_rows) / len(flat_rows)
+                 for index in range(feature_count)]
     stds = [math.sqrt(variance) if variance > 1e-12 else 1.0 for variance in variances]
     return SequenceStandardizer(means=tuple(means), stds=tuple(stds))
 
@@ -2384,7 +2385,7 @@ def _select_torch_device(torch: Any, requested: str) -> str:
 def _torch_class_weights(labels: list[int], torch: Any, device: Any) -> Any:
     counts = [labels.count(klass) for klass in (0, 1, 2)]
     total = len(labels)
-    weights = [total / (3.0 * count) if count else 0.0 for count in counts]
+    weights = [total / (3.0 * count) if count else 1.0 for count in counts]
     return torch.tensor(weights, dtype=torch.float32, device=device)
 
 
@@ -2416,6 +2417,8 @@ def _write_torch_sequence_checkpoint(
             "stale_epochs": stale_epochs,
             "seed": seed,
             "experiment_contract": experiment_contract,
+            "torch_rng_state": torch.get_rng_state(),
+            **({"cuda_rng_state": torch.cuda.get_rng_state_all()} if torch.cuda.is_available() else {}),
         },
         path,
     )
@@ -2432,6 +2435,8 @@ def _write_sequence_predictions(
     test_predictions: list[int],
     test_probabilities: list[list[float]],
     test_end_indices: list[int],
+    validation_trading_predictions: list[int],
+    test_trading_predictions: list[int],
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
@@ -2440,6 +2445,7 @@ def _write_sequence_predictions(
         "sequence_end_index",
         "true_label",
         "predicted_label",
+        "trading_label",
         "prob_down",
         "prob_flat",
         "prob_up",
@@ -2448,10 +2454,10 @@ def _write_sequence_predictions(
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         rows = [
-            ("validation", validation_labels, validation_predictions, validation_probabilities, validation_end_indices),
-            ("test", test_labels, test_predictions, test_probabilities, test_end_indices),
+            ("validation", validation_labels, validation_predictions, validation_probabilities, validation_end_indices, validation_trading_predictions),
+            ("test", test_labels, test_predictions, test_probabilities, test_end_indices, test_trading_predictions),
         ]
-        for split, labels, predictions, probabilities, end_indices in rows:
+        for split, labels, predictions, probabilities, end_indices, trading in rows:
             for row_number, (label, prediction, probability, end_index) in enumerate(
                 zip(labels, predictions, probabilities, end_indices),
                 start=1,
@@ -2464,6 +2470,7 @@ def _write_sequence_predictions(
                         "sequence_end_index": end_index,
                         "true_label": label,
                         "predicted_label": prediction,
+                        "trading_label": trading[row_number - 1],
                         "prob_down": f"{padded[0]:.12g}",
                         "prob_flat": f"{padded[1]:.12g}",
                         "prob_up": f"{padded[2]:.12g}",
@@ -2478,6 +2485,7 @@ def _write_sequence_holdout_predictions(
     predictions: list[int],
     probabilities: list[list[float]],
     end_indices: list[int],
+    trading_predictions: list[int],
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
@@ -2486,6 +2494,7 @@ def _write_sequence_holdout_predictions(
         "sequence_end_index",
         "true_label",
         "predicted_label",
+        "trading_label",
         "prob_down",
         "prob_flat",
         "prob_up",
@@ -2505,6 +2514,7 @@ def _write_sequence_holdout_predictions(
                     "sequence_end_index": end_index,
                     "true_label": label,
                     "predicted_label": prediction,
+                    "trading_label": trading_predictions[row_number - 1],
                     "prob_down": f"{padded[0]:.12g}",
                     "prob_flat": f"{padded[1]:.12g}",
                     "prob_up": f"{padded[2]:.12g}",
@@ -2513,114 +2523,184 @@ def _write_sequence_holdout_predictions(
 
 
 def _sequence_stateful_economics(
-    snapshots: list[list[float]],
-    end_indices: list[int],
-    predictions: list[int],
-    *,
-    label_horizon: int,
-    target_notional: float,
-    taker_fee_bps: float,
-    slippage_bps: float,
+    snapshots: list[Any], end_indices: list[int], predictions: list[int], *,
+    label_horizon: int, target_notional: float, taker_fee_bps: float,
+    slippage_bps: float, latency_ms: int = 0,
 ) -> dict[str, float | int]:
+    """One persistent account, measured book depth, observed event times, explicit latency.
+
+    Predictions use economic side encoding 0=short,1=flat,2=long. Exit instructions
+    occur H source messages after entry decisions and incur the same latency. Any
+    residual from finite depth is reported and remains marked in account equity.
+    """
     if len(end_indices) != len(predictions):
         raise ValueError("end_indices and predictions must have the same length")
-    if label_horizon <= 0:
-        raise ValueError("label_horizon must be positive")
-    if target_notional <= 0.0:
-        raise ValueError("target_notional must be positive")
-    if taker_fee_bps < 0.0 or slippage_bps < 0.0:
-        raise ValueError("taker_fee_bps and slippage_bps must be non-negative")
+    if label_horizon <= 0 or latency_ms < 0:
+        raise ValueError("label_horizon must be positive and latency_ms non-negative")
+    if not math.isfinite(target_notional) or target_notional <= 0:
+        raise ValueError("target_notional must be finite and positive")
+    if any(not math.isfinite(v) or v < 0 for v in (taker_fee_bps, slippage_bps)):
+        raise ValueError("fees and slippage must be finite and non-negative")
+    if any(not isinstance(row, L2SnapshotVector) for row in snapshots):
+        raise ValueError("sequence economics requires timestamped L2 snapshots with observed depth")
+    snapshots = cast(list[Any], snapshots)
+    signals = []
+    prior_exit = -1
+    decision_rows = sorted(zip(end_indices, predictions))
+    for number, (end, prediction) in enumerate(decision_rows):
+        if prediction not in (0, 1, 2):
+            raise ValueError("prediction must be 0, 1, or 2")
+        if end < 0 or end + label_horizon >= len(snapshots):
+            raise ValueError("sequence economic horizon outside snapshots")
+        if prediction == 1 or end < prior_exit:
+            continue
+        exit_index = end + label_horizon
+        if snapshots[end].segment != snapshots[exit_index].segment:
+            continue
+        side = -1 if prediction == 0 else 1
+        start_time = snapshots[end].local_timestamp_ms
+        start_time = snapshots[end].timestamp_ms if start_time is None else start_time
+        exit_time = snapshots[exit_index].local_timestamp_ms
+        exit_time = snapshots[exit_index].timestamp_ms if exit_time is None else exit_time
+        signals.extend([
+            SignalEvent(start_time, side, target_notional, signal_id=f"sequence-{number}-entry"),
+            SignalEvent(exit_time, 0, 0.0, signal_id=f"sequence-{number}-exit"),
+        ])
+        prior_exit = exit_index
+    initial_cash = max(1000.0, 2.0 * target_notional)
+    if not signals:
+        return {"trades": 0, "turnover": 0.0, "net_pnl": 0.0, "break_even_fee_bps": 0.0,
+                "final_inventory": 0.0, "realized_pnl": 0.0}
+    first_time = min(signal.decision_time_ms for signal in signals)
+    events = []
+    for row in snapshots:
+        # A genuinely recorded local receipt timestamp is observable; historical
+        # exchange-only data uses exchange time plus the configured assumed latency.
+        event_time = row.timestamp_ms if row.local_timestamp_ms is None else row.local_timestamp_ms
+        if event_time < first_time:
+            continue
+        bid, ask = _top_bid_ask_from_vector(row)
+        events.append(MarketEvent(event_time, bid, ask, row.bids[0][1], row.asks[0][1],
+                                  bid_levels=row.bids, ask_levels=row.asks))
+    result = simulate_stateful_execution(events, signals, config=StatefulExecutionConfig(
+        initial_cash=initial_cash, max_position_notional=2.0 * target_notional,
+        max_leverage=1.0, taker_fee_bps=taker_fee_bps, slippage_bps=slippage_bps,
+        latency_ms=latency_ms,
+    ))
+    # Count entry fills, not two child fills as two completed round trips.
+    entry_ids = {order.order_id for order in result.orders if order.signal_id.endswith("-entry")}
+    trades = len({fill.order_id for fill in result.fills if fill.order_id in entry_ids})
+    final_position = result.positions[-1]
+    marked_net = result.realized_pnl + result.final_inventory * (final_position.mark_price - final_position.avg_entry_price)
+    break_even = (marked_net / result.turnover * 10000.0 + taker_fee_bps) if result.turnover else 0.0
+    return {"trades": trades, "turnover": result.turnover, "net_pnl": marked_net,
+            "realized_pnl": result.realized_pnl, "break_even_fee_bps": break_even,
+            "final_inventory": result.final_inventory}
 
-    completed_round_trips = 0
-    turnover = 0.0
-    net_pnl = 0.0
-    final_inventory = 0.0
-    prior_exit_index: int | None = None
-    prediction_rows = sorted(
-        enumerate(zip(end_indices, predictions), start=1),
-        key=lambda item: (item[1][0], item[0]),
-    )
-    for row_number, (end_index, prediction) in prediction_rows:
-        if end_index + label_horizon >= len(snapshots):
-            continue
-        side = -1 if prediction == 0 else 1 if prediction == 2 else 0
-        if side == 0:
-            continue
-        if prior_exit_index is not None and end_index < prior_exit_index:
-            continue
-        current = snapshots[end_index]
-        future = snapshots[end_index + label_horizon]
-        current_bid, current_ask = _top_bid_ask_from_vector(current)
-        future_bid, future_ask = _top_bid_ask_from_vector(future)
-        prices = (current_bid, current_ask, future_bid, future_ask)
-        if min(prices) <= 0.0 or not all(math.isfinite(price) for price in prices):
-            continue
-        current_mid = (current_bid + current_ask) / 2.0
-        required_quantity = target_notional / current_mid
-        available_quantity = max(1.0, required_quantity * 2.0)
-        entry_time = end_index
-        exit_time = end_index + label_horizon
-        events = [
-            MarketEvent(
-                entry_time,
-                bid=current_bid,
-                ask=current_ask,
-                bid_size=available_quantity,
-                ask_size=available_quantity,
-            ),
-            MarketEvent(
-                exit_time,
-                bid=future_bid,
-                ask=future_ask,
-                bid_size=available_quantity,
-                ask_size=available_quantity,
-            ),
-        ]
-        signals = [
-            SignalEvent(
-                entry_time,
-                target_side=side,
-                target_notional=target_notional,
-                signal_id=f"neural-test-{row_number}-entry",
-            ),
-            SignalEvent(
-                exit_time,
-                target_side=0,
-                target_notional=0.0,
-                signal_id=f"neural-test-{row_number}-exit",
-            ),
-        ]
-        initial_cash = max(1000.0, target_notional * 2.0, required_quantity * max(prices) * 2.0)
-        result = simulate_stateful_execution(
-            events,
-            signals,
-            config=StatefulExecutionConfig(
-                initial_cash=initial_cash,
-                max_position_notional=target_notional * 2.0,
-                max_leverage=1.0,
-                taker_fee_bps=taker_fee_bps,
-                slippage_bps=slippage_bps,
-                latency_ms=0,
-            ),
-        )
-        fill_sides = [fill.side for fill in result.fills]
-        if fill_sides != [side, -side] or abs(result.final_inventory) > 1e-9:
-            raise RuntimeError("sequence economics failed to complete a deterministic entry/exit round trip")
-        completed_round_trips += 1
-        turnover += result.turnover
-        net_pnl += result.realized_pnl
-        final_inventory += result.final_inventory
-        prior_exit_index = exit_time
 
-    pnl_before_taker_fees = net_pnl + turnover * taker_fee_bps / 10_000.0
-    break_even = pnl_before_taker_fees / turnover * 10_000.0 if turnover else 0.0
-    return {
-        "trades": completed_round_trips,
-        "turnover": turnover,
-        "net_pnl": net_pnl,
-        "break_even_fee_bps": break_even,
-        "final_inventory": final_inventory,
-    }
+def _validated_class_priors(priors):
+    if not isinstance(priors, list) or len(priors) != 3:
+        raise ValueError("class priors must have three values")
+    if any(not isinstance(v, (int, float)) or not math.isfinite(v) or v < 0 for v in priors):
+        raise ValueError("class priors must be finite and non-negative")
+    if not math.isclose(sum(priors), 1.0, abs_tol=1e-9):
+        raise ValueError("class priors must sum to one")
+    return priors
+
+
+def _restore_class_probabilities(probabilities, priors, weighting):
+    _validated_class_priors(priors)
+    if weighting not in {"none", "balanced"}:
+        raise ValueError("unsupported class weighting")
+    output = []
+    for row in probabilities:
+        if len(row) != 3 or any(not math.isfinite(v) or v < 0 for v in row):
+            raise ValueError("invalid sequence probabilities")
+        factors = [(3 * prior if prior > 0 else 1.0) for prior in priors]
+        corrected = [v * factors[k] if weighting == "balanced" else v for k, v in enumerate(row)]
+        total = sum(corrected)
+        if total <= 0:
+            raise ValueError("probability mass must be positive")
+        output.append([v / total for v in corrected])
+    return output
+
+
+def _policy_cell(probabilities, bins):
+    klass = max(range(3), key=probabilities.__getitem__)
+    return f"{klass}:{min(bins - 1, int(max(probabilities) * bins))}"
+
+
+def _fit_sequence_payoff_policy(snapshots, end_indices, probabilities, *, label_horizon,
+                                target_notional, taker_fee_bps, slippage_bps, latency_ms,
+                                calibration_stop_index=None):
+    """Fit conditional executed/marked payoff means using validation outcomes only.
+
+    Fixed bins and sparse-cell abstention are predeclared. Delayed execution labels
+    are purged before the first raw test feature; no test quote enters calibration.
+    """
+    policy = {"version": "conditional_payoff_v1", "bins": 5,
+              "min_observations": 5, "margin_bps": 0.0, "cells": {}}
+    stop_bound = len(snapshots) if calibration_stop_index is None else calibration_stop_index
+    for end, probs in zip(end_indices, probabilities):
+        exit_index = end + label_horizon
+        if exit_index >= stop_bound:
+            continue
+        exit_snapshot = snapshots[exit_index]
+        exit_decision_time = (exit_snapshot.timestamp_ms if exit_snapshot.local_timestamp_ms is None
+                              else exit_snapshot.local_timestamp_ms)
+        arrival_time = exit_decision_time + latency_ms
+        stop = exit_index
+        while stop < stop_bound:
+            row = snapshots[stop]
+            observed_time = row.timestamp_ms if row.local_timestamp_ms is None else row.local_timestamp_ms
+            if observed_time >= arrival_time:
+                break
+            stop += 1
+        if stop >= stop_bound or snapshots[end].segment != snapshots[stop].segment:
+            continue
+        cell = policy["cells"].setdefault(_policy_cell(probs, policy["bins"]),
+                                         {"count": 0, "short_net_bps": 0.0, "long_net_bps": 0.0})
+        cell["count"] += 1
+        for side, name in ((0, "short_net_bps"), (2, "long_net_bps")):
+            result = _sequence_stateful_economics(
+                snapshots[end:stop + 1], [0], [side], label_horizon=label_horizon,
+                target_notional=target_notional, taker_fee_bps=taker_fee_bps,
+                slippage_bps=slippage_bps, latency_ms=latency_ms,
+            )
+            cell[name] += float(result["net_pnl"]) / target_notional * 10000.0
+    for cell in policy["cells"].values():
+        for name in ("short_net_bps", "long_net_bps"):
+            cell[name] /= cell["count"]
+    return _validated_sequence_policy(policy)
+
+
+def _validated_sequence_policy(policy):
+    if not isinstance(policy, dict) or policy.get("version") != "conditional_payoff_v1":
+        raise ValueError("unsupported sequence payoff policy")
+    if policy.get("bins") != 5 or policy.get("min_observations") != 5 or policy.get("margin_bps") != 0.0:
+        raise ValueError("invalid fixed payoff policy configuration")
+    if not isinstance(policy.get("cells"), dict):
+        raise ValueError("sequence payoff policy requires cells")
+    for key, cell in policy["cells"].items():
+        if key not in {f"{k}:{b}" for k in range(3) for b in range(5)}:
+            raise ValueError("invalid payoff policy cell")
+        if not isinstance(cell.get("count"), int) or cell["count"] < 1:
+            raise ValueError("invalid payoff policy sample count")
+        if any(not math.isfinite(cell[name]) for name in ("short_net_bps", "long_net_bps")):
+            raise ValueError("non-finite conditional payoff")
+    return policy
+
+
+def _predict_sequence_payoff_side(policy, probabilities):
+    cell = policy["cells"].get(_policy_cell(probabilities, policy["bins"]))
+    if cell is None or cell["count"] < policy["min_observations"]:
+        return 1
+    short, long = cell["short_net_bps"], cell["long_net_bps"]
+    if long > policy["margin_bps"] and long >= short:
+        return 2
+    if short > policy["margin_bps"] and short > long:
+        return 0
+    return 1
 
 
 def _top_bid_ask_from_vector(vector: list[float]) -> tuple[float, float]:
@@ -2740,15 +2820,15 @@ def _candidate_string(candidate: dict[str, object], field: str) -> str:
 
 def _candidate_positive_int(candidate: dict[str, object], field: str) -> int:
     value = candidate.get(field)
-    if not isinstance(value, int) or value <= 0:
+    if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
         raise ValueError(f"frozen sequence candidate {field} must be a positive integer")
     return value
 
 
 def _candidate_float(candidate: dict[str, object], field: str) -> float:
     value = candidate.get(field)
-    if not isinstance(value, (int, float)):
-        raise ValueError(f"frozen sequence candidate {field} must be numeric")
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+        raise ValueError(f"frozen sequence candidate {field} must be finite numeric")
     return float(value)
 
 
@@ -2761,6 +2841,40 @@ def _assert_frozen_float_override(field: str, *, override: float | None, frozen_
 
 def _candidate_float_list(candidate: dict[str, object], field: str) -> list[float]:
     values = candidate.get(field)
-    if not isinstance(values, list) or not values or not all(isinstance(value, (int, float)) for value in values):
+    if not isinstance(values, list) or not values or not all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) for value in values):
         raise ValueError(f"frozen sequence candidate {field} must be a non-empty numeric list")
     return [float(value) for value in values]
+
+
+def validate_sequence_final_holdout_overrides(
+    candidate, *, max_rows=None, max_snapshots=None, economic_target_notional=None,
+    economic_taker_fee_bps=None, economic_slippage_bps=None, economic_latency_ms=None, device='auto',
+):
+    """Pure preflight, safe before reserving the single final-label evaluation."""
+    if candidate.get('candidate_type') != 'l2_sequence_torch_v3':
+        raise ValueError('frozen sequence candidate must use l2_sequence_torch_v3')
+    if candidate.get('economic_simulation_version') != SEQUENCE_ECONOMICS_VERSION:
+        raise ValueError('frozen sequence candidate uses stale economics')
+    if device not in {'auto','cpu','cuda'}:
+        raise ValueError('device must be auto, cpu, or cuda')
+    limits=[]
+    for field, override in [('max_rows',max_rows),('max_snapshots',max_snapshots)]:
+        frozen = _candidate_positive_int(candidate, field)
+        if override is not None and override != frozen:
+            raise ValueError(f'final sequence holdout {field} must match frozen candidate')
+        limits.append(frozen)
+    for field, override in [('economic_target_notional',economic_target_notional),
+                            ('economic_taker_fee_bps',economic_taker_fee_bps),
+                            ('economic_slippage_bps',economic_slippage_bps)]:
+        frozen = _candidate_float(candidate, field)
+        if frozen < 0 or (field == 'economic_target_notional' and frozen == 0):
+            raise ValueError(f'invalid frozen {field}')
+        _assert_frozen_float_override(field, override=override, frozen_value=frozen)
+    latency = candidate.get('economic_latency_ms')
+    if not isinstance(latency,int) or isinstance(latency,bool) or latency < 0:
+        raise ValueError('frozen economic_latency_ms must be a non-negative integer')
+    if economic_latency_ms is not None and economic_latency_ms != latency:
+        raise ValueError('final sequence holdout economic_latency_ms must match frozen candidate')
+    _validated_sequence_policy(json.loads(_candidate_string(candidate,'policy_json')))
+    _validated_class_priors(json.loads(_candidate_string(candidate,'class_priors_json')))
+    return tuple(limits)

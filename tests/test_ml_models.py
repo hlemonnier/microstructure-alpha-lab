@@ -1,4 +1,5 @@
 import csv
+import pytest
 from pathlib import Path
 
 from lob_forge.holdout import (
@@ -9,6 +10,7 @@ from lob_forge.holdout import (
     write_holdout_manifest,
 )
 from lob_forge.ml_models import (
+    L2SnapshotVector,
     _apply_sequence_standardizer,
     _fit_sequence_standardizer,
     _purged_sequential_split_counts,
@@ -229,10 +231,10 @@ def test_sequence_standardizer_fits_train_only() -> None:
 
 def test_sequence_stateful_economics_flattens_at_the_label_horizon_with_exact_costs() -> None:
     economics = _sequence_stateful_economics(
-        [
+        _execution_vectors([
             [101.0, 1.0, 99.0, 1.0],
             [105.0, 1.0, 103.0, 1.0],
-        ],
+        ]),
         [0],
         [2],
         label_horizon=1,
@@ -253,13 +255,13 @@ def test_sequence_stateful_economics_flattens_at_the_label_horizon_with_exact_co
 
 def test_sequence_stateful_economics_skips_overlapping_prediction_windows() -> None:
     economics = _sequence_stateful_economics(
-        [
+        _execution_vectors([
             [101.0, 1.0, 99.0, 1.0],
             [101.0, 1.0, 99.0, 1.0],
             [101.0, 1.0, 99.0, 1.0],
             [101.0, 1.0, 99.0, 1.0],
             [101.0, 1.0, 99.0, 1.0],
-        ],
+        ]),
         [0, 1, 2],
         [2, 2, 2],
         label_horizon=2,
@@ -292,6 +294,9 @@ def test_l2_masked_pretraining_smoke_writes_artifact(tmp_path: Path) -> None:
     assert report.sequence_count == 1
     assert report.feature_count == 4
     assert report.masked_values == 8
+    assert report.model_kind == "observed_mean_imputation_baseline"
+    assert not report.learned_pretraining
+    assert report.mean_reconstruction_mse == report.zero_reconstruction_mse
     assert output_path.exists()
     assert "pipeline_completed=1" in text
 
@@ -540,22 +545,22 @@ def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing
     assert report.pipeline_completed
 
     candidate = freeze_l2_sequence_candidate(output_path)
-    assert candidate["candidate_type"] == "l2_sequence_torch_v2"
+    assert candidate["candidate_type"] == "l2_sequence_torch_v3"
     assert candidate["checkpoint_sha256"] == sha256_file(checkpoint_path)
     assert candidate["development_l2_sha256"] == sha256_file(tmp_path / "development_l2.csv")
     assert candidate["standardizer_means"]
     assert candidate["economic_target_notional"] == 125.0
     assert candidate["economic_taker_fee_bps"] == 0.25
     assert candidate["economic_slippage_bps"] == 0.05
-    development_text = (tmp_path / "development_l2.csv").read_text()
-    (tmp_path / "development_l2.csv").write_text(development_text + "\n")
+    development_text = (tmp_path / "development_l2.csv").read_bytes()
+    (tmp_path / "development_l2.csv").write_bytes(development_text + b"\n")
     try:
         freeze_l2_sequence_candidate(output_path)
     except ValueError as exc:
         assert "development_l2_sha256" in str(exc)
     else:
         raise AssertionError("expected tampered development L2 to be rejected")
-    (tmp_path / "development_l2.csv").write_text(development_text)
+    (tmp_path / "development_l2.csv").write_bytes(development_text)
     final_manifest = build_holdout_manifest(
         l2_path,
         split_column="exchange_timestamp",
@@ -584,7 +589,7 @@ def test_l2_sequence_candidate_freeze_and_final_holdout_use_frozen_preprocessing
     expected_stateful_trades = 0
     prior_exit_index: int | None = None
     for row in sorted(final_predictions, key=lambda value: int(value["sequence_end_index"])):
-        if row["predicted_label"] == "1":
+        if row["trading_label"] == "1":
             continue
         entry_index = int(row["sequence_end_index"])
         if prior_exit_index is not None and entry_index < prior_exit_index:
@@ -742,30 +747,8 @@ def test_l2_sequence_candidate_freeze_locks_economic_config_for_final_holdout(tm
             }
         )
 
-    candidate = freeze_l2_sequence_candidate(artifact_path)
-    assert candidate["economic_target_notional"] == 125.0
-    assert candidate["economic_taker_fee_bps"] == 0.25
-    assert candidate["economic_slippage_bps"] == 0.05
-    manifest = build_holdout_manifest(
-        l2_path,
-        split_column="exchange_timestamp",
-        holdout_values=[str(1684195200000 + index) for index in range(20, 30)],
-        created_at_utc="2026-06-26T00:00:00Z",
-        git_commit="a" * 40,
-        candidate_sha256=canonical_json_sha256(candidate),
-    )
-
-    try:
-        evaluate_l2_sequence_final_holdout(
-            l2_path=l2_path,
-            manifest=manifest,
-            candidate=candidate,
-            economic_target_notional=200.0,
-        )
-    except ValueError as exc:
-        assert "economic_target_notional must match frozen candidate" in str(exc)
-    else:
-        raise AssertionError("expected final sequence holdout to reject economic override drift")
+    with pytest.raises(ValueError, match="frozen payoff policy and class priors"):
+        freeze_l2_sequence_candidate(artifact_path)
 
 
 def _write_audit(path: Path, *, fold_count: int, acceptance_passed: int, rejection_reasons: str) -> None:
@@ -803,8 +786,8 @@ def _write_normalized_l2(path: Path, rows: list[tuple[str, str, float, float, in
             writer.writerow(
                 {
                     "event_type": event_type,
-                    "exchange_timestamp": index,
-                    "local_timestamp": index,
+                    "exchange_timestamp": sequence,
+                    "local_timestamp": sequence,
                     "side": side,
                     "price": price,
                     "size": size,
@@ -883,7 +866,11 @@ def _write_many_l2_snapshots_and_deltas(path: Path, *, snapshot_count: int = 12)
             bid = 100.0 + index * 0.1
             ask = 101.0 + index * 0.1
             event_type = "snapshot" if index == 0 else "delta"
-            for side, price in (("bid", bid), ("ask", ask)):
+            levels = [("bid", bid, 1.0), ("ask", ask, 1.0)]
+            if index:
+                levels = [("bid", 100.0 + (index - 1) * 0.1, 0.0),
+                          ("ask", 101.0 + (index - 1) * 0.1, 0.0)] + levels
+            for side, price, size in levels:
                 writer.writerow(
                     {
                         "event_type": event_type,
@@ -891,7 +878,7 @@ def _write_many_l2_snapshots_and_deltas(path: Path, *, snapshot_count: int = 12)
                         "local_timestamp": 1684195200000 + index,
                         "side": side,
                         "price": price,
-                        "size": 1.0,
+                        "size": size,
                         "sequence": sequence,
                         "update_id": sequence,
                         "venue": "bybit",
@@ -899,3 +886,9 @@ def _write_many_l2_snapshots_and_deltas(path: Path, *, snapshot_count: int = 12)
                     }
                 )
             sequence += 1
+
+
+def _execution_vectors(values):
+    return [L2SnapshotVector(row, timestamp_ms=1000 + i * 1000,
+                            bids=((row[2], row[3]),), asks=((row[0], row[1]),), event_index=i)
+            for i, row in enumerate(values)]
