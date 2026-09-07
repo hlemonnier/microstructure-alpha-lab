@@ -1,0 +1,53 @@
+{
+  "checks": "Official raw checksum/bytes, original feature hash, raw entry/future timestamp and midpoint identity, exact coarse-label parity, and save/reload identity. Three unit tests cover boundary ties, symmetry, arbitrary precision, probability aggregation and posterior inversion.",
+  "dates": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "input_hashes": {
+    "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+    "docs/research/boundary_confirmation_20260907_exact_labels_revision.json": "e3a40a656ab7b53748acd2c446dba900e485a4ff6c6e1f56bb33b586ce24517e",
+    "scripts/prepare_boundary_distribution_targets.py": "5e48583a432ad6b8d35e5ecac45d7a2cb7e24dc70600f001543711781d6add7c",
+    "scripts/prepare_boundary_event_clock.py": "8a46c988f47ac8b638a4b4b330c2951d66225a47774bbb9a7330a1cc811bca36",
+    "src/lob_forge/boundary_distribution_targets.py": "d76c314c8dbb3aa64ed7ce924838c02ed8cae3725c90f0bbb8acdb2a1ee191fd",
+    "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+    "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0",
+    "tests/test_boundary_distribution_targets.py": "103bc2cd99ebc71507234ac664f2c2cc135f9d3fc10a06b3f613adcc0c33ea20"
+  },
+  "min_tick": {
+    "BTCUSDT": 0.1,
+    "ETHUSDT": 0.01
+  },
+  "registered_at_utc": "2026-09-07T20:05:55.508751+00:00",
+  "research_basis": [
+    {
+      "scope": "Histogram distribution learning may aid optimization; our hard exact bins are a distinct experiment, not a reproduction of the Gaussian histogram-loss method.",
+      "url": "https://arxiv.org/abs/2402.13425"
+    },
+    {
+      "scope": "Loss formulation can affect learned features; the source does not establish financial forecasting gains.",
+      "url": "https://proceedings.mlr.press/v206/stewart23a.html"
+    }
+  ],
+  "semantics": "exact_nine_move_bins_v1_threshold_multiples_1_2_4",
+  "source_manifest": "data/research/boundary_regime_data_20260907/dataset_manifest.json",
+  "storage": "Separate immutable target-only parquet files; no forecast feature file is edited. No future-target column may enter a forecast input matrix.",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "target_definition": "Same raw first quote at or after decision+100ms and decision+5100ms. With exact decimal D=future_bid+future_ask-entry_bid-entry_ask and T=max(entry_ask-entry_bid,2*minimum_tick), radius is zero at D=0, one at 0<abs(D)<=T, two at T<abs(D)<=2T, three at 2T<abs(D)<=4T, four above4T. Bin=4+sign(D)*radius. Grouping bins0:3,3:6,6:9 must exactly reproduce every frozen down/neutral/up label."
+}
