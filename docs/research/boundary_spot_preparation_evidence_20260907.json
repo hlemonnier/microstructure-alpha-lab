@@ -1,0 +1,70 @@
+{
+  "all_original_decision_times_preserved": true,
+  "feature_manifest": "data/research/boundary_spot_features_20260907/feature_manifest.json",
+  "feature_manifest_sha256": "0f9c4d60ff1b8942a0f6b4d05ce3a777b65a8f96565a2ab9b4e1da433d192ed6",
+  "features_per_stream_and_delay": 74,
+  "full_session_loader_parity": {
+    "columns_per_variant": 301,
+    "date": "2023-05-29",
+    "old_columns": 220,
+    "original_labels_times_features_bitwise_unchanged": true,
+    "rows_per_asset": 86097
+  },
+  "identity": {
+    "dependencies": {
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "pyarrow": "17.0.0"
+    },
+    "input_hashes": {
+      "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+      "data/research/boundary_spot_raw_20260907/source_manifest.json": "dcdc6bb722c1ef3f26ad431f0a923c2008ace5581bd11e0f1fa32b8dee0da960",
+      "docs/research/boundary_spot_acquisition_20260907.json": "c446e2dd08a867a42e34a53c29394419a9829590dc4bb2d3159f9620f356d5be",
+      "scripts/prepare_boundary_spot_features.py": "72a4705985258ae91c760c16bb4e6ea79a0587d3e2be288c71bbefc25abf236d",
+      "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+      "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+      "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+      "src/lob_forge/boundary_spot_data.py": "677ecdba899cde8a2aef86514f0beb4e1802b283427aee7aa9efc6bdf6840562",
+      "src/lob_forge/boundary_spot_features.py": "22af9d596962de35e46a18ff44ff3c36b07b5ad8b878dc98cff1544153fb75bd",
+      "src/lob_forge/features.py": "d464532dbdeb9a054a8e138ec51b06ef75b6338f32a16ca69de9936fc8e15c24",
+      "tests/test_boundary_spot_data.py": "1d310bafcff86e0ced23d9f4ae68eab6ec36983cf6ef4a59cda2133d18e72f35",
+      "tests/test_boundary_spot_features.py": "a03d49dbfda8553cfed389a5438b191e7123f2836bf61acd99f11d9a281903cf"
+    },
+    "protocol_sha256": "39bcb7ece5ad268f56f3365b3079a4f0a697692c608b6d21c5fff9d7658f4c4c",
+    "python": "3.12.14"
+  },
+  "original_file_unchanged": true,
+  "original_rows_preserved": 2419034,
+  "save_reload_parity": true,
+  "session_hashes": {
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-05-29.parquet": "2c4896ba5293ff9eff777ff96d13d136ed796c786b3ae29ab11aa5250d9333a4",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-05-30.parquet": "2c59609c8d36c4e71d074cdd48df4b6e045c6cc68ea098fe09b1fd17156132cd",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-05-31.parquet": "66644831864390d2dcec6f117dc135c78d7ee35ff8d83bf69234f8a085901946",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-01.parquet": "bba8407683d9caee3cbd9d6fa25f62cf2dd787990b3048fc13d8df9ab77c9733",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-02.parquet": "b4723c25146ab88d7ec4a745b9facc3d886d8fc82d4dff2aedb4a755e1ea190d",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-03.parquet": "4fb13e9ea4521c61bdd2bd9d24bc030109b9da198953a95af6931a0b17c806c8",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-04.parquet": "ae8f5c197180c3806c267d5f33f31328897905639e4ca613c1c6e16d8f41dcba",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-05.parquet": "fae5139cd5eb1ef6a696f70b25dafbaa3b7c0015033fc12fff85dd512adfc410",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-06.parquet": "9cc82798d5bcde2234fd5a58bf07bfbd70ea11e76ccb9ed3ded618dda60cfc02",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-07.parquet": "7ff4b40d0aa2f82c6c01a7b92644261e0b5f342d50553ba1d62a5d064d6b895c",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-08.parquet": "775dcf43c241f384a037006713e1bbf43f0fbf20f9170e69212e1f0f39d8ec29",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-09.parquet": "e60bbfa82c5073ee982b330e6fe2f9b95563451fdd7e241a912b3accb3215592",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-10.parquet": "7ef4f117c4cabb2fd6b37643fd2c924080a967f694bb64d40adeadd27ce0b7f2",
+    "data/research/boundary_spot_features_20260907/BTCUSDT/2023-06-11.parquet": "1f14d348d39443ce41d8a39c1d8d237342385ff35d5698d68798f2dd5ae3c090",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-05-29.parquet": "c207b228e95451c1651ef54299012d17871e76852512c12713311b5f09f7e4e5",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-05-30.parquet": "47a88d7e6f194af775beaab30bc30d9505e78f8bc41ec0c71137ef3b42bfa544",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-05-31.parquet": "55786500e95def3d2be4ce4fea35ce7af05284825e57d839b3c3b3f92cfe5b60",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-01.parquet": "fc2b028b2db57b18e42154b0354178bef9fed7ff904f85285f593f5a78d8d726",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-02.parquet": "c487c43fee57f793b76105f6762eac9524c4d2216bb8f9d32be7eb9209eb625f",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-03.parquet": "32e1239f8a65fdad9e7403f1dd16fb7846f8cb299367c2d6e65ec13b304f5e54",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-04.parquet": "5cf6e952c07a18a8526c30489bc64c4c67aebbac4a169dce71b17d98cebbd63a",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-05.parquet": "d75f1c96af708bd7a206a92d763f5d7ffb70dd3babbb3773b4381123c0c2202e",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-06.parquet": "18728cb2e860add2b4bf781d7bacdddb1a46d32f98fd110fbebbf460ef6d646b",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-07.parquet": "86bb80e4259fe35cfcbdcb432ee444642bb8d42b6ec73094556d7fffc809f6c0",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-08.parquet": "3b5cf727e0bdbe18d841f7b5d1a3355b1b5733d97839d4c1a9e78774d95cdc9f",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-09.parquet": "e9381cc84110d9bbfd28c0df2b71a5f5421ef1f0be0f45b478091170898d69fb",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-10.parquet": "2768f15f259c5b80859fc6688d7ae39b8fcbe26e2a67d1745efe76405cc44635",
+    "data/research/boundary_spot_features_20260907/ETHUSDT/2023-06-11.parquet": "64b3b7c8ec701f5d940273efe9074697ac25d77f218b6daa1b77146683dad9f2"
+  },
+  "sessions": 28
+}

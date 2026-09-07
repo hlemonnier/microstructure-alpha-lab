@@ -38,7 +38,7 @@ A separately [registered matched-control extension](boundary_morning_controls_20
 
 ## Validation and evidence status
 
-The implementation suite passes 535 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 20 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
+The implementation suite passes 540 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 22 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
 
 Both fixed screens are complete. Their outcomes remain developmental, with no substantial-gain or economic-performance claim.
 
@@ -68,10 +68,26 @@ The [context protocol](boundary_context_screen_20260907.json) adds five-, fiftee
 
 Four mathematical/causality tests pass, including explicit scalar-estimator agreement, strict release boundaries, future-record invariance, unchanged original rows and invalid-history handling. A full May 29 session comparison preserves all 86,097 eligible rows per asset and all 168 original columns exactly. The frozen study uses four recent days sampled every four seconds, the same validation, three exposed assessment dates, twelve fits and 192 fixed model/policy/asset/date panels. Its feature ablation separates longer activity history from released-outcome context. The complete [context results](boundary_context_evidence_20260907.json) give the activity-only blend 57.1421% balanced accuracy versus 56.8359% for the matched recent/four-second clock blend: **+0.3062 points**. Natural accuracy is 66.4922% versus 66.2140%, and log loss is 0.763114 versus 0.769702. The released-outcome blend reaches 57.0836% balanced accuracy and a better 0.760082 log loss. These are modest improvements on the same three exposed dates, not independent discovery evidence.
 
-## Move-size distribution: target preparation registered
+## Move-size distribution: magnitude objectives did not improve the control
 
-The next [target-preparation protocol](boundary_distribution_targets_20260907.json) keeps the same five-second raw quote endpoints and exact threshold, but retains nine signed magnitude bins during training. Exact zero receives its own bin; other bins split moves at one, two and four times the threshold. Grouping bins back into three classes must exactly reproduce every existing label. Separate target files cannot enter the observation schema.
+The [target-preparation protocol](boundary_distribution_targets_20260907.json) keeps the same five-second raw quote endpoints and exact threshold, but retains nine signed magnitude bins during training. Exact zero receives its own bin; other bins split moves at one, two and four times the threshold. Grouping bins back into three classes must exactly reproduce every existing label. Separate target files cannot enter the observation schema.
 
 [Imani et al.](https://arxiv.org/abs/2402.13425) study optimization benefits from histogram distribution losses, and [Stewart et al.](https://proceedings.mlr.press/v206/stewart23a.html) analyze how loss formulation can affect learned features. The proposed exact hard-bin experiment differs from the Gaussian histogram-loss method and does not inherit an empirical market gain from either paper. Three target tests verify exact boundaries, direction symmetry, arbitrary precision, coarse-label aggregation and the class-weight posterior recovery identity.
+
+The [preparation evidence](boundary_distribution_preparation_evidence_20260907.json) covers 28 sessions and 2,418,881 targets, with exact original-label and raw-resolution parity. The [model protocol](boundary_distribution_screen_20260907.json) compares a coarse-only nine-output head, 25% fine-bin log loss, full fine-bin log loss, and fine-bin log loss plus a ranked cumulative-probability score. The entire loss uses the original asset/three-class weights. Aggregate nine-bin probabilities into three groups before applying the original three-class posterior-recovery prior; nine-bin frequency multiplication would be incorrect.
+
+Two further model tests verify zero expected weighted-loss gradient at the correctly weighted posterior for all four objectives, finite fitting and checkpoint identity. All twelve fits and 168 fixed evaluation panels are complete. In the [results](boundary_distribution_evidence_20260907.json), the best blend uses the coarse-only nine-output control: 56.8697% balanced accuracy, +0.0339 points over the matched original blend. The 25% magnitude-supervision blend reaches 56.8466%; full and ranked magnitude blends fall below the control. This family is rejected for accuracy improvement under the tested settings.
+
+## Hindsight decision diagnostic
+
+The [diagnostic](boundary_decision_headroom_20260907_source_revision.json) compares the frozen original and pooled blends on all twenty exposed dates with impossible full-noon class frequencies and a per-asset/date optimized grid of neutral/directional log-score biases. These procedures intentionally use assessment outcomes. They cannot be deployed, promoted or counted as independent evidence. The grid comprises 29,520 in-sample evaluations; its maximum is neither an attainable forecast nor an upper bound on every possible model.
+
+The [results](boundary_decision_headroom_evidence_20260907.json) give the original blend 53.5694% causal balanced accuracy versus 54.4002% with the hindsight best grid bias; the pooled blend moves from 53.5350% to 54.4073%. Thus even this optimistic adjustment recovers only about 0.83–0.87 points in the tested threshold family. This motivates seeking additional information instead of relying on more threshold tuning. An initial run used a wrong source alias and stopped after two panels/738 grid evaluations; its artifacts are preserved. The source-name amendment changes no mathematics, dates or grid.
+
+## Additional spot-market observations
+
+A new [acquisition protocol](boundary_spot_acquisition_20260907.json) obtained 28 official spot aggregate-trade archives for the same exposed May 29–June 11 dates. The [acquisition evidence](boundary_spot_acquisition_evidence_20260907.json) records 15,087,179 aggregates and 217,134,806 compressed bytes, with official SHA256 checks, 2023 millisecond timestamps, increasing IDs and no aggregate-ID gaps. These are trade observations and do not reconstruct a spot order book.
+
+The [feature protocol](boundary_spot_features_20260907.json) imposes added 100ms and 500ms spot information delays. An identical transformation of the existing perpetual trades at 100ms is the control for newly engineered features. Spot/perpetual basis, trade-side sequences and activity may add conditional information; this is a hypothesis. [Alexander, Heck and Kaeck](https://arxiv.org/abs/2107.00298) find that Binance perpetuals dominate volatility transmission in their sample, which is a counterargument to assuming spot leadership. This experiment must measure any incremental contribution directly. Four spot reader/feature tests pass; feature preparation is running.
 
 Any selected combination still requires a fresh, separately registered confirmation round and the continuing nominal research error budget.
