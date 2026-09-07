@@ -1,0 +1,84 @@
+{
+  "baseline_commit": "6c8e62f4ddc16d8e4d8a7fd633e6499f71208ade",
+  "data": {
+    "decision_window_utc": [
+      "12:02:00",
+      "13:59:50"
+    ],
+    "development_dates": "2023-05-16 through2023-05-23; all were used or exposed in the earlier pilot,so all new results on them are development evidence only.",
+    "future_lag_eligibility_filter": false,
+    "manifest": "data/research/performance_pilot_20260907_window_revision/dataset_manifest.json",
+    "manifest_sha256": "d2b702f25f5bb5ac84da48913927061c6cb113764633f34a75c9dcf06a8b4831",
+    "unseen_reserved": [
+      "2023-05-24",
+      "2023-05-25",
+      "2023-05-26"
+    ]
+  },
+  "experiment_id": "boundary_predictive_screen_20260907",
+  "families": [
+    "default logistic reference",
+    "default HGB reference",
+    "temporal and cross-asset logistic",
+    "temporal and cross-asset boosted trees",
+    "temporal path-signature boosted trees",
+    "extra randomized trees",
+    "temporal convolution network if tabular screen leaves a promising gap"
+  ],
+  "feature_contract": "Whitelist decision-time fields only; reset temporalfeatures by asset/session; closed peerbucket atsameorprior decision only; training-onlyscaling andclipping.",
+  "first_tabular_grid": {
+    "extra_trees": {
+      "max_depth": 12,
+      "max_features": 0.7,
+      "min_samples_leaf": 50,
+      "n_estimators": 300
+    },
+    "hgb_iterations": 200,
+    "hgb_l2": 10,
+    "hgb_learning_rate": 0.05,
+    "hgb_leaves": [
+      7,
+      15
+    ],
+    "hgb_min_leaf": 100,
+    "logistic_C": [
+      0.01,
+      0.1,
+      1.0
+    ],
+    "representations": [
+      "base",
+      "temporal_cross",
+      "signature_cross"
+    ],
+    "seed": 20260907
+  },
+  "metrics": {
+    "initial_screen": "Rank development models only; never call reused dates freshOOS.",
+    "primary": "balanced accuracy using posterior/train_class_prior decision rule",
+    "secondary": [
+      "natural argmax accuracy",
+      "natural posterior log loss",
+      "macro F1",
+      "paired gross RMSE"
+    ],
+    "substantial_confirmation": "At least5percentage points balanced-accuracy gain over the stronger reference classifier,positive paired date-cluster95%lowerbound,both assets improve,on at least20distinct unseen dates; log loss must not deteriorate materially. The initial8dates cannot establish this."
+  },
+  "registered_at_utc": "2026-09-07T14:16:33.629466+00:00",
+  "resources": "Local CPU with2threads per learner; reuse currentverifieddata; furtheracquisition will be separately frozen before new evaluation.",
+  "rolling_development_splits": {
+    "assessment_dates": [
+      "2023-05-21",
+      "2023-05-22",
+      "2023-05-23"
+    ],
+    "assessment_sessions": 1,
+    "train_sessions": 4,
+    "validation_sessions": 1
+  },
+  "targets": {
+    "primary": "unchanged three-class5s movement label,max(half entry spread,one tick) neutral threshold; entry atdecision+100ms,future atdecision+5100ms",
+    "secondary": "paired executable gross-return RMSE on the same rows"
+  },
+  "user_priority": "Predictive accuracy first; economics secondary; RL deferred until useful forecasting signal is established."
+}
