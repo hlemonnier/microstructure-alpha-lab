@@ -1,0 +1,41 @@
+{
+  "comparisons": [
+    {
+      "bit_identical": true,
+      "reference_sha256": "8cfd4838c6a44de4581b8dd29c2aa0bf91e4dc79efef59a8b4dd861fddf6f313",
+      "rows": 7070,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "bit_identical": true,
+      "reference_sha256": "c30740329df1069b4ace0ecc662964ebd373008fd58d7361edce85213819c888",
+      "rows": 7070,
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "identity": {
+    "code_hashes": {
+      "scripts/run_boundary_confirmation.py": "a9ba27808c2bc2c873064673f851e08d9449601e28463b96a124752dff260aaa",
+      "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+      "src/lob_forge/boundary_confirmation_stats.py": "395fdcb1dcc91dcb7bfba489a9209f6df94a593b0aaf7fae075169f46731d1c0",
+      "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+      "src/lob_forge/boundary_events.py": "18880b495af20e5c0e9e72573128a05858e216ff929c2700d99213b4a5deae70",
+      "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+      "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367"
+    },
+    "dataset_sha256": "e137f29a05e5ed25ff0a76b49c633501b8dbc92f507631913eeb7b66bbfc8287",
+    "dependencies": {
+      "joblib": "1.6.0",
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "pyarrow": "17.0.0",
+      "scikit-learn": "1.5.2",
+      "scipy": "1.18.1",
+      "torch": "2.8.0"
+    },
+    "development_reproduction": true,
+    "protocol_sha256": "e389f011f4050041d524e5a291709b5d629399600fb98a7aac742527571103ae",
+    "python": "3.12.14"
+  },
+  "status": "passed"
+}

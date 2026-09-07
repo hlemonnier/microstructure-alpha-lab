@@ -1,0 +1,147 @@
+{
+  "candidate": {
+    "decision_priors": "Equal arithmetic mean of the asset training class priors and the preceding validation noon class frequencies.",
+    "mixture": "Equal arithmetic mean of natural neural and tree posteriors.",
+    "neural": "Pooled two-hidden-layer MLP, width 64, twelve epochs, training-only quantile normalization, equal asset/class weighting, validation-only epoch selection; exact extracted trainer reproduced the completed development model bit-for-bit.",
+    "neural_config": {
+      "batch_size": 1024,
+      "epochs": 12,
+      "gradient_norm_limit": 5.0,
+      "hidden_size": 64,
+      "learning_rate": 0.001,
+      "seed": 20260907,
+      "threads": 2,
+      "weight_decay": 0.01
+    },
+    "reproduction_evidence": {
+      "path": "docs/research/boundary_confirmation_reproduction_20260907.json",
+      "sha256": "8e3553902cff82489f377a473ecd55fe46dc41c45fc86a0dbc99478f46a33fbf"
+    },
+    "tree": "Per-asset HistGradientBoostingClassifier with 7 leaves, 200 iterations, learning rate .05, minimum leaf 100, L2 10, no early stopping; event_cross features."
+  },
+  "code_hashes": {
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_events.py": "18880b495af20e5c0e9e72573128a05858e216ff929c2700d99213b4a5deae70",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_prior_policy.py": "459ceaefd3a074484da0d542b1dd200e25b4325c94d850f53d31e08451e1578b"
+  },
+  "data_contract": {
+    "bucket_ms": 1000,
+    "coverage": "Same common-contiguous-session feature construction, 120-observation warmup and 60-second source/day-end buffer as the completed development experiment. Require every registered noon decision; abort rather than drop failing dates or outcomes.",
+    "decision_window_utc": [
+      "12:02:00",
+      "13:59:50"
+    ],
+    "end_exclusive": true,
+    "execution_latency_ms": 100,
+    "feature_representation": "event_cross",
+    "feature_semantics": "forecast_raw_events_v1",
+    "future_lag_filter": false,
+    "holding_horizon_ms": 5000,
+    "min_tick": {
+      "BTCUSDT": 0.1,
+      "ETHUSDT": 0.01
+    },
+    "required_rows_per_asset_date": 7070
+  },
+  "development_selection": {
+    "neural_weight": 0.5,
+    "sha256": "e9f07fee28607dbda2ecee9a9a927e82ca26352a702bde935f1a1b31412f4f90",
+    "status": "Selected on reused May 16-23 development data; not independent evidence.",
+    "summary": "results/boundary_probability_blend_20260907/summary.json"
+  },
+  "experiment_id": "boundary_confirmation_20260907",
+  "information_boundary": "Prepare every fixed source, then freeze code and data identities before fitting. Do not inspect confirmation performance until all twenty dates have their predictions and model selections fixed. Progress output may contain stage, dates, counts and timings only. Technical failures are recorded; do not silently change the model, dates, coverage or scoring.",
+  "matched_data_control": {
+    "decision_policies": [
+      "training",
+      "blend_training_previous"
+    ],
+    "models": [
+      "hgb_7",
+      "hgb_31"
+    ],
+    "purpose": "Separate richer observations/models from training-volume and decision-policy improvements; report this comparison alongside the original reference.",
+    "representation": "base",
+    "selection": "Maximum preceding validation balanced accuracy; tie by natural log loss. For validation, the previous-noon prior comes from the last training date. For assessment, it comes from the validation date.",
+    "training_window": "full_day"
+  },
+  "metrics": {
+    "economic_status": "This stage confirms prediction quality only; it does not certify execution fills or net trading profitability.",
+    "primary": "Equal-weight mean of balanced accuracy across assets and dates; each asset/date balanced accuracy is the mean recall of the unchanged three classes.",
+    "secondary": [
+      "natural argmax accuracy",
+      "natural posterior log loss",
+      "macro F1",
+      "per-asset and per-date deltas"
+    ],
+    "substantial_gate": {
+      "both_asset_mean_gains_positive": true,
+      "date_cluster_interval_lower_bound_above": 0.0,
+      "maximum_log_loss_ratio": 1.01,
+      "minimum_distinct_dates": 20,
+      "minimum_mean_balanced_accuracy_gain": 0.05,
+      "primary_reference": "The frozen original validation-selected reference, which chooses between default-feature logistic and boosted-tree classifiers."
+    },
+    "uncertainty": "10000 paired date-cluster bootstrap resamples; keep both assets together. Report the 2.5/97.5 percentile interval. Also report circular blocks of three adjacent dates as a dependence sensitivity check. Seed 20260907."
+  },
+  "primary_reference": {
+    "decision_rule": "Posterior divided by training class priors, matching the original reference procedure.",
+    "models": [
+      "logistic_0.01",
+      "logistic_0.1",
+      "logistic_1.0",
+      "hgb_7",
+      "hgb_15"
+    ],
+    "representation": "base",
+    "selection": "Maximum preceding validation balanced accuracy; tie by natural log loss.",
+    "training_window": "noon"
+  },
+  "prior_development_data": {
+    "manifest": "data/research/boundary_event_data_20260907/dataset_manifest.json",
+    "sha256": "e137f29a05e5ed25ff0a76b49c633501b8dbc92f507631913eeb7b66bbfc8287"
+  },
+  "purpose": "Independent confirmation of a fixed predictive candidate; no candidate tuning on confirmation outcomes.",
+  "registered_at_utc": "2026-09-07T15:53:22.225551+00:00",
+  "resources": {
+    "max_new_compressed_bytes": 6000000000,
+    "max_parallel_downloads": 2,
+    "max_parallel_learners": 1,
+    "minimum_free_bytes": 9000000000,
+    "monitored_preparation_rss_bytes": 8589934592,
+    "paid_compute": false,
+    "threads_per_learner": 2
+  },
+  "source_plan": {
+    "compressed_bytes": 4822880970,
+    "datasets": [
+      "bookTicker",
+      "aggTrades"
+    ],
+    "distinct_dates": 20,
+    "first_date": "2023-05-24",
+    "last_date": "2023-06-12",
+    "path": "docs/research/boundary_confirmation_source_plan_20260907.json",
+    "require_official_sha256": true,
+    "sha256": "94e527cffb2a952d14878a4dadd716ab624959d7b7d2f5af43609766cb08ec65",
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ]
+  },
+  "splits": {
+    "assessment_calendar_offset": 0,
+    "rolling_retraining": "The procedure may use previous assessment dates as training or validation only after their outcomes would be available. All code and choices stay frozen.",
+    "train_calendar_offsets": [
+      -5,
+      -4,
+      -3,
+      -2
+    ],
+    "training_window": "Full available past days for the candidate; noon only for the original reference.",
+    "validation_calendar_offset": -1
+  }
+}

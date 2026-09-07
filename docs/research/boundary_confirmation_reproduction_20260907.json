@@ -1,0 +1,39 @@
+{
+  "best_epoch": 11,
+  "code_hashes": {
+    "scripts/verify_boundary_confirmation_reproduction.py": "9fd5197263b5d6fa48896462fc77827b2db2b2d9de326d24abc5f7f02327e50c",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367"
+  },
+  "comparisons": [
+    {
+      "bit_identical": true,
+      "partition": "validation",
+      "reference_sha256": "73b686af444a38f685a2f51b23b49d2b442bfdd68810150601d4ba8ac0264a62",
+      "rows": 7070,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "bit_identical": true,
+      "partition": "assessment",
+      "reference_sha256": "a3d436f7688ff691918aed1d84618d601f6d4fec934a19031fd56a105e953e27",
+      "rows": 7070,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "bit_identical": true,
+      "partition": "validation",
+      "reference_sha256": "9c65dbba00862cdde5cd1d408b8602c6aa149cb9416046a40d02ca8752ba02f4",
+      "rows": 7070,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "bit_identical": true,
+      "partition": "assessment",
+      "reference_sha256": "54e9d90daf858921d59e45af491af20e51b0c18b7ae12e04a59d9a8993dc4bef",
+      "rows": 7070,
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "status": "passed"
+}
