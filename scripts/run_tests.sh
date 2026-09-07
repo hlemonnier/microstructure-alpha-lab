@@ -30,6 +30,7 @@ except ImportError:
 root = Path("tests")
 failures = []
 skipped = []
+skipped_modules = []
 count = 0
 
 for path in sorted(root.glob("test_*.py")):
@@ -39,7 +40,11 @@ for path in sorted(root.glob("test_*.py")):
     spec = importlib.util.spec_from_file_location(module_name, path)
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
-    spec.loader.exec_module(module)
+    try:
+        spec.loader.exec_module(module)
+    except OptionalDependencySkip as exc:
+        skipped_modules.append((str(path), str(exc)))
+        continue
 
     for function_name, function in sorted(vars(module).items()):
         if not function_name.startswith("test_") or not callable(function):
@@ -79,7 +84,9 @@ if failures:
 
 for path, function_name, reason in skipped:
     print(f"SKIP {path}::{function_name}: {reason}")
-print(f"passed {count - len(skipped)} direct test cases; skipped {len(skipped)} optional-dependency tests")
+for path, reason in skipped_modules:
+    print(f"SKIP MODULE {path}: {reason}")
+print(f"passed {count - len(skipped)} direct test cases; skipped {len(skipped)} optional-dependency tests; skipped {len(skipped_modules)} optional test modules")
 PY
 }
 
