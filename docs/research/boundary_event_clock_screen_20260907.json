@@ -1,0 +1,91 @@
+{
+  "advance_criterion": "Look for a consistent development improvement over same-policy old components and blends, without worse natural probabilities. Any candidate must then be checked more broadly and fixed before a fresh-date confirmation round under the continuing nominal error budget.",
+  "blend_weights": "Every listed blend is a fixed equal average of natural probabilities.",
+  "blends": {
+    "clock_neural_clock_tree_31": [
+      "clock_neural",
+      "clock_tree_31"
+    ],
+    "clock_neural_clock_tree_7": [
+      "clock_neural",
+      "clock_tree_7"
+    ],
+    "clock_neural_old_tree": [
+      "clock_neural",
+      "old_pooled_tree"
+    ],
+    "old_neural_base_tree_31": [
+      "old_neural",
+      "base_tree_31"
+    ],
+    "old_neural_clock_tree_31": [
+      "old_neural",
+      "clock_tree_31"
+    ],
+    "old_neural_clock_tree_7": [
+      "old_neural",
+      "clock_tree_7"
+    ]
+  },
+  "controls": "Require bit-identical original pooled tree and neural checkpoint predictions after loading augmented data. Reuse original reference, full-day matched control, original blend, pooled-tree blend, and original neural/pooled-tree components.",
+  "dates": [
+    "2023-05-26",
+    "2023-05-30",
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "distinct_assessment_decisions": 70700,
+  "evidence_status": "development_only_on_exposed_dates",
+  "fits": [
+    "clock_tree_7",
+    "clock_tree_31",
+    "base_tree_31",
+    "clock_neural"
+  ],
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "docs/research/boundary_event_clock_data_20260907.json": "eeb20aa140e1845a0ecceb3ff5a3750ac9eb5e9e147cb00c49eb4c6c0ab499a2",
+    "results/boundary_confirmation_exact_labels_20260907/frozen_study.json": "24618c66426aac78d0dac58b5a4a4f931ef941ccb0b356f7977008583139dd01",
+    "results/boundary_pooled_tree_confirmation_20260907/frozen_study.json": "2693130772ef24794f223b884ef99f6cf4c359e80b94c416d6e4d618f495dcf2",
+    "results/boundary_same_day_priors_20260907/frozen_development.json": "f424b5367263eb79b4dc8c7710dfaca892c79d25b82a980fb0ffc82b4cd3887c",
+    "results/boundary_same_day_priors_20260907/priors/2023-05-26/BTCUSDT_original_reference.npz": "ad40145412078f4d71b709994ab10b8f2eea354ff1ecc517658eb4808bf0f2ba",
+    "results/boundary_same_day_priors_20260907/priors/2023-05-26/ETHUSDT_original_reference.npz": "c762ae6b1c7707e5dd42187430475211c797dad6e556134b00711a336c93bc05",
+    "results/boundary_same_day_priors_20260907/priors/2023-05-30/BTCUSDT_original_reference.npz": "8065eaccc0a7fa817722efe5c891284f41af8f172db36c938b14baef8f8c6819",
+    "results/boundary_same_day_priors_20260907/priors/2023-05-30/ETHUSDT_original_reference.npz": "1c35238cf12bbe3c17f4443d8a4ab694c1d372ea26243d9ac772023668135c54",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/BTCUSDT_original_reference.npz": "188f73b12156197bd0f5830cc997d785dbcf8ab3c92ef97041c3a5b4e193883b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/ETHUSDT_original_reference.npz": "eef72f8c82c5dff40f216933d3d46305ff5718386682c2fc7363c52cca648117",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/BTCUSDT_original_reference.npz": "4f933993c79d03577087d3444f4d069c19e122c7900eb6abaa72af3f4996c74f",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/ETHUSDT_original_reference.npz": "ee38dacedb2daa2a7208b5aced550b3fd784877065168e0672d78141037eb82b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/BTCUSDT_original_reference.npz": "3d0379f61d60ddfee343f613bff27f8d3a4d54d7ffc29e3e84c03bf42c7a35b8",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/ETHUSDT_original_reference.npz": "9e1c4fda1b8826b582332acf29cbea9bbc1e8ca94e86cc38a9fb7b511b6cbf83",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "scripts/run_boundary_event_clock_screen.py": "929ff7adac3dd5d31655b521b85b8db01d15c9a4566317c10620fe7fc08f233d",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+    "src/lob_forge/boundary_event_clock_inputs.py": "87f3c07457c3974f4c56e28b5c4dd302bf26cd5db09359258c6fa4425df373fe",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "tests/test_boundary_event_clock.py": "bf2a7ac98f77b4f20101d1a770aa28bff8fb06a6f6f087b99e887fafa615cf56",
+    "tests/test_boundary_event_clock_inputs.py": "6b41cef94f3bd9587a0491fdb9aec588a6c1af557128c001264cf5220a7439b4"
+  },
+  "interpretation": "Rank all fixed combinations only after all five dates finish. This is an exploratory information/capacity screen on exposed dates, not independent evidence or a significance test. The five dates span the exposed interval, including the known quiet June 3 failure.",
+  "manifest": "data/research/boundary_event_clock_20260907/dataset_manifest.json",
+  "model_fits": 20,
+  "model_settings": "Reuse frozen pooled weighted HGB (200 iterations, learning rate 0.05, 100 minimum leaf rows, L2 10) at 7 or 31 leaves and the frozen 12-epoch pooled 64-wide MLP. No assessment inputs enter a fitting function. Base-tree-31 uses the original 95 columns; clock models use all 168 columns.",
+  "partitions": "Exactly reproduce each selected first-round fold: full days d-5 through d-2 for training, d-1 noon for neural checkpoint selection, and d noon for development assessment.",
+  "post_fit_asset_date_panels": 320,
+  "primary_run": "results/boundary_confirmation_exact_labels_20260907",
+  "prior_run": "results/boundary_same_day_priors_20260907",
+  "priors": "New models use the existing full-day training priors and preceding-noon average for registered decisions. The forecast_3600 rule uses the same one-hour marginal estimator and available same-day initialization as the prior study. Both policies are applied to every source.",
+  "registered_at_utc": "2026-09-07T18:34:10.654559+00:00",
+  "secondary_run": "results/boundary_pooled_tree_confirmation_20260907"
+}

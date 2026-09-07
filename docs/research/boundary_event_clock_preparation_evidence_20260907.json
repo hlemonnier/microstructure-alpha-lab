@@ -1,0 +1,425 @@
+{
+  "all_current_raw_quote_parity": true,
+  "all_original_columns_bitwise_unchanged": true,
+  "all_save_reload_parity": true,
+  "completed_sessions": 44,
+  "identity": {
+    "dependencies": {
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "pyarrow": "17.0.0"
+    },
+    "input_hashes": {
+      "data/research/boundary_exact_labels_20260907/dataset_manifest.json": "e0b8c5b5658d98b57558c4974fdc45ab43faf08cf93686913ada8a9a357eedb5",
+      "scripts/prepare_boundary_event_clock.py": "096958b2d8ded97a9b7b6c44b4cf63042a4f9c3c5ce93a4d7f9105f2e57d98d0",
+      "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+      "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+      "tests/test_boundary_event_clock.py": "bf2a7ac98f77b4f20101d1a770aa28bff8fb06a6f6f087b99e887fafa615cf56"
+    },
+    "protocol_sha256": "eeb20aa140e1845a0ecceb3ff5a3750ac9eb5e9e147cb00c49eb4c6c0ab499a2",
+    "python": "3.12.14"
+  },
+  "manifest": "data/research/boundary_event_clock_20260907/dataset_manifest.json",
+  "manifest_sha256": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+  "observations_added": 67,
+  "peer_features_added_by_loader": 6,
+  "rows": 3801359,
+  "sessions": [
+    {
+      "event_clock_seconds": 8.32170120801311,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-21.parquet",
+      "original_features_sha256": "c8f76607310ce239e6454615bd1cff8119540ff3b5eba39e704585f10b6d1b29",
+      "rows": 86395,
+      "session_date": "2023-05-21",
+      "sha256": "3877ed00a48c3e62db8d4a0f21f5274888d84aacdde49f52ad84ea5580cc5eb5",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 9.694294999993872,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-22.parquet",
+      "original_features_sha256": "3e7434d047edf74e932aa711940ff30b3843a44262840e05c02246cbf30a8ff8",
+      "rows": 86392,
+      "session_date": "2023-05-22",
+      "sha256": "b2d7c5d23f81cd404bc33fd43e565fd2d9424b8919535281bc9f3e3c3cbbb2bf",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 12.894421707984293,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-23.parquet",
+      "original_features_sha256": "caf259d538d713b6ce59aad97795b89ea54e09714bdfe8a4765df2f41c03dfa2",
+      "rows": 86396,
+      "session_date": "2023-05-23",
+      "sha256": "983a77c60559b138d1d6e52dc6ba562370a83c0dceb373a4460f308149422375",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.0438307079894,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-21.parquet",
+      "original_features_sha256": "bc108911f834a7531666626d231fa1735be3d1c5c63014577d3d73c9cba3b0bf",
+      "rows": 86391,
+      "session_date": "2023-05-21",
+      "sha256": "a8e2ee4ea5ec1dcb8a44cd74dbb1e371fab7e1c290035d25602fa105c1eb115d",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 8.25331820899737,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-22.parquet",
+      "original_features_sha256": "75adbb073f80e3807fca9f8326e74858866b2088bba51ed3faf1d7b1fb697623",
+      "rows": 86391,
+      "session_date": "2023-05-22",
+      "sha256": "b53f714736f1dd61ab224da286fe2d57bb6ca45c2226904bedbf366d8a882792",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 9.310813874995802,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-23.parquet",
+      "original_features_sha256": "6abab8be1102713b817bd49689f253e597e7e93d3c3452a7bb9f5230b4e8d533",
+      "rows": 86393,
+      "session_date": "2023-05-23",
+      "sha256": "c2e4a73dde4bcf03b1ff7f7727b13c1f9a97363e6cfaa257746e8dc4f83b08ac",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 14.63446808300796,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-24.parquet",
+      "original_features_sha256": "79378317ab5e3899cf407fef8d2723c7a55d92c31542c3726c20d2dd90c1afa4",
+      "rows": 86394,
+      "session_date": "2023-05-24",
+      "sha256": "42b74a303c6fc967e1f3a3cbcb7b13a7566534f824144e748568d1be49133b29",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 9.898345749999862,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-24.parquet",
+      "original_features_sha256": "57ed83cd60b85120288fc062f6d7014ad7fcedb09fa41bfa49260309bdd8f28c",
+      "rows": 86397,
+      "session_date": "2023-05-24",
+      "sha256": "ab12ef0f705be947b7ce9c7c37bb3cc0db98aebf082607e93bbb20a7b0259a22",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 11.771052124997368,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-25.parquet",
+      "original_features_sha256": "17e3e7c34ad7016c2f7914060be8dad910f92fa138ccdd7f46640e5835668178",
+      "rows": 86394,
+      "session_date": "2023-05-25",
+      "sha256": "56e0249a447c877caccddb3f4caba52570cbdf9fd7975e43f176af06e06426fb",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.096897124982206,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-25.parquet",
+      "original_features_sha256": "1cc347aac88c826dec10c6e4020c07ca654c071081155045f21ebeacbbcbe38e",
+      "rows": 86396,
+      "session_date": "2023-05-25",
+      "sha256": "eadf3f0290b48d49e2d388fb7f8a1ce7db55f54d3cde9bf4b3784ae204878b11",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 14.557390375004616,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-26.parquet",
+      "original_features_sha256": "e271aa49aaf6b20d49877a550a4889e68d9f66b9203a03bc20498cbff80af03b",
+      "rows": 86396,
+      "session_date": "2023-05-26",
+      "sha256": "b489be76d46757dc64dc3f22d42f0a167df431a3e63b043954b30bf56713e760",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 6.619106999976793,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-26.parquet",
+      "original_features_sha256": "cc4ffe6a08e8e89139435f3ad1924c859f49690d4fda80484d237b1eb75d54e1",
+      "rows": 86396,
+      "session_date": "2023-05-26",
+      "sha256": "28512ac32464e9c94f04295d9c6fe1b1c1968e36260ee81068c91b4e3fe03551",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 15.52367116700043,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-27.parquet",
+      "original_features_sha256": "3c353455d7975cbde5f8a2f53cbe6784d5c1f1325845e4aacc7ba966a2780da6",
+      "rows": 86400,
+      "session_date": "2023-05-27",
+      "sha256": "5254bfdf81fb9da0eac0a75a45e671781df7fa6c454b93f540b6e7d911e7fa97",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 5.851438499987125,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-27.parquet",
+      "original_features_sha256": "b831cab1bf26d7007c3c12b569ed9082b88559f8e39e10a546a194a0dae3a73b",
+      "rows": 86398,
+      "session_date": "2023-05-27",
+      "sha256": "c50c43cb2b4555c45bec7719716e706d2a6ae31a1909b1c8801e938d7daf3039",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 16.03565437500947,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-28.parquet",
+      "original_features_sha256": "42c51e9046868491c59ee85c82d91931e12b467c491e2d00b2c8fddbb09f58c4",
+      "rows": 86399,
+      "session_date": "2023-05-28",
+      "sha256": "6da59101c43312b6381186a1f06a38891021be79645e6569e9b38e311e96dc90",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.621944416983752,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-28.parquet",
+      "original_features_sha256": "166f4a6b090f6d11b0c15b17d97753943c0f633f22145ded4c2d8c209cc9ded1",
+      "rows": 86397,
+      "session_date": "2023-05-28",
+      "sha256": "300d1aea15ced767ceb41df68f4b987321b3e89144076bcdb0bbc0844efc8b06",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 11.528026291984133,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-29.parquet",
+      "original_features_sha256": "9415055fa9a17109327f4e81038f1ac2dc853809f36a074fe9753808e297e14f",
+      "rows": 86399,
+      "session_date": "2023-05-29",
+      "sha256": "b226666e2c7c3722c0a9af07e3a28d068907f8c75e5dd16eefb5091824b4164d",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.009069666994037,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-29.parquet",
+      "original_features_sha256": "ce0dc446ddcf4ad1f6edea1752b7ed92ec882f49c97b39112666fc5856b195a1",
+      "rows": 86398,
+      "session_date": "2023-05-29",
+      "sha256": "2c143b9483517af3a9ac0146f104fbff8009b55e7fa500153faa046c6a0bc0d7",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 11.221603083977243,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-30.parquet",
+      "original_features_sha256": "cee0750aafd48d4c9ae21dcd0187dcff0568990f0a3489da47c88ffaddd9e332",
+      "rows": 86396,
+      "session_date": "2023-05-30",
+      "sha256": "56d7702855962dfce09409f221498a954c12dc3d98aeece7408aaeafaab81c1a",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.237071416981053,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-30.parquet",
+      "original_features_sha256": "6c7b87c2df0eff406fb09615cad70f2ced493b0685f7b70e799f44effdbf9e3b",
+      "rows": 86391,
+      "session_date": "2023-05-30",
+      "sha256": "45b5827c70376857805cdd2349a3fdec1a00d66b185e6e294e5ca5c371535c24",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 14.279126999987056,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-31.parquet",
+      "original_features_sha256": "04efd2581c932bd5af709f7497342d92b86d2ae21dc8ad161343f2cf5d548e39",
+      "rows": 86392,
+      "session_date": "2023-05-31",
+      "sha256": "bf865b351c61df5b73253341f47b095ad7d04b8d84d3813ba6d14cee7e526c76",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.577146499999799,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-05-31.parquet",
+      "original_features_sha256": "d98e0e6e4e904c9261921cf45c779e975faac7e32ac2ea7bd08a138e3ef2ccef",
+      "rows": 86388,
+      "session_date": "2023-05-31",
+      "sha256": "ae4007ef2e7569499bef07546873ed6b0be627ae6e14d73b7f15c3da08f0bd68",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 13.094781374995364,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-01.parquet",
+      "original_features_sha256": "3878b7e09dd1ec4eade972a06bcfff3c35dfff6021619e44275d32defe350e67",
+      "rows": 86397,
+      "session_date": "2023-06-01",
+      "sha256": "400e64f694f5e02c7bfb9254e2fb849feb14e140c965d95ac20fa7e16879d6a4",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.703777541988529,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-01.parquet",
+      "original_features_sha256": "064c4b0de1ca78183fadbdaf5197bf1d59f3620666c582617e4e0c6a48691099",
+      "rows": 86396,
+      "session_date": "2023-06-01",
+      "sha256": "60599698d2ae10ee824d88562a36eee16888c4f8fd4916bda641b387f6e5f7a3",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 10.982891791994916,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-02.parquet",
+      "original_features_sha256": "0c381334186428dfda97cdbd057166ef7bce020591c47e3e33f015620ca32510",
+      "rows": 86393,
+      "session_date": "2023-06-02",
+      "sha256": "782977083b3c01b87ce5cb224fd20f62e4167def5493de75e4d786d29bb3ab46",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 8.071803708007792,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-02.parquet",
+      "original_features_sha256": "e0dd8e2a2e8673595229889459b999c6f948d4f9c36308336c5f348564c164f4",
+      "rows": 86394,
+      "session_date": "2023-06-02",
+      "sha256": "616b9aa3cd7f72a56187bee6678767e2c90f1268a625f7366b2701bee9131953",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 7.0603662919893395,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-03.parquet",
+      "original_features_sha256": "2e410e5bdf01a4aaec6ea1a6257a6aa19657fe562d94cd4a468d8c26d6a975b0",
+      "rows": 86394,
+      "session_date": "2023-06-03",
+      "sha256": "b86b372fe2b508c23b198afcc9d4601c9e6f34835e466de4bbe26f5a4c27e04d",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 5.5431713329744525,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-03.parquet",
+      "original_features_sha256": "8592b4121cc1968ca5312e62e30d5b546031e3c36d3414c69d0fc5b4e3d18bc0",
+      "rows": 86390,
+      "session_date": "2023-06-03",
+      "sha256": "beb8bc646f28faf1afdcc436e0dae0bf43d4ef46f361c9d5806295d8e351ff38",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 6.95984349999344,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-04.parquet",
+      "original_features_sha256": "060e676dbd24187d160a3b00996f9ab8ef7dd51eb32d2afd719a309dd88001ba",
+      "rows": 86398,
+      "session_date": "2023-06-04",
+      "sha256": "beeb6bd617f760f4da0e29b773b4167305b2e9daa8b36ca6eda339a166553d44",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 5.621729749982478,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-04.parquet",
+      "original_features_sha256": "f2ef1cde504856c479978ae738698b2b526ee3238ef07826cb3e9b1bdc1ec79a",
+      "rows": 86397,
+      "session_date": "2023-06-04",
+      "sha256": "d8c10c9d80f53eaaeff0188392f5cfecaebf032bfdf45ad87168a9c34e5fefb2",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 13.945338999998057,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-05.parquet",
+      "original_features_sha256": "f478363708ce0243fe8cda3cc583e047894e8febd6979ac765c769e4a3a85b5b",
+      "rows": 86395,
+      "session_date": "2023-06-05",
+      "sha256": "c991c37c48fbbfb5918be689896d8d49aa46fbbc6e5a15a875f585caae82c270",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 9.271499374997802,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-05.parquet",
+      "original_features_sha256": "c9f52aa8df6190be58866a5f1f8c758188b9b17dab0dcd522d92f268371f6c13",
+      "rows": 86393,
+      "session_date": "2023-06-05",
+      "sha256": "cb74a05ecdcde49a241c04f6622926713adc3997f3952a374e7bdb54818af925",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 14.154244000004837,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-06.parquet",
+      "original_features_sha256": "f99de3088993f59f04aa7faf40d73162b6a92796bb827114d27356253c70e4d8",
+      "rows": 86395,
+      "session_date": "2023-06-06",
+      "sha256": "e9c6ecf5b0f07ca6f84793aa8adb7538d892f30abfd91111683e6f0c911f08ea",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 9.856510417012032,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-06.parquet",
+      "original_features_sha256": "9a3e68d21f27ecaf748ba7a87efa186e2187bb400a5b3ee40b3c7ea9794e30d9",
+      "rows": 86396,
+      "session_date": "2023-06-06",
+      "sha256": "a77d22f3eb1cc450f7a1278cae148da88959cb7a968711a7faad004fc15ca9c8",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 14.48506050001015,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-07.parquet",
+      "original_features_sha256": "8b73a6e32ed064e2a25823c3735fc4aa3683826579b5c73228663d280ab7c785",
+      "rows": 86396,
+      "session_date": "2023-06-07",
+      "sha256": "9d53e259b78d581a9d46346345d1728b1f520d7751a27d7af16b68dc4e03c721",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 9.92525954201119,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-07.parquet",
+      "original_features_sha256": "63c6c62c987bd9aa4a433788da5147138303fb1a6dc15bb5687cc3a7fc5875be",
+      "rows": 86397,
+      "session_date": "2023-06-07",
+      "sha256": "c931dad1b118c6b97874a0b9b387e92269032e642145338ba98d049edeed2c6a",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 10.016867209022166,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-08.parquet",
+      "original_features_sha256": "236b9079b40da1f7237ed3c18b152063c4142371228810bbde78dca04fd16897",
+      "rows": 86394,
+      "session_date": "2023-06-08",
+      "sha256": "71fe1025d73e2a475293ab56483253ec203e163c8a16234ba63d28da03ef928a",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.422414708998986,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-08.parquet",
+      "original_features_sha256": "af1e06d6a239212aca66fbd6e0e775eb400e85c84fd22c0b6f748f9b4926b971",
+      "rows": 86393,
+      "session_date": "2023-06-08",
+      "sha256": "eea2838710c7c64d7edf5ce12a9830aac6fadd5fa583aeb9d978fe0ce8f06d56",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 9.489340250001987,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-09.parquet",
+      "original_features_sha256": "ba872543f0a130a10942e0a9ea864ddf86e98ec3677a589b12e91ef46d225845",
+      "rows": 86388,
+      "session_date": "2023-06-09",
+      "sha256": "8ae2f3126de40916d3b006e038917291078f7beea8775a446ef67304524056c7",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 6.5323920419905335,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-09.parquet",
+      "original_features_sha256": "5dc56c4c5ea798f0780d28dddc10e8149a701abe7a889c4b3f771b51d4b32aa7",
+      "rows": 86390,
+      "session_date": "2023-06-09",
+      "sha256": "1381c56434f5d50faeb70614a707c5d035288ad84008669f896080a74e197da4",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 13.811131124995882,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-10.parquet",
+      "original_features_sha256": "5ca218013bdede989879ef69fe2c62d7c10f0bdb079f4dbfb2153717b9f3ef51",
+      "rows": 86393,
+      "session_date": "2023-06-10",
+      "sha256": "f8a53fd08a6fc02343bd5a6278947e4f36ef277fe4538b86a5eba823ff325fa1",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 11.22867320801015,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-10.parquet",
+      "original_features_sha256": "904379f7873fed98de47912769b5af7b99cc1d7376669e789b5b2a5a18e233a0",
+      "rows": 86394,
+      "session_date": "2023-06-10",
+      "sha256": "6a5a7aab960d3d0263856f6039db2cee2a0c95af24027a3a015fa3b3592bdf13",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "event_clock_seconds": 9.609409875003621,
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-11.parquet",
+      "original_features_sha256": "7d7e9d2df337f21be2d25b4ecff10fe717f1c0c47aebe16f3a91685fb228f828",
+      "rows": 86395,
+      "session_date": "2023-06-11",
+      "sha256": "1385f0aeb27ab131fc8626d33b480dfa6eb5a9a706b736346fb6f7c52a2ac8be",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "event_clock_seconds": 7.412928875011858,
+      "features_path": "data/research/boundary_event_clock_20260907/ETHUSDT/2023-06-11.parquet",
+      "original_features_sha256": "99ac76e520c54964d654610b49820cee5dbaa3fd7a887c7996c578c2917145c3",
+      "rows": 86392,
+      "session_date": "2023-06-11",
+      "sha256": "6db8b0fee39d35a3f3512b8af95a3e95f7c8e031740c68b82e709e1a9548aa0f",
+      "symbol": "ETHUSDT"
+    }
+  ]
+}
