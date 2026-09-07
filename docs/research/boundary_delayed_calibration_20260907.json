@@ -1,0 +1,52 @@
+{
+  "bias_absolute_limit": 2.0,
+  "bias_half_life_seconds": 600,
+  "comparators": "The corresponding unadapted expert and the strongest validation-selected rate-zero expert.",
+  "evidence_status": "Development only on already exposed dates; supervised delayed-feedback adaptation, not reinforcement learning.",
+  "experiment_id": "boundary_delayed_calibration_20260907",
+  "hypothesis": "Fast changes in movement incidence may be handled by small online calibration updates while keeping the trained predictive model fixed.",
+  "learning_rates": [
+    0.0,
+    0.001,
+    0.01,
+    0.05
+  ],
+  "planned_trials": 144,
+  "primary_metric": "Unchanged balanced accuracy using original model training priors; ordinary accuracy and natural log loss secondary.",
+  "registered_at_utc": "2026-09-07T15:07:48.557767+00:00",
+  "reserved": "The twenty planned noon confirmation dates remain unopened.",
+  "selection": "Select base expert and learning rate on validation balanced accuracy, with natural log loss as tiebreak. Assess on the next development date with causal feedback only.",
+  "sources": [
+    {
+      "model": "hgb_7",
+      "representation": "base",
+      "screen": "predictive"
+    },
+    {
+      "model": "logistic_0.01",
+      "representation": "base",
+      "screen": "predictive"
+    },
+    {
+      "model": "extra_trees",
+      "representation": "temporal_cross",
+      "screen": "predictive"
+    },
+    {
+      "model": "extra_trees",
+      "representation": "signature_cross",
+      "screen": "predictive"
+    },
+    {
+      "model": "symmetric_hgb",
+      "screen": "structural"
+    },
+    {
+      "model": "hurdle_boosted",
+      "screen": "structural"
+    }
+  ],
+  "state": "Reset offsets to zero at the start of each validation or assessment session. No carry from assessment to validation.",
+  "timing": "Use actual future_event_time from the canonical immutable feature records. A label cannot update any prediction earlier than that quote arrival.",
+  "update": "At each decision, decay the three logit offsets toward zero, then apply natural cross-entropy gradients from earlier predictions whose actual future quote has arrived. Each earlier label is consumed once. Use the stored prediction from its original decision for the delayed gradient."
+}
