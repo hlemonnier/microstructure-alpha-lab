@@ -1,0 +1,148 @@
+{
+  "acceptance": "Complete full archive CRC read; exact original publisher-clock and sampled top-depth parity; finite totals and full save/reload equality. Record runtime and storage before considering all 28 sessions. Original source files remain unchanged.",
+  "additional_channels": "Exact BBO transition OFI and its absolute value, log midpoint change in bps and its absolute value, delta-message count, known-price update count and unresolved-price update count. These are observed queue revisions, not identified trades or cancellations.",
+  "checks_before_registration": "Three tests pass: round-trip additions/removals remain visible despite zero net endpoint change; unknown frontier levels excluded; strict delay boundaries; snapshot resets; prefix invariance; price/quantity units; atomic sequence rejection. Ruff passes.",
+  "delays_ms": [
+    100,
+    500
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "expected_total_with_preflight": 28,
+  "flow_definition": "For each validated native delta, compare each updated absolute quantity with the preceding atomic book at the same price. Record positive and negative revisions separately for bid and ask, with exponential distance weights of 1, 5 and 20 prior quoted spreads from the prior midpoint. Prices beyond the prior deepest visible level have unknown starting quantity, are excluded from volume flow, and increment a separate unresolved counter.",
+  "input_hashes": {
+    "data/research/boundary_bybit_depth_20260907/depth_manifest.json": "e0cef0a7570a6ed73e0dcf17c371d4d879ca5e6f26aae3d9af6768757510f19b",
+    "data/research/boundary_bybit_flow_preflight_20260907/flow_manifest.json": "243ba07a2dac26192a2eb9406cda84b4634392962952133639daf6759a7c6948",
+    "docs/research/boundary_bybit_flow_preflight_20260907.json": "866e828282a2171ce672aec7f9891f38cf6852e1719585ddbba991fa2bcafb0c",
+    "docs/research/boundary_bybit_flow_preflight_evidence_20260907.json": "dde5f1270b24578a8ac85739be1a15cd561f1a5c548c72cd0c0880aee6ecd2dd",
+    "scripts/prepare_boundary_bybit_flow.py": "985cf58a31e0a28508a7a0ae1d995b31bea549c8a53d12b4c0fac0018d0676a7",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_bybit_depth.py": "89b09ee4d7a721146f39d56bff02de04969ff1e675c1423fd060208637c09a67",
+    "src/lob_forge/boundary_bybit_flow.py": "658620360350aaa52fb4dd298801826200f275e74a9b6b871fcf901237a89c65",
+    "tests/test_boundary_bybit_flow.py": "f209d3bf639b7fa74f80b0e58141c63f6755b279c4908f920ab67e97e28345dd"
+  },
+  "model_fits": 0,
+  "preflight_manifest": "data/research/boundary_bybit_flow_preflight_20260907/flow_manifest.json",
+  "primary_source": "https://arxiv.org/abs/1011.6402",
+  "purpose": "Prepare the remaining 27 exposed sessions with the unchanged tested native queue-flow definition. Reuse the already prepared BTC June 3 session when assembling the later combined 28-session model manifest. No target column, model fitting or assessment score is read.",
+  "registered_at_utc": "2026-09-07T23:29:53.056568+00:00",
+  "resource_basis": "The complete BTC June 3 replay took 69.6 seconds and stored 126329504 compressed bytes across native events and sampled observations. Remaining 27-session runtime/storage will be recorded, not assumed equal across dates.",
+  "sessions": [
+    {
+      "session_date": "2023-05-29",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-05-30",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-05-31",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-01",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-02",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-04",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-05",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-06",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-07",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-08",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-09",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-10",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-06-11",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "session_date": "2023-05-29",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-05-30",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-05-31",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-01",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-02",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-03",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-04",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-05",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-06",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-07",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-08",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-09",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-10",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "session_date": "2023-06-11",
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "source_manifest": "data/research/boundary_bybit_depth_20260907/depth_manifest.json",
+  "source_scope": "Cont, Kukanov and Stoikov motivate observing book events rather than only volume. Their equity impact result is not evidence of predictive gain for this cross-venue crypto experiment.",
+  "window_contract": "Sum publisher timestamps in [decision-delay-window, decision-delay). Source updates at the exact upper boundary are excluded. Windows crossing snapshots, source coverage gaps over 1000ms, or incomplete 25-level books are marked unavailable. Snapshots and the first update after a coverage break produce no inferred flow. Retain every original canonical decision.",
+  "windows_ms": [
+    1000,
+    5000,
+    15000
+  ]
+}

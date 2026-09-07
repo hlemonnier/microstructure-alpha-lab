@@ -1,0 +1,80 @@
+{
+  "artifact_bytes": {
+    "data/research/boundary_bybit_flow_preflight_20260907/BTCUSDT/2023-06-03/native_events.npz": 76812171,
+    "data/research/boundary_bybit_flow_preflight_20260907/BTCUSDT/2023-06-03/observations.npz": 49517333
+  },
+  "artifact_hashes": {
+    "data/research/boundary_bybit_flow_preflight_20260907/BTCUSDT/2023-06-03/native_events.npz": "f4ef2c5def2cf5d2d593a73a237dff57ac6c6b46ee20729496b3f3e8fbacf2e9",
+    "data/research/boundary_bybit_flow_preflight_20260907/BTCUSDT/2023-06-03/observations.npz": "85a1902ca550ec9b0cd228405acae15311d5ebde0d13ba8d3e5006f270022dde"
+  },
+  "assessment_scores_inspected": false,
+  "checks": {
+    "atomic_replay_verified": true,
+    "known_level_updates": 13989340,
+    "messages": 850387,
+    "outside_prior_visible_depth_excluded": true,
+    "semantics": "native_bybit_known_queue_revisions_v1",
+    "snapshots": 2,
+    "snapshots_and_gaps_do_not_generate_flow": true,
+    "unresolved_level_updates": 628704
+  },
+  "coverage_count_order": {
+    "delays_ms": [
+      100,
+      500
+    ],
+    "windows_ms": [
+      1000,
+      5000,
+      15000
+    ]
+  },
+  "covered_window_rows": [
+    [
+      86393,
+      86392,
+      86382
+    ],
+    [
+      86393,
+      86392,
+      86382
+    ]
+  ],
+  "fields": [
+    "bid_increase_width1",
+    "bid_decrease_width1",
+    "ask_increase_width1",
+    "ask_decrease_width1",
+    "bid_increase_width5",
+    "bid_decrease_width5",
+    "ask_increase_width5",
+    "ask_decrease_width5",
+    "bid_increase_width20",
+    "bid_decrease_width20",
+    "ask_increase_width20",
+    "ask_decrease_width20",
+    "bbo_ofi",
+    "absolute_bbo_ofi",
+    "mid_return_bps",
+    "absolute_mid_return_bps",
+    "delta_messages",
+    "known_level_updates",
+    "unresolved_level_updates"
+  ],
+  "manifest_path": "data/research/boundary_bybit_flow_preflight_20260907/flow_manifest.json",
+  "manifest_sha256": "243ba07a2dac26192a2eb9406cda84b4634392962952133639daf6759a7c6948",
+  "model_fits": 0,
+  "observation_path": "data/research/boundary_bybit_flow_preflight_20260907/BTCUSDT/2023-06-03/observations.npz",
+  "observation_sha256": "85a1902ca550ec9b0cd228405acae15311d5ebde0d13ba8d3e5006f270022dde",
+  "only_decision_time_column_read": true,
+  "original_features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-03.parquet",
+  "original_features_sha256": "b86b372fe2b508c23b198afcc9d4601c9e6f34835e466de4bbe26f5a4c27e04d",
+  "original_publisher_and_depth_parity": true,
+  "protocol_sha256": "866e828282a2171ce672aec7f9891f38cf6852e1719585ddbba991fa2bcafb0c",
+  "rows": 86394,
+  "save_reload_parity": true,
+  "seconds": 69.6033379159926,
+  "session_date": "2023-06-03",
+  "symbol": "BTCUSDT"
+}
