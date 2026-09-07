@@ -1,0 +1,28 @@
+{
+  "experiment_id": "boundary_neural_screen_20260907",
+  "registered_at_utc": "2026-09-07T14:44:00+00:00",
+  "evidence_status": "Development only. May 16-23 outcomes have already been inspected.",
+  "hypothesis": "Causal sequences can learn order-flow persistence and nonlinear interactions lost by fixed temporal summaries.",
+  "variants": [
+    {"name": "tcn_16", "architecture": "sequence_tcn", "window": 16},
+    {"name": "tcn_64", "architecture": "sequence_tcn", "window": 64},
+    {"name": "mlp_16", "architecture": "sequence_mlp", "window": 16}
+  ],
+  "hidden_size": 16,
+  "epochs": 12,
+  "batch_size": 512,
+  "optimizer": "AdamW",
+  "learning_rate": 0.001,
+  "weight_decay": 0.01,
+  "gradient_norm_limit": 5.0,
+  "loss": "Cross entropy with inverse training-class-frequency weights. Convert balanced posteriors to natural posteriors by multiplying by training priors and normalizing.",
+  "features": "First 26 columns of the frozen temporal_cross representation: base features, decision spread/depth/activity and contemporaneous peer features. No EWM or path-area additions.",
+  "normalization": "Training-only 0.1/99.9 percentile clipping and standardization, frozen for validation and assessment.",
+  "windows": "Use available causal history from 12:00 onward; score and train targets only from 12:02 to 13:59:50 UTC. Reset at each session or missing second, padding missing history with the first available observation. Windows never cross sessions.",
+  "splits": "Same four training days, one validation day and one development assessment day as the frozen tabular screen; both assets, assessment May 21/22/23.",
+  "checkpoint_selection": "Evaluate after every epoch; maximize validation balanced accuracy, break exact ties by natural log loss. Assessment labels are never consulted for training or checkpoint choice.",
+  "reference": "Frozen validation-selected tabular reference on exactly matched assessment decision timestamps.",
+  "seed": 20260907,
+  "threads": 2,
+  "unseen_dates": "May 24 onward remain unopened. No confirmation claim from this experiment."
+}
