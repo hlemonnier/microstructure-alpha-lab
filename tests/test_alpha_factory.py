@@ -1,4 +1,7 @@
 from pathlib import Path
+from dataclasses import replace
+import math
+import pytest
 
 from lob_forge.alpha_factory import (
     AcceptanceCriteria,
@@ -12,6 +15,7 @@ from lob_forge.alpha_factory import (
     format_result_audit_markdown,
     one_sided_hac_p_value_mean_le_zero,
     one_sided_normal_p_value_mean_le_zero,
+    one_sided_separated_batch_t_p_value_mean_le_zero,
     read_p_value_records,
 )
 import lob_forge.alpha_factory as alpha_factory
@@ -40,6 +44,8 @@ def test_audit_result_artifact_scores_fold_robustness(tmp_path: Path) -> None:
     assert round(audit.positive_fold_rate, 6) == round(2 / 3, 6)
     assert audit.median_fold_net_pnl == 6
     assert audit.weighted_break_even_fee_bps == 0.12
+    path.write_text(path.read_text().replace("summary,,,18,15,0.12,,", "summary,,,18,15,0,,"))
+    assert audit_result_artifact(path, bootstrap_samples=100).weighted_break_even_fee_bps == 0.0
 
 
 def test_audit_result_artifact_uses_seeded_5_95_bootstrap_and_hac_wording(tmp_path: Path) -> None:
@@ -163,10 +169,41 @@ def test_one_sided_p_value_rewards_positive_mean() -> None:
 
 
 def test_hac_p_value_is_available_for_serial_fold_audits() -> None:
-    p_value = one_sided_hac_p_value_mean_le_zero([1.0, 0.8, 0.9, 1.1, 1.0])
+    p_value = one_sided_hac_p_value_mean_le_zero([1.0, 0.8, 0.9, 1.1, 1.0] * 4)
 
     assert 0.0 <= p_value <= 1.0
     assert p_value < 0.05
+
+
+def test_mean_inference_rejects_nonfinite_and_insufficient_information() -> None:
+    for function in (one_sided_hac_p_value_mean_le_zero, one_sided_separated_batch_t_p_value_mean_le_zero):
+        assert function([1.0]) == 1.0
+        assert function([1.0] * 20) == 1.0
+        with pytest.raises(ValueError, match="finite"):
+            function([1.0, math.nan])
+    assert one_sided_normal_p_value_mean_le_zero([1.0]) == 1.0
+
+
+def test_nonfinite_fold_artifact_is_rejected_instead_of_accepted(tmp_path: Path) -> None:
+    path = tmp_path / "bad.csv"
+    header = "fold,test_rows,test_trades,test_net_pnl\n"
+    path.write_text(header + "\n".join(f"{i},100,10,{i + 1 if i < 19 else 'nan'}" for i in range(20)))
+    with pytest.raises(ValueError, match="finite"):
+        audit_result_artifact(path)
+    path.write_text(header + "\n".join(f"{i},100,10,{i + 1}" for i in range(20)))
+    audit = audit_result_artifact(path, bootstrap_samples=100)
+    forged = replace(audit, total_test_net_pnl=math.nan, bootstrap_mean_net_pnl_lower_5pct=math.nan)
+    verdict = evaluate_acceptance(forged, AcceptanceCriteria(require_positive_bootstrap_lower_bound=True))
+    assert not verdict.passed
+    assert "nonfinite" in verdict.rejection_reasons[0]
+    with pytest.raises(ValueError, match="NaN"):
+        format_result_audit_csv(forged, verdict)
+
+
+@pytest.mark.parametrize("p", [math.nan, math.inf, -0.01, 1.01])
+def test_multiple_testing_rejects_invalid_p_values(p: float) -> None:
+    with pytest.raises(ValueError):
+        correct_p_values([PValueRecord("invalid", p)])
 
 
 def test_result_audit_markdown_names_hac_and_interval_correctly(tmp_path: Path) -> None:

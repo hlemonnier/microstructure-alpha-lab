@@ -3,6 +3,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
+from .statistics import student_t_cdf
+
 
 @dataclass(frozen=True)
 class CalibrationBin:
@@ -35,6 +37,9 @@ class PosteriorScore:
     p_mean_gt_zero: float
     p_mean_gt_margin: float
     posterior_sharpe: float
+    posterior_mean: float = 0.0
+    posterior_degrees_of_freedom: float = 0.0
+    method: str = "normal_inverse_gamma_iid"
 
 
 def multiclass_brier_score(
@@ -50,8 +55,13 @@ def multiclass_brier_score(
     class_values = classes or sorted(
         {label for label in labels} | {klass for probs in probabilities for klass in probs}
     )
+    if len(set(class_values)) != len(class_values) or not set(labels) <= set(class_values):
+        raise ValueError("classes must be unique and include every label")
     total = 0.0
     for label, probs in zip(labels, probabilities):
+        _validate_probabilities(probs)
+        if not set(probs) <= set(class_values):
+            raise ValueError("probability class missing from classes")
         for klass in class_values:
             expected = 1.0 if label == klass else 0.0
             total += (float(probs.get(klass, 0.0)) - expected) ** 2
@@ -117,6 +127,8 @@ def edge_reliability_by_decile(
     if deciles <= 0:
         raise ValueError("deciles must be positive")
 
+    if not all(math.isfinite(x) for x in predicted_edges + realized_pnls):
+        raise ValueError("edge reliability values must be finite")
     pairs = sorted(zip(predicted_edges, realized_pnls), key=lambda pair: pair[0])
     output: list[EdgeReliabilityBin] = []
     for bucket in range(deciles):
@@ -147,33 +159,43 @@ def posterior_mean_score(
     cost_margin: float = 0.0,
     prior_mean: float = 0.0,
     prior_observations: float = 1.0,
+    prior_shape: float = 2.0,
+    prior_scale: float = 1.0,
 ) -> PosteriorScore:
+    """NIG posterior for independent Gaussian observations in common units.
+
+    Variance prior is InverseGamma(prior_shape, prior_scale); scale has
+    squared observation units. Prior parameters must be chosen before looking
+    at results. Group overlapping/dependent returns before using this iid model.
+    standard_error is posterior SD of the mean, not a plug-in sample SE.
+    posterior_sharpe is posterior mean / sqrt(E[variance]), not E[Sharpe].
+    A zero prior_observations value uses the limiting improper NIG prior;
+    it is not an independently specified flat-mean times IG-variance prior.
+    """
     if not observations:
         raise ValueError("need at least one observation")
-    if prior_observations < 0:
-        raise ValueError("prior_observations must be non-negative")
-
+    if not all(math.isfinite(x) for x in [*observations, cost_margin, prior_mean,
+                                        prior_observations, prior_shape, prior_scale]):
+        raise ValueError("posterior inputs must be finite")
+    if prior_observations < 0 or prior_shape <= 1 or prior_scale <= 0:
+        raise ValueError("need prior_observations >= 0, prior_shape > 1, prior_scale > 0")
     n = len(observations)
     sample_mean = sum(observations) / n
     sample_std = _sample_std(observations, sample_mean)
-    effective_n = n + prior_observations
-    posterior_mean = (sum(observations) + prior_mean * prior_observations) / effective_n
-    standard_error = sample_std / math.sqrt(max(1.0, effective_n))
-    if standard_error == 0.0:
-        p_zero = 1.0 if posterior_mean > 0.0 else 0.0
-        p_margin = 1.0 if posterior_mean > cost_margin else 0.0
-    else:
-        p_zero = 1.0 - _normal_cdf((0.0 - posterior_mean) / standard_error)
-        p_margin = 1.0 - _normal_cdf((cost_margin - posterior_mean) / standard_error)
-
+    kappa = n + prior_observations
+    posterior_mean = (sum(observations) + prior_mean * prior_observations) / kappa
+    alpha = prior_shape + n / 2
+    beta = (prior_scale + sum((x - sample_mean) ** 2 for x in observations) / 2
+            + prior_observations * n * (sample_mean - prior_mean) ** 2 / (2 * kappa))
+    degrees = 2 * alpha
+    scale = math.sqrt(beta / (alpha * kappa))
     return PosteriorScore(
-        n=n,
-        sample_mean=sample_mean,
-        sample_std=sample_std,
-        standard_error=standard_error,
-        p_mean_gt_zero=p_zero,
-        p_mean_gt_margin=p_margin,
-        posterior_sharpe=posterior_mean / sample_std if sample_std else 0.0,
+        n=n, sample_mean=sample_mean, sample_std=sample_std,
+        standard_error=math.sqrt(beta / ((alpha - 1) * kappa)),
+        p_mean_gt_zero=student_t_cdf(posterior_mean / scale, degrees),
+        p_mean_gt_margin=student_t_cdf((posterior_mean - cost_margin) / scale, degrees),
+        posterior_sharpe=posterior_mean / math.sqrt(beta / (alpha - 1)),
+        posterior_mean=posterior_mean, posterior_degrees_of_freedom=degrees,
     )
 
 
@@ -217,8 +239,7 @@ def format_edge_reliability_bins(bins: list[EdgeReliabilityBin]) -> str:
 
 
 def _top_probability(probabilities: dict[int, float]) -> tuple[int, float]:
-    if not probabilities:
-        raise ValueError("probability dictionary cannot be empty")
+    _validate_probabilities(probabilities)
     label, probability = max(probabilities.items(), key=lambda item: item[1])
     return label, float(probability)
 
@@ -230,8 +251,11 @@ def _sample_std(values: list[float], mean: float) -> float:
     return math.sqrt(max(0.0, variance))
 
 
-def _normal_cdf(value: float) -> float:
-    return 0.5 * (1.0 + math.erf(value / math.sqrt(2.0)))
+def _validate_probabilities(probabilities: dict[int, float]) -> None:
+    if not probabilities or any(not math.isfinite(p) or p < 0 or p > 1 for p in probabilities.values()):
+        raise ValueError("probabilities must be finite values in [0, 1]")
+    if not math.isclose(sum(probabilities.values()), 1.0, abs_tol=1e-9):
+        raise ValueError("probabilities must sum to one")
 
 
 def _fmt(value: float) -> str:

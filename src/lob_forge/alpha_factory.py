@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-from lob_forge.statistics import newey_west_standard_error, stationary_block_bootstrap_mean_interval
+from lob_forge.statistics import autocorrelation, newey_west_standard_error, stationary_block_bootstrap_mean_interval, student_t_cdf
 
 
 @dataclass(frozen=True)
@@ -87,6 +87,9 @@ class ResultAudit:
     bootstrap_mean_net_pnl_lower_5pct: float
     bootstrap_mean_net_pnl_upper_95pct: float
     one_sided_p_value_mean_le_zero: float
+    p_value_method: str = "separated_batch_t_with_hac_guard_v1"
+    hac_p_value_diagnostic: float = 1.0
+    effective_folds_diagnostic: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -98,6 +101,7 @@ class AcceptanceCriteria:
     require_positive_median_fold: bool = True
     min_break_even_fee_bps: float = 0.0
     require_positive_bootstrap_lower_bound: bool = False
+    max_one_sided_p_value: float = 0.05
 
 
 @dataclass(frozen=True)
@@ -174,7 +178,7 @@ def read_fold_results(path: Path | str) -> tuple[list[FoldResult], dict[str, str
                     test_break_even_fee_bps=_safe_float(row.get("test_break_even_fee_bps")),
                     test_mean_net_bps=_safe_float(row.get("test_mean_net_bps")),
                     test_median_net_bps=_safe_float(row.get("test_median_net_bps")),
-                    test_profit_factor=_safe_float(row.get("test_profit_factor")),
+                    test_profit_factor=_safe_float(row.get("test_profit_factor"), allow_positive_infinity=True),
                     test_max_drawdown_pnl=_safe_float(row.get("test_max_drawdown_pnl")),
                     test_sharpe_per_trade=_safe_float(row.get("test_sharpe_per_trade")),
                     test_win_rate=_safe_float(row.get("test_win_rate")),
@@ -183,6 +187,11 @@ def read_fold_results(path: Path | str) -> tuple[list[FoldResult], dict[str, str
 
     if not folds:
         raise ValueError("result artifact contains no fold rows")
+    if len({fold.fold for fold in folds}) != len(folds):
+        raise ValueError("result artifact contains duplicate fold IDs")
+    if any(fold.test_rows <= 0 or fold.test_trades < 0 for fold in folds):
+        raise ValueError("fold row counts must be positive and trade counts non-negative")
+    folds.sort(key=lambda fold: fold.fold)
     return folds, summary_row
 
 
@@ -209,9 +218,11 @@ def audit_result_artifact(
         seed=seed,
     )
     lower, upper = interval.lower, interval.upper
-    summary_break_even = _safe_float(summary_row.get("test_break_even_fee_bps")) if summary_row else 0.0
-    if not summary_break_even:
+    raw_summary_break_even = summary_row.get("test_break_even_fee_bps") if summary_row else None
+    if raw_summary_break_even is None or raw_summary_break_even == "":
         summary_break_even = _trade_weighted_break_even(folds)
+    else:
+        summary_break_even = _safe_float(raw_summary_break_even)
 
     return ResultAudit(
         artifact_path=str(path),
@@ -236,12 +247,28 @@ def audit_result_artifact(
         mean_fold_sharpe_per_trade=sum(fold.test_sharpe_per_trade for fold in folds) / len(folds),
         bootstrap_mean_net_pnl_lower_5pct=lower,
         bootstrap_mean_net_pnl_upper_95pct=upper,
-        one_sided_p_value_mean_le_zero=one_sided_hac_p_value_mean_le_zero(net_pnls),
+        one_sided_p_value_mean_le_zero=max(
+            one_sided_hac_p_value_mean_le_zero(net_pnls),
+            one_sided_separated_batch_t_p_value_mean_le_zero(net_pnls),
+        ),
+        hac_p_value_diagnostic=one_sided_hac_p_value_mean_le_zero(net_pnls),
+        effective_folds_diagnostic=effective_folds_ar1_diagnostic(net_pnls),
     )
 
 
 def evaluate_acceptance(audit: ResultAudit, criteria: AcceptanceCriteria) -> AcceptanceVerdict:
     reasons: list[str] = []
+    invalid = [name for name, value in asdict(audit).items()
+               if isinstance(value, float) and not math.isfinite(value)
+               and not (name == "median_fold_profit_factor" and value == math.inf)]
+    if invalid:
+        return AcceptanceVerdict(False, ["nonfinite audit fields: " + ", ".join(invalid)])
+    if audit.fold_count < 2 or audit.fold_net_pnl_std <= 0.0:
+        reasons.append("insufficient information to estimate fold uncertainty")
+    if not 0.0 < criteria.max_one_sided_p_value <= 1.0:
+        raise ValueError("max_one_sided_p_value must be in (0, 1]")
+    if audit.one_sided_p_value_mean_le_zero > criteria.max_one_sided_p_value:
+        reasons.append("mean-positive inferential evidence is insufficient")
     if audit.fold_count < criteria.min_fold_count:
         reasons.append(f"fold count {audit.fold_count} < required {criteria.min_fold_count}")
     if criteria.require_positive_total_net_pnl and audit.total_test_net_pnl <= 0.0:
@@ -291,6 +318,9 @@ def format_result_audit_csv(audit: ResultAudit, verdict: AcceptanceVerdict) -> s
         "bootstrap_mean_net_pnl_lower_5pct",
         "bootstrap_mean_net_pnl_upper_95pct",
         "one_sided_p_value_mean_le_zero",
+        "p_value_method",
+        "hac_p_value_diagnostic",
+        "effective_folds_diagnostic",
         "acceptance_passed",
         "rejection_reasons",
     ]
@@ -318,6 +348,9 @@ def format_result_audit_csv(audit: ResultAudit, verdict: AcceptanceVerdict) -> s
         _fmt(audit.bootstrap_mean_net_pnl_lower_5pct),
         _fmt(audit.bootstrap_mean_net_pnl_upper_95pct),
         _fmt(audit.one_sided_p_value_mean_le_zero),
+        audit.p_value_method,
+        _fmt(audit.hac_p_value_diagnostic),
+        _fmt(audit.effective_folds_diagnostic),
         str(int(verdict.passed)),
         "; ".join(verdict.rejection_reasons),
     ]
@@ -345,7 +378,10 @@ def format_result_audit_markdown(audit: ResultAudit, verdict: AcceptanceVerdict)
         f"- Max fold drawdown: {_fmt(audit.max_fold_drawdown_pnl)} raw PnL units",
         f"- Mean fold Sharpe per trade: {_fmt(audit.mean_fold_sharpe_per_trade)}",
         f"- Fold-bootstrap mean net PnL 90% central interval (5/95%): {_fmt(audit.bootstrap_mean_net_pnl_lower_5pct)} / {_fmt(audit.bootstrap_mean_net_pnl_upper_95pct)}",
-        f"- One-sided HAC/Newey-West z p-value for mean <= 0: {_fmt(audit.one_sided_p_value_mean_le_zero)}",
+        f"- One-sided separated-batch Student-t p-value with HAC guard: {_fmt(audit.one_sided_p_value_mean_le_zero)}",
+        f"- HAC/Newey-West z p-value diagnostic: {_fmt(audit.hac_p_value_diagnostic)}",
+        f"- AR(1) effective-fold diagnostic: {_fmt(audit.effective_folds_diagnostic)} (a noisy persistence screen, not a proven effective sample size).",
+        "- Inference assumes stationary, weakly dependent fold PnLs with approximately Gaussian separated batch means. The middle half is a dependence gap; fewer than 20 folds, an AR(1) effective-fold diagnostic below 8, or degenerate batch variance returns p=1. These are assumption-dependent research diagnostics, not a distribution-free guarantee.",
         "",
         "## Reasons",
         "",
@@ -376,33 +412,77 @@ def bootstrap_mean_ci(
 
 
 def one_sided_normal_p_value_mean_le_zero(values: list[float]) -> float:
-    if not values:
-        raise ValueError("cannot score empty values")
+    """One-sided Gaussian mean test with estimated variance (Student-t)."""
+    _validate_inference_values(values)
+    if len(values) < 2:
+        return 1.0
     mean_value = sum(values) / len(values)
     std_value = _sample_std(values)
     if std_value == 0.0:
-        return 0.0 if mean_value > 0.0 else 1.0
-    z_score = mean_value / (std_value / math.sqrt(len(values)))
-    return 0.5 * math.erfc(z_score / math.sqrt(2.0))
+        return 1.0
+    t_score = mean_value / (std_value / math.sqrt(len(values)))
+    return student_t_cdf(-t_score, len(values) - 1)
 
 
 def one_sided_hac_p_value_mean_le_zero(values: list[float]) -> float:
-    if not values:
-        raise ValueError("cannot score empty values")
+    """Asymptotic HAC diagnostic; never certify tiny or zero-variance samples."""
+    _validate_inference_values(values)
+    if len(values) < 20:
+        return 1.0
     mean_value = sum(values) / len(values)
     se = newey_west_standard_error(values)
     if se == 0.0:
-        return 0.0 if mean_value > 0.0 else 1.0
+        return 1.0
     z_score = mean_value / se
     return 0.5 * math.erfc(z_score / math.sqrt(2.0))
 
 
+def one_sided_separated_batch_t_p_value_mean_le_zero(values: list[float]) -> float:
+    """Low-power guard using two equal, separated chronological batches.
+
+    The first and last quarters estimate the same stationary mean. The middle
+    half provides a dependence gap. With independent Gaussian equal-variance
+    batch means the statistic is exactly t(1); for dependent market data its
+    validity is approximate and requires dependence to decay across the gap.
+    This is deliberately conservative for short fold series, and does not
+    establish independence or justify inference under structural breaks.
+    """
+    _validate_inference_values(values)
+    if len(values) < 20:
+        return 1.0
+    batch_size = len(values) // 4
+    if effective_folds_ar1_diagnostic(values) < 8.0:
+        return 1.0
+    means = [math.fsum(values[:batch_size]) / batch_size, math.fsum(values[-batch_size:]) / batch_size]
+    standard_error = abs(means[0] - means[1]) / 2.0
+    if standard_error == 0.0:
+        return 1.0
+    # Evaluate the lower tail at -t to avoid cancellation for strong signals.
+    return student_t_cdf(-math.fsum(means) / 2.0 / standard_error, 1.0)
+
+
+def effective_folds_ar1_diagnostic(values: list[float]) -> float:
+    """AR(1) persistence screen; not an estimate valid for every dependence law."""
+    _validate_inference_values(values)
+    if len(values) < 2 or _sample_std(values) == 0.0:
+        return 0.0
+    rho = max(0.0, autocorrelation(values))
+    return len(values) * (1.0 - rho) / (1.0 + rho)
+
+
+def _validate_inference_values(values: list[float]) -> None:
+    if not values or not all(math.isfinite(value) for value in values):
+        raise ValueError("inference requires nonempty finite observations")
+
+
 def bonferroni_adjust(p_values: list[float]) -> list[float]:
+    _validate_p_values(p_values)
     k = len(p_values)
     return [min(1.0, max(0.0, value) * k) for value in p_values]
 
 
 def benjamini_hochberg_adjust(p_values: list[float]) -> list[float]:
+    _validate_p_values(p_values)
     k = len(p_values)
     if k == 0:
         return []
@@ -421,6 +501,8 @@ def correct_p_values(records: list[PValueRecord], *, q: float = 0.05) -> list[PV
     if not 0.0 < q < 1.0:
         raise ValueError("q must be in (0, 1)")
     raw = [record.p_value for record in records]
+    if len({record.hypothesis_id for record in records}) != len(records):
+        raise ValueError("hypothesis IDs must be unique")
     bonferroni = bonferroni_adjust(raw)
     bh = benjamini_hochberg_adjust(raw)
     return [
@@ -555,10 +637,18 @@ def _safe_int(raw: str | None) -> int:
     return int(float(raw))
 
 
-def _safe_float(raw: str | None) -> float:
+def _safe_float(raw: str | None, *, allow_positive_infinity: bool = False) -> float:
     if raw is None or raw == "":
         return 0.0
-    return float(raw)
+    value = float(raw)
+    if not math.isfinite(value) and not (allow_positive_infinity and value == math.inf):
+        raise ValueError("result metrics must be finite")
+    return value
+
+
+def _validate_p_values(values: list[float]) -> None:
+    if not all(math.isfinite(value) and 0.0 <= value <= 1.0 for value in values):
+        raise ValueError("p-values must be finite and in [0, 1]")
 
 
 def _csv_line(values: list[str]) -> str:
@@ -573,7 +663,7 @@ def _csv_line(values: list[str]) -> str:
 
 def _fmt(value: float) -> str:
     if math.isnan(value):
-        return "0"
+        raise ValueError("cannot serialize NaN as a result metric")
     if math.isinf(value):
         return "inf" if value > 0 else "-inf"
     return f"{value:.6f}"
