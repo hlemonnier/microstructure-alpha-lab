@@ -1,0 +1,40 @@
+{
+  "causality": "Every block endpoint is strictly before its decision. Same-timestamp updates follow increasing exchange update IDs; all updates at the decision millisecond are excluded. No label, entry or future-price column enters preparation. Padding is zero with an availability mask. These are BBO observations, not L2 or identified cancellations.",
+  "checks_before_registration": "Three tests pass: strict timestamp ties and future-prefix invariance, hand-computed coarse flow retaining all intervening events, price and quantity unit invariance, invalid history and exact clock alignment. Ruff passes.",
+  "dates": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "scripts/prepare_boundary_quote_sequence.py": "b16ac8a690adc4e1532566869ee838ccd064158d2980b2c53d40b4559e246735",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+    "src/lob_forge/boundary_quote_sequence.py": "ec7596495a438e89aa06b171961c171b44c3bb5dcf53d0565511e0c448bd28ea",
+    "src/lob_forge/features.py": "d464532dbdeb9a054a8e138ec51b06ef75b6338f32a16ca69de9936fc8e15c24",
+    "tests/test_boundary_quote_sequence.py": "7d1347d9bc7d4b2098ff264503b3b20e7e179d8e4755eb9489de8cdc0e8ad201"
+  },
+  "registered_at_utc": "2026-09-07T21:11:23.266910+00:00",
+  "representation": "Two 64-step sequences. Each fine step is one quote update; each coarse step contains eight consecutive quote updates and keeps their summed order flow, same-price queue changes and absolute flow. Endpoint prices, quantities, imbalance, age, block duration, price changes and availability are observed at block end. Prices use current known spread units, quantities current known total depth, with signed log transforms as implemented.",
+  "rows": "Original rows at every four fixed UTC seconds, plus all original noon rows from 12:02 inclusive to 13:59:50 exclusive. Selected from decision clock alone, before model fitting. Model loader retains its existing eligible row universe.",
+  "source_manifest": "data/research/boundary_event_clock_20260907/dataset_manifest.json",
+  "storage": "Float32 observation-only NPY sidecars, exact timestamp vectors, official raw SHA256 and byte checks, current-quote equality to original rows, exact chunked save/reload parity. Original files remain untouched.",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}
