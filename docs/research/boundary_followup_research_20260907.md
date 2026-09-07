@@ -38,7 +38,7 @@ A separately [registered matched-control extension](boundary_morning_controls_20
 
 ## Validation and evidence status
 
-The implementation suite passes 559 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 31 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
+The implementation suite passes 564 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 33 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
 
 Both fixed screens are complete. Their outcomes remain developmental, with no substantial-gain or economic-performance claim.
 
@@ -114,6 +114,20 @@ The 2023 files contain publisher timestamps and lack receive timestamps. Two fix
 
 The [feature definition](boundary_bybit_feature_definition_20260907.json) separates 27 best-quote fields from 61 additional depth fields. Deeper liquidity includes rank profiles, cumulative imbalance, concentration, distance kernels and changes between sampled endpoints. Endpoint pressure is not integrated native message flow or inferred executions. Unit and prefix tests pass; changes to deeper quantities cannot affect the best-quote control. A complete paired May 29 loader comparison preserves every original feature, label and timestamp exactly.
 
-The [registered model screen](boundary_bybit_screen_20260907.json) compares both representations at both delays using matched seven-leaf trees, context MLPs and fixed probability blends. It commits to 24 fits and 324 evaluation panels on the same three exposed dates. All scores remain sealed until the complete family finishes.
+The [registered model screen](boundary_bybit_screen_20260907.json) compares both representations at both delays using matched seven-leaf trees, context MLPs and fixed probability blends. All 24 fits and 324 evaluation panels on the same three exposed dates are complete. The [results](boundary_bybit_evidence_20260907.json) give the 100ms best-quote-tree/original-neural blend 57.3006% balanced accuracy, only +0.0201 points over the spot tree and +0.1586 points over the original-context blend. Both assets improve relative to the latter; relative to the spot tree, BTC improves and ETH declines. Adding depth raises the standalone 100ms tree by +0.1066 points, but the deeper-tree/original-neural blend is slightly below the corresponding best-quote blend. At 500ms, the deeper tree/neural blend improves +0.1747 points over its best-quote counterpart. These are small, model-dependent differences, not a substantial discovery.
+
+## Joint observations and an alternative boosting algorithm
+
+The [next experiment definition](boundary_newton_definition_20260907.json) was committed before depth scores were inspected. It joins spot flow and foreign depth to the original context, preserving every shared observation, label and timestamp exactly. The original representation has 220 fields; the union has 399. [Chen and Guestrin](https://arxiv.org/abs/1603.02754) motivate testing an alternative regularized tree implementation, without implying that its published performance transfers to this dataset.
+
+The [fixed screen](boundary_newton_screen_20260907.json) uses XGBoost 2.1.3 with 400 rounds, depth three or six, histogram splits, learning rate 0.05 and L2 penalty 10. Both depths use asset/class-balanced loss; depth six also tests natural log loss with equal asset weight only. Balanced posteriors are inverted with each asset's training class prior. The Hessian-mass minimum of 30 is not a minimum row count. Training-only clipping matches the earlier HGB procedure; the algorithms are not claimed to have equal capacity or compute cost.
+
+A new seven-leaf HGB on the union distinguishes feature combination from algorithm changes. Fixed 50/50 blends and thirteen saved controls bring the experiment to 21 fits and 360 panels. Native model serialization, original checkpoint identity and input parity are required. No new tree accepts validation or assessment observations during fitting; every model uses a fixed round count. The complete family must finish before scores are inspected.
+
+On this macOS environment, the installed XGBoost package initially lacked a discoverable OpenMP runtime. The process uses the already installed scikit-learn runtime through a scoped loader path; no system configuration or package binary changed:
+
+    DYLD_LIBRARY_PATH="$PWD/.venv/lib/python3.12/site-packages/sklearn/.dylibs" PYTHONPATH=src OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 .venv/bin/python scripts/run_boundary_newton_screen.py --run
+
+The same loader prefix is used for the dependency-complete test run. Optional tests explicitly report a skip when the native runtime is unavailable; they do not silently substitute another learner.
 
 Any selected combination still requires a fresh, separately registered confirmation round and the continuing nominal research error budget.

@@ -1,0 +1,29 @@
+{
+  "additional_panels": 12,
+  "checks": "Require exact common labels and decision times, complete original frozen artifacts, and report paired differences without changing the original Newton result.",
+  "control": "top1_100_tree_old_neural",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "input_hashes": {
+    "docs/research/boundary_bybit_screen_20260907.json": "de9a08a9fab9e533c467fb6b20f9d8b0fb2fdf38170683b8bd035287842d5f33",
+    "docs/research/boundary_newton_screen_20260907.json": "2aab9665af443943db2548710381900041c72a35471542f7240152d732010cfc",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-03/completed.json": "af0aa96b9d991b971fdc1dea0f381f4b9febd7bd37dc32fbb5d1e8c53cc04c9f",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-07/completed.json": "4ad6020636f0bf9c9851705ced0bda2657a792ce323e67e7743be4b45d8e3f48",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-11/completed.json": "3f30b113acc878d286bc26b9e53c91dcdf3446bdf256a014a4bfecbdfdd79efa",
+    "results/boundary_bybit_screen_20260907/frozen_screen.json": "5dab5ddfc604c075d534a1f92ccebc5ce62671bbd0303577f32ec7e0739bfe05"
+  },
+  "model_fits": 0,
+  "newton_assessment_inspected": false,
+  "newton_run": "results/boundary_newton_screen_20260907",
+  "policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "purpose": "Add the strongest completed depth blend as a zero-fit matched comparator for the already running Newton-tree family. That comparator was absent from the original thirteen saved baselines. No new learner, hyperparameter or prediction changes.",
+  "registered_at_utc": "2026-09-07T22:53:11.622805+00:00",
+  "source": "results/boundary_bybit_screen_20260907"
+}
