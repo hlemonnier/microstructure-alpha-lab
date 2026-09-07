@@ -1,0 +1,239 @@
+{
+  "assessment_asset_dates": 6,
+  "assessment_rows_per_experiment": 42420,
+  "development_dates": [
+    "2023-05-16",
+    "2023-05-17",
+    "2023-05-18",
+    "2023-05-19",
+    "2023-05-20",
+    "2023-05-21",
+    "2023-05-22",
+    "2023-05-23"
+  ],
+  "distinct_assessment_dates": 3,
+  "label_semantics": "Legacy labels; see boundary_exact_label_diagnostic_20260907.json. These metrics preserve the historical selection record and are not directly comparable to corrected-target scores.",
+  "studies": [
+    {
+      "best_fixed_development_configuration": {
+        "by_asset": {
+          "BTCUSDT": 0.5368755209017246,
+          "ETHUSDT": 0.536096864121409
+        },
+        "completed_asset_folds": 6,
+        "mean_development_balanced_accuracy": 0.5364861925115668,
+        "mean_development_log_loss": 0.909536383293375,
+        "mean_validation_balanced_accuracy": 0.5540504128083598,
+        "model": "extra_trees",
+        "representation": "temporal_cross"
+      },
+      "completed_fits": 108,
+      "completed_trials": 0,
+      "evidence_status": "Exposed May21/22/23 assessment dates; legacy floating labels; not independent confirmation.",
+      "sha256": "8d35274aec907ee1e284766d8a6b74b8c97d5c3d4be6fd1124eb2020fae58ea7",
+      "study": "predictive_screen",
+      "summary_path": "results/boundary_predictive_screen_20260907/summary.json",
+      "validation_selected_mean_metrics": {
+        "challenger": {
+          "balanced_accuracy": 0.5340906090721312,
+          "log_loss": 0.9099914225578567,
+          "natural_accuracy": 0.5756247053276756
+        },
+        "reference": {
+          "balanced_accuracy": 0.5267117188464837,
+          "log_loss": 0.9671432575951857,
+          "natural_accuracy": 0.5314002828854314
+        }
+      }
+    },
+    {
+      "best_fixed_development_configuration": {
+        "completed_asset_folds": 6,
+        "mean_development_balanced_accuracy": 0.5337760659227514,
+        "mean_development_log_loss": 0.9062218766566311,
+        "mean_development_natural_accuracy": 0.5724893917963224,
+        "model": "symmetric_hgb"
+      },
+      "completed_fits": 30,
+      "completed_trials": 0,
+      "evidence_status": "Exposed May21/22/23 assessment dates; legacy floating labels; not independent confirmation.",
+      "sha256": "48beaa0930977a740d4c8204956433fbb7e2d4df2b069ad9df6ca7d1905f7529",
+      "study": "structural_screen",
+      "summary_path": "results/boundary_structural_screen_20260907/summary.json",
+      "validation_selected_mean_metrics": {
+        "challenger": {
+          "balanced_accuracy": 0.5327295261932927,
+          "log_loss": 0.9087544652513749,
+          "natural_accuracy": 0.5708628005657708
+        },
+        "reference": {
+          "balanced_accuracy": 0.5267117188464837,
+          "log_loss": 0.9671432575951857,
+          "natural_accuracy": 0.5314002828854314
+        }
+      }
+    },
+    {
+      "best_fixed_development_configuration": {
+        "completed_asset_folds": 6,
+        "mean_development_balanced_accuracy": 0.537484809384929,
+        "mean_development_log_loss": 0.9137663404195608,
+        "mean_development_natural_accuracy": 0.5696605374823196,
+        "model": "tcn_64"
+      },
+      "completed_fits": 18,
+      "completed_trials": 0,
+      "evidence_status": "Exposed May21/22/23 assessment dates; legacy floating labels; not independent confirmation.",
+      "sha256": "908eea1332417e00bf739e6b2357ddf56d8790e2f8cab42312a59129fe6771fb",
+      "study": "neural_screen",
+      "summary_path": "results/boundary_neural_screen_20260907/summary.json",
+      "validation_selected_mean_metrics": {
+        "challenger": {
+          "balanced_accuracy": 0.5383904641424874,
+          "log_loss": 0.9152286230224959,
+          "natural_accuracy": 0.5688826025459689
+        },
+        "reference": {
+          "balanced_accuracy": 0.5267117188464837,
+          "log_loss": 0.9671432575951857,
+          "natural_accuracy": 0.5314002828854314
+        }
+      }
+    },
+    {
+      "best_fixed_development_configuration": {
+        "asset_folds": 6,
+        "mean_development_balanced_accuracy": 0.5424086824549851,
+        "mean_development_log_loss": 0.8658979285503872,
+        "mean_development_natural_accuracy": 0.5983262611975483,
+        "model": "hgb_7",
+        "representation": "event_cross",
+        "training_window": "full_day"
+      },
+      "completed_fits": 72,
+      "completed_trials": 0,
+      "evidence_status": "Exposed May21/22/23 assessment dates; legacy floating labels; not independent confirmation.",
+      "sha256": "dd9bf22e6b2cb7926de29ea993d810bfd772800ace4123e4068e9e9169af6888",
+      "study": "event_screen",
+      "summary_path": "results/boundary_event_screen_20260907/summary.json",
+      "validation_selected_mean_metrics": {
+        "challenger": {
+          "balanced_accuracy": 0.5373205599289262,
+          "log_loss": 0.8887787475610943,
+          "natural_accuracy": 0.5828618576143328
+        },
+        "reference": {
+          "balanced_accuracy": 0.5347542285806932,
+          "log_loss": 0.9160714074315015,
+          "natural_accuracy": 0.5724893917963225
+        }
+      }
+    },
+    {
+      "best_fixed_development_configuration": {
+        "asset_folds": 6,
+        "expert": "extra_trees_temporal_cross_predictive",
+        "learning_rate": 0.0,
+        "mean_development_balanced_accuracy": 0.5364861925115668,
+        "mean_development_log_loss": 0.909536383293375,
+        "mean_development_natural_accuracy": 0.5765440829797265
+      },
+      "completed_fits": 0,
+      "completed_trials": 144,
+      "evidence_status": "Exposed May21/22/23 assessment dates; legacy floating labels; not independent confirmation.",
+      "sha256": "0a950bc4b1a1e173daf37554cbba59a93111af814662bb3ab6870ed266ae4bb9",
+      "study": "delayed_calibration",
+      "summary_path": "results/boundary_delayed_calibration_20260907/summary.json",
+      "validation_selected_mean_metrics": {
+        "challenger": {
+          "balanced_accuracy": 0.5335055690701385,
+          "log_loss": 0.9471774000383953,
+          "natural_accuracy": 0.5252239509665252
+        },
+        "reference": {
+          "balanced_accuracy": 0.5301893848218917,
+          "log_loss": 0.9487888620848856,
+          "natural_accuracy": 0.5227722772277228
+        }
+      }
+    },
+    {
+      "best_fixed_development_configuration": {
+        "asset_folds": 6,
+        "mean_development_balanced_accuracy": 0.5533715986836245,
+        "mean_development_log_loss": 0.8685247728844222,
+        "mean_development_natural_accuracy": 0.5981140971239981,
+        "model": "pooled_mlp"
+      },
+      "completed_fits": 12,
+      "completed_trials": 0,
+      "evidence_status": "Exposed May21/22/23 assessment dates; legacy floating labels; not independent confirmation.",
+      "sha256": "d55fcbeae732ecda7efcf00202557ddf893e47f8e5664bf621579e43df1de0fb",
+      "study": "pooled_neural",
+      "summary_path": "results/boundary_pooled_neural_20260907/summary.json",
+      "validation_selected_mean_metrics": {
+        "challenger": {
+          "balanced_accuracy": 0.5424979228061084,
+          "log_loss": 0.8707175504201965,
+          "natural_accuracy": 0.5943894389438944
+        },
+        "reference": {
+          "balanced_accuracy": 0.5267117188464837,
+          "log_loss": 0.9671432575951857,
+          "natural_accuracy": 0.5314002828854314
+        }
+      }
+    },
+    {
+      "best_fixed_development_configuration": {
+        "asset_folds": 6,
+        "mean_development_balanced_accuracy": 0.5574705177620451,
+        "mean_development_log_loss": 0.8685247728844221,
+        "mean_development_natural_accuracy": 0.5981140971239981,
+        "policy": "blend_training_previous",
+        "source": "pooled_mlp"
+      },
+      "completed_fits": 0,
+      "completed_trials": 288,
+      "evidence_status": "Exposed May21/22/23 assessment dates; legacy floating labels; not independent confirmation.",
+      "sha256": "7a5b3fe5272eb97b2b9900eb030ecc59297f00aab698ac411049989b08af4928",
+      "study": "prior_decisions",
+      "summary_path": "results/boundary_prior_decisions_20260907/summary.json",
+      "validation_selected_mean_metrics": {
+        "challenger": {
+          "balanced_accuracy": 0.5463752902307644,
+          "log_loss": 0.869082182615864,
+          "natural_accuracy": 0.5961574728901462
+        },
+        "original_reference": {
+          "balanced_accuracy": 0.5267117188464837,
+          "log_loss": 0.9671432575951857,
+          "natural_accuracy": 0.5314002828854314
+        },
+        "stronger_reference": {
+          "balanced_accuracy": 0.5251791924697085,
+          "log_loss": 0.952811792920685,
+          "natural_accuracy": 0.5393682225365394
+        }
+      }
+    },
+    {
+      "best_fixed_development_configuration": {
+        "mean_development_balanced_accuracy": 0.5585195235936173,
+        "mean_development_log_loss": 0.8633604749348908,
+        "mean_development_natural_accuracy": 0.6008250825082508,
+        "neural_weight": 0.5
+      },
+      "completed_fits": 0,
+      "completed_trials": 30,
+      "evidence_status": "Exposed May21/22/23 assessment dates; legacy floating labels; not independent confirmation.",
+      "sha256": "e9f07fee28607dbda2ecee9a9a927e82ca26352a702bde935f1a1b31412f4f90",
+      "study": "probability_blend",
+      "summary_path": "results/boundary_probability_blend_20260907/summary.json",
+      "validation_selected_mean_metrics": {}
+    }
+  ],
+  "substantial_independent_gain_confirmed": false,
+  "total_exploratory_model_fits": 240,
+  "total_postfit_trials": 462
+}
