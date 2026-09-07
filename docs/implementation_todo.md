@@ -120,9 +120,10 @@ This checklist tracks every missing item found during the project audit. Check a
 - [x] Add executable Torch-backed L2 Transformer/TCN experiment runner and artifact validation gate.
 - [x] Add optional holdout-manifest filtering for L2 Transformer/TCN experiments so serious neural runs train on physically materialized development L2 data only.
 - [x] Add dry-run-first cloud/Modal runner for Transformer/TCN L2 experiment artifacts.
-- [ ] Regenerate Transformer/TCN artifacts with a verified development holdout, hashed checkpoint/predictions, and flat-at-label-horizon economics.
+- [ ] Regenerate Transformer/TCN artifacts with a verified development holdout, hashed checkpoint/predictions, and version 3 persistent-account/depth/latency economics.
 - [x] Add masked sequence pretraining batch utility.
-- [x] Run self-supervised order-book pretraining smoke only after true L2 tensor data exists.
+- [x] Provide a masked mean-imputation reconstruction baseline with explicit untrained status.
+- [ ] Train and independently evaluate a learned self-supervised order-book representation.
 - [x] Add deterministic sequence ablation matrix for class weighting, scheduler, window, depth, models, and seeds.
 - [x] Add frozen L2 sequence candidates and one-way immutable final-holdout evaluation for TCN/Transformer checkpoints.
 

@@ -1,5 +1,7 @@
 # Expected-Edge Modeling
 
+> Historical results below predate the September 2026 timing, inference and execution corrections. They require regeneration and do not establish current executable alpha. See [model/mathematics remediation](model_math_remediation.md).
+
 ## Purpose
 
 Classification answers:

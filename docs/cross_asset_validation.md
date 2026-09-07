@@ -1,5 +1,7 @@
 # Cross-Asset Validation
 
+> Historical results below predate the September 2026 timing, inference and execution corrections. They require regeneration and do not establish current executable alpha. See [model/mathematics remediation](model_math_remediation.md).
+
 ## Setup
 
 The first cross-asset check uses the same Binance Vision pipeline on `BTCUSDT` and `ETHUSDT`:

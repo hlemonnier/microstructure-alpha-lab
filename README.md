@@ -18,9 +18,9 @@ The current evidence should be read conservatively. The repository supports caus
 
 ## Current Evidence
 
-Tracked docs and smoke artifacts support the cautious conclusion that local Binance quote/trade/depth-band samples show preliminary pre-cost predictability, but ordinary taker costs and adverse-selection assumptions dominate simple strategies. Full multi-month, multi-asset confirmatory runs and large repeated-seed crypto L2 neural experiments remain external-data/cloud-compute work.
+The September 2026 model/mathematics audit found defects affecting timing, inference and execution. The implementation has been corrected and expanded with adversarial regressions; see [the finding-by-finding remediation](docs/model_math_remediation.md). Historical performance figures and artifacts predate these corrections and require regeneration before interpretation. Neither positive nor negative executable-alpha conclusions are established by those old results.
 
-Legacy ignored expected-edge, Kelly, and neural CSVs are not promoted by the current code. They lack the new feature/result provenance or versioned neural economic contract, so the live evidence report keeps those gates red until clean regeneration.
+Feature manifests use the completed-bucket/raw-OFI contract; neural artifacts use version 3. Legacy expected-edge, Kelly and neural CSVs cannot establish current evidence. Raw market data and genuine observed fills are absent from this checkout. Masked mean imputation is an untrained reconstruction baseline, not learned pretraining.
 
 The reduced E2E fixture declares the Jan 3 holdout before selection, runs walk-forward only on Jan 1-2 development rows, records the full threshold search family in `artifacts/reduced_e2e/experiment_registry.jsonl`, and feeds the validation-selected rule into the stateful simulator. Full expected-edge registries now fail closed unless every result/audit pair has a sidecar binding it to the exact plan, verified feature inputs, holdout manifest, code fingerprint, and planned split sizes. Statistical correction uses one p-value per validation-selection procedure; it does not duplicate an artifact p-value across threshold candidates.
 
@@ -51,12 +51,7 @@ dependencies:
 .venv/bin/python -m pip install -r requirements-research.txt
 ```
 
-Current fast verification in this checkout:
-
-```text
-.venv/bin/python -m pytest -q
-368 passed
-```
+Verification commands and the scope of the new regressions are recorded in [the remediation report](docs/model_math_remediation.md). Research tests execute actual small CPU training when the pinned optional dependencies are installed.
 
 Reduced fixture-only artifacts:
 

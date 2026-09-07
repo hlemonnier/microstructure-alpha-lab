@@ -1,5 +1,7 @@
 # Microstructure Case Study: Binance Vision Microstructure Research
 
+> Historical results below predate the September 2026 timing, inference and execution corrections. They require regeneration and do not establish current executable alpha. See [model/mathematics remediation](model_math_remediation.md).
+
 ## One-Line Summary
 
 Built a reproducible crypto microstructure research stack on Binance Vision USD-M futures archives, then tested whether short-horizon quote/trade/depth-band signals survive walk-forward validation, latency, spread crossing, fee tiers, and conservative passive-execution assumptions.

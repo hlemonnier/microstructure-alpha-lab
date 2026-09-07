@@ -1,5 +1,7 @@
 # Passive Fill Diagnostics
 
+> Historical results below predate the September 2026 timing, inference and execution corrections. They require regeneration and do not establish current executable alpha. See [model/mathematics remediation](model_math_remediation.md).
+
 ## Purpose
 
 Taker execution is too expensive for the observed short-horizon edge. The obvious next question is whether passive entry helps.

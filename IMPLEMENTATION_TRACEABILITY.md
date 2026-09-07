@@ -1,5 +1,7 @@
 # Implementation Traceability
 
+Current corrections are tracked in [the September model/mathematics remediation](docs/model_math_remediation.md). Earlier status counts and empirical interpretations below are historical, including the former pretraining-smoke green gate. Mean imputation does not establish learned pretraining.
+
 Authoritative scope: local implementation specification supplied outside the repository. Status terms: `implemented`, `implemented-smoke-tested`, `empirically-pending`, or `not-applicable`.
 
 | Requirement | Status | Files | Tests / Evidence | Blocker |

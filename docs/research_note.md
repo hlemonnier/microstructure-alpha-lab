@@ -32,24 +32,11 @@ The committed fixtures under `examples/fixtures/` are sanitized synthetic data f
 
 ## 3. Causal Timing Contract
 
-Each sample is defined by a decision timestamp. Feature visibility is restricted to events at or before that timestamp. In the main quote/trade CSV builder, the default entry and exit are resolved from the first raw `bookTicker` quote event at or after the latency-adjusted target, while the feature state remains cut off at the retained decision quote. A `--execution-quote-resolution bucket` fallback exists for reproducing older bucket-retained studies. The feature CSV retains decision, quote, entry, and future timestamps so downstream code does not need to infer timing from bucket names.
+The quote/trade builder decides at the deterministic close of a completed `[start, close)` bucket. It retains the latest quote strictly before close, sums OFI across every raw transition, and admits only trades/depth snapshots strictly before close. The trailing partial bucket is omitted. Old last-quote-time decisions and bucket-retained future execution are unsupported.
 
-```text
-events <= decision_time       decision_time + latency       decision_time + latency + horizon
-        |                                  |                                |
-        v                                  v                                v
-   feature state                    executable entry                 executable exit
-```
+Entry/exit resolve on the first raw quote at or after `decision+latency` and `decision+latency+horizon`. Update IDs prevent tied-timestamp execution before the quote used for prediction. The CSV preserves decision/quote/entry/future timestamps, update IDs, lag measurements and actual execution-quote quantities. These are exchange-event-time assumptions; local receive timestamps remain unavailable when the source did not record them. Sparse quote gaps can make the actual holding interval differ from its nominal horizon; inspect the reported lags.
 
-Important details:
-
-- same-bucket trade aggregation is causal and only includes trades whose exchange timestamp is at or before the decision timestamp;
-- depth features use the latest depth snapshot at or before decision time;
-- default entry/exit use raw quote event timestamps, not bucket labels;
-- support exists for receive-time sampling where local timestamps are available;
-- adversarial tests mutate events after decision time and assert unchanged feature inputs.
-
-This matters because short-horizon microstructure research is highly sensitive to tiny timing mistakes. A model can appear predictive if a bucket is labeled with an early timestamp while containing later quote/trade events. The current feature builder avoids that specific leakage mode and now uses the stricter first-raw-executable quote contract by default.
+Tests check completed-boundary scheduling, raw-event OFI, post-decision feature invariance and multiple updates at one millisecond. See [the September remediation](model_math_remediation.md) for the complete mathematical contracts and limitations.
 
 ## 4. Split, Selection, And Holdout Protocol
 

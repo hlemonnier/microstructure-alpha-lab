@@ -1,5 +1,7 @@
 # Conditional Execution
 
+> Historical results below predate the September 2026 timing, inference and execution corrections. They require regeneration and do not establish current executable alpha. See [model/mathematics remediation](model_math_remediation.md).
+
 ## Purpose
 
 The regime analysis showed where gross signal concentrates, but a hindsight bucket table is not enough. This experiment asks whether a regime-conditioned rule can be selected on validation data and then survive the next test window.

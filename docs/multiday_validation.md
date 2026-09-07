@@ -1,5 +1,7 @@
 # Multi-Day Validation
 
+> Historical results below predate the September 2026 timing, inference and execution corrections. They require regeneration and do not establish current executable alpha. See [model/mathematics remediation](model_math_remediation.md).
+
 ## Purpose
 
 The first result set used two one-hour daily slices. This experiment expands the same Binance Vision setup to four consecutive first-hour slices:
