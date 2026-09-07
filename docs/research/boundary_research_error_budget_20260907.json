@@ -1,0 +1,22 @@
+{
+  "bootstrap_resamples": 20000,
+  "code_hashes": {
+    "scripts/assess_boundary_research_gate.py": "b9d043781f51e9d793a793a957d99e4572c854cd7d5f6f39a4d986798c8d63aa",
+    "src/lob_forge/boundary_research_spending.py": "4040ae27531f5dd7361108cd0cdefe9aa83ff5733d441cd7177254d52e65a5c7"
+  },
+  "future_round_rule": "If the declared tail exceeds the numerical resolution of the implementation, increase its registered resample budget before inspecting that new round. Never reuse exposed dates as fresh confirmation.",
+  "gate": "All original substantive gain gates must pass, together with a strictly positive lower bound under this additional round allocation. The original comparison summaries remain preserved.",
+  "independent_scores_inspected": false,
+  "limits": "This is nominal Bonferroni alpha spending under bootstrap coverage assumptions, not an always-valid guarantee under arbitrary market dependence. Retain the three-day block sensitivity and disclose longer regime uncertainty.",
+  "minimum_expected_draws_in_each_tail": 20,
+  "reason": "The user requested an open-ended search. Repeatedly testing new candidates until one wins must not silently replenish the nominal false-discovery budget. This stricter program-level requirement is fixed before the first independent outcomes are inspected.",
+  "registered_at_utc": "2026-09-07T17:06:01.499926+00:00",
+  "round_allocation": "Round j, starting at 1, receives 0.05 / 2**j. The infinite sum is 0.05. Within a round, split the allocation equally across its procedures and use two-sided intervals.",
+  "round_one_alpha": 0.025,
+  "round_one_marginal_coverage": 0.9875,
+  "round_one_procedures": [
+    "original_blend",
+    "pooled_balanced_tree_blend"
+  ],
+  "total_nominal_alpha": 0.05
+}
