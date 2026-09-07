@@ -1,4 +1,5 @@
 import csv
+import pytest
 from pathlib import Path
 
 from lob_forge.portfolio import (
@@ -195,6 +196,8 @@ def test_kelly_variance_gate_passes_stable_oos_variance(tmp_path: Path) -> None:
         min_observations=9,
         window_size=3,
         max_variance_cv=0.01,
+        normalization_notional=100.0,
+        horizon_steps=1,
     )
     text = format_variance_stability_report(report)
     csv_text = format_variance_stability_report(report, output_format="csv")
@@ -204,13 +207,14 @@ def test_kelly_variance_gate_passes_stable_oos_variance(tmp_path: Path) -> None:
         variance_report=report,
         fraction=0.25,
         cap_fraction=0.01,
+        mean_horizon_steps=1,
     )
 
     assert report.passed
-    assert report.variance_mean == 1.0
+    assert abs(report.variance_mean - 0.0001) < 1e-12
     assert "passed=1" in text
     assert csv_text.splitlines()[1].endswith(",1")
-    assert notional == 25.0
+    assert notional == 100.0
 
 
 def test_gated_kelly_returns_zero_for_unstable_variance(tmp_path: Path) -> None:
@@ -259,3 +263,59 @@ def _write_fold_pnl(path: Path, values: list[float]) -> None:
         writer.writeheader()
         for index, value in enumerate(values, start=1):
             writer.writerow({"fold": index, "test_net_pnl": value})
+
+
+def test_calmar_is_invariant_under_capital_and_position_scaling() -> None:
+    ratios = []
+    for scale in (1, 10):
+        trades = [
+            Trade(0, 1000, 1, 100, 99, notional=1000 * scale),
+            Trade(86400000, 86401000, 1, 100, 102, notional=1000 * scale),
+        ]
+        result = simulate_fixed_notional_portfolio(trades, PortfolioConfig(10000 * scale, 1000 * scale, 1000 * scale))
+        ratios.append(result.calmar_like)
+    assert ratios == [1, 1]
+
+
+def test_exact_exit_turnover_fees_and_initial_margin() -> None:
+    trade = Trade(0, 1000, 1, 100, 200, notional=100)
+    result = simulate_fixed_notional_portfolio([trade], PortfolioConfig(1000, 100, 100, taker_fee_bps=100))
+    assert result.total_net_pnl == 97
+    rejected = simulate_fixed_notional_portfolio([trade], PortfolioConfig(50, 100, 100))
+    assert rejected.trades[0].rejection_reason == "insufficient_initial_margin"
+    capped = simulate_fixed_notional_portfolio([trade], PortfolioConfig(1000, 50, 50))
+    assert capped.trades[0].rejection_reason == "max_notional"
+
+
+def test_calendar_zero_days_and_daily_stop_resets() -> None:
+    day = 86400000
+    trades = [
+        Trade(0, 1000, 1, 100, 99, notional=100),
+        Trade(2000, 3000, 1, 100, 102, notional=100),
+        Trade(2 * day, 2 * day + 1000, 1, 100, 102, notional=100),
+    ]
+    result = simulate_fixed_notional_portfolio(trades, PortfolioConfig(1000, 100, 100, daily_loss_limit=0.5))
+    assert result.trades[1].rejected and not result.trades[2].rejected
+    assert [row.pnl for row in result.daily_risk] == [-1, 0, 2]
+    assert result.daily_risk[1].trade_count == 0
+
+
+def test_kelly_rejects_unnormalized_and_mismatched_horizon(tmp_path: Path) -> None:
+    path = tmp_path / "pnl.csv"
+    _write_fold_pnl(path, [1, 2, 3, 1, 2, 3])
+    raw = evaluate_oos_variance_stability(path, column="test_net_pnl", min_observations=6, window_size=3)
+    assert raw.passed
+    assert gated_fractional_kelly_notional(mean_edge=0.01, capital=1000, variance_report=raw, mean_horizon_steps=1) == 0
+    normalized = evaluate_oos_variance_stability(
+        path, column="test_net_pnl", min_observations=6, window_size=3, normalization_notional=100, horizon_steps=1
+    )
+    assert (
+        gated_fractional_kelly_notional(mean_edge=0.01, capital=1000, variance_report=normalized, mean_horizon_steps=2)
+        == 0
+    )
+    assert (
+        gated_fractional_kelly_notional(mean_edge=0.01, capital=1000, variance_report=normalized, mean_horizon_steps=1)
+        > 0
+    )
+    with pytest.raises(ValueError, match="finite"):
+        fractional_kelly_notional(mean_edge=float("nan"), variance=1, capital=1000)

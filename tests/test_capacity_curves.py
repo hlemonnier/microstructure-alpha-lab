@@ -1,4 +1,6 @@
 from lob_forge.capacity_curves import decayed_edge_bps, format_capacity_curve, pnl_by_notional_curve
+from lob_forge.capacity_curves import empirical_capacity_curve
+import pytest
 
 
 def test_capacity_curve_decays_edge_by_notional() -> None:
@@ -18,3 +20,12 @@ def test_capacity_curve_decays_edge_by_notional() -> None:
 
 def test_decayed_edge_before_start_is_unchanged() -> None:
     assert decayed_edge_bps(3.0, notional=500.0, decay_start=1000.0, zero_edge_notional=2000.0) == 3.0
+
+
+def test_observed_capacity_uses_actual_group_means_and_uncertainty() -> None:
+    points = empirical_capacity_curve([(100, 1), (100, 3), (200, -1)], fee_bps=0.5)
+    assert points[0].gross_edge_bps == 2 and points[0].net_edge_standard_error_bps == 1
+    assert points[0].observations == 2 and points[0].estimation_basis == "observed_size_group"
+    assert points[1].net_edge_standard_error_bps is None and not points[1].capacity_ok
+    with pytest.raises(ValueError):
+        decayed_edge_bps(1, notional=10, decay_start=5, zero_edge_notional=5)

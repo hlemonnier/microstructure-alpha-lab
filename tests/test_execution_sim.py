@@ -14,6 +14,7 @@ from lob_forge.execution_sim import (
     simulate_taker_latency_order,
     validate_simulated_vs_live_fills,
 )
+import pytest
 
 
 def test_order_constraints_round_and_reject_min_notional() -> None:
@@ -26,6 +27,198 @@ def test_order_constraints_round_and_reject_min_notional() -> None:
     assert rejected.rejection_reason == "min_notional"
     assert accepted.price == 100.0
     assert accepted.quantity == 0.2
+
+
+def test_exact_lot_and_genuinely_sub_lot_values() -> None:
+    constraints = OrderConstraints(0.01, 0.01, 0, 0)
+    assert apply_order_constraints(side=1, price=100, quantity=0.29, constraints=constraints).quantity == 0.29
+    assert apply_order_constraints(side=1, price=100, quantity=0.289999999, constraints=constraints).quantity == 0.28
+
+
+def test_expired_reservation_does_not_suppress_replacement() -> None:
+    events = [MarketEvent(t, 99, 101, 10, 10) for t in (0, 100, 110)]
+    signals = [SignalEvent(t, 1, 100, order_type="passive", limit_price=99) for t in (0, 100)]
+    result = simulate_stateful_execution(
+        events, signals, config=StatefulExecutionConfig(1000, 500, 1, max_order_age_ms=50)
+    )
+    assert result.orders[0].status == "expired"
+    assert result.orders[1].requested_quantity == 1
+    assert result.orders[1].reason != "already_at_target"
+
+
+@pytest.mark.parametrize(
+    "exit_side,exit_notional,second_price,expected_inventory", [(0, 0, 200, 0), (-1, 100, 100, -1)]
+)
+def test_position_cap_is_separate_from_order_cap(exit_side, exit_notional, second_price, expected_inventory) -> None:
+    result = simulate_stateful_execution(
+        [MarketEvent(0, 100, 100, 10, 10), MarketEvent(1, second_price, second_price, 10, 10)],
+        [SignalEvent(0, 1, 100), SignalEvent(1, exit_side, exit_notional)],
+        config=StatefulExecutionConfig(1000, 100, 1),
+    )
+    assert result.final_inventory == expected_inventory
+
+
+def test_venue_order_cap_chunks_close_and_preserves_liquidity() -> None:
+    result = simulate_stateful_execution(
+        [MarketEvent(0, 100, 100, 10, 10), MarketEvent(1, 200, 200, 10, 10)],
+        [SignalEvent(0, 1, 100), SignalEvent(1, 0, 0)],
+        config=StatefulExecutionConfig(1000, 100, 1, order_constraints=OrderConstraints(0.01, 0.01, 0.01, 0, 50)),
+    )
+    assert result.final_inventory == 0
+    assert len(result.fills) == 6
+    assert all(fill.quantity * fill.avg_price <= 50 for fill in result.fills)
+    assert len(set(row.order_id for row in result.orders)) == len(result.orders)
+
+
+def test_new_target_cancels_rate_limited_child_continuation() -> None:
+    result = simulate_stateful_execution(
+        [MarketEvent(t, 100, 100, 10, 10) for t in (0, 10, 20, 30)],
+        [SignalEvent(0, 1, 100), SignalEvent(10, 0, 0)],
+        config=StatefulExecutionConfig(
+            1000, 100, 1, rate_limit_interval_ms=10, order_constraints=OrderConstraints(0.01, 0.01, 0.01, 0, 50)
+        ),
+    )
+    assert result.final_inventory == 0
+    assert [fill.side for fill in result.fills] == [1, -1]
+
+
+def test_leverage_reserves_spread_and_costs_before_consuming_book() -> None:
+    result = simulate_stateful_execution(
+        [MarketEvent(0, 99, 101, 10, 10)], [SignalEvent(0, 1, 100)], config=StatefulExecutionConfig(100, 1000, 1)
+    )
+    assert not result.fills
+    assert result.orders[0].reason == "max_leverage_after_costs"
+
+
+def test_kill_switch_still_allows_explicit_flatten() -> None:
+    result = simulate_stateful_execution(
+        [MarketEvent(0, 100, 100, 10, 10), MarketEvent(1, 80, 80, 10, 10)],
+        [SignalEvent(0, 1, 100), SignalEvent(1, 0, 0)],
+        config=StatefulExecutionConfig(1000, 500, 1, kill_switch_loss=10),
+    )
+    assert result.kill_switch_triggered and result.final_inventory == 0
+
+
+def test_shadow_taker_fills_only_available_depth() -> None:
+    constraints = OrderConstraints(0.01, 0.01, 0, 0)
+    empty = simulate_taker_latency_order(
+        [MarketEvent(0, 99, 101, 0, 0)],
+        decision_time_ms=0,
+        side=1,
+        quantity=10,
+        constraints=constraints,
+        latency=LatencyAssumptions(),
+    )
+    assert not empty.accepted and empty.quantity == 0 and empty.fill_price is None
+    partial = simulate_taker_latency_order(
+        [MarketEvent(0, 99, 101, 1, 1, ask_levels=((101, 1), (103, 1)))],
+        decision_time_ms=0,
+        side=1,
+        quantity=3,
+        constraints=constraints,
+        latency=LatencyAssumptions(),
+    )
+    assert partial.quantity == 2 and partial.fill_price == 102
+
+
+def test_passive_inventory_and_exit_require_actual_opposite_flow() -> None:
+    constraints = OrderConstraints(0.01, 0.01, 0, 0)
+    placement = MarketEvent(0, 99, 101, 10, 10)
+    entry = MarketEvent(1, 99, 101, 10, 10, trade_side="sell", trade_size=1, trade_price=99)
+    exit_placement = MarketEvent(2, 100, 102, 10, 10)
+    exit_trade = MarketEvent(3, 100, 102, 10, 10, trade_side="buy", trade_size=0.5, trade_price=102)
+    empty = simulate_passive_limit_order(
+        [placement], side=1, price=99, quantity=1, constraints=constraints, queue=QueueAssumptions(0), maker_exit=False
+    )
+    assert empty.inventory_carry == 0
+    filled = simulate_passive_limit_order(
+        [placement, entry],
+        side=1,
+        price=99,
+        quantity=1,
+        constraints=constraints,
+        queue=QueueAssumptions(0),
+        maker_exit=False,
+    )
+    assert filled.inventory_carry == 1
+    exited = simulate_passive_limit_order(
+        [placement, entry, exit_placement, exit_trade],
+        side=1,
+        price=99,
+        quantity=1,
+        constraints=constraints,
+        queue=QueueAssumptions(0),
+        require_trade_price=True,
+    )
+    assert exited.inventory_carry == 0.5 and exited.maker_exit_price == 102
+
+
+def test_passive_uses_trade_price_not_posttrade_quote_and_refuses_aggregate() -> None:
+    constraints = OrderConstraints(0.01, 0.01, 0, 0)
+    for flow_kind, trade_price in [("raw", 100), ("aggregate", 99)]:
+        fill = simulate_passive_limit_order(
+            [
+                MarketEvent(0, 99, 101, 10, 10),
+                MarketEvent(
+                    1,
+                    98,
+                    100,
+                    10,
+                    10,
+                    trade_side="sell",
+                    trade_size=1,
+                    trade_price=trade_price,
+                    trade_flow_kind=flow_kind,
+                ),
+            ],
+            side=1,
+            price=99,
+            quantity=1,
+            constraints=constraints,
+            queue=QueueAssumptions(0),
+            maker_exit=False,
+        )
+        assert fill.filled_size == 0
+
+
+def test_fill_mismatch_does_not_cancel_like_marginal_rate_error() -> None:
+    report = validate_simulated_vs_live_fills([(100, 1), (None, 0)], [(None, 0), (100, 1)])
+    assert report.fill_rate_error == 0
+    assert report.fill_mismatch_rate == 1 and report.paired_fills == 0
+
+
+def test_shared_external_queue_is_consumed_once_for_same_price_orders() -> None:
+    events = [
+        MarketEvent(0, 99, 101, 10, 10),
+        MarketEvent(1, 99, 101, 10, 10),
+        MarketEvent(2, 99, 101, 10, 10, trade_side="sell", trade_size=7, trade_price=99),
+    ]
+    signals = [
+        SignalEvent(0, 1, 100, order_type="passive", limit_price=99),
+        SignalEvent(1, 1, 200, order_type="passive", limit_price=99),
+    ]
+    result = simulate_stateful_execution(
+        events, signals, config=StatefulExecutionConfig(1000, 500, 1, queue_ahead_size=5, require_trade_price=True)
+    )
+    assert result.final_inventory == 2
+    assert len(result.fills) == 2
+
+
+def test_passive_kill_cancels_other_orders_without_removing_cleared_list_twice() -> None:
+    events = [
+        MarketEvent(0, 99, 101, 10, 10),
+        MarketEvent(1, 99, 101, 10, 10),
+        MarketEvent(2, 98, 98.1, 10, 10, trade_side="sell", trade_size=10, trade_price=98),
+    ]
+    signals = [
+        SignalEvent(0, 1, 100, order_type="passive", limit_price=99),
+        SignalEvent(1, 1, 200, order_type="passive", limit_price=99),
+    ]
+    result = simulate_stateful_execution(
+        events, signals, config=StatefulExecutionConfig(1000, 500, 1, kill_switch_loss=0.5)
+    )
+    assert result.kill_switch_triggered and len(result.fills) == 1
+    assert result.orders[1].reason == "kill_switch"
 
 
 def test_taker_latency_uses_delayed_market_event() -> None:
@@ -46,7 +239,7 @@ def test_taker_latency_uses_delayed_market_event() -> None:
 
     assert fill.accepted
     assert fill.fill_time_ms == 1500
-    assert fill.fill_price == 101.0
+    assert abs(fill.fill_price - 101.0) < 1e-10
 
 
 def test_passive_queue_supports_partial_fill_and_maker_exit() -> None:
@@ -70,8 +263,8 @@ def test_passive_queue_supports_partial_fill_and_maker_exit() -> None:
     assert fill.accepted
     assert fill.filled_size == 0.75
     assert fill.partial
-    assert fill.maker_exit_price == 100.1
-    assert fill.inventory_carry == 0.0
+    assert fill.maker_exit_price is None
+    assert fill.inventory_carry == 0.75
 
 
 def test_passive_limit_rejects_marketable_buy_as_post_only() -> None:
@@ -464,8 +657,8 @@ def test_stateful_execution_consumes_displayed_liquidity_globally_for_same_times
     assert len(result.fills) == 1
     assert result.fills[0].quantity == 1.0
     assert result.fills[0].available_quantity == 1.0
-    assert result.orders[1].status == "open"
-    assert result.orders[1].reason == "unfilled"
+    assert result.orders[1].status == "canceled"
+    assert result.orders[1].reason == "insufficient_liquidity"
 
 
 def test_stateful_execution_records_passive_position_at_fill_timestamp() -> None:
@@ -741,8 +934,8 @@ def test_stateful_execution_consumes_same_timestamp_taker_liquidity_once() -> No
 
     assert sum(fill.quantity for fill in result.fills if fill.side == 1) == 1.0
     assert result.fills[0].available_quantity == 1.0
-    assert result.orders[1].status == "open"
-    assert result.orders[1].reason == "unfilled"
+    assert result.orders[1].status == "canceled"
+    assert result.orders[1].reason == "insufficient_liquidity"
 
 
 def test_stateful_execution_consumes_passive_trade_flow_once_across_orders() -> None:

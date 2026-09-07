@@ -4,7 +4,7 @@ import csv
 import heapq
 import math
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from lob_forge.statistics import autocorrelation
@@ -23,6 +23,8 @@ class PortfolioConfig:
     daily_loss_limit: float | None = None
     rolling_loss_limit: float | None = None
     rolling_window: int = 20
+    periods_per_year: float = 365.0
+    enforce_margin: bool = True
 
 
 @dataclass(frozen=True)
@@ -74,6 +76,7 @@ class PortfolioResult:
     daily_autocorrelation: float
     calmar_like: float
     kill_switch_triggered: bool
+    risk_measurement_basis: str = "realized_pnl_calendar_days"
 
 
 @dataclass(frozen=True)
@@ -88,6 +91,8 @@ class VarianceStabilityReport:
     variance_cv: float
     min_observations: int
     max_variance_cv: float
+    value_unit: str = "unspecified"
+    horizon_steps: int | None = None
 
     @property
     def passed(self) -> bool:
@@ -130,12 +135,16 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
         raise ValueError("rolling_loss_limit must be finite")
     if config.rolling_window <= 0:
         raise ValueError("rolling_window must be positive")
+    if not math.isfinite(config.periods_per_year) or config.periods_per_year <= 0:
+        raise ValueError("periods_per_year must be positive and finite")
     for trade in trades:
         _validate_trade(trade)
 
     simulated: list[SimulatedTrade] = []
     active: list[tuple[int, int, SimulatedTrade]] = []
     kill_switch = False
+    rolling_halt = False
+    realized_equity = config.capital
     rolling_pnl: list[float] = []
     daily_pnl: dict[str, float] = {}
     daily_counts: dict[str, int] = {}
@@ -151,7 +160,7 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
         max_exposure = max(max_exposure, current_exposure)
 
     def realize(item: SimulatedTrade) -> None:
-        nonlocal current_inventory, current_exposure, kill_switch
+        nonlocal current_inventory, current_exposure, kill_switch, rolling_halt, realized_equity
         current_inventory -= item.trade.side * item.notional
         current_exposure = max(0.0, current_exposure - item.notional)
         if abs(current_inventory) <= 1e-12 * max(1.0, current_exposure):
@@ -160,6 +169,7 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
 
         day = _day(item.trade.exit_time_ms)
         daily_pnl[day] = daily_pnl.get(day, 0.0) + item.net_pnl
+        realized_equity += item.net_pnl
         daily_counts[day] = daily_counts.get(day, 0) + 1
         rolling_pnl.append(item.net_pnl)
         if len(rolling_pnl) > config.rolling_window:
@@ -169,6 +179,7 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
             kill_switch = True
         if config.rolling_loss_limit is not None and sum(rolling_pnl) <= -abs(config.rolling_loss_limit):
             kill_switch = True
+            rolling_halt = True
 
     def realize_through(timestamp_ms: int) -> None:
         while active and active[0][0] <= timestamp_ms:
@@ -178,7 +189,7 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
     for sequence, trade in enumerate(sorted(trades, key=lambda item: item.entry_time_ms)):
         # Exits at a timestamp are observable before a new entry at that same timestamp.
         realize_through(trade.entry_time_ms)
-        if kill_switch:
+        if rolling_halt or _day(trade.entry_time_ms) in daily_kill_days:
             simulated.append(
                 SimulatedTrade(
                     trade=trade,
@@ -205,6 +216,27 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
         )
         proposed_inventory = current_inventory + trade.side * notional
         proposed_exposure = current_exposure + notional
+        rejection = ""
+        if notional > config.max_notional:
+            rejection = "max_notional"
+        elif config.enforce_margin and proposed_exposure * config.initial_margin_rate > realized_equity:
+            rejection = "insufficient_initial_margin"
+        if rejection:
+            simulated.append(
+                SimulatedTrade(
+                    trade=trade,
+                    notional=0.0,
+                    quantity=0.0,
+                    gross_pnl=0.0,
+                    net_pnl=0.0,
+                    return_on_capital=0.0,
+                    inventory_notional=current_inventory,
+                    margin_used=current_exposure * config.initial_margin_rate,
+                    rejected=True,
+                    rejection_reason=rejection,
+                )
+            )
+            continue
         if config.max_inventory_notional is not None and abs(proposed_inventory) > config.max_inventory_notional:
             simulated.append(
                 SimulatedTrade(
@@ -225,7 +257,9 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
         quantity = notional / trade.entry_price
         gross_return = trade.side * (trade.exit_price - trade.entry_price) / trade.entry_price
         gross_pnl = gross_return * notional
-        cost = 2.0 * notional * (config.taker_fee_bps + config.slippage_bps) / 10000.0
+        cost = (
+            quantity * (trade.entry_price + trade.exit_price) * (config.taker_fee_bps + config.slippage_bps) / 10000.0
+        )
         inventory_penalty = abs(proposed_inventory) * config.inventory_penalty_bps / 10000.0
         net_pnl = gross_pnl - cost
         net_pnl -= inventory_penalty
@@ -250,6 +284,13 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
         _, _, item = heapq.heappop(active)
         realize(item)
 
+    if trades:
+        first_day = datetime.fromtimestamp(min(trade.entry_time_ms for trade in trades) / 1000, tz=timezone.utc).date()
+        last_day = datetime.fromtimestamp(max(trade.exit_time_ms for trade in trades) / 1000, tz=timezone.utc).date()
+        for offset in range((last_day - first_day).days + 1):
+            day = str(first_day + timedelta(days=offset))
+            daily_pnl.setdefault(day, 0.0)
+            daily_counts.setdefault(day, 0)
     daily_risk = [
         DailyRisk(
             day=day,
@@ -275,9 +316,9 @@ def simulate_fixed_notional_portfolio(trades: list[Trade], config: PortfolioConf
         max_margin_used=max_margin_used,
         max_concurrency=max_concurrency,
         max_inventory=max_inventory,
-        daily_sharpe=_sharpe(daily_returns),
+        daily_sharpe=_sharpe(daily_returns, periods_per_year=config.periods_per_year),
         daily_autocorrelation=autocorrelation(daily_returns),
-        calmar_like=(total_net / config.capital) / abs(max_drawdown) if max_drawdown else 0.0,
+        calmar_like=total_net / abs(max_drawdown) if max_drawdown else 0.0,
         kill_switch_triggered=kill_switch,
     )
 
@@ -305,6 +346,8 @@ def fractional_kelly_notional(
     fraction: float = 0.25,
     cap_fraction: float = 0.02,
 ) -> float:
+    if not all(math.isfinite(value) for value in (mean_edge, variance, capital, fraction, cap_fraction)):
+        raise ValueError("Kelly inputs must be finite decimal-return moments and capital")
     if variance <= 0.0 or capital <= 0.0:
         return 0.0
     if not 0.0 <= fraction <= 1.0:
@@ -322,8 +365,13 @@ def gated_fractional_kelly_notional(
     variance_report: VarianceStabilityReport,
     fraction: float = 0.25,
     cap_fraction: float = 0.02,
+    mean_horizon_steps: int | None = None,
 ) -> float:
-    if not variance_report.passed:
+    if (
+        not variance_report.passed
+        or variance_report.value_unit != "decimal_return"
+        or (mean_horizon_steps is None or variance_report.horizon_steps != mean_horizon_steps)
+    ):
         return 0.0
     return fractional_kelly_notional(
         mean_edge=mean_edge,
@@ -341,6 +389,9 @@ def evaluate_oos_variance_stability(
     min_observations: int = 20,
     window_size: int = 5,
     max_variance_cv: float = 0.5,
+    value_unit: str = "pnl",
+    normalization_notional: float | None = None,
+    horizon_steps: int | None = None,
 ) -> VarianceStabilityReport:
     if min_observations <= 1:
         raise ValueError("min_observations must be greater than 1")
@@ -350,6 +401,15 @@ def evaluate_oos_variance_stability(
         raise ValueError("max_variance_cv must be non-negative")
     path = Path(path)
     values = _read_numeric_column(path, column)
+    if value_unit not in {"pnl", "decimal_return"}:
+        raise ValueError("value_unit must be pnl or decimal_return")
+    if horizon_steps is not None and horizon_steps <= 0:
+        raise ValueError("horizon_steps must be positive")
+    if normalization_notional is not None:
+        if value_unit != "pnl" or not math.isfinite(normalization_notional) or normalization_notional <= 0:
+            raise ValueError("normalization_notional must be positive and applies only to pnl values")
+        values = [value / normalization_notional for value in values]
+        value_unit = "decimal_return"
     windows = [
         values[index : index + window_size]
         for index in range(0, len(values), window_size)
@@ -370,6 +430,8 @@ def evaluate_oos_variance_stability(
         variance_cv=variance_cv,
         min_observations=min_observations,
         max_variance_cv=max_variance_cv,
+        value_unit=value_unit,
+        horizon_steps=horizon_steps,
     )
 
 
@@ -386,6 +448,8 @@ def format_variance_stability_report(report: VarianceStabilityReport, *, output_
             "variance_cv",
             "min_observations",
             "max_variance_cv",
+            "value_unit",
+            "horizon_steps",
             "passed",
         ]
         values = [
@@ -399,6 +463,8 @@ def format_variance_stability_report(report: VarianceStabilityReport, *, output_
             f"{report.variance_cv:.12g}",
             str(report.min_observations),
             f"{report.max_variance_cv:.12g}",
+            report.value_unit,
+            str(report.horizon_steps) if report.horizon_steps is not None else "",
             str(int(report.passed)),
         ]
         return ",".join(fields) + "\n" + ",".join(values)
@@ -416,6 +482,8 @@ def format_variance_stability_report(report: VarianceStabilityReport, *, output_
             f"variance_cv={report.variance_cv:.12g}",
             f"min_observations={report.min_observations}",
             f"max_variance_cv={report.max_variance_cv:.12g}",
+            f"value_unit={report.value_unit}",
+            f"horizon_steps={report.horizon_steps}",
             f"passed={int(report.passed)}",
         ]
     )
@@ -456,13 +524,13 @@ def _max_concurrency(trades: list[Trade]) -> int:
     return maximum
 
 
-def _sharpe(values: list[float]) -> float:
+def _sharpe(values: list[float], *, periods_per_year: float = 365.0) -> float:
     if len(values) < 2:
         return 0.0
     mean = sum(values) / len(values)
     variance = sum((value - mean) ** 2 for value in values) / (len(values) - 1)
     std = math.sqrt(max(0.0, variance))
-    return mean / std * math.sqrt(252.0) if std else 0.0
+    return mean / std * math.sqrt(periods_per_year) if std else 0.0
 
 
 def _max_drawdown(values: list[float]) -> float:
@@ -488,7 +556,10 @@ def _read_numeric_column(path: Path, column: str) -> list[float]:
             raw = row.get(column, "")
             if raw in {"", None}:
                 continue
-            values.append(float(raw))
+            value = float(raw)
+            if not math.isfinite(value):
+                raise ValueError("variance observations must be finite")
+            values.append(value)
     if not values:
         raise ValueError(f"column {column!r} has no numeric values in {path}")
     return values

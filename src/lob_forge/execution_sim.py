@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
+from decimal import Decimal, ROUND_FLOOR, ROUND_HALF_EVEN
+import math
 
 
 @dataclass(frozen=True)
@@ -17,6 +19,10 @@ class MarketEvent:
     trade_intensity: float = 0.0
     bid_levels: tuple[tuple[float, float], ...] = field(default_factory=tuple)
     ask_levels: tuple[tuple[float, float], ...] = field(default_factory=tuple)
+    trade_price: float | None = None
+    trade_flow_kind: str = "quote_proxy"
+    aggregate_buy_size: float = 0.0
+    aggregate_sell_size: float = 0.0
 
     @property
     def mid(self) -> float:
@@ -110,6 +116,9 @@ class FillValidation:
     mean_abs_price_error: float
     mean_abs_size_error: float
     fill_rate_error: float
+    fill_mismatch_rate: float = 0.0
+    paired_fills: int = 0
+    mean_relative_size_error: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -139,6 +148,7 @@ class StatefulExecutionConfig:
     queue_ahead_size: float = 0.0
     cancellation_rate_per_second: float = 0.0
     cancel_replace_edge_bps: float | None = None
+    require_trade_price: bool = False
 
 
 @dataclass(frozen=True)
@@ -192,6 +202,8 @@ class StatefulSimulationResult:
     realized_pnl: float
     turnover: float
     kill_switch_triggered: bool
+    passive_fill_basis: str = "trade_price_or_quote_proxy"
+    risk_stop_behavior: str = "cancel_pending_block_increases_allow_market_deleveraging"
 
 
 @dataclass
@@ -218,6 +230,7 @@ class _EventLiquidity:
 
     @classmethod
     def from_event(cls, event: MarketEvent) -> _EventLiquidity:
+        _validate_market_event(event)
         bid_levels = [[price, max(0.0, size)] for price, size in event.bid_levels]
         ask_levels = [[price, max(0.0, size)] for price, size in event.ask_levels]
         if not bid_levels:
@@ -235,10 +248,9 @@ class _EventLiquidity:
         remaining = quantity
         filled = 0.0
         notional = 0.0
-        available = 0.0
+        available = sum(max(0.0, level[1]) for level in levels)
         for level in levels:
             level_size = max(0.0, level[1])
-            available += level_size
             take = min(remaining, level_size)
             if take <= 0.0:
                 continue
@@ -272,6 +284,22 @@ def simulate_stateful_execution(
     *,
     config: StatefulExecutionConfig,
 ) -> StatefulSimulationResult:
+    if not all(
+        math.isfinite(value)
+        for value in (
+            config.initial_cash,
+            config.max_position_notional,
+            config.max_leverage,
+            config.taker_fee_bps,
+            config.maker_fee_bps,
+            config.slippage_bps,
+            config.queue_ahead_size,
+            config.cancellation_rate_per_second,
+        )
+    ):
+        raise ValueError("execution config numeric values must be finite")
+    if min(config.taker_fee_bps, config.slippage_bps, config.queue_ahead_size, config.cancellation_rate_per_second) < 0:
+        raise ValueError("slippage, queue size and cancellation quantity rate must be non-negative")
     if config.initial_cash <= 0:
         raise ValueError("initial_cash must be positive")
     if config.max_position_notional < 0 or config.max_leverage <= 0:
@@ -282,7 +310,9 @@ def simulate_stateful_execution(
         raise ValueError("events cannot be empty")
 
     ordered_events = sorted(events, key=lambda event: event.timestamp_ms)
-    ordered_signals = sorted(enumerate(signals, start=1), key=lambda item: (item[1].decision_time_ms, item[0]))
+    ordered_signals: list[tuple[int | str, SignalEvent]] = list(
+        sorted(enumerate(signals, start=1), key=lambda item: (item[1].decision_time_ms, item[0]))
+    )
     for _, signal in ordered_signals:
         _validate_signal(signal)
 
@@ -302,7 +332,12 @@ def simulate_stateful_execution(
     last_event = ordered_events[-1]
 
     for event in ordered_events:
+        _validate_market_event(event)
         book = _EventLiquidity.from_event(event)
+        for order in list(pending):
+            if event.timestamp_ms > order.expiry_time_ms:
+                _replace_order_status(orders, order.row_index, "expired", "max_order_age_ms")
+                pending.remove(order)
         cash, inventory, avg_entry_price, realized_pnl, turnover, kill_switch = _refresh_kill_switch(
             event,
             cash,
@@ -327,12 +362,22 @@ def simulate_stateful_execution(
             if event.timestamp_ms > submit_time + config.max_order_age_ms:
                 orders.append(_order_row(order_id, signal, submit_time, 0, 0.0, "expired", "max_order_age_ms"))
                 continue
-            if kill_switch:
+            mark = event.mid
+            target_inventory = 0.0 if signal.target_side == 0 else signal.target_side * signal.target_notional / mark
+            risk_reducing = _reduces_inventory(inventory, target_inventory)
+            if kill_switch and not (signal.order_type == "market" and risk_reducing):
                 orders.append(_order_row(order_id, signal, submit_time, 0, 0.0, "rejected", "kill_switch"))
                 continue
 
-            mark = event.mid
-            target_inventory = 0.0 if signal.target_side == 0 else signal.target_side * signal.target_notional / mark
+            if not rate_limiter.allow(submit_time):
+                orders.append(_order_row(order_id, signal, submit_time, 0, 0.0, "rejected", "rate_limited"))
+                continue
+            if isinstance(order_index, int):
+                # A new accepted parent target supersedes queued children of
+                # earlier targets, including children waiting on a rate limit.
+                ordered_signals[next_signal_index:] = [
+                    item for item in ordered_signals[next_signal_index:] if isinstance(item[0], int)
+                ]
             _reconcile_pending_orders_for_signal(
                 pending,
                 orders,
@@ -340,10 +385,6 @@ def simulate_stateful_execution(
                 inventory=inventory,
                 target_inventory=target_inventory,
             )
-            if not rate_limiter.allow(submit_time):
-                orders.append(_order_row(order_id, signal, submit_time, 0, 0.0, "rejected", "rate_limited"))
-                continue
-
             pending_inventory = _pending_inventory(pending)
             delta_qty = target_inventory - inventory - pending_inventory
             side = 1 if delta_qty > 0 else -1 if delta_qty < 0 else 0
@@ -357,6 +398,13 @@ def simulate_stateful_execution(
                 if signal.limit_price is not None
                 else book.best_price(-side if signal.order_type == "passive" else side)
             )
+            # A target is a parent instruction. Venue per-order caps apply to
+            # child orders, independently of the portfolio's position limit.
+            unchunked_qty = requested_qty
+            if constraints.max_notional is not None and signal.order_type == "market":
+                levels = book.ask_levels if side == 1 else book.bid_levels
+                worst_price = max((price for price, size in levels if size > 0.0), default=reference_price)
+                requested_qty = min(requested_qty, constraints.max_notional / worst_price)
             check = apply_order_constraints(
                 side=side,
                 price=reference_price,
@@ -394,21 +442,48 @@ def simulate_stateful_execution(
             projected_inventory = inventory + pending_inventory + side * requested_qty
             projected_notional = abs(projected_inventory) * mark
             current_equity = cash + inventory * mark
-            if projected_notional > config.max_position_notional:
+            reduces_risk = _reduces_inventory(inventory, projected_inventory)
+            if projected_notional > config.max_position_notional and not reduces_risk:
                 orders.append(
                     _order_row(order_id, signal, submit_time, side, requested_qty, "rejected", "max_position_notional")
                 )
                 continue
-            if current_equity <= 0 or projected_notional / current_equity > config.max_leverage:
+            if not reduces_risk and (current_equity <= 0 or projected_notional / current_equity > config.max_leverage):
                 orders.append(
                     _order_row(order_id, signal, submit_time, side, requested_qty, "rejected", "max_leverage")
                 )
                 continue
 
             if signal.order_type == "market":
+                preview = _EventLiquidity(
+                    [level[:] for level in book.bid_levels], [level[:] for level in book.ask_levels]
+                )
+                preview_price, preview_qty, _ = preview.consume(side=side, quantity=requested_qty)
+                future_inventory = inventory + side * preview_qty
+                future_equity = current_equity - side * preview_qty * (preview_price - mark)
+                future_equity -= preview_qty * preview_price * (config.taker_fee_bps + config.slippage_bps) / 10000.0
+                future_equity -= _pending_cost_reserve(pending, mark, config.maker_fee_bps)
+                if (
+                    preview_qty > 0
+                    and not _reduces_inventory(inventory, future_inventory)
+                    and (
+                        future_equity <= 0
+                        or abs(future_inventory + pending_inventory) * mark > config.max_leverage * future_equity + 1e-9
+                    )
+                ):
+                    orders.append(
+                        _order_row(
+                            order_id, signal, submit_time, side, requested_qty, "rejected", "max_leverage_after_costs"
+                        )
+                    )
+                    continue
                 avg_price, fill_qty, available_qty = book.consume(side=side, quantity=requested_qty)
                 if fill_qty <= 0.0:
-                    orders.append(_order_row(order_id, signal, submit_time, side, requested_qty, "open", "unfilled"))
+                    orders.append(
+                        _order_row(
+                            order_id, signal, submit_time, side, requested_qty, "canceled", "insufficient_liquidity"
+                        )
+                    )
                     continue
                 partial_fill = fill_qty + 1e-12 < requested_qty
                 cash, inventory, avg_entry_price, realized_pnl, turnover, fee = _apply_fill(
@@ -462,6 +537,15 @@ def simulate_stateful_execution(
                 positions.append(
                     _position_row(event, cash, inventory, avg_entry_price, realized_pnl, turnover, kill_switch)
                 )
+                if requested_qty + 1e-12 < unchunked_qty and not partial_fill:
+                    # Continue the parent target using another permitted child;
+                    # preserve exchange rate limits and chronological decisions.
+                    child_time = event.timestamp_ms + config.rate_limit_interval_ms
+                    child = replace(signal, decision_time_ms=child_time - config.latency_ms)
+                    remaining_signals = ordered_signals[next_signal_index:]
+                    remaining_signals.append((f"{order_index}-child", child))
+                    remaining_signals.sort(key=lambda item: item[1].decision_time_ms)
+                    ordered_signals[next_signal_index:] = remaining_signals
                 continue
 
             order_row = replace(
@@ -487,9 +571,10 @@ def simulate_stateful_execution(
             )
 
         remaining_trade_size = max(0.0, event.trade_size)
-        for order in list(pending):
+        for order in sorted(pending, key=lambda item: (item.side, -item.side * item.price, item.submit_time_ms)):
             if order.canceled:
-                pending.remove(order)
+                if order in pending:
+                    pending.remove(order)
                 continue
             if event.timestamp_ms > order.expiry_time_ms:
                 _replace_order_status(orders, order.row_index, "expired", "max_order_age_ms")
@@ -511,11 +596,25 @@ def simulate_stateful_execution(
             # submit time fell between two market events.
             if order.activation_time_ms >= event.timestamp_ms:
                 continue
-            if remaining_trade_size <= 0.0 or not _event_hits_passive_order(event, side=order.side, price=order.price):
+            if remaining_trade_size <= 0.0 or not _event_hits_passive_order(
+                event, side=order.side, price=order.price, require_trade_price=config.require_trade_price
+            ):
                 continue
 
             queue_before = order.queue_ahead
             remaining_before = order.remaining_quantity
+            projected_inventory = inventory + _pending_inventory(pending)
+            projected_equity = (
+                cash + inventory * event.mid - _pending_cost_reserve(pending, event.mid, config.maker_fee_bps)
+            )
+            if not _reduces_inventory(inventory, projected_inventory) and (
+                abs(projected_inventory) * event.mid > config.max_position_notional + 1e-9
+                or projected_equity <= 0
+                or abs(projected_inventory) * event.mid > config.max_leverage * projected_equity + 1e-9
+            ):
+                _replace_order_status(orders, order.row_index, "canceled", "risk_limit_before_fill")
+                pending.remove(order)
+                continue
             order.queue_ahead, order.remaining_quantity, fill_qty = _consume_queue(
                 order.queue_ahead,
                 order.remaining_quantity,
@@ -524,6 +623,19 @@ def simulate_stateful_execution(
             consumed_trade = min(
                 remaining_trade_size, queue_before + remaining_before - order.queue_ahead - order.remaining_quantity
             )
+            # External volume ahead at a common price is shared. Consume it
+            # once, while own orders retain price/time priority via remaining
+            # aggressive volume; otherwise every child gets a duplicate queue.
+            external_consumed = queue_before - order.queue_ahead
+            if external_consumed > 0:
+                for later in pending:
+                    if (
+                        later is not order
+                        and later.side == order.side
+                        and later.price == order.price
+                        and later.submit_time_ms >= order.submit_time_ms
+                    ):
+                        later.queue_ahead = max(0.0, later.queue_ahead - external_consumed)
             remaining_trade_size = max(0.0, remaining_trade_size - consumed_trade)
             if fill_qty <= 0.0:
                 continue
@@ -594,6 +706,7 @@ def simulate_stateful_execution(
         realized_pnl=realized_pnl,
         turnover=turnover,
         kill_switch_triggered=kill_switch,
+        passive_fill_basis="raw_trade_price_required" if config.require_trade_price else "trade_price_or_quote_proxy",
     )
 
 
@@ -608,6 +721,27 @@ def apply_order_constraints(
         raise ValueError("side must be -1 or 1")
     if constraints.tick_size <= 0.0 or constraints.lot_size <= 0.0:
         raise ValueError("tick_size and lot_size must be positive")
+    if min(constraints.min_quantity, constraints.min_notional) < 0 or (
+        constraints.max_notional is not None
+        and (not math.isfinite(constraints.max_notional) or constraints.max_notional <= 0)
+    ):
+        raise ValueError("minimum constraints must be non-negative and max_notional positive and finite")
+    if (
+        not all(
+            math.isfinite(value)
+            for value in (
+                price,
+                quantity,
+                constraints.tick_size,
+                constraints.lot_size,
+                constraints.min_quantity,
+                constraints.min_notional,
+            )
+        )
+        or price <= 0
+        or quantity < 0
+    ):
+        raise ValueError("prices, quantities and constraints must be finite and non-negative, with positive price")
     rounded_price = _round_to_tick(price, constraints.tick_size)
     rounded_qty = _floor_to_lot(quantity, constraints.lot_size)
     notional = rounded_price * rounded_qty
@@ -629,6 +763,9 @@ def simulate_taker_latency_order(
     constraints: OrderConstraints,
     latency: LatencyAssumptions,
 ) -> TakerFill:
+    if min(latency.order_latency_ms, latency.websocket_delay_ms, latency.rate_limit_interval_ms) < 0:
+        raise ValueError("latency intervals must be non-negative")
+    events = sorted(events, key=lambda event: event.timestamp_ms)
     target_time = decision_time_ms + latency.order_latency_ms + latency.websocket_delay_ms
     event = _first_event_at_or_after(events, target_time)
     if event is None:
@@ -646,7 +783,15 @@ def simulate_taker_latency_order(
             event.timestamp_ms - decision_time_ms,
             check.rejection_reason,
         )
-    return TakerFill(True, event.timestamp_ms, check.price, check.quantity, event.timestamp_ms - decision_time_ms)
+    avg_price, filled, _ = _walk_book(event, side=side, quantity=check.quantity)
+    return TakerFill(
+        filled > 0.0,
+        event.timestamp_ms,
+        avg_price if filled else None,
+        filled,
+        event.timestamp_ms - decision_time_ms,
+        "" if filled else "insufficient_liquidity",
+    )
 
 
 def simulate_passive_limit_order(
@@ -659,12 +804,25 @@ def simulate_passive_limit_order(
     queue: QueueAssumptions,
     signal_edges_bps: list[float] | None = None,
     maker_exit: bool = True,
+    require_trade_price: bool = False,
 ) -> PassiveFill:
+    if (
+        not math.isfinite(queue.queue_ahead_size)
+        or not math.isfinite(queue.cancellation_rate_per_second)
+        or min(queue.queue_ahead_size, queue.cancellation_rate_per_second, queue.max_wait_ms) < 0
+    ):
+        raise ValueError("queue assumptions must be finite and non-negative")
+    if signal_edges_bps is not None and not signal_edges_bps:
+        raise ValueError("signal_edges_bps must not be empty")
+    if any(events[i].timestamp_ms > events[i + 1].timestamp_ms for i in range(len(events) - 1)):
+        raise ValueError("passive replay events must be chronologically ordered")
+    for event in events:
+        _validate_market_event(event)
     check = apply_order_constraints(side=side, price=price, quantity=quantity, constraints=constraints)
     if not check.accepted:
         return PassiveFill(False, 0.0, None, False, True, "rejected", None, 0.0, 0, check.rejection_reason)
     if not events:
-        return PassiveFill(True, 0.0, None, False, True, "no_market_event", None, check.quantity, 0)
+        return PassiveFill(True, 0.0, None, False, True, "no_market_event", None, 0.0, 0)
     if _post_only_would_cross(
         side=side,
         price=check.price,
@@ -692,7 +850,6 @@ def simulate_passive_limit_order(
     canceled = False
     cancel_reason = ""
     events_seen = 0
-    last_fill_index: int | None = None
     fill_time_ms: int | None = None
 
     for index, event in enumerate(events):
@@ -711,23 +868,37 @@ def simulate_passive_limit_order(
                 cancel_reason = "signal_decay_cancel_replace"
                 break
         # The first event is the placement snapshot, so its trade flow is not causally available.
-        if event.timestamp_ms > start_time and _event_hits_passive_order(event, side=side, price=check.price):
+        if event.timestamp_ms > start_time and _event_hits_passive_order(
+            event, side=side, price=check.price, require_trade_price=require_trade_price
+        ):
             queue_ahead, remaining, filled_now = _consume_queue(queue_ahead, remaining, event.trade_size)
             filled += filled_now
             notional += filled_now * check.price
             if filled_now > 0.0:
-                last_fill_index = index
                 fill_time_ms = event.timestamp_ms
             if remaining <= 0.0:
                 break
 
     avg_price = notional / filled if filled else None
     maker_exit_price = None
-    inventory_carry = remaining
-    if maker_exit and filled > 0.0 and last_fill_index is not None and last_fill_index + 1 < len(events):
-        exit_event = events[last_fill_index + 1]
-        maker_exit_price = exit_event.bid if side == 1 else exit_event.ask
-        inventory_carry = 0.0
+    inventory_carry = filled
+    # Only place an exit after the entry order has finished (filled, expired or
+    # replay ended). Never retroactively close a partially working entry.
+    if maker_exit and filled > 0.0 and events_seen < len(events):
+        exit_events = events[events_seen:]
+        exit_price = exit_events[0].ask if side == 1 else exit_events[0].bid
+        exit_fill = simulate_passive_limit_order(
+            exit_events,
+            side=-side,
+            price=exit_price,
+            quantity=filled,
+            constraints=constraints,
+            queue=queue,
+            maker_exit=False,
+            require_trade_price=require_trade_price,
+        )
+        maker_exit_price = exit_fill.avg_fill_price
+        inventory_carry = filled - exit_fill.filled_size
     return PassiveFill(
         accepted=True,
         filled_size=filled,
@@ -777,7 +948,19 @@ def validate_simulated_vs_live_fills(
     size_errors: list[float] = []
     sim_fills = 0
     live_fills = 0
+    mismatches = 0
+    relative_errors: list[float] = []
     for (sim_price, sim_size), (live_price, live_size) in zip(simulated, live):
+        if any(price is not None and (not math.isfinite(price) or price <= 0) for price in (sim_price, live_price)):
+            raise ValueError("fill prices must be finite and positive")
+        if any(not math.isfinite(size) or size < 0 for size in (sim_size, live_size)):
+            raise ValueError("fill sizes must be finite and non-negative")
+        if (sim_price is None) != (sim_size == 0) or (live_price is None) != (live_size == 0):
+            raise ValueError("fill price must be present exactly when size is positive")
+        mismatches += (sim_size > 0) != (live_size > 0)
+        relative_errors.append(
+            abs(sim_size - live_size) / max(sim_size, live_size) if max(sim_size, live_size) else 0.0
+        )
         if sim_price is not None:
             sim_fills += 1
         if live_price is not None:
@@ -790,6 +973,9 @@ def validate_simulated_vs_live_fills(
         mean_abs_price_error=sum(price_errors) / len(price_errors) if price_errors else 0.0,
         mean_abs_size_error=sum(size_errors) / len(size_errors),
         fill_rate_error=abs(sim_fills / len(simulated) - live_fills / len(live)),
+        fill_mismatch_rate=mismatches / len(simulated),
+        paired_fills=len(price_errors),
+        mean_relative_size_error=sum(relative_errors) / len(relative_errors),
     )
 
 
@@ -801,9 +987,11 @@ def _first_event_at_or_after(events: list[MarketEvent], timestamp_ms: int) -> Ma
 
 
 def _validate_signal(signal: SignalEvent) -> None:
+    if not math.isfinite(signal.predicted_edge_bps):
+        raise ValueError("predicted_edge_bps must be finite")
     if signal.target_side not in {-1, 0, 1}:
         raise ValueError("target_side must be -1, 0, or 1")
-    if signal.target_notional < 0:
+    if not math.isfinite(signal.target_notional) or signal.target_notional < 0:
         raise ValueError("target_notional must be non-negative")
     if signal.order_type not in {"market", "passive"}:
         raise ValueError("order_type must be market or passive")
@@ -817,7 +1005,7 @@ def _effective_order_constraints(config: StatefulExecutionConfig) -> OrderConstr
         lot_size=1e-12,
         min_quantity=0.0,
         min_notional=0.0,
-        max_notional=config.max_position_notional,
+        max_notional=None,
     )
 
 
@@ -865,6 +1053,14 @@ def _reconcile_pending_orders_for_signal(
 
 def _pending_inventory(pending: list[_PendingPassiveOrder]) -> float:
     return sum(order.side * order.remaining_quantity for order in pending if not order.canceled)
+
+
+def _pending_cost_reserve(pending: list[_PendingPassiveOrder], mark: float, fee_bps: float) -> float:
+    return sum(
+        max(0.0, order.remaining_quantity * (order.side * (order.price - mark) + order.price * fee_bps / 10000.0))
+        for order in pending
+        if not order.canceled
+    )
 
 
 def _apply_fill(
@@ -960,32 +1156,7 @@ def _position_row(
 
 
 def _walk_book(event: MarketEvent, *, side: int, quantity: float) -> tuple[float, float, float]:
-    levels = (
-        event.ask_levels
-        if side == 1 and event.ask_levels
-        else event.bid_levels
-        if side == -1 and event.bid_levels
-        else ()
-    )
-    if not levels:
-        levels = ((event.ask, event.ask_size),) if side == 1 else ((event.bid, event.bid_size),)
-    remaining = quantity
-    filled = 0.0
-    notional = 0.0
-    available = 0.0
-    for price, size in levels:
-        level_size = max(0.0, size)
-        available += level_size
-        take = min(remaining, level_size)
-        if take <= 0.0:
-            continue
-        filled += take
-        notional += take * price
-        remaining -= take
-        if remaining <= 1e-12:
-            break
-    avg_price = notional / filled if filled else 0.0
-    return avg_price, filled, available
+    return _EventLiquidity.from_event(event).consume(side=side, quantity=quantity)
 
 
 def _passive_available(event: MarketEvent, *, side: int, price: float, quantity: float) -> float:
@@ -1024,10 +1195,15 @@ def _update_average_cost(
     return realized, avg_entry_price
 
 
-def _event_hits_passive_order(event: MarketEvent, *, side: int, price: float) -> bool:
+def _event_hits_passive_order(
+    event: MarketEvent, *, side: int, price: float, require_trade_price: bool = False
+) -> bool:
+    if event.trade_flow_kind == "aggregate" or (require_trade_price and event.trade_price is None):
+        return False
+    trade_price = event.trade_price
     if side == 1:
-        return event.trade_side == "sell" and event.bid <= price
-    return event.trade_side == "buy" and event.ask >= price
+        return event.trade_side == "sell" and (trade_price if trade_price is not None else event.bid) <= price
+    return event.trade_side == "buy" and (trade_price if trade_price is not None else event.ask) >= price
 
 
 def _post_only_would_cross(*, side: int, price: float, opposite_price: float) -> bool:
@@ -1042,11 +1218,37 @@ def _consume_queue(queue_ahead: float, remaining: float, trade_size: float) -> t
 
 
 def _round_to_tick(price: float, tick_size: float) -> float:
-    return round(round(price / tick_size) * tick_size, 12)
+    return float(
+        (Decimal(str(price)) / Decimal(str(tick_size))).to_integral_value(rounding=ROUND_HALF_EVEN)
+        * Decimal(str(tick_size))
+    )
 
 
 def _floor_to_lot(quantity: float, lot_size: float) -> float:
-    return round(int(quantity / lot_size) * lot_size, 12)
+    return float(
+        (Decimal(str(quantity)) / Decimal(str(lot_size))).to_integral_value(rounding=ROUND_FLOOR)
+        * Decimal(str(lot_size))
+    )
+
+
+def _reduces_inventory(inventory: float, target_inventory: float) -> bool:
+    return inventory != 0.0 and inventory * target_inventory >= 0.0 and abs(target_inventory) < abs(inventory)
+
+
+def _validate_market_event(event: MarketEvent) -> None:
+    if not all(
+        math.isfinite(value) for value in (event.bid, event.ask, event.bid_size, event.ask_size, event.trade_size)
+    ):
+        raise ValueError("market prices and sizes must be finite")
+    if event.bid <= 0 or event.ask < event.bid or min(event.bid_size, event.ask_size, event.trade_size) < 0:
+        raise ValueError("market event requires positive uncrossed prices and non-negative sizes")
+    if event.trade_price is not None and (not math.isfinite(event.trade_price) or event.trade_price <= 0):
+        raise ValueError("trade_price must be positive and finite")
+    for side, levels in ((-1, event.bid_levels), (1, event.ask_levels)):
+        if any(not math.isfinite(price) or not math.isfinite(size) or price <= 0 or size < 0 for price, size in levels):
+            raise ValueError("depth prices and sizes must be finite, with price>0 and size>=0")
+        if any(side * levels[i][0] >= side * levels[i + 1][0] for i in range(len(levels) - 1)):
+            raise ValueError("depth levels must be distinct and sorted from best to worst")
 
 
 def _bucket(value: float, low: float, high: float) -> str:

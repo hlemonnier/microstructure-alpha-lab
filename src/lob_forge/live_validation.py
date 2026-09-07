@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
@@ -113,6 +114,8 @@ NORMALIZED_OBSERVED_FILL_COLUMNS = [
     "cumExecQty",
     "realizedPnl",
     "notes",
+    "fill_quantity_kind",
+    "realized_pnl_kind",
 ]
 SUPPORTED_OBSERVED_FILL_PROVIDERS = ("bybit", "okx", "binance", "alpaca")
 
@@ -127,6 +130,10 @@ MARKET_EVENT_COLUMNS = [
     "top_imbalance",
     "volatility_bps",
     "trade_intensity",
+    "trade_price",
+    "trade_flow_kind",
+    "aggregate_buy_size",
+    "aggregate_sell_size",
 ]
 
 
@@ -164,15 +171,24 @@ class ShadowFillValidationReport:
     max_price_error: float | None = None
     max_size_error: float | None = None
     max_fill_rate_error: float | None = None
+    unobserved_decisions: tuple[str, ...] = ()
+    observed_coverage: float = 0.0
+    min_observed_coverage: float | None = None
+    min_observations: int = 1
 
     @property
     def passed(self) -> bool:
         if self.missing_simulated_decisions or self.missing_shadow_decisions:
             return False
+        if self.matched_observations < self.min_observations or (
+            self.min_observed_coverage is not None and self.observed_coverage < self.min_observed_coverage
+        ):
+            return False
         checks = [
             (self.max_price_error, self.validation.mean_abs_price_error),
             (self.max_size_error, self.validation.mean_abs_size_error),
             (self.max_fill_rate_error, self.validation.fill_rate_error),
+            (self.max_fill_rate_error, self.validation.fill_mismatch_rate),
         ]
         return all(limit is None or value <= limit for limit, value in checks)
 
@@ -204,6 +220,7 @@ class _ObservedFillAggregate:
     realized_pnl: float = 0.0
     has_realized_pnl: bool = False
     has_observation: bool = False
+    quantity_kind: str | None = None
 
     @property
     def observed_fill_size(self) -> float:
@@ -401,6 +418,10 @@ def write_market_events(path: Path | str, events: list[MarketEvent]) -> Path:
                     "top_imbalance": event.top_imbalance,
                     "volatility_bps": event.volatility_bps,
                     "trade_intensity": event.trade_intensity,
+                    "trade_price": event.trade_price,
+                    "trade_flow_kind": event.trade_flow_kind,
+                    "aggregate_buy_size": event.aggregate_buy_size,
+                    "aggregate_sell_size": event.aggregate_sell_size,
                 }
             )
     return path
@@ -453,6 +474,8 @@ def simulate_shadow_fill_predictions(
                 )
             )
         else:
+            if any(event.trade_flow_kind == "aggregate" for event in decision_events):
+                raise ValueError("aggregate feature rows cannot identify passive execution; use raw trade-price events")
             passive_fill = simulate_passive_limit_order(
                 decision_events,
                 side=decision.predicted_side,
@@ -460,6 +483,8 @@ def simulate_shadow_fill_predictions(
                 quantity=decision.intended_size,
                 constraints=constraints,
                 queue=queue or QueueAssumptions(queue_ahead_size=0.0),
+                maker_exit=False,
+                require_trade_price=True,
             )
             predictions.append(
                 SimulatedFillPrediction(
@@ -509,7 +534,11 @@ def validate_shadow_fill_predictions(
     max_price_error: float | None = None,
     max_size_error: float | None = None,
     max_fill_rate_error: float | None = None,
+    min_observed_coverage: float | None = None,
+    min_observations: int = 1,
 ) -> ShadowFillValidationReport:
+    if min_observations < 1 or (min_observed_coverage is not None and not 0 <= min_observed_coverage <= 1):
+        raise ValueError("require min_observations >= 1 and coverage in [0,1]")
     predictions = _index_by_decision_id(read_simulated_fill_predictions(simulated_path), label="simulated")
     shadows = _index_by_decision_id(read_shadow_decisions(shadow_path), label="shadow")
     observed_shadows = {
@@ -536,6 +565,10 @@ def validate_shadow_fill_predictions(
         max_price_error=max_price_error,
         max_size_error=max_size_error,
         max_fill_rate_error=max_fill_rate_error,
+        unobserved_decisions=tuple(sorted(set(shadows).difference(observed_shadows))),
+        observed_coverage=len(matched_ids) / len(predictions) if predictions else 0.0,
+        min_observed_coverage=min_observed_coverage,
+        min_observations=min_observations,
     )
 
 
@@ -555,6 +588,11 @@ def format_shadow_fill_validation_report(report: ShadowFillValidationReport, *, 
             "max_price_error",
             "max_size_error",
             "max_fill_rate_error",
+            "fill_mismatch_rate",
+            "paired_fills",
+            "mean_relative_size_error",
+            "observed_coverage",
+            "unobserved_decisions",
             "passed",
         ]
         values = [
@@ -567,6 +605,11 @@ def format_shadow_fill_validation_report(report: ShadowFillValidationReport, *, 
             _format_optional(report.max_price_error),
             _format_optional(report.max_size_error),
             _format_optional(report.max_fill_rate_error),
+            str(report.validation.fill_mismatch_rate),
+            str(report.validation.paired_fills),
+            str(report.validation.mean_relative_size_error),
+            str(report.observed_coverage),
+            str(len(report.unobserved_decisions)),
             str(int(report.passed)),
         ]
         return ",".join(fields) + "\n" + ",".join(values)
@@ -583,6 +626,11 @@ def format_shadow_fill_validation_report(report: ShadowFillValidationReport, *, 
         f"max_price_error={_format_optional(report.max_price_error)}",
         f"max_size_error={_format_optional(report.max_size_error)}",
         f"max_fill_rate_error={_format_optional(report.max_fill_rate_error)}",
+        f"fill_mismatch_rate={report.validation.fill_mismatch_rate:.12g}",
+        f"paired_fills={report.validation.paired_fills}",
+        f"mean_relative_size_error={report.validation.mean_relative_size_error:.12g}",
+        f"observed_coverage={report.observed_coverage:.12g}",
+        f"unobserved_decisions={len(report.unobserved_decisions)}",
         f"passed={int(report.passed)}",
     ]
     if report.missing_simulated_decisions:
@@ -676,6 +724,10 @@ def _read_observed_fill_aggregates(
             price = _optional_float_from_aliases(row, OBSERVED_FILL_PRICE_COLUMNS)
             size = _optional_float_from_aliases(row, OBSERVED_FILL_SIZE_COLUMNS)
             realized_pnl = _optional_float_from_aliases(row, OBSERVED_REALIZED_PNL_COLUMNS)
+            if any(value is not None and not math.isfinite(value) for value in (price, size, realized_pnl)):
+                raise ValueError(f"observed fill row {row_number} has non-finite values")
+            if price is not None and price <= 0 and (size or 0) > 0:
+                raise ValueError(f"observed fill row {row_number} has non-positive price")
             if price is None and size is None and realized_pnl is None:
                 continue
             if size is None:
@@ -687,11 +739,38 @@ def _read_observed_fill_aggregates(
             aggregate = aggregates.setdefault(decision_id, _ObservedFillAggregate())
             aggregate.rows += 1
             aggregate.has_observation = True
-            aggregate.total_size += size
-            if price is not None and size > 0:
-                aggregate.price_size += price * size
+            kind = row.get("fill_quantity_kind") or (
+                "cumulative"
+                if any(
+                    row.get(key) not in {None, ""}
+                    for key in ("cumExecQty", "cum_exec_qty", "executedQty", "filled_qty", "filledQty")
+                )
+                else "incremental"
+            )
+            if kind not in {"incremental", "cumulative"}:
+                raise ValueError("fill_quantity_kind must be incremental or cumulative")
+            if size > 0:
+                if aggregate.quantity_kind is not None and aggregate.quantity_kind != kind:
+                    raise ValueError(
+                        f"ambiguous mixed cumulative and incremental fills for {decision_id}; use one authoritative source"
+                    )
+                aggregate.quantity_kind = kind
+                if kind == "cumulative":
+                    if size >= aggregate.total_size:
+                        aggregate.total_size = size
+                        aggregate.price_size = (price or 0.0) * size
+                else:
+                    aggregate.total_size += size
+                    aggregate.price_size += (price or 0.0) * size
             if realized_pnl is not None:
-                aggregate.realized_pnl += realized_pnl
+                pnl_kind = row.get("realized_pnl_kind") or kind
+                if pnl_kind == "cumulative":
+                    if size >= aggregate.total_size:
+                        aggregate.realized_pnl = realized_pnl
+                elif pnl_kind == "incremental":
+                    aggregate.realized_pnl += realized_pnl
+                else:
+                    raise ValueError("realized_pnl_kind must be incremental or cumulative")
                 aggregate.has_realized_pnl = True
     return aggregates
 
@@ -807,6 +886,7 @@ def _normalize_bybit_fill_row(row: Mapping[str, Any]) -> dict[str, str] | None:
         symbol=_first_raw_value(row, ("symbol",)),
         price=price,
         size=size,
+        fill_quantity_kind="incremental" if row.get("execQty") is not None else "cumulative",
         realized_pnl=_first_raw_value(row, ("execPnl", "closedPnl", "realizedPnl")),
         notes=_provider_notes(
             row,
@@ -851,6 +931,7 @@ def _normalize_okx_fill_row(row: Mapping[str, Any]) -> dict[str, str] | None:
         symbol=_first_raw_value(row, ("instId",)),
         price=_first_raw_value(row, ("fillPx", "avgPx")),
         size=size,
+        fill_quantity_kind="incremental" if row.get("fillSz") is not None else "cumulative",
         realized_pnl=_first_raw_value(row, ("fillPnl", "pnl")),
         notes=_provider_notes(
             row,
@@ -887,13 +968,33 @@ def _normalize_binance_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
             )
         return rows
 
-    decision_id = _first_raw_value(record, ("c", "clientOrderId", "newClientOrderId", "orderId", "i"))
+    decision_id = _first_raw_value(record, ("C", "c", "clientOrderId", "newClientOrderId", "orderId", "i"))
     if not decision_id:
         return []
     status = (_first_raw_value(record, ("X", "status")) or "").upper()
     exec_type = (_first_raw_value(record, ("x", "executionType")) or "").upper()
     last_size = _first_raw_value(record, ("l", "lastExecutedQty"))
     last_price = _first_raw_value(record, ("L", "lastExecutedPrice"))
+    cumulative_size = _first_raw_value(record, ("z",))
+    if cumulative_size is not None and float(cumulative_size) > 0:
+        quote_value = _optional_float_any(_first_raw_value(record, ("Z",)))
+        cumulative_price = _first_raw_value(record, ("avgPrice", "ap"))
+        if quote_value is not None:
+            cumulative_price = str(quote_value / float(cumulative_size))
+        elif _optional_float_any(last_size) == float(cumulative_size):
+            cumulative_price = last_price
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="binance",
+                symbol=_first_raw_value(record, ("s", "symbol")),
+                price=cumulative_price,
+                size=cumulative_size,
+                fill_quantity_kind="cumulative",
+                realized_pnl=None,
+                notes=_provider_notes(record, ("E", "T", "i", "t", "I", "x", "X")),
+            )
+        ]
     if _optional_float_any(last_size) not in {None, 0.0}:
         return [
             _normalized_fill_row(
@@ -921,6 +1022,7 @@ def _normalize_binance_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
                 symbol=_first_raw_value(record, ("s", "symbol")),
                 price=avg_price or last_price,
                 size=executed_size,
+                fill_quantity_kind="cumulative",
                 realized_pnl=None,
                 notes=_provider_notes(
                     record,
@@ -957,6 +1059,24 @@ def _normalize_binance_futures_order_trade_update(
     notes = _provider_notes(event, ("e", "E", "T")) + _prefixed_notes(
         order, "order", ("i", "t", "T", "x", "X", "m", "rp", "n", "N")
     )
+    cumulative_size = _first_raw_value(order, ("z",))
+    if cumulative_size is not None and float(cumulative_size) > 0:
+        cumulative_price = _first_raw_value(order, ("ap", "avgPrice"))
+        if not cumulative_price and _optional_float_any(last_size) == float(cumulative_size):
+            cumulative_price = last_price
+        return [
+            _normalized_fill_row(
+                decision_id=decision_id,
+                venue="binance",
+                symbol=_first_raw_value(order, ("s", "symbol")),
+                price=cumulative_price,
+                size=cumulative_size,
+                fill_quantity_kind="cumulative",
+                realized_pnl=_first_raw_value(order, ("rp", "realizedPnl")),
+                realized_pnl_kind="incremental",
+                notes=notes,
+            )
+        ]
     if _optional_float_any(last_size) not in {None, 0.0}:
         return [
             _normalized_fill_row(
@@ -984,6 +1104,7 @@ def _normalize_binance_futures_order_trade_update(
                 symbol=_first_raw_value(order, ("s", "symbol")),
                 price=avg_price or last_price,
                 size=executed_size,
+                fill_quantity_kind="cumulative",
                 realized_pnl=_first_raw_value(order, ("rp", "realizedPnl")),
                 notes=notes,
             )
@@ -1035,6 +1156,7 @@ def _normalize_alpaca_fill_row(row: Mapping[str, Any]) -> list[dict[str, str]]:
                 symbol=_first_raw_value(order, ("symbol",)),
                 price=_first_raw_value(order, ("filled_avg_price",)),
                 size=filled_size,
+                fill_quantity_kind="cumulative",
                 realized_pnl=None,
                 notes=_provider_notes(order, ("submitted_at", "filled_at", "status", "id")),
             )
@@ -1066,6 +1188,8 @@ def _normalized_fill_row(
     size: str | None,
     realized_pnl: str | None,
     notes: str,
+    fill_quantity_kind: str = "incremental",
+    realized_pnl_kind: str | None = None,
 ) -> dict[str, str]:
     size_value = _optional_float_any(size)
     price_value = _optional_float_any(price)
@@ -1075,6 +1199,8 @@ def _normalized_fill_row(
         raise ValueError(f"observed fill for {decision_id} has negative fill size")
     if size_value > 0 and price_value is None:
         raise ValueError(f"observed fill for {decision_id} has positive fill size but no fill price")
+    if size_value > 0 and price_value is not None and price_value <= 0:
+        raise ValueError(f"observed fill for {decision_id} has non-positive fill price")
     client_order_id = client_order_id or decision_id
     return {
         "decision_id": decision_id,
@@ -1085,6 +1211,8 @@ def _normalized_fill_row(
         "cumExecQty": _format_optional(size_value),
         "realizedPnl": _format_optional(_optional_float_any(realized_pnl)),
         "notes": notes,
+        "fill_quantity_kind": fill_quantity_kind,
+        "realized_pnl_kind": realized_pnl_kind or fill_quantity_kind,
     }
 
 
@@ -1108,7 +1236,10 @@ def _dedupe_key(provider: str, row: Mapping[str, str]) -> str:
         part for part in row.get("notes", "").split(";") if part.split("=", 1)[0] in identity_fields
     )
     if note_identity:
-        return f"{provider}|{row['decision_id']}|{note_identity}"
+        snapshot = (
+            f"|{row.get('cumExecQty')}|{row.get('avgPrice')}" if row.get("fill_quantity_kind") == "cumulative" else ""
+        )
+        return f"{provider}|{row['decision_id']}|{note_identity}{snapshot}"
     return f"{provider}|{id(row)}"
 
 
@@ -1133,7 +1264,10 @@ def _optional_float_any(value: Any) -> float | None:
         return None
     if isinstance(value, str) and value == "":
         return None
-    return float(value)
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError("observed numeric values must be finite")
+    return result
 
 
 def _provider_notes(row: Mapping[str, Any], columns: tuple[str, ...]) -> str:
@@ -1192,24 +1326,35 @@ def _market_event_from_row(row: dict[str, str]) -> MarketEvent:
         top_imbalance=float(row.get("top_imbalance", "") or 0.0),
         volatility_bps=float(row.get("volatility_bps", "") or 0.0),
         trade_intensity=float(row.get("trade_intensity", "") or 0.0),
+        trade_price=_optional_float(row.get("trade_price", "")),
+        trade_flow_kind=row.get("trade_flow_kind") or "quote_proxy",
+        aggregate_buy_size=float(row.get("aggregate_buy_size") or 0.0),
+        aggregate_sell_size=float(row.get("aggregate_sell_size") or 0.0),
     )
 
 
 def _market_event_from_feature_row(row: dict[str, str]) -> MarketEvent:
     trade_qty = float(row.get("trade_qty", "") or 0.0)
     trade_imbalance = float(row.get("trade_imbalance", "") or 0.0)
-    trade_side = None
-    if trade_qty > 0:
-        trade_side = "buy" if trade_imbalance > 0 else "sell" if trade_imbalance < 0 else None
+    if (
+        not math.isfinite(trade_qty)
+        or trade_qty < 0
+        or not math.isfinite(trade_imbalance)
+        or not -1 <= trade_imbalance <= 1
+    ):
+        raise ValueError("aggregate quantity/imbalance must be finite with quantity>=0 and imbalance in [-1,1]")
     volatility = float(row.get("realized_volatility_5", "") or 0.0) * 10000.0
     return MarketEvent(
         timestamp_ms=int(float(row.get("entry_event_time") or row["event_time"])),
         bid=float(row.get("entry_bid") or row["bid"]),
         ask=float(row.get("entry_ask") or row["ask"]),
-        bid_size=float(row.get("bid_qty", "") or 0.0),
-        ask_size=float(row.get("ask_qty", "") or 0.0),
-        trade_side=trade_side,
-        trade_size=trade_qty,
+        bid_size=float((row.get("entry_bid_qty") if row.get("entry_bid") else row.get("bid_qty")) or 0.0),
+        ask_size=float((row.get("entry_ask_qty") if row.get("entry_ask") else row.get("ask_qty")) or 0.0),
+        trade_side=None,
+        trade_size=0.0,
+        trade_flow_kind="aggregate",
+        aggregate_buy_size=trade_qty * (1.0 + trade_imbalance) / 2.0,
+        aggregate_sell_size=trade_qty * (1.0 - trade_imbalance) / 2.0,
         top_imbalance=float(row.get("top_imbalance", "") or 0.0),
         volatility_bps=volatility,
         trade_intensity=float(row.get("trade_count", "") or 0.0),

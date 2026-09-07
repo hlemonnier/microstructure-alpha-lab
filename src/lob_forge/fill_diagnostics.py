@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import math
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -303,12 +304,16 @@ def _quantile_buckets(
     if not finite_rows:
         raise ValueError(f"no finite values available for regime feature: {feature}")
     finite_rows.sort(key=lambda item: item[0])
-    bucket_count = min(bins, len(finite_rows))
+    unique_values = sorted(set(value for value, _ in finite_rows))
+    bucket_count = min(bins, len(unique_values))
     buckets: list[tuple[int, float, float, list[dict[str, str]]]] = []
     for bucket_idx in range(bucket_count):
-        start = bucket_idx * len(finite_rows) // bucket_count
-        end = (bucket_idx + 1) * len(finite_rows) // bucket_count
-        bucket_items = finite_rows[start:end]
+        # Identical feature values must never identify different regimes based
+        # on input ordering. Quantile targets snap to unique value boundaries.
+        start = bucket_idx * len(unique_values) // bucket_count
+        end = (bucket_idx + 1) * len(unique_values) // bucket_count
+        selected_values = set(unique_values[start:end])
+        bucket_items = [(value, row) for value, row in finite_rows if value in selected_values]
         values = [value for value, _ in bucket_items]
         buckets.append((bucket_idx + 1, values[0], values[-1], [row for _, row in bucket_items]))
     return buckets
@@ -318,7 +323,8 @@ def _safe_float(value: str | None) -> float | None:
     if value is None or value == "":
         return None
     try:
-        return float(value)
+        parsed = float(value)
+        return parsed if math.isfinite(parsed) else None
     except ValueError:
         return None
 

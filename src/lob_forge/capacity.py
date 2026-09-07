@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import math
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -20,6 +21,8 @@ class CapacityDiagnostics:
     total_capacity_notional: float
     mean_volume_cap_notional: float
     mean_top_book_cap_notional: float
+    identified_liquidity_windows: int = 0
+    capacity_basis: str = "historical_liquidity_budget"
 
 
 def run_capacity_diagnostics(
@@ -33,11 +36,11 @@ def run_capacity_diagnostics(
     source_date: str | None = None,
     by_source_date: bool = False,
 ) -> list[CapacityDiagnostics]:
-    if participation_rate < 0.0:
-        raise ValueError("participation_rate must be non-negative")
-    if top_book_fraction < 0.0:
-        raise ValueError("top_book_fraction must be non-negative")
-    if max_notional is not None and max_notional < 0.0:
+    if not math.isfinite(participation_rate) or not 0.0 <= participation_rate <= 1.0:
+        raise ValueError("participation_rate must be between zero and one")
+    if not math.isfinite(top_book_fraction) or not 0.0 <= top_book_fraction <= 1.0:
+        raise ValueError("top_book_fraction must be between zero and one")
+    if max_notional is not None and (not math.isfinite(max_notional) or max_notional < 0.0):
         raise ValueError("max_notional must be non-negative")
 
     rows = _read_rows(Path(feature_csv))
@@ -78,7 +81,7 @@ def run_capacity_diagnostics(
 
 def format_capacity_diagnostics(diagnostics: list[CapacityDiagnostics]) -> str:
     lines = [
-        "group,side,signals,positive_capacity_signals,mean_capacity_notional,median_capacity_notional,min_capacity_notional,max_capacity_notional,total_capacity_notional,mean_volume_cap_notional,mean_top_book_cap_notional"
+        "group,side,signals,positive_capacity_signals,mean_capacity_notional,median_capacity_notional,min_capacity_notional,max_capacity_notional,total_capacity_notional,mean_volume_cap_notional,mean_top_book_cap_notional,identified_liquidity_windows,capacity_basis"
     ]
     for item in diagnostics:
         lines.append(
@@ -95,6 +98,8 @@ def format_capacity_diagnostics(diagnostics: list[CapacityDiagnostics]) -> str:
                     _fmt(item.total_capacity_notional),
                     _fmt(item.mean_volume_cap_notional),
                     _fmt(item.mean_top_book_cap_notional),
+                    str(item.identified_liquidity_windows),
+                    item.capacity_basis,
                 ]
             )
         )
@@ -117,6 +122,8 @@ def _compute_group(
     volume_caps: list[float] = []
     top_book_caps: list[float] = []
     signals = 0
+    volume_spent: dict[tuple[str, str], float] = {}
+    book_spent: dict[tuple[str, str, int], float] = {}
 
     for row in rows:
         side = predict_feature_threshold(row, feature, threshold)
@@ -129,11 +136,23 @@ def _compute_group(
         trade_notional = _safe_float(row.get("trade_notional"))
         volume_cap = participation_rate * max(0.0, trade_notional)
         top_book_cap = top_book_fraction * _top_book_notional(row, side)
+        window_id = row.get("trade_window_id") or row.get("event_time")
+        snapshot_id = row.get("entry_update_id") or row.get("entry_event_time") or row.get("event_time")
+        volume_key = (row.get("source_date", ""), window_id) if window_id else None
+        book_key = (row.get("source_date", ""), snapshot_id, side) if snapshot_id else None
+        if volume_key is not None:
+            volume_cap = max(0.0, volume_cap - volume_spent.get(volume_key, 0.0))
+        if book_key is not None:
+            top_book_cap = max(0.0, top_book_cap - book_spent.get(book_key, 0.0))
         capacity = min(volume_cap, top_book_cap)
         if max_notional is not None:
             capacity = min(capacity, max_notional)
 
         capacities.append(max(0.0, capacity))
+        if volume_key is not None:
+            volume_spent[volume_key] = volume_spent.get(volume_key, 0.0) + capacity
+        if book_key is not None:
+            book_spent[book_key] = book_spent.get(book_key, 0.0) + capacity
         volume_caps.append(max(0.0, volume_cap))
         top_book_caps.append(max(0.0, top_book_cap))
 
@@ -149,16 +168,20 @@ def _compute_group(
         total_capacity_notional=sum(capacities),
         mean_volume_cap_notional=_mean(volume_caps),
         mean_top_book_cap_notional=_mean(top_book_caps),
+        identified_liquidity_windows=len(volume_spent),
+        capacity_basis="historical_liquidity_budget"
+        if volume_spent
+        else "independent_row_scenarios_unidentified_windows",
     )
 
 
 def _top_book_notional(row: dict[str, str], side: int) -> float:
     if side > 0:
         price = _safe_float(row.get("entry_ask") or row.get("ask"))
-        qty = _safe_float(row.get("ask_qty"))
+        qty = _safe_float(row.get("entry_ask_qty") if row.get("entry_ask") else row.get("ask_qty"))
     else:
         price = _safe_float(row.get("entry_bid") or row.get("bid"))
-        qty = _safe_float(row.get("bid_qty"))
+        qty = _safe_float(row.get("entry_bid_qty") if row.get("entry_bid") else row.get("bid_qty"))
     return max(0.0, price) * max(0.0, qty)
 
 
@@ -171,9 +194,12 @@ def _safe_float(value: str | None) -> float:
     if value is None or value == "":
         return 0.0
     try:
-        return float(value)
+        parsed = float(value)
     except ValueError:
         return 0.0
+    if not math.isfinite(parsed):
+        raise ValueError("capacity inputs must be finite")
+    return parsed
 
 
 def _mean(values: list[float]) -> float:

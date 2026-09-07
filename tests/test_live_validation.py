@@ -1,5 +1,6 @@
 import csv
 import json
+import pytest
 from pathlib import Path
 
 from lob_forge.cli import main as cli_main
@@ -16,7 +17,10 @@ from lob_forge.live_validation import (
     write_market_events_from_feature_csv,
     write_observed_fill_template,
     write_simulated_fill_predictions,
+    write_shadow_decisions,
+    simulate_shadow_fill_predictions,
 )
+from lob_forge.execution_sim import OrderConstraints
 from lob_forge.paper_orders import write_paper_order_plan
 
 
@@ -323,9 +327,9 @@ def test_observed_fill_import_merges_partial_fills_by_decision_id(tmp_path: Path
         ),
     )
     observed_path.write_text(
-        "client_order_id,avgPrice,cumExecQty,realizedPnl\n"
-        "d1,100.0,0.5,0.1\n"
-        "d1,101.0,1.5,0.2\n"
+        "client_order_id,avgPrice,cumExecQty,realizedPnl,fill_quantity_kind\n"
+        "d1,100.0,0.5,0.1,incremental\n"
+        "d1,101.0,1.5,0.2,incremental\n"
         "d2,,0,\n"
         "not_shadow,99.0,1.0,0.0\n"
     )
@@ -443,7 +447,7 @@ def test_observed_fill_import_rejects_positive_size_without_price(tmp_path: Path
             intended_size=1.0,
         ),
     )
-    observed_path.write_text("decision_id,fill_size\n" "d1,1.0\n")
+    observed_path.write_text("decision_id,fill_size\nd1,1.0\n")
 
     try:
         merge_observed_fills_into_shadow_decisions(
@@ -1017,7 +1021,130 @@ def test_feature_csv_exports_market_events_for_fill_simulation(tmp_path: Path) -
     assert events[0].timestamp_ms == 1100
     assert events[0].bid == 100.0
     assert events[0].ask == 102.0
-    assert events[0].trade_side == "buy"
+    assert events[0].trade_side is None
+    assert events[0].aggregate_buy_size == 4.0
+    assert events[0].aggregate_sell_size == 1.0
+    assert events[0].trade_flow_kind == "aggregate"
     assert abs(events[0].volatility_bps - 3.0) < 1e-9
-    assert events[1].trade_side == "sell"
+    assert events[1].trade_side is None
+    assert events[1].aggregate_buy_size == 1.0
+    assert events[1].aggregate_sell_size == 3.0
     assert output_path.read_text().splitlines()[0].startswith("timestamp_ms,bid,ask")
+
+
+def test_partial_fill_cancel_cumulative_quantity_is_not_an_extra_fill(tmp_path: Path) -> None:
+    raw = tmp_path / "raw.jsonl"
+    normalized = tmp_path / "normalized.csv"
+    shadow = tmp_path / "shadow.csv"
+    merged = tmp_path / "merged.csv"
+    events = [
+        dict(
+            e="executionReport",
+            s="BTCUSDT",
+            c="d1",
+            x="TRADE",
+            X="PARTIALLY_FILLED",
+            i=123,
+            l=".25",
+            z=".25",
+            L="100",
+            Z="25",
+            t=11,
+            I=100,
+        ),
+        dict(
+            e="executionReport",
+            s="BTCUSDT",
+            c="cancel-id",
+            C="d1",
+            x="CANCELED",
+            X="CANCELED",
+            i=123,
+            l="0",
+            z=".25",
+            L="0",
+            Z="25",
+            t=-1,
+            I=101,
+        ),
+    ]
+    raw.write_text("\n".join(json.dumps(row) for row in events))
+    normalize_observed_fills(provider="binance", input_path=raw, output_path=normalized)
+    append_shadow_decision(shadow, ShadowDecision("d1", 0, "binance", "BTCUSDT", "audit", 1, 1, "passive", 100, 1))
+    merge_observed_fills_into_shadow_decisions(shadow_path=shadow, observed_path=normalized, output_path=merged)
+    observed = read_shadow_decisions(merged)[0]
+    assert observed.observed_fill_size == 0.25 and observed.observed_fill_price == 100
+
+
+def test_cumulative_snapshot_vwap_and_pnl_supersede_earlier_state(tmp_path: Path) -> None:
+    shadow = tmp_path / "shadow.csv"
+    observations = tmp_path / "observed.csv"
+    output = tmp_path / "output.csv"
+    append_shadow_decision(shadow, ShadowDecision("d1", 0, "bybit", "BTCUSDT", "audit", 1, 1, "passive", 100, 1))
+    observations.write_text("decision_id,avgPrice,cumExecQty,realizedPnl\nd1,100,.25,1\nd1,102,.5,3\n")
+    merge_observed_fills_into_shadow_decisions(shadow_path=shadow, observed_path=observations, output_path=output)
+    observed = read_shadow_decisions(output)[0]
+    assert observed.observed_fill_size == 0.5 and observed.observed_fill_price == 102 and observed.realized_pnl == 3
+
+
+def test_ambiguous_incremental_snapshot_mixture_is_rejected(tmp_path: Path) -> None:
+    shadow = tmp_path / "shadow.csv"
+    observations = tmp_path / "observed.csv"
+    append_shadow_decision(shadow, ShadowDecision("d1", 0, "bybit", "BTCUSDT", "audit", 1, 1, "passive", 100, 1))
+    observations.write_text(
+        "decision_id,avgPrice,cumExecQty,fill_quantity_kind\nd1,100,.25,incremental\nd1,102,.5,cumulative\n"
+    )
+    with pytest.raises(ValueError, match="ambiguous mixed"):
+        merge_observed_fills_into_shadow_decisions(
+            shadow_path=shadow, observed_path=observations, output_path=tmp_path / "out.csv"
+        )
+
+
+def test_aggregate_flow_preserves_both_sides_but_cannot_validate_queue(tmp_path: Path) -> None:
+    features = tmp_path / "features.csv"
+    events = tmp_path / "events.csv"
+    shadow = tmp_path / "shadow.csv"
+    features.write_text("event_time,bid,ask,trade_qty,trade_imbalance\n0,99,101,100,0.02\n1,99,101,100,0\n")
+    converted = market_events_from_feature_csv(features)
+    assert converted[0].aggregate_buy_size == 51 and converted[0].aggregate_sell_size == 49
+    assert converted[1].aggregate_buy_size == converted[1].aggregate_sell_size == 50
+    write_market_events_from_feature_csv(features, events)
+    append_shadow_decision(shadow, ShadowDecision("d1", 0, "bybit", "BTCUSDT", "audit", 1, 1, "passive", 99, 1))
+    with pytest.raises(ValueError, match="aggregate"):
+        simulate_shadow_fill_predictions(
+            shadow_path=shadow,
+            market_events_path=events,
+            mode="passive",
+            constraints=OrderConstraints(0.01, 0.01, 0, 0),
+        )
+
+
+def test_validation_can_require_observed_coverage_and_minimum_sample(tmp_path: Path) -> None:
+    shadow = tmp_path / "shadow.csv"
+    predictions = tmp_path / "predictions.csv"
+    write_shadow_decisions(
+        shadow,
+        [
+            ShadowDecision("d1", 0, "bybit", "BTCUSDT", "audit", 1, 1, "passive", 100, 1, 100, 1),
+            ShadowDecision("d2", 1, "bybit", "BTCUSDT", "audit", 1, 1, "passive", 100, 1),
+        ],
+    )
+    write_simulated_fill_predictions(
+        predictions, [SimulatedFillPrediction("d1", 100, 1), SimulatedFillPrediction("d2", None, 0)]
+    )
+    report = validate_shadow_fill_predictions(
+        simulated_path=predictions, shadow_path=shadow, min_observed_coverage=1, min_observations=2
+    )
+    assert not report.passed and report.observed_coverage == 0.5 and report.unobserved_decisions == ("d2",)
+
+
+def test_execution_quote_sizes_are_not_borrowed_from_decision_quote(tmp_path: Path) -> None:
+    path = tmp_path / "features.csv"
+    path.write_text(
+        "event_time,entry_event_time,bid,ask,bid_qty,ask_qty,entry_bid,entry_ask,entry_bid_qty,entry_ask_qty\n"
+        "0,10,99,101,100,100,100,102,2,3\n"
+        "20,30,99,101,100,100,100,102,,\n"
+    )
+    rows = market_events_from_feature_csv(path)
+    assert (rows[0].bid_size, rows[0].ask_size) == (2, 3)
+    assert (rows[1].bid_size, rows[1].ask_size) == (0, 0)
