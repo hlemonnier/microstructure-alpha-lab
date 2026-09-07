@@ -1,0 +1,30 @@
+{
+  "confirmation": "Unchanged: at least 5 percentage points balanced-accuracy gain, positive paired date-cluster 95% lower bound, both assets improve, at least 20 unseen dates, no material log-loss deterioration.",
+  "dataset_manifest": "data/research/boundary_event_data_20260907/dataset_manifest.json",
+  "dataset_sha256": "e137f29a05e5ed25ff0a76b49c633501b8dbc92f507631913eeb7b66bbfc8287",
+  "eligibility": "Common contiguous one-second coverage, discard first 120 observations after every gap and final 60 seconds of UTC day; no future-label or lag filtering.",
+  "evidence_status": "Development only; no new confirmation dates have been opened.",
+  "experiment_id": "boundary_event_screen_20260907",
+  "metrics": "Balanced accuracy primary; ordinary accuracy and natural posterior log loss secondary.",
+  "model_configuration": "Frozen boundary_forecasts.fit_classifier; 200 iterations, learning rate .05, min leaf 100, L2 10, no early stopping.",
+  "models": [
+    "hgb_7",
+    "hgb_31"
+  ],
+  "registered_at_utc": "2026-09-07T14:57:19.162179+00:00",
+  "representations": [
+    "base",
+    "temporal_cross",
+    "event_cross"
+  ],
+  "seed": 20260907,
+  "selection": "Best validation balanced accuracy with natural log loss tiebreak. Reference selects across base models and training windows; challenger selects across temporal/event models and training windows.",
+  "splits": "Four preceding training dates, previous validation date, assessment May 21/22/23, separately for each asset.",
+  "substantial_gain_confirmed": false,
+  "training_windows": [
+    "noon",
+    "full_day"
+  ],
+  "validation_and_assessment": "12:02:00 through 13:59:49 UTC; require exact row and label parity with frozen original assessment predictions.",
+  "verified_source_rows": 1216441
+}

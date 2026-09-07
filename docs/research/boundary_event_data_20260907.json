@@ -1,0 +1,24 @@
+{
+  "experiment_id": "boundary_event_data_20260907",
+  "registered_at_utc": "2026-09-07T14:53:00+00:00",
+  "evidence_status": "Development only; all May 16-23 dates were previously exposed.",
+  "sources": "The 32 complete, official-checksum-verified BTCUSDT/ETHUSDT Binance USD-M bookTicker and aggTrades daily ZIP files already cached for May 16-23, 2023.",
+  "acquisition": "No new dates or downloads. Expand extraction to all available hours of the existing daily files.",
+  "label": "Unchanged five-second three-class label: entry is first quote at or after decision+100ms, future is first quote at or after decision+5100ms, neutral threshold max(half entry spread, one tick).",
+  "observations": "Nonempty, completed one-second quote buckets only. Decision features use events strictly before bucket close. Verify chronological update IDs and nondecreasing event times. No label-dependent eligibility filtering.",
+  "data_contract": "Dedicated forecast-only dataset. Reproduce the existing observed fields and exact labels; do not claim maker-fill, execution-path, or L2 fields that are not computed.",
+  "new_features": [
+    "Raw OFI and quote counts during the final 50 and 200 milliseconds of each completed bucket",
+    "Price returns since the last observable quote at or before decision minus 50/200 milliseconds",
+    "Event-weighted mean and standard deviation of queue imbalance within the bucket",
+    "Counts and signed counts of within-bucket midprice changes; absolute event-return variation",
+    "Positive and negative raw OFI magnitudes, each normalized by ending displayed depth",
+    "Age of the most recent best-bid and best-ask price change, measured at the decision",
+    "Signed trade volume and total trade volume in the final 50/200 milliseconds, normalized by ending displayed depth"
+  ],
+  "verification": "Before fitting, compare common decision-time fields and exact labels against the canonical previously generated noon slices after at least 120 seconds of warmup; test controlled synthetic paths and prefix causality.",
+  "development_splits": "Same four training dates, one validation date, one assessment date as earlier screens. Train-window ablation uses noon only versus all available past hours. Validation and assessment remain the frozen noon window.",
+  "eligibility": "Require common contiguous one-second coverage of both assets; discard the first 120 seconds of each continuous run and the last 60 seconds of each UTC day. Quote-age limit 1000ms. Selection uses decision-time information only.",
+  "next_fit_registration": "Freeze exact representations, learner grid and selection procedure after preprocessing parity checks and before any fitting on the expanded data.",
+  "reserved": "May 24 onward remain unopened for a separately registered confirmation experiment."
+}
