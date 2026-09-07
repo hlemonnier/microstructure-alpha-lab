@@ -19,6 +19,7 @@ from threadpoolctl import threadpool_limits
 
 from lob_forge.binance_vision import sha256_file
 from lob_forge.boundary_confirm_model import CONFIG, SYMBOLS, fit_confirm_neural
+from lob_forge.boundary_confirmation_integrity import verify_frozen_fold
 from lob_forge.boundary_confirmation_stats import confirmation_summary
 from lob_forge.boundary_event_inputs import load_event_inputs, representation_columns, utc_ms
 from lob_forge.boundary_forecasts import classification_metrics, fit_classifier
@@ -83,13 +84,7 @@ def run_fold(day, manifest, protocol, output, identity):
     folder = output / "dates" / day
     completed = folder / "completed.json"
     if completed.exists():
-        saved = json.loads(completed.read_text())
-        if saved["identity"] != identity:
-            raise ValueError("Completed fold identity differs from the frozen study")
-        for relative, checksum in saved["artifact_hashes"].items():
-            if sha256_file(folder / relative) != checksum:
-                raise ValueError("Completed fold artifact changed")
-        return saved
+        return verify_frozen_fold(folder, identity)
     assessment = date.fromisoformat(day)
     train_days = [(assessment + timedelta(days=offset)).isoformat() for offset in [-5, -4, -3, -2]]
     validation_day = (assessment - timedelta(days=1)).isoformat()
@@ -276,9 +271,12 @@ def run_fold(day, manifest, protocol, output, identity):
     return saved
 
 
-def reveal(output, dates):
+def reveal(output, dates, identity):
     if any(not (output / "dates" / day / "completed.json").exists() for day in dates):
         raise ValueError("All twenty dates must have frozen predictions before performance is revealed")
+    # Recheck every fold before reading a single assessment metric.
+    for day in dates:
+        verify_frozen_fold(output / "dates" / day, identity)
     records = []
     for day in dates:
         for symbol in SYMBOLS:
@@ -302,22 +300,23 @@ def reveal(output, dates):
     return {"records": records, **confirmation_summary(records, dates)}
 
 
-def run(protocol_path, output, *, development_reproduction=False):
+def run(protocol_path, output, *, development_reproduction=False, development_check=False):
     protocol = json.loads(protocol_path.read_text())
     if protocol["candidate"]["neural_config"] != CONFIG or protocol["development_selection"]["neural_weight"] != 0.5:
         raise ValueError("Registered candidate configuration differs from this frozen implementation")
     for name, checksum in protocol["code_hashes"].items():
         if sha256_file(ROOT / name) != checksum:
             raise ValueError("Registered feature or model source changed")
-    manifest_path = ROOT / (
-        "data/research/boundary_event_data_20260907/dataset_manifest.json"
-        if development_reproduction
+    if development_reproduction and "label_amendment" in protocol:
+        raise ValueError("Legacy bitwise reproduction requires the original protocol and its archived code, before corrected targets")
+    manifest_path = ROOT / protocol.get("execution_manifest", (
+        "data/research/boundary_event_data_20260907/dataset_manifest.json" if development_reproduction
         else "data/research/boundary_confirmation_20260907/combined_dataset_manifest.json"
-    )
+    ))
     manifest = json.loads(manifest_path.read_text())
     first = date.fromisoformat(protocol["source_plan"]["first_date"])
     dates = [(first + timedelta(days=offset)).isoformat() for offset in range(20)]
-    if development_reproduction:
+    if development_reproduction or development_check:
         dates = ["2023-05-23"]
     elif manifest["confirmation_dates"] != dates or len(manifest["sessions"]) != 56:
         raise ValueError("Prepared data differs from the twenty-date confirmation registration")
@@ -325,12 +324,15 @@ def run(protocol_path, output, *, development_reproduction=False):
         "protocol_sha256": sha256_file(protocol_path),
         "dataset_sha256": sha256_file(manifest_path),
         "development_reproduction": development_reproduction,
+        "development_check": development_check,
         "code_hashes": {
             name: sha256_file(ROOT / name)
             for name in [
                 "scripts/run_boundary_confirmation.py",
                 "src/lob_forge/boundary_confirm_model.py",
                 "src/lob_forge/boundary_confirmation_stats.py",
+                "src/lob_forge/boundary_confirmation_integrity.py",
+                "src/lob_forge/label_math.py",
                 "src/lob_forge/boundary_events.py",
                 "src/lob_forge/boundary_event_inputs.py",
                 "src/lob_forge/boundary_forecasts.py",
@@ -363,6 +365,21 @@ def run(protocol_path, output, *, development_reproduction=False):
             f"dates_frozen={index}/{len(dates)} model_fits={index * 17} date={day} seconds={record['seconds']:.1f}",
             flush=True,
         )
+    if development_check:
+        verify_frozen_fold(output / "dates/2023-05-23", identity)
+        for symbol in SYMBOLS:
+            with np.load(output / "dates/2023-05-23/predictions" / f"{symbol}_candidate.npz") as saved:
+                probabilities = saved["probabilities"]
+                assert probabilities.shape == (7070, 3) and np.isfinite(probabilities).all()
+                assert (probabilities >= 0).all()
+                np.testing.assert_allclose(probabilities.sum(axis=1), 1, atol=1e-6)
+        write_json(
+            ROOT / "docs/research/boundary_exact_labels_development_check_20260907.json",
+            {"status": "passed", "identity": identity, "model_fits": 17, "performance_inspected": False,
+             "purpose": "Mechanical pipeline check on an exposed date, without changing the fixed candidate."},
+        )
+        print("exact_label_development_pipeline_check_passed", flush=True)
+        return
     if development_reproduction:
         comparisons = []
         for symbol in SYMBOLS:
@@ -393,24 +410,28 @@ def run(protocol_path, output, *, development_reproduction=False):
         )
         print("complete_pipeline_development_reproduction_passed", flush=True)
         return
-    summary = reveal(output, dates)
+    summary = reveal(output, dates, identity)
     write_json(output / "summary.json", {"identity": identity, "completed_model_fits": 340, **summary})
     print(f"confirmation_complete {output / 'summary.json'}", flush=True)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--protocol", type=Path, default=ROOT / "docs/research/boundary_confirmation_20260907.json")
+    parser.add_argument("--protocol", type=Path, default=ROOT / "docs/research/boundary_confirmation_20260907_exact_labels_revision.json")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--development-reproduction", action="store_true")
+    parser.add_argument("--development-check", action="store_true")
     parser.add_argument("--run", action="store_true")
     args = parser.parse_args()
     destination = args.output or ROOT / (
         "results/boundary_confirmation_pipeline_reproduction_20260907"
         if args.development_reproduction
-        else "results/boundary_confirmation_20260907"
+        else "results/boundary_exact_labels_development_check_20260907" if args.development_check
+        else "results/boundary_confirmation_exact_labels_20260907"
     )
     if args.run:
-        run(args.protocol, destination, development_reproduction=args.development_reproduction)
+        if args.development_reproduction and args.development_check:
+            parser.error("Choose only one development check mode")
+        run(args.protocol, destination, development_reproduction=args.development_reproduction, development_check=args.development_check)
     else:
         print("Pass --run after fixed-source preparation; --development-reproduction checks only an exposed date.")

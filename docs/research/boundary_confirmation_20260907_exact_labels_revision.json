@@ -1,0 +1,172 @@
+{
+  "candidate": {
+    "decision_priors": "Equal arithmetic mean of the asset training class priors and the preceding validation noon class frequencies.",
+    "mixture": "Equal arithmetic mean of natural neural and tree posteriors.",
+    "neural": "Pooled two-hidden-layer MLP, width 64, twelve epochs, training-only quantile normalization, equal asset/class weighting, validation-only epoch selection. Same extracted trainer and settings as originally registered; now trained on corrected labels.",
+    "neural_config": {
+      "batch_size": 1024,
+      "epochs": 12,
+      "gradient_norm_limit": 5.0,
+      "hidden_size": 64,
+      "learning_rate": 0.001,
+      "seed": 20260907,
+      "threads": 2,
+      "weight_decay": 0.01
+    },
+    "reproduction_evidence": {
+      "path": "docs/research/boundary_confirmation_reproduction_20260907.json",
+      "scope": "Legacy-label bitwise trainer reproduction. Exact-label targets necessarily retrain the same frozen model; this is not evidence of corrected-label performance.",
+      "sha256": "8e3553902cff82489f377a473ecd55fe46dc41c45fc86a0dbc99478f46a33fbf"
+    },
+    "tree": "Per-asset HistGradientBoostingClassifier with 7 leaves, 200 iterations, learning rate .05, minimum leaf 100, L2 10, no early stopping; event_cross features."
+  },
+  "code_hashes": {
+    "scripts/relabel_boundary_exact.py": "6c43913429001966a23a20ea439af65cedfea4ba1ec2b337384e5b0f3c74ce45",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_confirmation_stats.py": "395fdcb1dcc91dcb7bfba489a9209f6df94a593b0aaf7fae075169f46731d1c0",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_prior_policy.py": "459ceaefd3a074484da0d542b1dd200e25b4325c94d850f53d31e08451e1578b",
+    "src/lob_forge/features.py": "d464532dbdeb9a054a8e138ec51b06ef75b6338f32a16ca69de9936fc8e15c24",
+    "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0"
+  },
+  "data_contract": {
+    "bucket_ms": 1000,
+    "coverage": "Same common-contiguous-session feature construction, 120-observation warmup and 60-second source/day-end buffer as the completed development experiment. Require every registered noon decision; abort rather than drop failing dates or outcomes.",
+    "decision_window_utc": [
+      "12:02:00",
+      "13:59:50"
+    ],
+    "end_exclusive": true,
+    "execution_latency_ms": 100,
+    "feature_representation": "event_cross",
+    "feature_semantics": "forecast_raw_events_v2_exact_labels",
+    "future_lag_filter": false,
+    "holding_horizon_ms": 5000,
+    "label_arithmetic": "Interpret each entry/future quote and minimum tick as its shortest finite decimal representation; compare twice the mid-price change with max(entry ask minus entry bid, twice minimum tick) exactly. Threshold equality is neutral. No tolerance or rounding to an assumed tick grid.",
+    "min_tick": {
+      "BTCUSDT": 0.1,
+      "ETHUSDT": 0.01
+    },
+    "required_rows_per_asset_date": 7070
+  },
+  "development_selection": {
+    "neural_weight": 0.5,
+    "sha256": "e9f07fee28607dbda2ecee9a9a927e82ca26352a702bde935f1a1b31412f4f90",
+    "status": "Selected on reused May 16-23 development data with legacy floating-point labels; not independent evidence. Keep weight 0.5 without retuning on corrected targets.",
+    "summary": "results/boundary_probability_blend_20260907/summary.json"
+  },
+  "execution_manifest": "data/research/boundary_exact_labels_20260907/dataset_manifest.json",
+  "experiment_id": "boundary_confirmation_20260907_exact_labels_revision",
+  "information_boundary": "Prepare every fixed source, then freeze code and data identities before fitting. Do not inspect confirmation performance until all twenty dates have their predictions and model selections fixed. Progress output may contain stage, dates, counts and timings only. Technical failures are recorded; do not silently change the model, dates, coverage or scoring.",
+  "label_amendment": {
+    "changed_development_labels": 1818,
+    "development_rows": 115584,
+    "diagnostic": {
+      "path": "docs/research/boundary_exact_label_diagnostic_20260907.json",
+      "sha256": "4627e69f28d88f6bf2ba2022e6d638825767808b5e6b639fa6314170d0b7da42"
+    },
+    "information_boundary": "All independent source archives were acquired before this amendment, and only coverage was checked. No independent model fit or performance inspection has occurred. Model architectures, hyperparameters, mixture weight, training partitions, model selection and metric gates remain exactly as registered. Corrected-label development checks may verify mechanics but may not tune the candidate.",
+    "legacy_manifest": {
+      "path": "data/research/boundary_confirmation_20260907/combined_dataset_manifest.json",
+      "sha256": "140c6b8810bef670a69ce8166491abde19615b5bab69ebb78dd09ecae2c6d103"
+    },
+    "preservation": "Keep legacy observations and results unchanged. Copy all 56 sessions, resolving the same raw entry and future quotes. Require bitwise equality of every field except label and semantic version. Label corrections alone never count as model gains.",
+    "reason": "Development-only arithmetic audit found exact threshold ties assigned directional labels by binary floating subtraction. Correct both candidate and reference targets before any independent model fit."
+  },
+  "matched_data_control": {
+    "decision_policies": [
+      "training",
+      "blend_training_previous"
+    ],
+    "models": [
+      "hgb_7",
+      "hgb_31"
+    ],
+    "purpose": "Separate richer observations/models from training-volume and decision-policy improvements; report this comparison alongside the original reference.",
+    "representation": "base",
+    "selection": "Maximum preceding validation balanced accuracy; tie by natural log loss. For validation, the previous-noon prior comes from the last training date. For assessment, it comes from the validation date.",
+    "training_window": "full_day"
+  },
+  "metrics": {
+    "economic_status": "This stage confirms prediction quality only; it does not certify execution fills or net trading profitability.",
+    "primary": "Equal-weight mean of balanced accuracy across assets and dates; each asset/date balanced accuracy is the mean recall of the unchanged three classes.",
+    "secondary": [
+      "natural argmax accuracy",
+      "natural posterior log loss",
+      "macro F1",
+      "per-asset and per-date deltas"
+    ],
+    "substantial_gate": {
+      "both_asset_mean_gains_positive": true,
+      "date_cluster_interval_lower_bound_above": 0.0,
+      "maximum_log_loss_ratio": 1.01,
+      "minimum_distinct_dates": 20,
+      "minimum_mean_balanced_accuracy_gain": 0.05,
+      "primary_reference": "The frozen original validation-selected reference, which chooses between default-feature logistic and boosted-tree classifiers."
+    },
+    "uncertainty": "10000 paired date-cluster bootstrap resamples; keep both assets together. Report the 2.5/97.5 percentile interval. Also report circular blocks of three adjacent dates as a dependence sensitivity check. Seed 20260907."
+  },
+  "primary_reference": {
+    "decision_rule": "Posterior divided by training class priors, matching the original reference procedure.",
+    "models": [
+      "logistic_0.01",
+      "logistic_0.1",
+      "logistic_1.0",
+      "hgb_7",
+      "hgb_15"
+    ],
+    "representation": "base",
+    "selection": "Maximum preceding validation balanced accuracy; tie by natural log loss.",
+    "training_window": "noon"
+  },
+  "prior_development_data": {
+    "manifest": "data/research/boundary_event_data_20260907/dataset_manifest.json",
+    "sha256": "e137f29a05e5ed25ff0a76b49c633501b8dbc92f507631913eeb7b66bbfc8287"
+  },
+  "purpose": "Independent confirmation of a fixed predictive candidate; no candidate tuning on confirmation outcomes.",
+  "registered_at_utc": "2026-09-07T16:26:57.789815+00:00",
+  "resources": {
+    "max_new_compressed_bytes": 6000000000,
+    "max_parallel_downloads": 2,
+    "max_parallel_learners": 1,
+    "minimum_free_bytes": 9000000000,
+    "monitored_preparation_rss_bytes": 8589934592,
+    "paid_compute": false,
+    "threads_per_learner": 2
+  },
+  "source_plan": {
+    "compressed_bytes": 4822880970,
+    "datasets": [
+      "bookTicker",
+      "aggTrades"
+    ],
+    "distinct_dates": 20,
+    "first_date": "2023-05-24",
+    "last_date": "2023-06-12",
+    "path": "docs/research/boundary_confirmation_source_plan_20260907.json",
+    "require_official_sha256": true,
+    "sha256": "94e527cffb2a952d14878a4dadd716ab624959d7b7d2f5af43609766cb08ec65",
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ]
+  },
+  "splits": {
+    "assessment_calendar_offset": 0,
+    "rolling_retraining": "The procedure may use previous assessment dates as training or validation only after their outcomes would be available. All code and choices stay frozen.",
+    "train_calendar_offsets": [
+      -5,
+      -4,
+      -3,
+      -2
+    ],
+    "training_window": "Full available past days for the candidate; noon only for the original reference.",
+    "validation_calendar_offset": -1
+  },
+  "supersedes_protocol_sha256": "e389f011f4050041d524e5a291709b5d629399600fb98a7aac742527571103ae"
+}
