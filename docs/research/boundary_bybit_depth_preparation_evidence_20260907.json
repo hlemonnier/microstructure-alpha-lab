@@ -1,0 +1,57 @@
+{
+  "all_sessions_checks": {
+    "official_byte_count_parity": true,
+    "only_decision_time_column_read": true,
+    "save_reload_parity": true,
+    "zip_crc_verified_by_full_member_read": true
+  },
+  "archive_bytes": 2550403982,
+  "canonical_rows": 2419034,
+  "complete_depth_rows": {
+    "100": 2419020,
+    "500": 2419006
+  },
+  "evidence_status": "development_only_on_exposed_dates",
+  "integrity": "Provider metadata byte counts and full ZIP CRC verified; local SHA256 recorded. The provider supplied no independent archive SHA256.",
+  "manifest_path": "data/research/boundary_bybit_depth_20260907/depth_manifest.json",
+  "manifest_sha256": "e0cef0a7570a6ed73e0dcf17c371d4d879ca5e6f26aae3d9af6768757510f19b",
+  "model_fits": 0,
+  "native_messages": 23518127,
+  "paired_loader_parity": {
+    "assessment_scores_inspected": false,
+    "model_fits": 0,
+    "records": [
+      {
+        "date": "2023-05-29",
+        "original_columns": 220,
+        "original_fields_labels_times_exact": true,
+        "rows": 86097,
+        "symbol": "BTCUSDT",
+        "variants": {
+          "top1_100": 253,
+          "top1_500": 253,
+          "top25_100": 318,
+          "top25_500": 318
+        },
+        "wide_columns": 482
+      },
+      {
+        "date": "2023-05-29",
+        "original_columns": 220,
+        "original_fields_labels_times_exact": true,
+        "rows": 86097,
+        "symbol": "ETHUSDT",
+        "variants": {
+          "top1_100": 253,
+          "top1_500": 253,
+          "top25_100": 318,
+          "top25_500": 318
+        },
+        "wide_columns": 482
+      }
+    ]
+  },
+  "protocol_sha256": "6643568ab2d86cf5641dc5988cc7671fa95710fc537850707b2eae637ea08547",
+  "sessions": 28,
+  "timestamp_limitation": "Only publisher timestamps exist in these 2023 files. Strict publisher+100/500ms < decision filters are sensitivity assumptions, not measured receive latency."
+}

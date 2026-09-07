@@ -74,6 +74,8 @@ The [follow-up research report](boundary_followup_research_20260907.md) records 
 
 A possible further route is conditional distribution modeling, motivated by [NGBoost](https://proceedings.mlr.press/v119/duan20a.html), or event intensities informed by [queue-reactive Hawkes models](https://arxiv.org/abs/1901.08938). These are untested here. They would need their own fixed experiment and independent confirmation; no theoretical model supplies an empirical gain by itself.
 
+The later raw quote-sequence screen completed nine fits and 192 panels; none beats the strongest spot tree's 57.2806% balanced accuracy on the three exposed dates. Aligning neural checkpoint selection with the causal decision policy improves that neural component but fails to improve its strongest fixed blend. These negative results are retained in the follow-up report. A new Bybit depth experiment has acquired and atomically reconstructed 28 public sessions and registered matched best-quote/deeper-book controls at 100ms and 500ms publisher-time delays. It is development research, with no measured receive-latency or execution claim.
+
 ## Reproduction and validation
 
 The branch preserves each research family in a separate commit. Legacy protocols pin source hashes and must be replayed at their matching commit. Re-running legacy scripts against corrected label code is intentionally rejected by provenance checks.
