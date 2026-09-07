@@ -1,0 +1,33 @@
+{
+  "identity": {
+    "code_hashes": {
+      "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+      "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+      "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+      "src/lob_forge/boundary_confirmation_stats.py": "395fdcb1dcc91dcb7bfba489a9209f6df94a593b0aaf7fae075169f46731d1c0",
+      "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+      "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+      "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+      "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+      "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0"
+    },
+    "dataset_sha256": "e0b8c5b5658d98b57558c4974fdc45ab43faf08cf93686913ada8a9a357eedb5",
+    "dependencies": {
+      "joblib": "1.6.0",
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "pyarrow": "17.0.0",
+      "scikit-learn": "1.5.2",
+      "scipy": "1.18.1",
+      "torch": "2.8.0"
+    },
+    "development_check": true,
+    "development_reproduction": false,
+    "protocol_sha256": "e3a40a656ab7b53748acd2c446dba900e485a4ff6c6e1f56bb33b586ce24517e",
+    "python": "3.12.14"
+  },
+  "model_fits": 17,
+  "performance_inspected": false,
+  "purpose": "Mechanical pipeline check on an exposed date, without changing the fixed candidate.",
+  "status": "passed"
+}

@@ -54,7 +54,7 @@ All 80 public bookTicker/aggTrades ZIPs have been acquired and verified against 
 
 The confirmation runs 17 fits per assessment date, 340 total. Every date's predictions and model selections must be saved before any assessment score is inspected. Artifact inventories and hashes are rechecked immediately before unsealing. Uncertainty uses 10,000 paired date-cluster bootstrap draws, with three-day circular blocks as a dependence sensitivity check. These intervals do not remove longer regime dependence.
 
-Corrected preparation is complete: all 56 sessions and 4,672,228 rows passed raw-resolution and unchanged-field checks. The development-only mechanical pipeline check is running. No independent performance has been inspected. The fixed candidate is not promoted.
+Corrected preparation is complete: all 56 sessions and 4,672,228 rows passed raw-resolution and unchanged-field checks. The 17-fit development-only mechanical pipeline check passed. The independent 340-fit confirmation is running. Before any of its outcomes were inspected, one additional fixed procedure was registered: replace its tree component with a pooled tree fitted with equal asset/class loss mass, recovering natural probabilities using each asset's training priors. This adds 20 fits, reuses the same frozen neural checkpoints and 50/50 mixture, and changes no target, source or assessment date. Both procedures must finish before either result is inspected. A 97.5% marginal interval allocates a Bonferroni family across the two procedures, alongside the original gate. The fixed candidates are not promoted.
 
 ## Research basis and limits
 
@@ -78,4 +78,6 @@ For the corrected procedure:
     PYTHONPATH=src OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 .venv/bin/python scripts/run_boundary_confirmation.py --development-check --run
     PYTHONPATH=src OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 .venv/bin/python scripts/run_boundary_confirmation.py --run
 
-Raw sources and large model artifacts remain local and ignored by Git; tracked protocols and manifests record their hashes. Current checks: 501 direct tests passed with all research dependencies; the isolated minimal-dependency CI run passed 476 direct cases and correctly skipped 6 optional tests and 9 optional modules. Ruff and the five CI-targeted mypy modules pass. No live trading or paid compute has been used.
+Raw sources and large model artifacts remain local and ignored by Git; tracked protocols and manifests record their hashes. The last full suite before the additional tree procedure passed 501 direct tests with all research dependencies; the isolated minimal-dependency CI run passed 476 direct cases and correctly skipped 6 optional tests and 9 optional modules. Ruff and the five CI-targeted mypy modules pass. No live trading or paid compute has been used.
+
+The additional pooled-tree procedure is frozen in [boundary_pooled_tree_confirmation_20260907.json](boundary_pooled_tree_confirmation_20260907.json). Four further mathematical tests for sample weighting, posterior inversion and multiplicity intervals pass. Its independent fitting is queued after the primary folds.

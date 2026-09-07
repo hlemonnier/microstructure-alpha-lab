@@ -1,0 +1,120 @@
+{
+  "additional_model_fits": 20,
+  "assessment_dates": [
+    "2023-05-24",
+    "2023-05-25",
+    "2023-05-26",
+    "2023-05-27",
+    "2023-05-28",
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11",
+    "2023-06-12"
+  ],
+  "candidate": {
+    "decision_priors": "Reuse the primary fixed arithmetic mean of asset training and preceding noon class priors.",
+    "mixture_weight": 0.5,
+    "natural_posterior": "Multiply the weighted classifier posterior by the corresponding asset training class prior and renormalize.",
+    "neural": "Reuse the primary frozen pooled MLP checkpoint and verify exact saved-prediction parity.",
+    "sample_weight": "N/(number_of_assets * 3 * asset_class_count), with mean weight exactly one.",
+    "selection": "No additional hyperparameters, epoch selection, model choice, mixture tuning or assessment-dependent decisions.",
+    "training": "Same four complete eligible past days and corrected labels as the primary candidate. Train-only 0.001/0.999 pooled feature clipping.",
+    "tree": "One pooled HistGradientBoostingClassifier across BTCUSDT and ETHUSDT with an explicit asset indicator.",
+    "tree_parameters": {
+      "early_stopping": false,
+      "l2_regularization": 10,
+      "learning_rate": 0.05,
+      "max_iter": 200,
+      "max_leaf_nodes": 7,
+      "min_samples_leaf": 100,
+      "random_state": 20260907
+    }
+  },
+  "code_hashes": {
+    "scripts/relabel_boundary_exact.py": "6c43913429001966a23a20ea439af65cedfea4ba1ec2b337384e5b0f3c74ce45",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "scripts/run_boundary_pooled_tree_confirmation.py": "4364eb14fe80141820bdb77f3d40bba1147e442b71e508bb37a8d538efe1aee0",
+    "src/lob_forge/baselines.py": "33e0c1fc49fbe820b5985f903165cea44e2d245dea7c9ad9e1355a622d5e3ec4",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_confirmation_family.py": "af2b250bc6182c8c0d65c0d7385aeed20626a0e04d610a29f8b182683a2323bd",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_confirmation_stats.py": "395fdcb1dcc91dcb7bfba489a9209f6df94a593b0aaf7fae075169f46731d1c0",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_prior_policy.py": "459ceaefd3a074484da0d542b1dd200e25b4325c94d850f53d31e08451e1578b",
+    "src/lob_forge/boundary_weighted_boost.py": "8c5664639195fd2a1ac099ce095b590cb82bb55668b3ce917ea830c21f63c2d0",
+    "src/lob_forge/features.py": "d464532dbdeb9a054a8e138ec51b06ef75b6338f32a16ca69de9936fc8e15c24",
+    "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0"
+  },
+  "comparisons": [
+    "original validation-selected noon reference",
+    "matched full-day base-feature control",
+    "original neural/tree blend"
+  ],
+  "evidence_used": "Only exposed May16-23 legacy-label development comparisons and data-independent mathematical tests. Neither primary nor secondary independent scores have been inspected.",
+  "execution_manifest": {
+    "path": "data/research/boundary_exact_labels_20260907/dataset_manifest.json",
+    "sha256": "e0b8c5b5658d98b57558c4974fdc45ab43faf08cf93686913ada8a9a357eedb5"
+  },
+  "experiment_id": "boundary_pooled_tree_confirmation_20260907",
+  "hypothesis": "The strongest development finding was cross-asset pooling. Apply shared training and equal asset/class loss mass to the tree component, preserving the neural model and the fixed 50/50 mixture. This jointly tests pooling and training-loss alignment; it cannot attribute any gain to only one mechanism.",
+  "information_boundary": "Freeze this procedure before primary outcomes are computed or inspected. Complete all twenty primary folds, then all twenty secondary folds, before inspecting either result. The primary runner may write its own summary on completion; do not read it until both procedures have all predictions frozen. Keep all dates and observations. Log only dates, stages, counts and timings while fitting.",
+  "multiplicity": {
+    "candidate_procedures": 2,
+    "marginal_interval_level": 0.975,
+    "method": "Bonferroni allocation across the two frozen procedures, with paired date resampling and both assets kept together. Also report three-day circular-block sensitivity. Bootstrap coverage and longer regime dependence remain limitations.",
+    "percentile_tails": [
+      0.0125,
+      0.9875
+    ],
+    "resamples": 10000,
+    "seed": 20260907
+  },
+  "primary_frozen_study_sha256": "24618c66426aac78d0dac58b5a4a4f931ef941ccb0b356f7977008583139dd01",
+  "primary_output": "results/boundary_confirmation_exact_labels_20260907",
+  "primary_progress_at_registration": {
+    "current_date": "2023-05-29",
+    "performance_sealed": true,
+    "stage": "training_pooled_neural_model"
+  },
+  "primary_protocol": {
+    "path": "docs/research/boundary_confirmation_20260907_exact_labels_revision.json",
+    "sha256": "e3a40a656ab7b53748acd2c446dba900e485a4ff6c6e1f56bb33b586ce24517e"
+  },
+  "references": [
+    "https://arxiv.org/abs/1803.06917",
+    "https://arxiv.org/abs/2007.10740"
+  ],
+  "registered_at_utc": "2026-09-07T16:45:27.252460+00:00",
+  "registered_before_either_assessment_performance_inspected": true,
+  "resources": {
+    "additional_source_downloads": false,
+    "paid_compute": false,
+    "parallel_learners": 1,
+    "threads": 2
+  },
+  "substantial_gate": {
+    "both_asset_mean_gains_positive": true,
+    "date_cluster_interval_lower_bound_above": 0.0,
+    "family_adjusted_date_interval_lower_bound_above": 0,
+    "maximum_log_loss_ratio": 1.01,
+    "minimum_distinct_dates": 20,
+    "minimum_mean_balanced_accuracy_gain": 0.05,
+    "primary_reference": "The frozen original validation-selected reference, which chooses between default-feature logistic and boosted-tree classifiers."
+  },
+  "theoretical_scope": "Class-weight posterior inversion follows directly from weighted conditional cross entropy. The balanced-softmax visual-recognition source motivates attention to class objectives; the implementation is not Balanced Meta-Softmax or a claim of financial transfer."
+}
