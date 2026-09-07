@@ -1,0 +1,28 @@
+{
+  "caveats": [
+    "Conditioning the direction diagnostic on a realized move is an evaluation decomposition, not an available trade-selection rule.",
+    "Across panels, average direction loss contributions; do not multiply separate averages of conditional loss and movement frequency.",
+    "These descriptive diagnostics do not replace the fixed balanced-accuracy and log-loss gates."
+  ],
+  "code_hashes": {
+    "scripts/diagnose_boundary_confirmation.py": "04b95965a2187b1fbdec026915266efe47981d047ff1c26fce860b9cf3687bd9",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_prediction_diagnostics.py": "e797a146433fd116536e2c91cad698cd3261eda976d08dab84d5a3a29c29be9f"
+  },
+  "identity": "Three-class mean log loss equals movement mean log loss plus the mean per-decision contribution of conditional direction loss. Apply one shared probability floor and renormalization before decomposition.",
+  "independent_performance_inspected": false,
+  "metrics": [
+    "movement ROC AUC",
+    "direction ROC AUC conditional on realized non-neutral outcomes",
+    "movement binary log loss",
+    "conditional direction binary log loss",
+    "direction log-loss contribution per decision",
+    "natural-decision class recalls and confusion matrices"
+  ],
+  "purpose": "Explain predictive improvements after both registered procedures are complete; no extra models, selection rules or promotion tests.",
+  "references": [
+    "https://arxiv.org/html/2409.14157v1",
+    "https://arxiv.org/abs/2403.09267"
+  ],
+  "registered_at_utc": "2026-09-07T16:58:16.765014+00:00"
+}
