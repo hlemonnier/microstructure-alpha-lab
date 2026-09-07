@@ -1,0 +1,101 @@
+{
+  "assessment": "Reveal only after all seven fits per date and all three dates freeze. Compare algorithm changes at 220 fields, source union under original HGB, and both together. Check same-policy asset/date gains; these dates cannot be independent confirmation.",
+  "blends": "Six new XGBoost models each averaged 50/50 with saved observation neural. Three combined-feature XGBoost models each averaged 50/50 with the new combined HGB. New combined HGB averaged 50/50 with saved observation neural. No outcome-selected blend weights.",
+  "controls": "Existing seven-leaf HGB additionally fits the 399-column union. Thirteen saved sources include original, context, spot and 100ms Bybit top1/top25 tree/neural/blend controls. Different algorithms have different split rules and compute costs; do not claim exact capacity matching.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "depth_assessment_inspected": false,
+  "evidence_status": "development_only_on_exposed_dates",
+  "hessian_units": "min_child_weight is a summed Hessian-mass bound and is not equivalent to the HGB minimum leaf count of 100.",
+  "hypothesis": "The existing seven-leaf trees may miss nonlinear interactions between own context, spot flow and foreign liquidity. Combining observed sources and changing the boosting algorithm/capacity may improve the unchanged five-second forecast.",
+  "model_fits": 21,
+  "model_fits_started": false,
+  "paired_loader_parity": {
+    "assessment_scores_inspected": false,
+    "model_fits": 0,
+    "records": [
+      {
+        "columns": 399,
+        "date": "2023-05-29",
+        "original_columns": 220,
+        "original_fields_labels_times_exact": true,
+        "rows": 86097,
+        "symbol": "BTCUSDT"
+      },
+      {
+        "columns": 399,
+        "date": "2023-05-29",
+        "original_columns": 220,
+        "original_fields_labels_times_exact": true,
+        "rows": 86097,
+        "symbol": "ETHUSDT"
+      }
+    ]
+  },
+  "parameters": {
+    "alpha": 0,
+    "base_score": 0.5,
+    "colsample_bytree": 1,
+    "device": "cpu",
+    "eta": 0.05,
+    "gamma": 0,
+    "grow_policy": "depthwise",
+    "lambda": 10,
+    "max_bin": 256,
+    "min_child_weight": 30,
+    "nthread": 2,
+    "objective": "multi:softprob",
+    "rounds": 400,
+    "seed": 20260907,
+    "subsample": 1,
+    "tree_method": "hist"
+  },
+  "post_fit_panels": 360,
+  "posterior_contract": "Equal asset weight. Balanced losses also equalize each asset/class; recover p by normalizing raw q times that asset training prior. Natural losses use equal asset weighting only and normalize raw q directly. Class indices 0/1/2 map exactly to -1/0/+1.",
+  "preprocessing": "Quantile limits 0.001/0.999 fitted to pooled training features only, matching HGB limits. XGBoost hist uses float32 matrices and a numeric asset indicator. Fixed 400 rounds; no early stopping, assessment fitting or validation selection.",
+  "primary_sources": [
+    "https://arxiv.org/abs/1603.02754",
+    "https://xgboost.readthedocs.io/en/release_2.1.0/parameter.html"
+  ],
+  "registered_at_utc": "2026-09-07T22:38:58.388785+00:00",
+  "representations": {
+    "combined": "Original 220 context plus 98 own/peer Bybit top25 fields at 100ms plus 81 own/peer spot-trade fields at 100ms, totaling 399",
+    "observations": "Exact original 220 observed context columns"
+  },
+  "runtime": {
+    "environment": "Set DYLD_LIBRARY_PATH to the absolute sklearn/.dylibs directory for this macOS process. The system library paths and package binaries are unchanged.",
+    "openmp_library": ".venv/lib/python3.12/site-packages/sklearn/.dylibs/libomp.dylib",
+    "openmp_sha256": "7fe04d06d824817d39e4c99ec44e837fd6b5f0f75f2cc3e77a384c298f3f1709",
+    "xgboost": "2.1.3"
+  },
+  "settings": {
+    "deep_balanced": {
+      "class_balanced": true,
+      "max_depth": 6
+    },
+    "deep_natural": {
+      "class_balanced": false,
+      "max_depth": 6
+    },
+    "shallow_balanced": {
+      "class_balanced": true,
+      "max_depth": 3
+    }
+  },
+  "source_hashes": {
+    "scripts/run_boundary_newton_screen.py": "532e09aba31255ad48e2bc434ecd317a9d6a658a40e8260ef25b4d564946db38",
+    "src/lob_forge/boundary_combined_inputs.py": "c304fe5028d4a6f63304ac9ca219d875900873f36c8188da8d9d535808af6e94",
+    "src/lob_forge/boundary_newton_boost.py": "b5ab01a91b47614b7b6995dabda1fa6e2de7bdc2388887e9299ae8076e62cc1e",
+    "tests/test_boundary_combined_inputs.py": "2c61e020bf654788487962ae706900f4f826daf6109a5d0e574ab9b80e0e1465",
+    "tests/test_boundary_newton_boost.py": "6a75ae5c7794785d418e5ce9e87f8c9492bd0a4c8b7eff187e1ac4ef36f5cff9"
+  },
+  "tests": "564 direct tests pass with all research dependencies and explicit local OpenMP loader path. Minimal CI: 476 passed, 6 optional-test skips, 33 optional-module skips. Native XGBoost save/reload parity, asset prior recovery, label order, training-only transforms, schema errors and strict input union tested.",
+  "version_note": "The documentation URL returned a newer rendered header; actual installed runtime 2.1.3 and API were checked locally. No parameter introduced after 2.1.3 is used."
+}
