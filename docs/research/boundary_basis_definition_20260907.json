@@ -1,0 +1,113 @@
+{
+  "assessment": "Freeze all three dates before inspecting any score. Compare each learner against its corresponding original-input control and the strongest saved predictor. A selected improvement remains developmental and requires independent confirmation on new dates.",
+  "blend_weights": [
+    0.5,
+    0.5
+  ],
+  "blends": {
+    "basis_blend": [
+      "basis_hgb",
+      "basis_neural"
+    ],
+    "basis_hgb_old_neural": [
+      "basis_hgb",
+      "observations_neural"
+    ],
+    "basis_neural_combined_hgb": [
+      "basis_neural",
+      "combined_hgb"
+    ],
+    "basis_xgb_hgb": [
+      "basis_xgb",
+      "basis_hgb"
+    ],
+    "basis_xgb_old_neural": [
+      "basis_xgb",
+      "observations_neural"
+    ],
+    "combined_blend": [
+      "combined_hgb",
+      "combined_neural"
+    ]
+  },
+  "checks": "568 full direct tests passed. Minimal CI 476 passed, 6 optional-test skips, 35 optional-module skips. Four new tests cover explicit past weights, missing data, reset boundaries, prefixes including leading unavailability, constant premium shifts, logarithmic unit identity, label invariance and exact simultaneous peer joins. Original context and combined HGB/XGBoost checkpoint predictions must be exact before fitting.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "features": "For each of two streams and each half life: past mean in bps, current-minus-past-mean innovation in bps, innovation divided by max(past standard deviation,0.001bps), log(1+past standard deviation/1bps), and history availability. Two source-availability flags give 32 own fields. Six exact-simultaneous peer fields give 38 additions; 399 original union columns become 437.",
+  "half_life_seconds": [
+    10,
+    60,
+    300
+  ],
+  "hypothesis": "Subtracting the causal recent level of a foreign venue price premium may isolate short-lived cross-market dislocations that raw basis levels and endpoint changes miss. Existing spot-only mean deviations are already present; this specifically adds foreign mid-price and foreign-versus-spot relative basis state.",
+  "model_fits": 12,
+  "model_fits_started": false,
+  "models": {
+    "basis_hgb": "Same pooled balanced seven-leaf HGB, 200 rounds",
+    "basis_neural": "Same MLP on the 437-field extension",
+    "basis_xgb": "Same pooled balanced XGBoost, depth 6, 400 rounds and parameters frozen in the Newton definition",
+    "combined_neural": "Original 12-epoch 64-wide MLP on the unchanged 399 fields as a new matched control"
+  },
+  "moment_definition": "At decision i, historical observations j<i receive weights exp(-log(2)*(t_i-t_j)/(1000*half_life)). Compute their weighted population mean and variance before admitting observation i. Center coordinates at the first available basis for numerical stability. At the first source observation, historical fields are zero and history_available is false.",
+  "newton_assessment_inspected": false,
+  "paired_loader_parity": {
+    "assessment_scores_inspected": false,
+    "model_fits": 0,
+    "records": [
+      {
+        "columns": 437,
+        "date": "2023-05-29",
+        "original_columns": 399,
+        "original_fields_labels_times_exact": true,
+        "rows": 86097,
+        "symbol": "BTCUSDT"
+      },
+      {
+        "columns": 437,
+        "date": "2023-05-29",
+        "original_columns": 399,
+        "original_fields_labels_times_exact": true,
+        "rows": 86097,
+        "symbol": "ETHUSDT"
+      }
+    ]
+  },
+  "partitions": "Same four dates d-5 through d-2, fixed four-second sampling after feature construction. Prior-day noon selects neural checkpoints; tree fits accept training only. Assessment is unchanged noon on three exposed dates.",
+  "post_fit_panels": 252,
+  "primary_source": "https://arxiv.org/abs/2108.09750",
+  "registered_at_utc": "2026-09-07T22:59:07.286325+00:00",
+  "saved_baselines": [
+    "original_reference",
+    "original_blend",
+    "observations_blend",
+    "spot100_tree",
+    "combined_hgb",
+    "combined_shallow_balanced",
+    "combined_deep_balanced",
+    "combined_deep_natural",
+    "combined_deep_balanced_old_neural",
+    "top1_100_tree_old_neural",
+    "observations_neural"
+  ],
+  "source_hashes": {
+    "scripts/run_boundary_basis_screen.py": "a0d39e30aad0c3bb436fdc87fdf0bf09bdde34f30a1cdc4f01dab0b009d91d89",
+    "src/lob_forge/boundary_basis_inputs.py": "2bc9101a72d37986bb2217fe17b86cae3dad66d019c3ec766dac58b1f834459e",
+    "src/lob_forge/boundary_basis_state.py": "27f441b6e787909c724243ee061581b65ca67cfd2063dcfd7e49500e83af23e3",
+    "tests/test_boundary_basis_inputs.py": "19cc6f570a8471e1a546a5f403b0549e8ec74643847f189748af3658873a5027",
+    "tests/test_boundary_basis_state.py": "473c2b53852baf213fb932e81561c50ae7f3c201b6e19a35ea91b694a4ecb6e3"
+  },
+  "source_scope": "Albers et al. motivate mean divergence across venues at subsecond horizons. This exponential prior-moment feature family is an inspired test on a different five-second target, not a replication or imported performance claim.",
+  "streams": {
+    "bybit": "10000*log(Bybit_mid/Binance_mid), converting the existing simple-return basis exactly with log1p",
+    "bybit_spot": "10000*log(Bybit_mid/spot_last_trade), subtracting the existing logarithmic spot basis from the logarithmic Bybit basis"
+  },
+  "timing": "Both non-Binance sources retain their registered strict 100ms added information delay. Read only already observed input columns. Filters reset on each day or discontinuity of the one-second decision clock. Missing source observations have zero moment weight. No label enters any moment."
+}
