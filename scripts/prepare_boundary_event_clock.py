@@ -107,6 +107,6 @@ if __name__ == "__main__":
     parser.add_argument("--prepare", action="store_true")
     args = parser.parse_args()
     if args.prepare:
-        prepare(args.protocol, args.output)
+        prepare(args.protocol.resolve(), args.output.resolve())
     else:
         print("Pass --prepare to append registered event-clock observations to exposed exact-label sessions.")

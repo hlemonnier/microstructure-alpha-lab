@@ -1,0 +1,35 @@
+{
+  "additional_session_keys": [
+    [
+      "BTCUSDT",
+      "2023-05-19"
+    ],
+    [
+      "BTCUSDT",
+      "2023-05-20"
+    ],
+    [
+      "ETHUSDT",
+      "2023-05-19"
+    ],
+    [
+      "ETHUSDT",
+      "2023-05-20"
+    ]
+  ],
+  "additional_sessions": 4,
+  "amended_protocol": "docs/research/boundary_regime_early_data_20260907_path_revision.json",
+  "amended_protocol_sha256": "62627e534dcd040a0b7e617273b9786cb5ae089d0131e860ee857f1b33d38fab",
+  "combined_sessions": 48,
+  "current_raw_quote_parity": true,
+  "failure_path": "data/research/boundary_regime_early_data_20260907_relative_path_failure",
+  "manifest": "data/research/boundary_regime_data_20260907/dataset_manifest.json",
+  "manifest_sha256": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+  "original_columns_bitwise_unchanged": true,
+  "parent_manifest_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "data/research/boundary_regime_early_data_20260907/dataset_manifest.json": "251a2968d265da2d7819e417f22edb6bbc6888d483c820cefc6e21f8ff366c00"
+  },
+  "preparation_amendment": "The initial relative CLI output failed at path.relative_to(ROOT) after one parquet write, before any model fitting. The preserved failure and original protocol remain immutable. Resolving CLI protocol/output paths fixes this operational error; dates, source archives, features and labels are unchanged.",
+  "save_reload_parity": true
+}

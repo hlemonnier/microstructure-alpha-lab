@@ -1,0 +1,37 @@
+{
+  "aggregate_trade_availability": "Use only aggregate records with transact_time + 100ms strictly before decision_time. The 100ms lag is an explicit modeling assumption motivated by documented aggregation; it is not a historical delivery timestamp or a measured network guarantee. Existing round-one features retain their original timestamp convention for paired feature ablation.",
+  "assessment_dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "dates": [
+    "2023-05-19",
+    "2023-05-20"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "future_confirmation": "These dates are exposed development data. Any selected feature/model/policy combination needs new unseen dates and the continuing error budget.",
+  "hypothesis": "Trade event order, trade prices relative to the known BBO, and separate same-price bid/ask queue quantity increases and decreases may recover information discarded by one-second aggregate totals.",
+  "input_hashes": {
+    "data/research/boundary_exact_labels_20260907/dataset_manifest.json": "e0b8c5b5658d98b57558c4974fdc45ab43faf08cf93686913ada8a9a357eedb5",
+    "scripts/prepare_boundary_event_clock.py": "096958b2d8ded97a9b7b6c44b4cf63042a4f9c3c5ce93a4d7f9105f2e57d98d0",
+    "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+    "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+    "tests/test_boundary_event_clock.py": "bf2a7ac98f77b4f20101d1a770aa28bff8fb06a6f6f087b99e887fafa615cf56"
+  },
+  "limitations": "The data remain BBO plus aggregate trades. Quantity decreases cannot identify cancellations versus market executions. Aggregate events are not individual fills; no fill-count claim is inferred from ID spans. No L2 reconstruction or economic gain is claimed.",
+  "parent_feature_protocol_sha256": "eeb20aa140e1845a0ecceb3ff5a3750ac9eb5e9e147cb00c49eb4c6c0ab499a2",
+  "preparation": "Append observations only; preserve every original feature, label and raw-resolution field bitwise, and verify quote lookup and save/reload parity.",
+  "purpose": "Prepare four already exposed early sessions for a larger-history development comparison. The observation formulas are identical to the first event-clock preparation.",
+  "registered_at_utc": "2026-09-07T19:28:48.049664+00:00",
+  "research_sources": [
+    "https://developers.binance.com/en/docs/catalog/core-trading-derivatives-trading-usd-s-m-futures/api/rest-api/market-data#compressed-aggregate-trades-list",
+    "https://arxiv.org/abs/1312.0563",
+    "https://arxiv.org/abs/1707.05642"
+  ],
+  "source_manifest": "data/research/boundary_exact_labels_20260907/dataset_manifest.json",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}

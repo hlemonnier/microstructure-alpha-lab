@@ -1,0 +1,62 @@
+{
+  "assessment": "Rank all fixed procedures only after all three dates complete. Require consistency against the same-policy full-density clock blend and inspect natural log loss. These three already-exposed dates supply no independent discovery or significance claim.",
+  "cohorts": {
+    "recent4_stride4": "d-5 through d-2 sampled every four UTC clock seconds",
+    "wide14_stride14": "d-15 through d-2 sampled every fourteen UTC clock seconds",
+    "wide14_stride4": "d-15 through d-2 sampled every four UTC clock seconds"
+  },
+  "controls": "Saved full-density four-day event-clock tree, neural model and blend, plus original reference and original blend. Old clock checkpoints must reproduce bit-identical predictions and identical assessment labels/times with the streamed inputs.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "distinct_assessment_decisions": 42420,
+  "event_run": "results/boundary_event_clock_screen_20260907",
+  "evidence_status": "development_only_on_exposed_dates",
+  "hypothesis": "Broader historical regime coverage and less overlapping five-second training labels may improve forecast generalization at approximately matched training-row budgets.",
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+    "data/research/boundary_regime_early_data_20260907/dataset_manifest.json": "251a2968d265da2d7819e417f22edb6bbc6888d483c820cefc6e21f8ff366c00",
+    "docs/research/boundary_event_clock_data_20260907.json": "eeb20aa140e1845a0ecceb3ff5a3750ac9eb5e9e147cb00c49eb4c6c0ab499a2",
+    "docs/research/boundary_regime_early_data_20260907_path_revision.json": "62627e534dcd040a0b7e617273b9786cb5ae089d0131e860ee857f1b33d38fab",
+    "results/boundary_event_clock_screen_20260907/frozen_screen.json": "849473d278ed6c2135cb7fb19072fb61543d424b366244e801fcc889e1ac38e1",
+    "results/boundary_same_day_priors_20260907/frozen_development.json": "f424b5367263eb79b4dc8c7710dfaca892c79d25b82a980fb0ffc82b4cd3887c",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/BTCUSDT_original_reference.npz": "188f73b12156197bd0f5830cc997d785dbcf8ab3c92ef97041c3a5b4e193883b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/ETHUSDT_original_reference.npz": "eef72f8c82c5dff40f216933d3d46305ff5718386682c2fc7363c52cca648117",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/BTCUSDT_original_reference.npz": "4f933993c79d03577087d3444f4d069c19e122c7900eb6abaa72af3f4996c74f",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/ETHUSDT_original_reference.npz": "ee38dacedb2daa2a7208b5aced550b3fd784877065168e0672d78141037eb82b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/BTCUSDT_original_reference.npz": "3d0379f61d60ddfee343f613bff27f8d3a4d54d7ffc29e3e84c03bf42c7a35b8",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/ETHUSDT_original_reference.npz": "9e1c4fda1b8826b582332acf29cbea9bbc1e8ca94e86cc38a9fb7b511b6cbf83",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "scripts/run_boundary_event_clock_screen.py": "929ff7adac3dd5d31655b521b85b8db01d15c9a4566317c10620fe7fc08f233d",
+    "scripts/run_boundary_regime_screen.py": "ce6249273bf524506442f904c57c450a04f509b3a9937620644a74872a1552e6",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+    "src/lob_forge/boundary_event_clock_inputs.py": "87f3c07457c3974f4c56e28b5c4dd302bf26cd5db09359258c6fa4425df373fe",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_regime_coverage.py": "d83f5088923d09ccd75a0e324e74fcd9d674ad57999452fab9115cd7284fbd50",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "tests/test_boundary_event_clock.py": "bf2a7ac98f77b4f20101d1a770aa28bff8fb06a6f6f087b99e887fafa615cf56",
+    "tests/test_boundary_event_clock_inputs.py": "6b41cef94f3bd9587a0491fdb9aec588a6c1af557128c001264cf5220a7439b4",
+    "tests/test_boundary_regime_coverage.py": "d56ca88ff3a27ae84289aa92c698bd9febf8ce1aad5521d5b4671dcf5a8b22d1"
+  },
+  "manifest": "data/research/boundary_regime_data_20260907/dataset_manifest.json",
+  "model_fits": 18,
+  "models": "Same pooled weighted seven-leaf HGB and twelve-epoch 64-wide MLP with train-only quantile transformation. Both use 168 event-clock features. Each cohort also has a fixed 50/50 natural-probability blend.",
+  "post_fit_panels": 168,
+  "prior_run": "results/boundary_same_day_priors_20260907",
+  "registered_at_utc": "2026-09-07T19:43:19.357219+00:00",
+  "registered_priors": "Average cohort training frequencies and preceding-noon validation frequencies. Forecast-prior policy uses the unchanged causal one-hour update and available morning-label initialization.",
+  "sampling": "Fixed UTC-midnight phase, independent of labels, volatility and row counts. Approximately compare fourteen days at stride four with saved four full days, and fourteen days at stride fourteen with four days at stride four. These are approximate row-budget controls, not exact row-matched sampling.",
+  "validation": "Prior-day noon chooses the neural checkpoint. Assessment remains the same 7070 noon observations per asset/date; no assessment inputs enter fitting."
+}
