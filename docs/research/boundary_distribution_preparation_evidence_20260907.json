@@ -1,0 +1,59 @@
+{
+  "coarse_label_parity": true,
+  "identity": {
+    "dependencies": {
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "pyarrow": "17.0.0"
+    },
+    "input_hashes": {
+      "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+      "docs/research/boundary_confirmation_20260907_exact_labels_revision.json": "e3a40a656ab7b53748acd2c446dba900e485a4ff6c6e1f56bb33b586ce24517e",
+      "scripts/prepare_boundary_distribution_targets.py": "5e48583a432ad6b8d35e5ecac45d7a2cb7e24dc70600f001543711781d6add7c",
+      "scripts/prepare_boundary_event_clock.py": "8a46c988f47ac8b638a4b4b330c2951d66225a47774bbb9a7330a1cc811bca36",
+      "src/lob_forge/boundary_distribution_targets.py": "d76c314c8dbb3aa64ed7ce924838c02ed8cae3725c90f0bbb8acdb2a1ee191fd",
+      "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+      "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0",
+      "tests/test_boundary_distribution_targets.py": "103bc2cd99ebc71507234ac664f2c2cc135f9d3fc10a06b3f613adcc0c33ea20"
+    },
+    "protocol_sha256": "9b4e851dca9c86eb51de5bbffe660bd7b6867d950cb202d56f3191759d803870",
+    "python": "3.12.14"
+  },
+  "manifest": "data/research/boundary_distribution_targets_20260907/target_manifest.json",
+  "manifest_sha256": "627c51ee91c26444f3a737c0b93f1a7cd48172ea0584e2dd18d9805ab62ac7a3",
+  "raw_resolution_parity": true,
+  "rows": 2418881,
+  "save_reload_parity": true,
+  "session_hashes": {
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-05-29.parquet": "9afb178385b38e385d2e253332ef0602c3771c083a13d485c214f54fa0c9ebb1",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-05-30.parquet": "bddba90849ee5735be65d56e6e6fdef0d4952f861b7b4829ee30e184c58a0e85",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-05-31.parquet": "e26dce57f1868fced6f5f6727d3ed63085319c2fb1e81af1d68fd56cac34cdad",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-01.parquet": "fa630da3081159c88310eeecb01acd0ad6e4e9b7085eab543e74a11cf969a480",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-02.parquet": "fc1abc275499e8926588198da7d9b6234e1f726f7ceb22f84591daaf281867fc",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-03.parquet": "b9f915ace5640b69d73eba0b581f5bbf6b8665c1172d0ec316cd6fbb6e654d0d",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-04.parquet": "ab72f388722c59971ab9bceb38a04046783b304a9e4887b7133cbe014921f121",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-05.parquet": "9f8cfa45befb5a739271bc3065664584c134632fa558eeefd84cb0f6a7dbfb3e",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-06.parquet": "b51b27ba82b6133f47510e74d8ddea8ef4e47f8088a1ccded1cfb4f18610d814",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-07.parquet": "682a73c3edd79e24d2c9d9800cd215b769e937d44ea06187c0b3edd5f070bf1b",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-08.parquet": "3a8c350ea30163d1c43d4521531e590e413179c6b4e99ac40456dcc3f3226721",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-09.parquet": "ee332235745cecd5b1124a5e35cb928718cbc542dcad48be3b8eb004967c7b28",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-10.parquet": "4a30f7e723d3b70dc418955623a474e2f86e8b40992a31e93d712707caaa9785",
+    "data/research/boundary_distribution_targets_20260907/BTCUSDT/2023-06-11.parquet": "3e68bb980d8283c50193decb87969802ce0e219f5a1a5f3dd06996b47faa5014",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-05-29.parquet": "fc079a2e3784e10021439c5cfb1b20e12fd71ab93643017021350b1d5bd0ba47",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-05-30.parquet": "1641fc696f67d8feb1c6d3903e9cc9690465b150dea9e2df494984ef947ae6c2",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-05-31.parquet": "6e88988556baf5203e7d8cfdaf1b53c11b89a0e8ccbedba5fcbe96806e64e838",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-01.parquet": "4cd7264f801b973c580c595d156dee07c00be5c1fb08ded842ab90992c2ad588",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-02.parquet": "5ba13c17fffe9a3eacebd1c2d2bd9ab3f52128e57b4e65663efe01590c9bb159",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-03.parquet": "cfdf59dd9da5ca38a672f1c04b5b559e1374bd507bcd5d9d7df7dadbbb4e1347",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-04.parquet": "1e2eaa597b150c09905d7b8f94efbba8d7972bc591b54871ab48d9290a0a07b8",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-05.parquet": "df38a353d6fd02d1a3deb065e8fe8d3ae36615040701e2daccae22ff25175e0c",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-06.parquet": "e0ec66f5c1bdcf01ab35ab4ad20e0ac051fa51f52a27680d5441c7eec456a9f3",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-07.parquet": "6ce21d53628b4e526f391b4327583fc2162aee873b1708b5a7127a066bb193e0",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-08.parquet": "9d595caef57f911be239e4cc1b388730b1ae1090fb78e8e32c8b4e0ad508fdac",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-09.parquet": "f7179b454300b3394634b33dcbb9f4555cb9add89d8fe642ff7ecb24ba422356",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-10.parquet": "f027fae14cdde545f14bddb1abec705fb4ceb89625bb4fcceabd6495f1bf85e3",
+    "data/research/boundary_distribution_targets_20260907/ETHUSDT/2023-06-11.parquet": "e1fdca21eca07d216a8baed9c5d9056306132015156c31b5d8ae76be60ed3f80"
+  },
+  "sessions": 28,
+  "target_only_files": true
+}
