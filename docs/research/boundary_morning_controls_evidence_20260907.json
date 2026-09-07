@@ -1,0 +1,2808 @@
+{
+  "additional_model_fits": 0,
+  "additional_post_fit_panels": 60,
+  "artifact_hashes": {
+    "2023-05-26/BTCUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "bec3d4d49b0cba3371a4ed803fbd942ccd9f30678aeb4cc10d7abec7e49514c2",
+    "2023-05-26/BTCUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "4494cda6ae84d473e11fe1c3bc8126d2f9c4e4c70d564fef574eaaa9de99cdf9",
+    "2023-05-26/BTCUSDT_old_neural_full_morning_tree_blend_registered.npz": "24d3ec5a0eac941a902a2c50e5d6a000c1a25969fa9f32ad138979d2ebb4ba9b",
+    "2023-05-26/BTCUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "37cf6563fc3ce69ceb87f7f95f7cd4e624d2081bb2d6161a85ca9308e096c280",
+    "2023-05-26/BTCUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "0c13796b080389fecee966b6becdfea6a465e4e6ef76e7f0acdcc368dac7e35b",
+    "2023-05-26/BTCUSDT_old_neural_six_hours_tree_blend_registered.npz": "2c28b84bee1e65f0e99bdeacf3fbb8aa9f627943ba8b13c4eee235dd813bdb7b",
+    "2023-05-26/ETHUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "7114f09e41ba970c4e7495fd3a48dcdd75047f01f234f8e4f92148daaf394729",
+    "2023-05-26/ETHUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "ffb408849c977686a0a6602bf7a7178321a7ba8617816c2b3e15c33a2f692d44",
+    "2023-05-26/ETHUSDT_old_neural_full_morning_tree_blend_registered.npz": "361b303fd04fff39225bc9801dd8766bbdb223bb54888b118ec8bf7048f49788",
+    "2023-05-26/ETHUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "55264f157a4e6ec1f8cf17c845338d630b4483850cb9c022f867f8f7d81290b5",
+    "2023-05-26/ETHUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "f4a91d860ab9c5b93da1143fe5d5c39c5158741dbe38e6db8b7390ba10cb3006",
+    "2023-05-26/ETHUSDT_old_neural_six_hours_tree_blend_registered.npz": "866df2f8b8dc5b83211b7a1369154dd7f324592556a54198696ac274a2e13ee9",
+    "2023-05-30/BTCUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "c9ea46470661b2b81fa9fe1af7406267602b9d8ad25744fd6b8742bdc4e6a593",
+    "2023-05-30/BTCUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "e1da7745d8529da0d8ab4497753745c1bd6e510d2dc891f7a5355b996bb5f45f",
+    "2023-05-30/BTCUSDT_old_neural_full_morning_tree_blend_registered.npz": "62333b89d2fa91520b6454ab2d470868690ffc47ad437779aca497cbe1a26a32",
+    "2023-05-30/BTCUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "62909370057118d571fe4fd291c6b1f7fd74c259130dcc8cd6c191575681407b",
+    "2023-05-30/BTCUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "4224b12844ad7f2ec3edda21c7ce22bd79615d3c4b819482d5c745cd12d012ea",
+    "2023-05-30/BTCUSDT_old_neural_six_hours_tree_blend_registered.npz": "8a60e467dca3a56748c51e7cd9be4a695c0681e56490d6992709a833e96f8dd0",
+    "2023-05-30/ETHUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "8fc86550b0a3fb47a0b6c411f605b3a8e582c1b1cf6e3dea00258f6ee59cfd3e",
+    "2023-05-30/ETHUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "fd87b28e0d2bf3f004555e886e71df57d99501c75722dcb18e0a554c2fa5852e",
+    "2023-05-30/ETHUSDT_old_neural_full_morning_tree_blend_registered.npz": "a0c3b1e61a0c974997eb7ad2706029d3397f2af50a910099fbc4587409965219",
+    "2023-05-30/ETHUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "31f1ceadf64afdec8939ed4151d85c7ab77f3865024fbd7be0ad50d7c6ab5c3b",
+    "2023-05-30/ETHUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "18b8cb4c6da563e7113b861f10494bf3ae10e0a4480337fc7402a9bf49ba99f4",
+    "2023-05-30/ETHUSDT_old_neural_six_hours_tree_blend_registered.npz": "9c24ebd00b695559330bc3090b9a6580372be9a1887664f97d4fbbc73e11311f",
+    "2023-06-03/BTCUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "c2776ffe3c19f18b7e0206c7b173b93773bcea951837f03e68c3e919fbc816e3",
+    "2023-06-03/BTCUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "2252311176370b33a386ee7b891c6b5c42a0d548c072d240c463a50eac556687",
+    "2023-06-03/BTCUSDT_old_neural_full_morning_tree_blend_registered.npz": "c7e68abc0903aca6fee91d7115e89aea9d327193fd577828573ccf4ee49e088e",
+    "2023-06-03/BTCUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "3785f2172b1e0a0626d1e53a0a116de8218186b543b683b1da7d51657ab06055",
+    "2023-06-03/BTCUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "6dc2c103466c0b38b96f41f3879c0aeb80ba1df48325af6eaf1a5c5c39cd0a04",
+    "2023-06-03/BTCUSDT_old_neural_six_hours_tree_blend_registered.npz": "cf5079ee149c7aa213f3afab6031c8af086cba1f7d2847174b1ea5626688adab",
+    "2023-06-03/ETHUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "8c4b9b312491c33e61583c3bdda1e6dc538950807a899371d679c4847e84baa6",
+    "2023-06-03/ETHUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "5db5823f454d3ec2e184fd72f4a9879f4074ea2c41c9dd80ea28807854be9dc5",
+    "2023-06-03/ETHUSDT_old_neural_full_morning_tree_blend_registered.npz": "4c25190249e21668212a5ad0e241476ab5c18590841e5cebdb31d20ef5cba6a2",
+    "2023-06-03/ETHUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "e5916ea099058e421fb88c0adb31d4bff2ab12416ae3c9505f3c89f659b5226f",
+    "2023-06-03/ETHUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "8d6cb87543a606f6def6faf7f5c5be7b90c226d7b4a7fe13245d1602c499f003",
+    "2023-06-03/ETHUSDT_old_neural_six_hours_tree_blend_registered.npz": "51bb15c948f2667f5ecf25e0a67e02f6ca99d4b35f8c42eab118f2b20fc6bb99",
+    "2023-06-07/BTCUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "7c0581d8824662e043326b9690863e17a812cbb671bd44874ddcff32fee86d49",
+    "2023-06-07/BTCUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "b67367a25001632d19a4f270e77298c12bdb4459ddb588b7d3ee6355e52ec780",
+    "2023-06-07/BTCUSDT_old_neural_full_morning_tree_blend_registered.npz": "a2a26982c543811f65ab2c04724a1296ddb0fd9798c66da7ff45a280afb49449",
+    "2023-06-07/BTCUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "f3e5b598c9c6d261e933e07ffeebb782a60111a3f66ec599c71d6e56bd1edd1c",
+    "2023-06-07/BTCUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "12eeaa6b0decb8d12d2b6b713c4bd8a9a521d539ba8b7224aca133bada2ebf53",
+    "2023-06-07/BTCUSDT_old_neural_six_hours_tree_blend_registered.npz": "bc3790f6f4f3f89e9aa54421a8f331a1734edd7233e410d3ce19c11a7f25f61f",
+    "2023-06-07/ETHUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "d17f4542dcb219a8a18c407112b3f8e1ec824ea98c9f63c5a424015a09a15764",
+    "2023-06-07/ETHUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "c1ad2180cb278fd06349d2fd14336f8e1897e2a27d11335617167a98c3bb6c3e",
+    "2023-06-07/ETHUSDT_old_neural_full_morning_tree_blend_registered.npz": "16103edf51982a410d88eaba0bef18279741f697efb108db3d85ca2aff029d35",
+    "2023-06-07/ETHUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "12866caeb2a87949d0ca7ba0267b88a7da3758391a38907fd4070bf3ab6fbbb6",
+    "2023-06-07/ETHUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "d99babb1bdec89cb3043ba604a97ad165f9b002b6c68d940845a2f22f65314c0",
+    "2023-06-07/ETHUSDT_old_neural_six_hours_tree_blend_registered.npz": "4d5245711d9f68897f7e67762f4497984737c2ed4f184527d265f94191865c2a",
+    "2023-06-11/BTCUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "113acb4fe2417bec3b0e8ffef09fac7c187fa5ffedf4598a57aa25c2708c0020",
+    "2023-06-11/BTCUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "33832f457259a0ffefd11b433b1604bff3935bf3d8108597cfc843422c4d22c9",
+    "2023-06-11/BTCUSDT_old_neural_full_morning_tree_blend_registered.npz": "b91716528eb4e1dab82be548c8395af5a37c29d7f787b7291408ff0aa3a06cab",
+    "2023-06-11/BTCUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "be77cc53caac50e5dca552b84c84c3983ac73d68e62ff9a63e5fcc99569d0629",
+    "2023-06-11/BTCUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "eae21d99b0edd7e03ae925c673906b86639f51c8038e25098127b716a6cad086",
+    "2023-06-11/BTCUSDT_old_neural_six_hours_tree_blend_registered.npz": "de4f0309252838228ca87c146320febc65d2b7ef7f82cb37c32aa6d1070ecb6a",
+    "2023-06-11/ETHUSDT_old_neural_full_morning_tree_blend_forecast_3600.npz": "3d1373a1a34dd76ac5bbd2c2ac976ac84b1e5945ea006b3852141f996d0dcb1e",
+    "2023-06-11/ETHUSDT_old_neural_full_morning_tree_blend_morning_full.npz": "8e1439e586d34a00c05d9632798827c39a8a64b01bab1ac31db6f368974e7e98",
+    "2023-06-11/ETHUSDT_old_neural_full_morning_tree_blend_registered.npz": "d42f4aa6e6b5197188e40ceb485c0dfb0f53e58217efe6cbdf0c544a61443b1d",
+    "2023-06-11/ETHUSDT_old_neural_six_hours_tree_blend_forecast_3600.npz": "1a718a0f3bd34fce61e0c47c100fe5d729bab26f3b5e708993965bd8e037439e",
+    "2023-06-11/ETHUSDT_old_neural_six_hours_tree_blend_morning_full.npz": "120fcfe46185f82c0879caf419a1bebf02947795784cc6c00d5e07a06d0823a8",
+    "2023-06-11/ETHUSDT_old_neural_six_hours_tree_blend_registered.npz": "e9b123c619f6c26a51f7cbd8e4364a1a1374548a354268f31e0bf0ad97cf4d1d"
+  },
+  "evidence_status": "development_only_on_exposed_dates",
+  "matched_finetuning_comparisons": [
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.011121843111421115,
+        "ETHUSDT": -0.008238259597481446
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.00968005135445128,
+        "log_loss": -0.006373978258805491,
+        "natural_accuracy": 0.0013719943422913828
+      },
+      "model": "six_hours_neural_1e4",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.0035843309754013284,
+        "ETHUSDT": -0.0028652544429684347
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0032247927091848816,
+        "log_loss": -0.006373978258805491,
+        "natural_accuracy": 0.0013719943422913828
+      },
+      "model": "six_hours_neural_1e4",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0012554074913920133,
+        "ETHUSDT": 0.0006400858591077974
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": 0.0009477466752499053,
+        "log_loss": -0.006373978258805491,
+        "natural_accuracy": 0.0013719943422913828
+      },
+      "model": "six_hours_neural_1e4",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.010504979124338698,
+        "ETHUSDT": -0.0047343763069057744
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.007619677715622236,
+        "log_loss": -0.00644183229437692,
+        "natural_accuracy": 0.0006789250353607112
+      },
+      "model": "six_hours_neural_3e4",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.0036423709437641283,
+        "ETHUSDT": -0.0033632931179518157
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.003502832030857972,
+        "log_loss": -0.00644183229437692,
+        "natural_accuracy": 0.0006789250353607112
+      },
+      "model": "six_hours_neural_3e4",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0016856664336327265,
+        "ETHUSDT": -0.0013473906659678292
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": 0.00016913788383244867,
+        "log_loss": -0.00644183229437692,
+        "natural_accuracy": 0.0006789250353607112
+      },
+      "model": "six_hours_neural_3e4",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.012322308337268028,
+        "ETHUSDT": -0.005612136110873333
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.00896722222407068,
+        "log_loss": -0.006749633184548731,
+        "natural_accuracy": 0.002715700141442712
+      },
+      "model": "full_morning_neural_1e4",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.0031508110318096416,
+        "ETHUSDT": -0.0020206065417714856
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0025857087867905636,
+        "log_loss": -0.006749633184548731,
+        "natural_accuracy": 0.002715700141442712
+      },
+      "model": "full_morning_neural_1e4",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0013772833369459115,
+        "ETHUSDT": 0.0007059790460487436
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": 0.0010416311914973274,
+        "log_loss": -0.006749633184548731,
+        "natural_accuracy": 0.002715700141442712
+      },
+      "model": "full_morning_neural_1e4",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.009427773130206273,
+        "ETHUSDT": -0.0033247901044715865
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.00637628161733893,
+        "log_loss": -0.006807352094640323,
+        "natural_accuracy": 0.0030127298444130313
+      },
+      "model": "full_morning_neural_3e4",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.000594674849526644,
+        "ETHUSDT": -0.0022179694864873254
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0008116473184803408,
+        "log_loss": -0.006807352094640323,
+        "natural_accuracy": 0.0030127298444130313
+      },
+      "model": "full_morning_neural_3e4",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0021789113542445724,
+        "ETHUSDT": 0.0005813654259447798
+      },
+      "matched_control": "old_neural",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": 0.0013801383900946761,
+        "log_loss": -0.006807352094640323,
+        "natural_accuracy": 0.0030127298444130313
+      },
+      "model": "full_morning_neural_3e4",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.00708308468805704,
+        "ETHUSDT": -0.0033864980768973816
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.00523479138247721,
+        "log_loss": -0.00389694747753534,
+        "natural_accuracy": 0.0005374823196605316
+      },
+      "model": "six_hours_neural_1e4_old_tree_blend",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.0005832207325085603,
+        "ETHUSDT": -0.001176488848423396
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0008798547904659782,
+        "log_loss": -0.00389694747753534,
+        "natural_accuracy": 0.0005374823196605316
+      },
+      "model": "six_hours_neural_1e4_old_tree_blend",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.00137048027549036,
+        "ETHUSDT": -0.00039307627922331446
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": 0.0004887019981335228,
+        "log_loss": -0.00389694747753534,
+        "natural_accuracy": 0.0005374823196605316
+      },
+      "model": "six_hours_neural_1e4_old_tree_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.005506502738393149,
+        "ETHUSDT": -0.001817694941518333
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0036620988399557407,
+        "log_loss": -0.004286448892792593,
+        "natural_accuracy": 0.0009476661951909549
+      },
+      "model": "six_hours_neural_3e4_old_tree_blend",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0008725531605814019,
+        "ETHUSDT": -0.0017201937807703848
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0004238203100944915,
+        "log_loss": -0.004286448892792593,
+        "natural_accuracy": 0.0009476661951909549
+      },
+      "model": "six_hours_neural_3e4_old_tree_blend",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0010048582231117153,
+        "ETHUSDT": -0.0006878560219567342
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": 0.00015850110057749056,
+        "log_loss": -0.004286448892792593,
+        "natural_accuracy": 0.0009476661951909549
+      },
+      "model": "six_hours_neural_3e4_old_tree_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.007737100927921447,
+        "ETHUSDT": -0.0031717906370034798
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.005454445782462463,
+        "log_loss": -0.003606139687857779,
+        "natural_accuracy": 0.0004101838755304232
+      },
+      "model": "full_morning_neural_1e4_old_tree_blend",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.0007922551460520566,
+        "ETHUSDT": -0.0022592362332886527
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0015257456896703547,
+        "log_loss": -0.003606139687857779,
+        "natural_accuracy": 0.0004101838755304232
+      },
+      "model": "full_morning_neural_1e4_old_tree_blend",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0014543124538332285,
+        "ETHUSDT": 0.0011350567144698732
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": 0.0012946845841515509,
+        "log_loss": -0.003606139687857779,
+        "natural_accuracy": 0.0004101838755304232
+      },
+      "model": "full_morning_neural_1e4_old_tree_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.005745805484514188,
+        "ETHUSDT": -0.0014605839978980351
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0036031947412061118,
+        "log_loss": -0.004075545470930253,
+        "natural_accuracy": 0.0009052333804808854
+      },
+      "model": "full_morning_neural_3e4_old_tree_blend",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0005719546890896154,
+        "ETHUSDT": -0.0012648879416410352
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0003464666262757099,
+        "log_loss": -0.004075545470930253,
+        "natural_accuracy": 0.0009052333804808854
+      },
+      "model": "full_morning_neural_3e4_old_tree_blend",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.002280484705272401,
+        "ETHUSDT": 0.000834010847439437
+      },
+      "matched_control": "original_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": 0.0015572477763559189,
+        "log_loss": -0.004075545470930253,
+        "natural_accuracy": 0.0009052333804808854
+      },
+      "model": "full_morning_neural_3e4_old_tree_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.006480712570005975,
+        "ETHUSDT": -0.005692677286159298
+      },
+      "matched_control": "old_neural_six_hours_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.006086694928082637,
+        "log_loss": -0.0010813669513120739,
+        "natural_accuracy": -0.000466760961810464
+      },
+      "model": "six_hours_neural_1e4_morning_tree_blend",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.004842717391061668,
+        "ETHUSDT": -0.001032963203978643
+      },
+      "matched_control": "old_neural_six_hours_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.002937840297520156,
+        "log_loss": -0.0010813669513120739,
+        "natural_accuracy": -0.000466760961810464
+      },
+      "model": "six_hours_neural_1e4_morning_tree_blend",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.0007279320677289425,
+        "ETHUSDT": -0.0008744753925428395
+      },
+      "matched_control": "old_neural_six_hours_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.000801203730135891,
+        "log_loss": -0.0010813669513120739,
+        "natural_accuracy": -0.000466760961810464
+      },
+      "model": "six_hours_neural_1e4_morning_tree_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.006130893907246837,
+        "ETHUSDT": -0.0038830593113174825
+      },
+      "matched_control": "old_neural_six_hours_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.00500697660928216,
+        "log_loss": -0.0005118553294069017,
+        "natural_accuracy": -0.0005799151343705899
+      },
+      "model": "six_hours_neural_3e4_morning_tree_blend",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.005989196251560791,
+        "ETHUSDT": -0.0009458629822599818
+      },
+      "matched_control": "old_neural_six_hours_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0034675296169103865,
+        "log_loss": -0.0005118553294069017,
+        "natural_accuracy": -0.0005799151343705899
+      },
+      "model": "six_hours_neural_3e4_morning_tree_blend",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.000746473095030975,
+        "ETHUSDT": -0.002028452369307332
+      },
+      "matched_control": "old_neural_six_hours_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0013874627321691535,
+        "log_loss": -0.0005118553294069017,
+        "natural_accuracy": -0.0005799151343705899
+      },
+      "model": "six_hours_neural_3e4_morning_tree_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.0058858088970117125,
+        "ETHUSDT": -0.0037183806200203453
+      },
+      "matched_control": "old_neural_full_morning_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.004802094758516029,
+        "log_loss": -0.001704521961615968,
+        "natural_accuracy": -4.243281471006943e-05
+      },
+      "model": "full_morning_neural_1e4_morning_tree_blend",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.0038557107334409647,
+        "ETHUSDT": -0.00021579025538654984
+      },
+      "matched_control": "old_neural_full_morning_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.002035750494413757,
+        "log_loss": -0.001704521961615968,
+        "natural_accuracy": -4.243281471006943e-05
+      },
+      "model": "full_morning_neural_1e4_morning_tree_blend",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.0002403001258384885,
+        "ETHUSDT": -0.0004781716526728097
+      },
+      "matched_control": "old_neural_full_morning_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.00011893576341716061,
+        "log_loss": -0.001704521961615968,
+        "natural_accuracy": -4.243281471006943e-05
+      },
+      "model": "full_morning_neural_1e4_morning_tree_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.006795831090115367,
+        "ETHUSDT": -0.0031320987360211826
+      },
+      "matched_control": "old_neural_full_morning_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.004963964913068275,
+        "log_loss": -0.0014508675632433521,
+        "natural_accuracy": 0.0006647807637906511
+      },
+      "model": "full_morning_neural_3e4_morning_tree_blend",
+      "policy": "registered"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": -0.004274878684670446,
+        "ETHUSDT": 0.0005069037767660211
+      },
+      "matched_control": "old_neural_full_morning_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0018839874539522128,
+        "log_loss": -0.0014508675632433521,
+        "natural_accuracy": 0.0006647807637906511
+      },
+      "model": "full_morning_neural_3e4_morning_tree_blend",
+      "policy": "morning_full"
+    },
+    {
+      "asset_dates": 10,
+      "balanced_accuracy_delta_by_asset": {
+        "BTCUSDT": 0.00016735671283871767,
+        "ETHUSDT": -0.0010936099075635531
+      },
+      "matched_control": "old_neural_full_morning_tree_blend",
+      "mean_finetuning_delta": {
+        "balanced_accuracy": -0.0004631265973624177,
+        "log_loss": -0.0014508675632433521,
+        "natural_accuracy": 0.0006647807637906511
+      },
+      "model": "full_morning_neural_3e4_morning_tree_blend",
+      "policy": "forecast_3600"
+    }
+  ],
+  "parent_summary_sha256": "cd28479d3763a84d9f39db5121fedb4e581751fd6aefc5b843bbdd10dfaa1a9b",
+  "protocol_sha256": "772b8c5f53ec972c8957fc64de714cc533e3f95b566a89f8f87c1b0d42ea4811",
+  "records": [
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5871590411207762,
+        "class_counts": [
+          2304,
+          2636,
+          2130
+        ],
+        "confusion_matrix": [
+          [
+            1284,
+            589,
+            431
+          ],
+          [
+            341,
+            1954,
+            341
+          ],
+          [
+            623,
+            521,
+            986
+          ]
+        ],
+        "log_loss": 0.886381167791866,
+        "macro_f1": 0.5856544361982582,
+        "natural_accuracy": 0.5958981612446959,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5454996810691892,
+        "class_counts": [
+          2304,
+          2636,
+          2130
+        ],
+        "confusion_matrix": [
+          [
+            1571,
+            170,
+            563
+          ],
+          [
+            819,
+            993,
+            824
+          ],
+          [
+            746,
+            153,
+            1231
+          ]
+        ],
+        "log_loss": 0.886381167791866,
+        "macro_f1": 0.5328793378045174,
+        "natural_accuracy": 0.5958981612446959,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5539977944968467,
+        "class_counts": [
+          2304,
+          2636,
+          2130
+        ],
+        "confusion_matrix": [
+          [
+            1481,
+            301,
+            522
+          ],
+          [
+            648,
+            1230,
+            758
+          ],
+          [
+            695,
+            258,
+            1177
+          ]
+        ],
+        "log_loss": 0.886381167791866,
+        "macro_f1": 0.5489115854517528,
+        "natural_accuracy": 0.5958981612446959,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5863623776570228,
+        "class_counts": [
+          2304,
+          2636,
+          2130
+        ],
+        "confusion_matrix": [
+          [
+            1257,
+            579,
+            468
+          ],
+          [
+            333,
+            1913,
+            390
+          ],
+          [
+            582,
+            509,
+            1039
+          ]
+        ],
+        "log_loss": 0.8802400531954505,
+        "macro_f1": 0.585469635079157,
+        "natural_accuracy": 0.5957567185289958,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5468632401529958,
+        "class_counts": [
+          2304,
+          2636,
+          2130
+        ],
+        "confusion_matrix": [
+          [
+            1532,
+            165,
+            607
+          ],
+          [
+            776,
+            989,
+            871
+          ],
+          [
+            706,
+            145,
+            1279
+          ]
+        ],
+        "log_loss": 0.8802400531954505,
+        "macro_f1": 0.5340847725040391,
+        "natural_accuracy": 0.5957567185289958,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5551446683812197,
+        "class_counts": [
+          2304,
+          2636,
+          2130
+        ],
+        "confusion_matrix": [
+          [
+            1440,
+            302,
+            562
+          ],
+          [
+            598,
+            1234,
+            804
+          ],
+          [
+            654,
+            257,
+            1219
+          ]
+        ],
+        "log_loss": 0.8802400531954505,
+        "macro_f1": 0.5502569120482051,
+        "natural_accuracy": 0.5957567185289958,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5587791792066056,
+        "class_counts": [
+          2355,
+          2243,
+          2472
+        ],
+        "confusion_matrix": [
+          [
+            1173,
+            485,
+            697
+          ],
+          [
+            374,
+            1446,
+            423
+          ],
+          [
+            624,
+            529,
+            1319
+          ]
+        ],
+        "log_loss": 0.9396498023820908,
+        "macro_f1": 0.556808868513948,
+        "natural_accuracy": 0.5554455445544555,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5100900453280532,
+        "class_counts": [
+          2355,
+          2243,
+          2472
+        ],
+        "confusion_matrix": [
+          [
+            1528,
+            143,
+            684
+          ],
+          [
+            852,
+            675,
+            716
+          ],
+          [
+            865,
+            172,
+            1435
+          ]
+        ],
+        "log_loss": 0.9396498023820908,
+        "macro_f1": 0.5013594278082263,
+        "natural_accuracy": 0.5554455445544555,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5297757300941105,
+        "class_counts": [
+          2355,
+          2243,
+          2472
+        ],
+        "confusion_matrix": [
+          [
+            1405,
+            315,
+            635
+          ],
+          [
+            625,
+            1009,
+            609
+          ],
+          [
+            787,
+            343,
+            1342
+          ]
+        ],
+        "log_loss": 0.9396498023820908,
+        "macro_f1": 0.53002239565786,
+        "natural_accuracy": 0.5554455445544555,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5669340205042288,
+        "class_counts": [
+          2355,
+          2243,
+          2472
+        ],
+        "confusion_matrix": [
+          [
+            1222,
+            488,
+            645
+          ],
+          [
+            359,
+            1466,
+            418
+          ],
+          [
+            638,
+            528,
+            1306
+          ]
+        ],
+        "log_loss": 0.933195777474638,
+        "macro_f1": 0.5648038285346807,
+        "natural_accuracy": 0.5613861386138614,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.514735881541475,
+        "class_counts": [
+          2355,
+          2243,
+          2472
+        ],
+        "confusion_matrix": [
+          [
+            1563,
+            146,
+            646
+          ],
+          [
+            837,
+            682,
+            724
+          ],
+          [
+            871,
+            176,
+            1425
+          ]
+        ],
+        "log_loss": 0.933195777474638,
+        "macro_f1": 0.5056065403754418,
+        "natural_accuracy": 0.5613861386138614,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "metrics": {
+        "balanced_accuracy": 0.5340519381829489,
+        "class_counts": [
+          2355,
+          2243,
+          2472
+        ],
+        "confusion_matrix": [
+          [
+            1400,
+            332,
+            623
+          ],
+          [
+            599,
+            1038,
+            606
+          ],
+          [
+            794,
+            331,
+            1347
+          ]
+        ],
+        "log_loss": 0.933195777474638,
+        "macro_f1": 0.5346488053008499,
+        "natural_accuracy": 0.5613861386138614,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.451518945426169,
+        "class_counts": [
+          2571,
+          1749,
+          2750
+        ],
+        "confusion_matrix": [
+          [
+            1428,
+            65,
+            1078
+          ],
+          [
+            687,
+            202,
+            860
+          ],
+          [
+            792,
+            78,
+            1880
+          ]
+        ],
+        "log_loss": 0.9732043169368094,
+        "macro_f1": 0.4289209805036605,
+        "natural_accuracy": 0.5254596888260255,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.4598246901769061,
+        "class_counts": [
+          2571,
+          1749,
+          2750
+        ],
+        "confusion_matrix": [
+          [
+            1486,
+            91,
+            994
+          ],
+          [
+            685,
+            264,
+            800
+          ],
+          [
+            852,
+            109,
+            1789
+          ]
+        ],
+        "log_loss": 0.9732043169368094,
+        "macro_f1": 0.4449502570773369,
+        "natural_accuracy": 0.5254596888260255,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.5193580987213008,
+        "class_counts": [
+          2571,
+          1749,
+          2750
+        ],
+        "confusion_matrix": [
+          [
+            1371,
+            454,
+            746
+          ],
+          [
+            397,
+            916,
+            436
+          ],
+          [
+            815,
+            557,
+            1378
+          ]
+        ],
+        "log_loss": 0.9732043169368094,
+        "macro_f1": 0.5164674921467967,
+        "natural_accuracy": 0.5254596888260255,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.45727376937513214,
+        "class_counts": [
+          2571,
+          1749,
+          2750
+        ],
+        "confusion_matrix": [
+          [
+            1455,
+            76,
+            1040
+          ],
+          [
+            701,
+            231,
+            817
+          ],
+          [
+            806,
+            91,
+            1853
+          ]
+        ],
+        "log_loss": 0.9741081236963651,
+        "macro_f1": 0.43826782849220186,
+        "natural_accuracy": 0.5268741159830269,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.46444575385523407,
+        "class_counts": [
+          2571,
+          1749,
+          2750
+        ],
+        "confusion_matrix": [
+          [
+            1510,
+            95,
+            966
+          ],
+          [
+            709,
+            291,
+            749
+          ],
+          [
+            862,
+            129,
+            1759
+          ]
+        ],
+        "log_loss": 0.9741081236963651,
+        "macro_f1": 0.45220754444243383,
+        "natural_accuracy": 0.5268741159830269,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.5246527510636182,
+        "class_counts": [
+          2571,
+          1749,
+          2750
+        ],
+        "confusion_matrix": [
+          [
+            1389,
+            428,
+            754
+          ],
+          [
+            404,
+            915,
+            430
+          ],
+          [
+            805,
+            541,
+            1404
+          ]
+        ],
+        "log_loss": 0.9741081236963651,
+        "macro_f1": 0.522396786465888,
+        "natural_accuracy": 0.5268741159830269,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.47883541537013846,
+        "class_counts": [
+          2599,
+          1906,
+          2565
+        ],
+        "confusion_matrix": [
+          [
+            1657,
+            102,
+            840
+          ],
+          [
+            776,
+            267,
+            863
+          ],
+          [
+            768,
+            107,
+            1690
+          ]
+        ],
+        "log_loss": 0.9825636605533391,
+        "macro_f1": 0.45428837837725683,
+        "natural_accuracy": 0.5244695898161245,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.4886261105023557,
+        "class_counts": [
+          2599,
+          1906,
+          2565
+        ],
+        "confusion_matrix": [
+          [
+            1625,
+            151,
+            823
+          ],
+          [
+            738,
+            368,
+            800
+          ],
+          [
+            746,
+            158,
+            1661
+          ]
+        ],
+        "log_loss": 0.9825636605533391,
+        "macro_f1": 0.4740922137674741,
+        "natural_accuracy": 0.5244695898161245,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.5168058809613414,
+        "class_counts": [
+          2599,
+          1906,
+          2565
+        ],
+        "confusion_matrix": [
+          [
+            1479,
+            418,
+            702
+          ],
+          [
+            561,
+            819,
+            526
+          ],
+          [
+            690,
+            460,
+            1415
+          ]
+        ],
+        "log_loss": 0.9825636605533391,
+        "macro_f1": 0.5176973085191999,
+        "natural_accuracy": 0.5244695898161245,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.48168676938648486,
+        "class_counts": [
+          2599,
+          1906,
+          2565
+        ],
+        "confusion_matrix": [
+          [
+            1655,
+            102,
+            842
+          ],
+          [
+            792,
+            287,
+            827
+          ],
+          [
+            762,
+            116,
+            1687
+          ]
+        ],
+        "log_loss": 0.9802993605424665,
+        "macro_f1": 0.4592717483128108,
+        "natural_accuracy": 0.5236209335219236,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.48967196103768695,
+        "class_counts": [
+          2599,
+          1906,
+          2565
+        ],
+        "confusion_matrix": [
+          [
+            1612,
+            149,
+            838
+          ],
+          [
+            748,
+            385,
+            773
+          ],
+          [
+            741,
+            165,
+            1659
+          ]
+        ],
+        "log_loss": 0.9802993605424665,
+        "macro_f1": 0.47661232662978054,
+        "natural_accuracy": 0.5236209335219236,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "metrics": {
+        "balanced_accuracy": 0.5157055414915962,
+        "class_counts": [
+          2599,
+          1906,
+          2565
+        ],
+        "confusion_matrix": [
+          [
+            1459,
+            434,
+            706
+          ],
+          [
+            557,
+            814,
+            535
+          ],
+          [
+            669,
+            463,
+            1433
+          ]
+        ],
+        "log_loss": 0.9802993605424665,
+        "macro_f1": 0.5164602952996576,
+        "natural_accuracy": 0.5236209335219236,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.4065376717674789,
+        "class_counts": [
+          558,
+          5741,
+          771
+        ],
+        "confusion_matrix": [
+          [
+            58,
+            491,
+            9
+          ],
+          [
+            21,
+            5653,
+            67
+          ],
+          [
+            11,
+            659,
+            101
+          ]
+        ],
+        "log_loss": 0.4975618605047496,
+        "macro_f1": 0.43113330413818907,
+        "natural_accuracy": 0.8222065063649222,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.6335823584750403,
+        "class_counts": [
+          558,
+          5741,
+          771
+        ],
+        "confusion_matrix": [
+          [
+            356,
+            151,
+            51
+          ],
+          [
+            1203,
+            3303,
+            1235
+          ],
+          [
+            69,
+            172,
+            530
+          ]
+        ],
+        "log_loss": 0.4975618605047496,
+        "macro_f1": 0.48023062557900786,
+        "natural_accuracy": 0.8222065063649222,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.6242208572676898,
+        "class_counts": [
+          558,
+          5741,
+          771
+        ],
+        "confusion_matrix": [
+          [
+            385,
+            129,
+            44
+          ],
+          [
+            1582,
+            3037,
+            1122
+          ],
+          [
+            90,
+            177,
+            504
+          ]
+        ],
+        "log_loss": 0.4975618605047496,
+        "macro_f1": 0.4586829178887808,
+        "natural_accuracy": 0.8222065063649222,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.42614303552885624,
+        "class_counts": [
+          558,
+          5741,
+          771
+        ],
+        "confusion_matrix": [
+          [
+            74,
+            475,
+            9
+          ],
+          [
+            33,
+            5625,
+            83
+          ],
+          [
+            14,
+            629,
+            128
+          ]
+        ],
+        "log_loss": 0.49948869201775487,
+        "macro_f1": 0.45948590673376666,
+        "natural_accuracy": 0.8234794908062235,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.6340379544146381,
+        "class_counts": [
+          558,
+          5741,
+          771
+        ],
+        "confusion_matrix": [
+          [
+            360,
+            140,
+            58
+          ],
+          [
+            1257,
+            3158,
+            1326
+          ],
+          [
+            66,
+            160,
+            545
+          ]
+        ],
+        "log_loss": 0.49948869201775487,
+        "macro_f1": 0.4705284044788382,
+        "natural_accuracy": 0.8234794908062235,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.6222887119697965,
+        "class_counts": [
+          558,
+          5741,
+          771
+        ],
+        "confusion_matrix": [
+          [
+            381,
+            129,
+            48
+          ],
+          [
+            1533,
+            3097,
+            1111
+          ],
+          [
+            88,
+            186,
+            497
+          ]
+        ],
+        "log_loss": 0.49948869201775487,
+        "macro_f1": 0.46131113081488934,
+        "natural_accuracy": 0.8234794908062235,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.4345658147451543,
+        "class_counts": [
+          836,
+          5335,
+          899
+        ],
+        "confusion_matrix": [
+          [
+            128,
+            689,
+            19
+          ],
+          [
+            110,
+            5088,
+            137
+          ],
+          [
+            29,
+            693,
+            177
+          ]
+        ],
+        "log_loss": 0.6087681349744622,
+        "macro_f1": 0.4604798581768231,
+        "natural_accuracy": 0.764073550212164,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.5952294670517184,
+        "class_counts": [
+          836,
+          5335,
+          899
+        ],
+        "confusion_matrix": [
+          [
+            512,
+            183,
+            141
+          ],
+          [
+            1217,
+            2758,
+            1360
+          ],
+          [
+            113,
+            196,
+            590
+          ]
+        ],
+        "log_loss": 0.6087681349744622,
+        "macro_f1": 0.4760365554003156,
+        "natural_accuracy": 0.764073550212164,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.6003895491721538,
+        "class_counts": [
+          836,
+          5335,
+          899
+        ],
+        "confusion_matrix": [
+          [
+            558,
+            170,
+            108
+          ],
+          [
+            1459,
+            2731,
+            1145
+          ],
+          [
+            133,
+            207,
+            559
+          ]
+        ],
+        "log_loss": 0.6087681349744622,
+        "macro_f1": 0.4776881792778666,
+        "natural_accuracy": 0.764073550212164,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.4386551181123676,
+        "class_counts": [
+          836,
+          5335,
+          899
+        ],
+        "confusion_matrix": [
+          [
+            126,
+            691,
+            19
+          ],
+          [
+            102,
+            5095,
+            138
+          ],
+          [
+            28,
+            682,
+            189
+          ]
+        ],
+        "log_loss": 0.6087994566267494,
+        "macro_f1": 0.46590783915254214,
+        "natural_accuracy": 0.7656294200848657,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.6002699132005705,
+        "class_counts": [
+          836,
+          5335,
+          899
+        ],
+        "confusion_matrix": [
+          [
+            523,
+            174,
+            139
+          ],
+          [
+            1197,
+            2721,
+            1417
+          ],
+          [
+            108,
+            193,
+            598
+          ]
+        ],
+        "log_loss": 0.6087994566267494,
+        "macro_f1": 0.4768255195170756,
+        "natural_accuracy": 0.7656294200848657,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "metrics": {
+        "balanced_accuracy": 0.6053551328774538,
+        "class_counts": [
+          836,
+          5335,
+          899
+        ],
+        "confusion_matrix": [
+          [
+            565,
+            164,
+            107
+          ],
+          [
+            1405,
+            2748,
+            1182
+          ],
+          [
+            124,
+            213,
+            562
+          ]
+        ],
+        "log_loss": 0.6087994566267494,
+        "macro_f1": 0.4813460639361445,
+        "natural_accuracy": 0.7656294200848657,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.4993653765522433,
+        "class_counts": [
+          2907,
+          1418,
+          2745
+        ],
+        "confusion_matrix": [
+          [
+            1414,
+            422,
+            1071
+          ],
+          [
+            359,
+            591,
+            468
+          ],
+          [
+            771,
+            341,
+            1633
+          ]
+        ],
+        "log_loss": 0.9671243162635332,
+        "macro_f1": 0.49905990625398494,
+        "natural_accuracy": 0.5175388967468175,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.5005878644578357,
+        "class_counts": [
+          2907,
+          1418,
+          2745
+        ],
+        "confusion_matrix": [
+          [
+            1263,
+            449,
+            1195
+          ],
+          [
+            302,
+            612,
+            504
+          ],
+          [
+            639,
+            361,
+            1745
+          ]
+        ],
+        "log_loss": 0.9671243162635332,
+        "macro_f1": 0.4963725836667698,
+        "natural_accuracy": 0.5175388967468175,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.515378662009279,
+        "class_counts": [
+          2907,
+          1418,
+          2745
+        ],
+        "confusion_matrix": [
+          [
+            1284,
+            694,
+            929
+          ],
+          [
+            268,
+            815,
+            335
+          ],
+          [
+            729,
+            562,
+            1454
+          ]
+        ],
+        "log_loss": 0.9671243162635332,
+        "macro_f1": 0.49815975473009527,
+        "natural_accuracy": 0.5175388967468175,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.501418328012282,
+        "class_counts": [
+          2907,
+          1418,
+          2745
+        ],
+        "confusion_matrix": [
+          [
+            1470,
+            381,
+            1056
+          ],
+          [
+            375,
+            575,
+            468
+          ],
+          [
+            790,
+            327,
+            1628
+          ]
+        ],
+        "log_loss": 0.9647145085679036,
+        "macro_f1": 0.5028025996313691,
+        "natural_accuracy": 0.5196605374823197,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.5053035211717597,
+        "class_counts": [
+          2907,
+          1418,
+          2745
+        ],
+        "confusion_matrix": [
+          [
+            1318,
+            413,
+            1176
+          ],
+          [
+            317,
+            598,
+            503
+          ],
+          [
+            646,
+            340,
+            1759
+          ]
+        ],
+        "log_loss": 0.9647145085679036,
+        "macro_f1": 0.5029999825603767,
+        "natural_accuracy": 0.5196605374823197,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.5172247967465481,
+        "class_counts": [
+          2907,
+          1418,
+          2745
+        ],
+        "confusion_matrix": [
+          [
+            1296,
+            689,
+            922
+          ],
+          [
+            263,
+            817,
+            338
+          ],
+          [
+            716,
+            575,
+            1454
+          ]
+        ],
+        "log_loss": 0.9647145085679036,
+        "macro_f1": 0.4999606136034227,
+        "natural_accuracy": 0.5196605374823197,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.5149877881298542,
+        "class_counts": [
+          2392,
+          2179,
+          2499
+        ],
+        "confusion_matrix": [
+          [
+            1162,
+            482,
+            748
+          ],
+          [
+            515,
+            1007,
+            657
+          ],
+          [
+            559,
+            448,
+            1492
+          ]
+        ],
+        "log_loss": 0.9754065603256087,
+        "macro_f1": 0.5148243313918109,
+        "natural_accuracy": 0.5185289957567185,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.49609742201514423,
+        "class_counts": [
+          2392,
+          2179,
+          2499
+        ],
+        "confusion_matrix": [
+          [
+            1352,
+            221,
+            819
+          ],
+          [
+            730,
+            584,
+            865
+          ],
+          [
+            652,
+            210,
+            1637
+          ]
+        ],
+        "log_loss": 0.9754065603256087,
+        "macro_f1": 0.4852451479587079,
+        "natural_accuracy": 0.5185289957567185,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.514266859441336,
+        "class_counts": [
+          2392,
+          2179,
+          2499
+        ],
+        "confusion_matrix": [
+          [
+            1200,
+            547,
+            645
+          ],
+          [
+            512,
+            1088,
+            579
+          ],
+          [
+            601,
+            544,
+            1354
+          ]
+        ],
+        "log_loss": 0.9754065603256087,
+        "macro_f1": 0.5142643705179132,
+        "natural_accuracy": 0.5185289957567185,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.5163834240051354,
+        "class_counts": [
+          2392,
+          2179,
+          2499
+        ],
+        "confusion_matrix": [
+          [
+            1160,
+            485,
+            747
+          ],
+          [
+            502,
+            1038,
+            639
+          ],
+          [
+            559,
+            471,
+            1469
+          ]
+        ],
+        "log_loss": 0.972905842223766,
+        "macro_f1": 0.5163863119320097,
+        "natural_accuracy": 0.518953323903819,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.4993996488884585,
+        "class_counts": [
+          2392,
+          2179,
+          2499
+        ],
+        "confusion_matrix": [
+          [
+            1350,
+            235,
+            807
+          ],
+          [
+            723,
+            617,
+            839
+          ],
+          [
+            660,
+            213,
+            1626
+          ]
+        ],
+        "log_loss": 0.972905842223766,
+        "macro_f1": 0.49024367800666574,
+        "natural_accuracy": 0.518953323903819,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "metrics": {
+        "balanced_accuracy": 0.5184088844820003,
+        "class_counts": [
+          2392,
+          2179,
+          2499
+        ],
+        "confusion_matrix": [
+          [
+            1219,
+            515,
+            658
+          ],
+          [
+            511,
+            1103,
+            565
+          ],
+          [
+            605,
+            546,
+            1348
+          ]
+        ],
+        "log_loss": 0.972905842223766,
+        "macro_f1": 0.5184865887821155,
+        "natural_accuracy": 0.518953323903819,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5091681371048188,
+        "class_counts": [
+          1324,
+          4587,
+          1159
+        ],
+        "confusion_matrix": [
+          [
+            353,
+            822,
+            149
+          ],
+          [
+            232,
+            4070,
+            285
+          ],
+          [
+            121,
+            605,
+            433
+          ]
+        ],
+        "log_loss": 0.7424954980086041,
+        "macro_f1": 0.5274819488455306,
+        "natural_accuracy": 0.6903818953323904,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.569684091287852,
+        "class_counts": [
+          1324,
+          4587,
+          1159
+        ],
+        "confusion_matrix": [
+          [
+            683,
+            433,
+            208
+          ],
+          [
+            760,
+            3055,
+            772
+          ],
+          [
+            203,
+            345,
+            611
+          ]
+        ],
+        "log_loss": 0.7424954980086041,
+        "macro_f1": 0.5433165009823758,
+        "natural_accuracy": 0.6903818953323904,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5732377634869946,
+        "class_counts": [
+          1324,
+          4587,
+          1159
+        ],
+        "confusion_matrix": [
+          [
+            816,
+            237,
+            271
+          ],
+          [
+            1242,
+            2093,
+            1252
+          ],
+          [
+            229,
+            180,
+            750
+          ]
+        ],
+        "log_loss": 0.7424954980086041,
+        "macro_f1": 0.4929473307202583,
+        "natural_accuracy": 0.6903818953323904,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.514533010396323,
+        "class_counts": [
+          1324,
+          4587,
+          1159
+        ],
+        "confusion_matrix": [
+          [
+            368,
+            784,
+            172
+          ],
+          [
+            253,
+            3985,
+            349
+          ],
+          [
+            135,
+            564,
+            460
+          ]
+        ],
+        "log_loss": 0.7425087786148842,
+        "macro_f1": 0.5290600384190225,
+        "natural_accuracy": 0.6933521923620933,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5783340835238951,
+        "class_counts": [
+          1324,
+          4587,
+          1159
+        ],
+        "confusion_matrix": [
+          [
+            713,
+            398,
+            213
+          ],
+          [
+            855,
+            2892,
+            840
+          ],
+          [
+            213,
+            290,
+            656
+          ]
+        ],
+        "log_loss": 0.7425087786148842,
+        "macro_f1": 0.5416456320631524,
+        "natural_accuracy": 0.6933521923620933,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5769548038644402,
+        "class_counts": [
+          1324,
+          4587,
+          1159
+        ],
+        "confusion_matrix": [
+          [
+            833,
+            228,
+            263
+          ],
+          [
+            1270,
+            2109,
+            1208
+          ],
+          [
+            239,
+            176,
+            744
+          ]
+        ],
+        "log_loss": 0.7425087786148842,
+        "macro_f1": 0.4965167771168888,
+        "natural_accuracy": 0.6933521923620933,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5200695811523878,
+        "class_counts": [
+          1496,
+          4161,
+          1413
+        ],
+        "confusion_matrix": [
+          [
+            389,
+            848,
+            259
+          ],
+          [
+            198,
+            3546,
+            417
+          ],
+          [
+            117,
+            663,
+            633
+          ]
+        ],
+        "log_loss": 0.806051478328919,
+        "macro_f1": 0.529366614223723,
+        "natural_accuracy": 0.6513437057991514,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5520811774840446,
+        "class_counts": [
+          1496,
+          4161,
+          1413
+        ],
+        "confusion_matrix": [
+          [
+            662,
+            478,
+            356
+          ],
+          [
+            756,
+            2294,
+            1111
+          ],
+          [
+            189,
+            288,
+            936
+          ]
+        ],
+        "log_loss": 0.806051478328919,
+        "macro_f1": 0.5175396515090291,
+        "natural_accuracy": 0.6513437057991514,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5492961161423436,
+        "class_counts": [
+          1496,
+          4161,
+          1413
+        ],
+        "confusion_matrix": [
+          [
+            878,
+            295,
+            323
+          ],
+          [
+            1311,
+            1629,
+            1221
+          ],
+          [
+            273,
+            194,
+            946
+          ]
+        ],
+        "log_loss": 0.806051478328919,
+        "macro_f1": 0.48242872055974834,
+        "natural_accuracy": 0.6513437057991514,
+        "rows": 7070
+      },
+      "model": "old_neural_six_hours_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5259580388343554,
+        "class_counts": [
+          1496,
+          4161,
+          1413
+        ],
+        "confusion_matrix": [
+          [
+            371,
+            820,
+            305
+          ],
+          [
+            200,
+            3540,
+            421
+          ],
+          [
+            84,
+            652,
+            677
+          ]
+        ],
+        "log_loss": 0.8063017791610628,
+        "macro_f1": 0.5325366899583689,
+        "natural_accuracy": 0.6561527581329561,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "registered",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5519073126117733,
+        "class_counts": [
+          1496,
+          4161,
+          1413
+        ],
+        "confusion_matrix": [
+          [
+            657,
+            454,
+            385
+          ],
+          [
+            845,
+            2185,
+            1131
+          ],
+          [
+            164,
+            272,
+            977
+          ]
+        ],
+        "log_loss": 0.8063017791610628,
+        "macro_f1": 0.5112485509781525,
+        "natural_accuracy": 0.6561527581329561,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "morning_full",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "metrics": {
+        "balanced_accuracy": 0.5505722310084485,
+        "class_counts": [
+          1496,
+          4161,
+          1413
+        ],
+        "confusion_matrix": [
+          [
+            855,
+            290,
+            351
+          ],
+          [
+            1334,
+            1597,
+            1230
+          ],
+          [
+            244,
+            185,
+            984
+          ]
+        ],
+        "log_loss": 0.8063017791610628,
+        "macro_f1": 0.4807933444847738,
+        "natural_accuracy": 0.6561527581329561,
+        "rows": 7070
+      },
+      "model": "old_neural_full_morning_tree_blend",
+      "policy": "forecast_3600",
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "source_hashes": {
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_full_morning_tree_forecast_3600.npz": "4464b461933e1dbb4c860882b98a87cc322268cd7f539d17acbe9d3d35642fed",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_full_morning_tree_morning_full.npz": "63e465a56553a86cc2bae6c9255e856696445d16c2e3a4c138a9c465829040f5",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_full_morning_tree_registered.npz": "f1341452a30d9cbb47ae2eef209a2efe39169ee8a0542e043b4868232acb274d",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_old_neural_forecast_3600.npz": "8326bb306a2e58ff27d9a87b6b5741ac33ba4cf08687079e0d8817cc190c910d",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_old_neural_morning_full.npz": "5a3e142f409ab2c798965a21ee0cb387dcfcf85fce066a685e21fe42dd155501",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_old_neural_registered.npz": "f4c7507c809b1471298dce4985650e364a6536dde7c62dfe9c6958c5ee3977fb",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_six_hours_tree_forecast_3600.npz": "48c55658d6f0ac2a0defbb551337fc8a4a0a07d20c80172a1d275890f09e853f",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_six_hours_tree_morning_full.npz": "8b119799eb2cea79948a1adef921b14f7dfcfd27c7c848e7a0438bc1ec99bb04",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/BTCUSDT_six_hours_tree_registered.npz": "c13a54aa6f4af00dc5d98b29b42a180928cc62bde96403928d75bd64854724ea",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_full_morning_tree_forecast_3600.npz": "27eb35c49bee542ce42ca43842e4d5eea4bbe92d271287e67d48e09a86c8e1bc",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_full_morning_tree_morning_full.npz": "e1a9b8aaac044fb2d50d3444929f57308032229888d573b6df72a0954eebbe39",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_full_morning_tree_registered.npz": "cda264bb4462f6c78fa0416ed25a07cbe6121991b727e25616664d27029c9385",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_old_neural_forecast_3600.npz": "1cfae2721ad0b561dab9d7d11a14aab6a30f9cfafe2a6fdbe83a582548d8fafb",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_old_neural_morning_full.npz": "d993f1f9b98aa73b4f8f0af9cbb91110d9894e8c39e77f9f7573c82acf25ed03",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_old_neural_registered.npz": "38c8a31e10d39bb3d3c090b7e6f2b1a7c8350922cff442f313c97b2ffa61203c",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_six_hours_tree_forecast_3600.npz": "27863ddaf44570f7352a290eb7ca5d979f2bd8e862045cb78a426edb06ecaaa4",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_six_hours_tree_morning_full.npz": "2454691f4e382e681defeffff8a55eb4a21f74b620853dec43e426813acb7363",
+    "results/boundary_morning_screen_20260907/dates/2023-05-26/predictions/ETHUSDT_six_hours_tree_registered.npz": "cceaac28a410b3c2cf617895e3b0be683c9cb666e76ee11d49545ef538497835",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_full_morning_tree_forecast_3600.npz": "63fe82aeb5d199c7fd424f646d6da2d4b0c2f4939a7ff54245b741219659fa49",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_full_morning_tree_morning_full.npz": "5881e2f626e124f87d4b0521b15e37494fdd13aa3faa7df302e75941f819cce0",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_full_morning_tree_registered.npz": "5d587216cb7429f4832e18a96be6c0facf1a62aec1ca06db9fdb4cbb31692c97",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_old_neural_forecast_3600.npz": "cfb7f9b17b8fd5e924f2e70ddb01f9e7f867641f54213f8408af36cdf5bb199b",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_old_neural_morning_full.npz": "7729607ed83d8c440546651c0e9e0dc9c433166a10285e8aeae72fff506aa4d5",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_old_neural_registered.npz": "80de54606e45913886b39c06cd3c6e7dda00b8ba31b196591e43b081ab111151",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_six_hours_tree_forecast_3600.npz": "2652e1fa57131ec509e2510fc969c3bdbc55ec29a53e4c8e1518c98dd94ad684",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_six_hours_tree_morning_full.npz": "67d66326e35681cca60d7ce56c1408b2d26d4f88155fa3687c7163d719bb3dea",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/BTCUSDT_six_hours_tree_registered.npz": "201fcd403d37a683663dc0ed3c4bb9bddfa6cb2b4e37e7ed5e00a18121d75d4b",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_full_morning_tree_forecast_3600.npz": "ccf2dfbd803cb66593df897713bc64c5d87a9178c96a07ec9aad9446c64d0287",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_full_morning_tree_morning_full.npz": "d3606a0ce3bbf7b01ca0fceaaa7572372a37f07507148d10a6dd1f21e5061a99",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_full_morning_tree_registered.npz": "3a2d8483f1c9dffa47f328d2fcdb13f683e70a48d3283fa0ee7609c1a95ef862",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_old_neural_forecast_3600.npz": "a1dd45cda0c03a6130b76a6f60f146e10924c2f4efd5897f9fbf3d0245ce65cd",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_old_neural_morning_full.npz": "d5f71a16af34f08ee562e0fa148872c78ec3f27e8d18bc5a38a846f406a8861e",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_old_neural_registered.npz": "c2c11615328559a54d700c41fc587f9c119ae8fe33e0cd507f6e6a42dd3fd675",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_six_hours_tree_forecast_3600.npz": "5976569b7ff6768b1187d13815f3352a591a3099a78cffcf4a4990554cca4839",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_six_hours_tree_morning_full.npz": "f6b2aaf640d3326ea15bf726b6c83344df5191648985905e4f92a94c0efe98b7",
+    "results/boundary_morning_screen_20260907/dates/2023-05-30/predictions/ETHUSDT_six_hours_tree_registered.npz": "2deaa4974645ebd9b031249e6b4ff809ed913c0bccb81d56c0fce22b8e2c3781",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_full_morning_tree_forecast_3600.npz": "96e724a9e853cc75b85a78c16117e52781ccdc1884e2336e01e2aa130a2da4de",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_full_morning_tree_morning_full.npz": "6e73ae1387b5301e2f1a3ed28c9ebabf663e01aa02a2c364664194826fd0cd11",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_full_morning_tree_registered.npz": "414694398a9c541faf8a1dbd1ce6c573f84471d5800c2ad7f863c667596adc7f",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_old_neural_forecast_3600.npz": "950223118c4b068709512509df9b6cd24d101038c029a65672771894a4dff3cd",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_old_neural_morning_full.npz": "cba22c6aca3b4f37ec55d7e60025287f14ded8923be577297b3471fc88d9126f",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_old_neural_registered.npz": "81c9c24b583245b7d3549d5c5839fdab152059a7b5202bdb5af8f5475f9d2121",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_six_hours_tree_forecast_3600.npz": "caebb2f0f056a259b2e6d6d3dfe2271dc6fe246e795e204c07646843b1169459",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_six_hours_tree_morning_full.npz": "ebebc30806c3a5cb23bae5bca4923d62521695bf3bfd0d758692d11a2fd84cf0",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/BTCUSDT_six_hours_tree_registered.npz": "614fd81d944945b43eed71193dd6855038463149ecf43d31eff2b01468a3d919",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_full_morning_tree_forecast_3600.npz": "85566e6b0856c06bf2a665eaff36673c6376343b6a90b1b5a60eabec0fb72db5",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_full_morning_tree_morning_full.npz": "cf6c697c4bdc028259854fa91611ca68170cabc8a5d0efd1440dbc27333cbd07",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_full_morning_tree_registered.npz": "2289c69c0fc81863118a58d2ce81f1336f7ad1bf98444aaf90b284d41ed9ade7",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_old_neural_forecast_3600.npz": "79e977bb4f70d7422c9df78029e823c6e02122c52328e248e9a79898a3f2a23c",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_old_neural_morning_full.npz": "d9bea3cb41b727acca67c9dc57372a958e4eec8f6f762aecef09bff14c17d975",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_old_neural_registered.npz": "172a95e019aaf8d8bd1fd4dea66c96023403f752e1128aa324a1204ec61f203f",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_six_hours_tree_forecast_3600.npz": "6a028004d70f57f5259477be6d8149bb3abda68aea96bd886a9fbbae8e39eb2d",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_six_hours_tree_morning_full.npz": "eed93ba7b775c4a2adc756e44b5d97b5afca8ad98fd3d5edc1ea3520bdbd5e5b",
+    "results/boundary_morning_screen_20260907/dates/2023-06-03/predictions/ETHUSDT_six_hours_tree_registered.npz": "a0a4f66e5b8081e8fd430285ef49df332c760dd223dc10c5abbe8e38e18ca9ea",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_full_morning_tree_forecast_3600.npz": "dd2e36e9bdaac97d60addd24eb06dc9fe6512da6a674307d4823abecf5585f69",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_full_morning_tree_morning_full.npz": "94d04908c0697a2ae5c3e7d1f3953cd16316304d22d1861757b80feb6abfee38",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_full_morning_tree_registered.npz": "b6d078c7647fc3b83d9befd37b7dd1e3c19e4afa4136a55bc658adf2f4d1117a",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_old_neural_forecast_3600.npz": "6c8b0f4ebd119c6917782d0350eadc2efbbef083a4fb61ee08f297c139aa48da",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_old_neural_morning_full.npz": "68a20ded48d82cbc4feac5c7debea61021b576cb8519ac2967ea1339d52b3a46",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_old_neural_registered.npz": "0d1c4a2fb8e2900c3616d035c67806da8b6f733f162ebe7042f81ec6131e7c8e",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_six_hours_tree_forecast_3600.npz": "2eadeb24fff16a877cdd01adc6f11002fbbd89ae19d8bb27efa3185b3689cf2b",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_six_hours_tree_morning_full.npz": "3f4de6fa508a13d0f448b214ec43071728d0dbd867d2c479d82b458d65b16700",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/BTCUSDT_six_hours_tree_registered.npz": "b68a01ef258eed4990e4e5dd8f7eab5538a8ed6d2f8af2eef8279c8b37c6dd71",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_full_morning_tree_forecast_3600.npz": "eba4cc43b6441596c77fd739b547aaaf3a83c4eeb384585b6d7be543b6230bb1",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_full_morning_tree_morning_full.npz": "0bf4365bfc192c8d352d3001da3fcd16d59b96c036afbd5fa25c8ac6a347e179",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_full_morning_tree_registered.npz": "ffe68ba4b1324640262a502387d508328dc9b6e48bfa9f82f89e44e3dadcb82a",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_old_neural_forecast_3600.npz": "2d6666034aa95377ecc6f894718ae7467dcb40a5d649b43d2cd7f41ad81df13e",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_old_neural_morning_full.npz": "c8e5e916fa0e83eacab7bc96dd2c90e05a28be562f2bd8fa3eebb52edaae1ab6",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_old_neural_registered.npz": "b8823fbffdd626cf9a58d2764e40e11a7b101ba297c817442da89527942e3800",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_six_hours_tree_forecast_3600.npz": "3bc83f8840b3eb9696ad004a3da269e3f3b3646258ead946c9b9176de30fb146",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_six_hours_tree_morning_full.npz": "83291bf5b6d4472d3d035fa9a023eb5566526078b91b3cbf146ccd3096ed2bb5",
+    "results/boundary_morning_screen_20260907/dates/2023-06-07/predictions/ETHUSDT_six_hours_tree_registered.npz": "1336743378a6605d24def3d7c8159aa361a8d67be46f5f83d5dd1f47f1aa12d0",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_full_morning_tree_forecast_3600.npz": "8af3f306ba6883c68057ec2b3c9f0f7dadf52ed4c42d5414bf9ac9a074760922",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_full_morning_tree_morning_full.npz": "0e63da315dd0be8bdf61a4946064c94391c145d0425a0204482f81762061785d",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_full_morning_tree_registered.npz": "c685edbaf7d2df8b9ae9fcf82e2a2fd4dd448731dc4ee16eaf399b9414c5731f",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_old_neural_forecast_3600.npz": "6110c437634159e5d410f28d8625c0df075df7d595cdda3a5f325c07a9f58e66",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_old_neural_morning_full.npz": "9ad34bc31c5b05b87ae0f3a61127553e49dd94a54bb2317f7fce7d1f46aa2159",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_old_neural_registered.npz": "d5018f68eb1e25f26019b594453cdf7a948c6ecb9a4208071fa7aff96a705ec5",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_six_hours_tree_forecast_3600.npz": "2728a6e6cc89ad76a0161fa4294683d791e0204b50a05188aae257a7c30165a5",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_six_hours_tree_morning_full.npz": "4e855f16197442ed59dab796a07078f42f727c885e995534b619f5cc38290de3",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/BTCUSDT_six_hours_tree_registered.npz": "61e5dcd32ee6e72582646644656f48ed4ee066741b361f6989e58dab8e1e5429",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_full_morning_tree_forecast_3600.npz": "92911fb81b2769beeb1569a2dc90eb286f10e9e5ab05ad20d33dd3a933714d73",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_full_morning_tree_morning_full.npz": "97ba457c78645f96af96739c805380840a69c3a04adf73369fac9e0f23f114aa",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_full_morning_tree_registered.npz": "e4a96ea4fb34cc0ec5d780d5137c01da637e504a3e7d3af01711769f4dceda56",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_old_neural_forecast_3600.npz": "cb324c32dbc7898a72b9d66f0c6f1c39e42b966f5276b8d377f2d700451ec47c",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_old_neural_morning_full.npz": "d44377ca6fd81fcc3ea4258c956f6cc390a8a0e9bb246289ffa94b5c387efaaa",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_old_neural_registered.npz": "3ee32c57e64bcaaca0d7ae27a089bc6058a3c69c4768ac55c60520031f5e8862",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_six_hours_tree_forecast_3600.npz": "c2e66aa7af3002dadd5fcb1f9cb21146a7c2fb77546fbf23dd4676ba95c87386",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_six_hours_tree_morning_full.npz": "64f84e13cd90cb54ebe9be12e7ef4ff78dea641b85de8e0ea1a7c779d0acd968",
+    "results/boundary_morning_screen_20260907/dates/2023-06-11/predictions/ETHUSDT_six_hours_tree_registered.npz": "cc53ec7cbaf1ef302ddbd8b48c4c19de119515d1ed34732b312e7504c9ecee31"
+  },
+  "substantial_gain_confirmed": false,
+  "summary_path": "results/boundary_morning_controls_20260907/summary.json",
+  "summary_sha256": "6b8928d7fddba7bbc0603b9983bae7912010f3d29340024ce781385e9348236c"
+}

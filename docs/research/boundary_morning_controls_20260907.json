@@ -1,0 +1,20 @@
+{
+  "additional_model_fits": 0,
+  "additional_post_fit_asset_date_panels": 60,
+  "controls": "For each of the two morning training windows, average the frozen original neural natural posterior and that window same-day tree natural posterior at fixed 50/50 weight. Apply the same three policies to the same five dates and two assets. Forecast-marginal priors must be recomputed from each mixture, not inherited from one component.",
+  "evidence_status": "development_only_on_exposed_dates",
+  "input_hashes": {
+    "docs/research/boundary_morning_screen_20260907.json": "d42030cc086c7c308144eae6056458e83d77a2795dd2b108a7a10d211f036ac4",
+    "scripts/assess_boundary_morning_controls.py": "5f69f2ed91a5f1861683b4897da295c41ede1c6a8063cc4deb7d1395c9fa3bad",
+    "scripts/run_boundary_event_clock_screen.py": "929ff7adac3dd5d31655b521b85b8db01d15c9a4566317c10620fe7fc08f233d",
+    "scripts/run_boundary_morning_screen.py": "7b6d8cccc78f4c9b8ae52406d7611a1072d120319eabf315b3cbfdfaa0ab8d36",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a"
+  },
+  "interpretation": "This is additional development analysis on exposed dates. It changes no model fitting or selection, adds no independent evidence, and cannot close the discovery gate.",
+  "matched_comparisons": "Compare every adapted neural to the original neural; each adapted-neural/original-tree blend to the original blend; and each adapted-neural/morning-tree blend to the original-neural/same-morning-tree blend, always with the same decision policy.",
+  "parent_output": "results/boundary_morning_screen_20260907",
+  "parent_protocol": "docs/research/boundary_morning_screen_20260907.json",
+  "reason": "Before morning fitting or assessment-score inspection, add matched unadapted-neural plus same-day-tree controls. They distinguish gains from fine-tuning the neural model from gains already supplied by a fresher tree.",
+  "registered_at_utc": "2026-09-07T19:02:18.534961+00:00"
+}
