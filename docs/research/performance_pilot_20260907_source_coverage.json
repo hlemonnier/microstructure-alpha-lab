@@ -1,0 +1,149 @@
+{
+  "inspected": "Only original first-event timestamps and source integrity metadata; no model outcomes or label distributions inspected.",
+  "archives": [
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-16",
+      "source_sha256": "1e51fcd332f9c901490a6e384dcd9b21943c04240180bda4903593a37bfc6262",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-16.zip",
+      "source_bytes": 53816320,
+      "first_event_time_ms": 1684237787214,
+      "first_event_utc": "2023-05-16T11:49:47.214000+00:00"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-17",
+      "source_sha256": "ab2745487914e834c77212631695491ea75b800a58169dd36bab6f936c8e71c9",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-17.zip",
+      "source_bytes": 88047441,
+      "first_event_time_ms": 1684313182722,
+      "first_event_utc": "2023-05-17T08:46:22.722000+00:00"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-18",
+      "source_sha256": "04c723c741bfd21e73428e2d26bd539ae1b5b98cc5ca7b8dbd23f4a4495ea9e2",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-18.zip",
+      "source_bytes": 136022884,
+      "first_event_time_ms": 1684368000003,
+      "first_event_utc": "2023-05-18T00:00:00.003000+00:00"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-19",
+      "source_sha256": "fa265b7752959a076fafc8c46c50c4afee450be6071977ea98f2f071915eaf2d",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-19.zip",
+      "source_bytes": 111718040,
+      "first_event_time_ms": 1684454400005,
+      "first_event_utc": "2023-05-19T00:00:00.005000+00:00"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-20",
+      "source_sha256": "df6407598ce975aa9beda46b5c4f4c4c223a1dafc7db157dc87bb57371e7b163",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-20.zip",
+      "source_bytes": 76670376,
+      "first_event_time_ms": 1684540800018,
+      "first_event_utc": "2023-05-20T00:00:00.018000+00:00"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-21",
+      "source_sha256": "3471a79b7e396d1f72626dc2c4ef5383e72eeef8b0a179e24e6c86c8837cd44c",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-21.zip",
+      "source_bytes": 87710834,
+      "first_event_time_ms": 1684627200012,
+      "first_event_utc": "2023-05-21T00:00:00.012000+00:00"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-22",
+      "source_sha256": "004b4ddbe3b4c6c49b75a07e0391113bd3e5ce8097a7ee3914d37bf2b022d97e",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-22.zip",
+      "source_bytes": 106664661,
+      "first_event_time_ms": 1684713600018,
+      "first_event_utc": "2023-05-22T00:00:00.018000+00:00"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-23",
+      "source_sha256": "352327ef4077337d61782f06101d0af8cfa513263a8a8ac7953f4b9e8f79ac2e",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-23.zip",
+      "source_bytes": 137281380,
+      "first_event_time_ms": 1684800000013,
+      "first_event_utc": "2023-05-23T00:00:00.013000+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-16",
+      "source_sha256": "f91dd302188bff3337b0b168743401d76620fc05e933807a5ec36c7f212de29c",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-16.zip",
+      "source_bytes": 47335645,
+      "first_event_time_ms": 1684237787207,
+      "first_event_utc": "2023-05-16T11:49:47.207000+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-17",
+      "source_sha256": "a306580706a6eacb79092d533538c4558b7c1cb6d93374be70416f8276cd3f20",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-17.zip",
+      "source_bytes": 75974521,
+      "first_event_time_ms": 1684313182740,
+      "first_event_utc": "2023-05-17T08:46:22.740000+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-18",
+      "source_sha256": "e48d9267fa7ef632a6eec58b65a8a5dc021cba8910a672245babf9a04b77ee13",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-18.zip",
+      "source_bytes": 109913873,
+      "first_event_time_ms": 1684368000014,
+      "first_event_utc": "2023-05-18T00:00:00.014000+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-19",
+      "source_sha256": "be3783ce0665e389288837c5f87b5e9985b252a2d869743cc4a40b6703e3971f",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-19.zip",
+      "source_bytes": 97161583,
+      "first_event_time_ms": 1684454400005,
+      "first_event_utc": "2023-05-19T00:00:00.005000+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-20",
+      "source_sha256": "53791c3ee06c50460408cd2e04e7193aef2b4016d10f2e09689225609b90b16d",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-20.zip",
+      "source_bytes": 75245970,
+      "first_event_time_ms": 1684540800007,
+      "first_event_utc": "2023-05-20T00:00:00.007000+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-21",
+      "source_sha256": "ad723ff47fd1ace9b49bdf6825b485158ab6d93a2d1ceb5e3973aa309af0e342",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-21.zip",
+      "source_bytes": 80891117,
+      "first_event_time_ms": 1684627200034,
+      "first_event_utc": "2023-05-21T00:00:00.034000+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-22",
+      "source_sha256": "11aa88e37e270a343af30744f28b7357d2c47a42e96d913df3da42c3442cfa75",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-22.zip",
+      "source_bytes": 97582684,
+      "first_event_time_ms": 1684713600042,
+      "first_event_utc": "2023-05-22T00:00:00.042000+00:00"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-23",
+      "source_sha256": "255a237af238051dabb6f131b95c85c7eb9f60bf00fdacc07180881f22a9e3f3",
+      "source_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-23.zip",
+      "source_bytes": 106898859,
+      "first_event_time_ms": 1684800000011,
+      "first_event_utc": "2023-05-23T00:00:00.011000+00:00"
+    }
+  ]
+}

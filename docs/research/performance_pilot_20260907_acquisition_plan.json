@@ -1,0 +1,373 @@
+{
+  "checked_utc": "2026-09-07T12:16:35.309116+00:00",
+  "source": "Binance public USD-M daily archives",
+  "scope": "2023-05-16 through 2023-05-23 UTC, BTCUSDT and ETHUSDT, complete compressed daily archives",
+  "total_compressed_bytes": 1655629727,
+  "archives": [
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-16",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-16.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-16.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-16.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 53816320,
+      "etag": "\"6a47ea63a7101091a026e2d3dba45164-7\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-16",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-16.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-16.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-16.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 14038924,
+      "etag": "\"703cb000babaabe8106492381c1118c9-2\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-17",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-17.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-17.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-17.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 88047441,
+      "etag": "\"e5eb95f4ea210740025161e41c5a5cbe-11\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-17",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-17.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-17.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-17.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 16624874,
+      "etag": "\"32ff11e689c9c5b08b9b7eb6d94c2356-2\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-18",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-18.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-18.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-18.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 136022884,
+      "etag": "\"0f13f32741ed8e0e055459fadffd51ab-17\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-18",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-18.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-18.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-18.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 18047781,
+      "etag": "\"89e783f5d0f7f4c6e13034037bf8f873-3\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-19",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-19.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-19.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-19.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 111718040,
+      "etag": "\"f5d052528320d19b69ec0f57726316a5-14\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-19",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-19.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-19.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-19.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 11943712,
+      "etag": "\"87469d67df682f9156c68d06a5aa046b-2\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-20",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-20.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-20.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-20.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 76670376,
+      "etag": "\"793225438560312bb77d4040015ca22f-10\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-20",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-20.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-20.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-20.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 6140811,
+      "etag": "\"e604a36e0b769d5114251d0c021b518d\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-21",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-21.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-21.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-21.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 87710834,
+      "etag": "\"4b71e00e4125005c72a3460a98597ff4-11\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-21",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-21.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-21.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-21.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 8476390,
+      "etag": "\"fed1f8f09bb9b5cc5918d4cd23b39990-2\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-22",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-22.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-22.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-22.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 106664661,
+      "etag": "\"3de3553504d067e075fff832b24aa6e5-13\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-22",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-22.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-22.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-22.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 11127542,
+      "etag": "\"ffd69e4273dfce0c5e20981eebdd3069-2\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-23",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-23.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-23.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-05-23.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 137281380,
+      "etag": "\"444d1df8bb89d3e44b8f2db73c15ec90-17\""
+    },
+    {
+      "symbol": "BTCUSDT",
+      "session_date": "2023-05-23",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-23.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-23.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-23.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 12483937,
+      "etag": "\"a5388958b9c492a1f0c8b11d640b95c6-2\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-16",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-16.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-16.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-16.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 47335645,
+      "etag": "\"2d14c5536067e65ac961d54491ef5e84-6\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-16",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-16.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-16.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-16.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 9561435,
+      "etag": "\"c288cb4555b207a03aed0520adc5776f-2\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-17",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-17.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-17.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-17.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 75974521,
+      "etag": "\"f6ec67e910e57868ac05dae620de2fa8-10\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-17",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-17.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-17.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-17.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 11158631,
+      "etag": "\"a2bded9d47050ffceebf0f2b62d470d8-2\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-18",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-18.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-18.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-18.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 109913873,
+      "etag": "\"bc9dc6167fda9e67dd9d080889657cc0-14\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-18",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-18.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-18.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-18.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 10566949,
+      "etag": "\"924c4bdf7906ac0a394987baf0ea4db1-2\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-19",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-19.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-19.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-19.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 97161583,
+      "etag": "\"412d62892d91052f135c032ef70acef7-12\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-19",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-19.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-19.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-19.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 8146696,
+      "etag": "\"c7fc891bdb5a73ebdd92c682f0fa4131\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-20",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-20.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-20.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-20.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 75245970,
+      "etag": "\"cf6732f3830bd6a757d78c1794eb16fb-9\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-20",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-20.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-20.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-20.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 5146283,
+      "etag": "\"112236e904016eaf4c67062c6f58f8f6\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-21",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-21.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-21.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-21.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 80891117,
+      "etag": "\"5c6a99ee340f74f205c168f783f17fe1-10\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-21",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-21.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-21.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-21.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 5722662,
+      "etag": "\"cda44d6325e624416308b499458d05cd\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-22",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-22.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-22.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-22.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 97582684,
+      "etag": "\"c64d77da707cc1de803b5bf5a04cd37b-12\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-22",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-22.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-22.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-22.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 7775583,
+      "etag": "\"1a6058b93d6bcc6e9b3421ef3ab721b9\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-23",
+      "dataset": "bookTicker",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-23.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-23.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-05-23.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 106898859,
+      "etag": "\"aeb63aa169f4065a19459f7e209061bf-13\""
+    },
+    {
+      "symbol": "ETHUSDT",
+      "session_date": "2023-05-23",
+      "dataset": "aggTrades",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-23.zip",
+      "url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-23.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-05-23.zip.CHECKSUM",
+      "status": 200,
+      "bytes": 9731329,
+      "etag": "\"ab2f174014832277dd7d8ab36ce0be6d-2\""
+    }
+  ],
+  "checksum_rule": "Download full archive and verify SHA256 against each published checksum URL before parsing; etag is not a SHA256.",
+  "analysis_scope": "Parent protocol selecting predeclared 00:00-02:00 UTC slices plus causal label buffer.",
+  "next_untouched_sessions": [
+    "2023-05-24",
+    "2023-05-25",
+    "2023-05-26"
+  ],
+  "limits": [
+    "Historical top-of-book and aggregate trades only; not genuine L2 or passive fill evidence.",
+    "Exchange event timestamps omit local receipt latency.",
+    "More than three years old relative to current date; does not establish current deployable alpha.",
+    "No files were downloaded by metadata inspection."
+  ]
+}

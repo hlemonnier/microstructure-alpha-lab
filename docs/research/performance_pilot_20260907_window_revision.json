@@ -1,0 +1,150 @@
+{
+  "amendment": {
+    "evidence": "performance_pilot_20260907_source_coverage.json",
+    "information_inspected": "Only source hashes and first-event timestamps; no models fitted and no market outcomes or label distributions inspected.",
+    "preserved": "Dates, reserved dates, model family, hyperparameters, split design, cost and latency grids, threshold selection and inference rules.",
+    "prior_protocol_path": "docs/research/performance_pilot_20260907.json",
+    "prior_protocol_sha256": "cdf2725bdb9635f66cd55ce06697280826e32d51513d1b7e0694847532a78429",
+    "reason": "Official source coverage begins after the registered midnight window on May16 and May17 for both assets. Choose the first common whole-hour two-hour window after all first-event timestamps,12:00\u201314:00UTC."
+  },
+  "baseline_commit": "1742f959e7e7167540c5b5cce13ac964df40a8b4",
+  "created_at_utc": "2026-09-07T12:37:58.835466+00:00",
+  "data": {
+    "decision_end_utc": "14:00:00",
+    "decision_start_utc": "12:01:00",
+    "end": "2023-05-23",
+    "end_date": "2023-05-23",
+    "market": "linear_perpetual",
+    "max_compressed_download_bytes": 2000000000,
+    "max_parallel_downloads": 2,
+    "require_official_sha256": true,
+    "reserve_unseen_dates": [
+      "2023-05-24",
+      "2023-05-25",
+      "2023-05-26"
+    ],
+    "scope_limit": "Only the fixed12:00\u201314:00UTC two-hour window is studied; these are not full-day returns or independent ticks.",
+    "slice_end_utc": "14:00:30",
+    "slice_start_utc": "12:00:00",
+    "source": "Binance Vision USD-M daily bookTicker and aggTrades",
+    "start": "2023-05-16",
+    "start_date": "2023-05-16",
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ]
+  },
+  "execution": {
+    "decision_stride_ms": 10000,
+    "fee_scenarios_bps_per_side": [
+      0.0,
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      5.0
+    ],
+    "fee_status": "All costs are research scenarios, not a verified account tier; primary 1bps and zero slippage are explicitly assumed.",
+    "funding_policy": "No scheduled00:00,08:00or16:00UTC eight-hour funding settlement occurs inside12:00\u201314:00UTC; positions must close inside this window.",
+    "horizon_ms": 5000,
+    "initial_cash_usdt": 10000.0,
+    "liquidity": "Every raw best-quote update and observed quantity; no synthetic liquidity, no calibrated impact/passivequeue claim.",
+    "order_type": "market",
+    "primary_fee_bps_per_side": 1.0,
+    "primary_latency_ms": 100,
+    "sessions": "Separate funded session accounts; require zero ending inventory, report any residual as failure rather than reset; aggregate equal-capital session returns.",
+    "slippage_bps_per_side": 0.0,
+    "stress_latency_ms": 250,
+    "target_notional_usdt": 100.0
+  },
+  "experiment_id": "performance_pilot_20260907_window_revision",
+  "features": {
+    "bucket_ms": 1000,
+    "builder_semantics": "bucket_close_raw_ofi_v2",
+    "decision_quote_max_age_ms": 1000,
+    "execution_latency_ms": 100,
+    "future_lag_filter_for_decisions": false,
+    "horizon_ms": 5000,
+    "with_book_depth": false
+  },
+  "models": {
+    "hgb": {
+      "early_stopping": false,
+      "l2_regularization": 10.0,
+      "learning_rate": 0.05,
+      "loss": "squared_error",
+      "max_bins": 255,
+      "max_iter": 150,
+      "max_leaf_nodes": 7,
+      "min_samples_leaf": "max(100, floor(0.005*n_train))"
+    },
+    "include_always_flat": true,
+    "names": [
+      "ridge_default",
+      "ridge_state",
+      "hgb_state"
+    ],
+    "ridge_l2": 1.0,
+    "ridge_loss": "sum squared error, unpenalized intercept",
+    "seed": 20260907
+  },
+  "next_experiment_rule": "Do not tune on these OOS results and report them again as fresh evidence. Any follow-up must be registered before opening unseen sessions.",
+  "objective": "Improve out-of-sample executable net payoff under a common persistent-account taker simulator.",
+  "protocol_version": 2,
+  "report": {
+    "candidate_status": "Research candidate only if improvement survives costs on both assets and more than one OOSdate; otherwise reject or inconclusive.",
+    "inference": "Descriptive only with three distinct OOS dates. Do not invoke 20-fold acceptance or annualize two-hour session PnL.",
+    "primary": [
+      "paired net PnL difference versus ridge_default",
+      "net PnL versus flat",
+      "number of distinct OOS dates"
+    ],
+    "secondary": [
+      "gross-target RMSE",
+      "turnover",
+      "filled entries",
+      "drawdown",
+      "fee frontier",
+      "latency stress",
+      "final inventory",
+      "performance by asset and date"
+    ]
+  },
+  "selection": {
+    "cost_sensitivity": "Each predeclared fee scenario fits its own validation threshold; latency stress uses same selected threshold and no retuning.",
+    "edge_thresholds_bps": [
+      0.0,
+      0.1,
+      0.25,
+      0.5,
+      1.0,
+      2.0,
+      5.0
+    ],
+    "flat_control_threshold": null,
+    "metric": "validation stateful net PnL at each predeclared cost scenario",
+    "no_test_driven_refitting": true,
+    "primary_comparison": "Paired same-date aggregate net PnL difference versus ridge_default at1bps per side and100ms latency.",
+    "tie_break": [
+      "fewer filled entries",
+      "higher edge threshold"
+    ]
+  },
+  "split": {
+    "features_fit_on": "training only",
+    "grain": "UTC session_date",
+    "holdout_status": "May24-26 predeclared but not downloaded, inspected, or used in this pilot; formal immutable evaluation requires later frozen candidate/data manifests.",
+    "label_boundary_purge": true,
+    "step_sessions": 1,
+    "symbols_fit_separately": true,
+    "test_dates": [
+      "2023-05-21",
+      "2023-05-22",
+      "2023-05-23"
+    ],
+    "test_sessions": 1,
+    "training_sessions": 4,
+    "validation_sessions": 1
+  },
+  "status": "predeclared exploratory pilot; no empirical promotion or significance claim"
+}
