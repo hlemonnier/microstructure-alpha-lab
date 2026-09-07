@@ -1,0 +1,26 @@
+{
+  "direction_head": "logisticC=.01orHistGradientBoosting200iterations,7leaves,minleaf100,L2=10",
+  "evidence_status": "development_only; prior108fits and prior8dates alreadyobserved",
+  "experiment_id": "boundary_structural_screen_20260907",
+  "followup_lane": "TCNusing16or64one-secondsteps,hidden16,AdamW,trainedonlyonpastdays; exactconfigurationfrozeninitsownregistrationbeforefit.",
+  "hypothesis": "Separate movement occurrence from direction,and imposebid/ask reflection symmetry toreduceunstable directionalregimefitting.",
+  "movement_head": "HistGradientBoosting200iterations,7leaves,learningrate.05,minleaf100,L2=10",
+  "primary_metric": "balancedaccuracy on exactexisting5slabels; naturalloglossandaccuracysecondary",
+  "registered_at_utc": "2026-09-07T14:35:34.782121+00:00",
+  "representation": "temporal_cross,with12defaultfeaturesonlyfordirectionhead",
+  "reserved_dates_unopened": [
+    "2023-05-24",
+    "2023-05-25",
+    "2023-05-26"
+  ],
+  "seed": 20260907,
+  "selection": "validationbalancedaccuracy,logloss tiebreak; comparewithfrozenreferenceprocedurefrom108fits",
+  "symmetry": "Mirroronlydeclaredoddfeaturechannels andswapup/down labels; probabilitiescorrectedbacktooriginaltrainingpriors; validationandassessment labelsneverusedforfitting.",
+  "variants": [
+    "hurdle_logistic",
+    "hurdle_logistic_symmetric",
+    "hurdle_boosted",
+    "hurdle_boosted_symmetric",
+    "symmetric_hgb"
+  ]
+}
