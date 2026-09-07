@@ -47,6 +47,16 @@ SOURCE_GIT_COMMIT_ENV = "LOB_FORGE_SOURCE_GIT_COMMIT"
 SOURCE_ARCHIVE_COMMIT_FILE = ".source-git-commit"
 
 
+def _optional_interval(compute):
+    """Surface a mathematically undefined diagnostic without inventing precision."""
+    try:
+        return {"status": "estimated", **asdict(compute())}
+    except ValueError as exc:
+        if "undefined" not in str(exc) and "at least 2 observations" not in str(exc):
+            raise
+        return {"status": "unavailable", "reason": str(exc)}
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     source_git_commit = _git_commit()
@@ -194,8 +204,10 @@ def main() -> int:
     )
     statistics = {
         "newey_west_net_pnl_se": newey_west_standard_error(net_pnls),
-        "day_level_mean": asdict(day_level_mean_interval(net_pnls, days, samples=50)),
-        "sharpe_like": asdict(sharpe_like_interval(net_returns, block_size=1, samples=50)),
+        "day_level_mean": (asdict(day_level_mean_interval(net_pnls, days, samples=50))
+                           if len(set(days)) >= 2 else None),
+        "day_level_mean_status": "estimated" if len(set(days)) >= 2 else "insufficient_independent_days",
+        "sharpe_like": _optional_interval(lambda: sharpe_like_interval(net_returns, block_size=1, samples=50)),
         "break_even_cost": asdict(break_even_cost_interval(gross_pnls, turnovers, block_size=1, samples=50))
         if turnovers
         else None,

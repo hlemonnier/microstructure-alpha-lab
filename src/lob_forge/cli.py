@@ -81,6 +81,7 @@ from lob_forge.holdout import (
     read_development_rows,
     read_holdout_manifest,
     read_holdout_rows,
+    reserve_final_holdout_evaluation,
     verify_holdout_manifest_file,
     write_development_csv,
     write_final_holdout_result,
@@ -138,6 +139,7 @@ from lob_forge.logistic import Standardizer, format_logistic_walk_forward_result
 from lob_forge.memory_guard import apply_process_memory_limit, assert_csv_load_budget
 from lob_forge.ml_models import (
     evaluate_l2_sequence_final_holdout,
+    validate_sequence_final_holdout_overrides,
     evaluate_model_readiness,
     format_l2_masked_pretraining_report,
     format_l2_sequence_experiment_report,
@@ -201,9 +203,9 @@ def main(argv: list[str] | None = None) -> int:
     build_parser.add_argument("--execution-latency-ms", type=int, default=0)
     build_parser.add_argument(
         "--execution-quote-resolution",
-        choices=["raw", "bucket"],
+        choices=["raw"],
         default="raw",
-        help="Resolve entry/exit prices from first raw quote event or from retained bucket quotes.",
+        help="Resolve entry/exit from raw quote events after the completed bucket decision.",
     )
     build_parser.add_argument(
         "--threshold",
@@ -242,9 +244,9 @@ def main(argv: list[str] | None = None) -> int:
     build_range_parser.add_argument("--execution-latency-ms", type=int, default=0)
     build_range_parser.add_argument(
         "--execution-quote-resolution",
-        choices=["raw", "bucket"],
+        choices=["raw"],
         default="raw",
-        help="Resolve entry/exit prices from first raw quote event or from retained bucket quotes.",
+        help="Resolve entry/exit from raw quote events after the completed bucket decision.",
     )
     build_range_parser.add_argument(
         "--threshold",
@@ -997,8 +999,8 @@ def main(argv: list[str] | None = None) -> int:
     final_holdout_sequence_parser.add_argument("--explicit-final-evaluation", action="store_true")
     final_holdout_sequence_parser.add_argument("--predictions-output")
     final_holdout_sequence_parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
-    final_holdout_sequence_parser.add_argument("--max-rows", type=int, default=100000)
-    final_holdout_sequence_parser.add_argument("--max-snapshots", type=int, default=2000)
+    final_holdout_sequence_parser.add_argument("--max-rows", type=int)
+    final_holdout_sequence_parser.add_argument("--max-snapshots", type=int)
     final_holdout_sequence_parser.add_argument("--economic-target-notional", type=float)
     final_holdout_sequence_parser.add_argument("--economic-taker-fee-bps", type=float)
     final_holdout_sequence_parser.add_argument("--economic-slippage-bps", type=float)
@@ -1103,6 +1105,7 @@ def main(argv: list[str] | None = None) -> int:
     sequence_experiment_parser.add_argument("--economic-target-notional", type=float, default=100.0)
     sequence_experiment_parser.add_argument("--economic-taker-fee-bps", type=float, default=1.0)
     sequence_experiment_parser.add_argument("--economic-slippage-bps", type=float, default=0.0)
+    sequence_experiment_parser.add_argument("--economic-latency-ms", type=int, default=0)
     sequence_experiment_parser.add_argument("--max-rows", type=int, default=100000)
     sequence_experiment_parser.add_argument("--max-snapshots", type=int, default=2000)
     sequence_experiment_parser.add_argument("--min-fold-count", type=int, default=20)
@@ -1112,7 +1115,7 @@ def main(argv: list[str] | None = None) -> int:
 
     l2_pretraining_parser = subparsers.add_parser(
         "l2-pretraining-smoke",
-        help="Write a dependency-free masked reconstruction artifact from verified normalized L2 rows.",
+        help="Write an untrained masked mean-imputation baseline; this does not certify learned pretraining.",
     )
     l2_pretraining_parser.add_argument("--l2", required=True)
     l2_pretraining_parser.add_argument("--output", default="results/model_experiments/self_supervised_pretraining.csv")
@@ -2035,6 +2038,10 @@ def _cmd_final_holdout_rule(args: argparse.Namespace) -> int:
         raise ValueError("frozen candidate order_type must be market or passive")
     initial_cash = float(candidate.get("initial_cash", 1000.0))
     target_notional = float(candidate.get("target_notional", min(100.0, initial_cash * 0.1)))
+    reservation = reserve_final_holdout_evaluation(
+        manifest=manifest, candidate_sha256=candidate_sha256,
+        explicit_final_evaluation=args.explicit_final_evaluation, source_root=source_root,
+    )
     rows = read_holdout_rows(Path(args.path), manifest)
 
     def predictor(row: dict[str, str]) -> int:
@@ -2108,6 +2115,8 @@ def _cmd_final_holdout_rule(args: argparse.Namespace) -> int:
         candidate_sha256=candidate_sha256,
         lock_dir=Path(args.lock_dir),
         source_root=source_root,
+        reservation=reservation,
+        candidate_path=candidate_path,
     )
     print(f"final_holdout_result={output}")
     return 0
@@ -2274,6 +2283,10 @@ def _cmd_final_holdout_edge(args: argparse.Namespace) -> int:
     slippage_bps = float(candidate.get("slippage_bps", 0.0))
     initial_cash = float(candidate.get("initial_cash", 1000.0))
     target_notional = float(candidate.get("target_notional", min(100.0, initial_cash * 0.1)))
+    reservation = reserve_final_holdout_evaluation(
+        manifest=manifest, candidate_sha256=candidate_sha256,
+        explicit_final_evaluation=args.explicit_final_evaluation, source_root=source_root,
+    )
     rows = read_holdout_rows(Path(args.path), manifest)
 
     def predictor(row: dict[str, str]) -> int:
@@ -2348,6 +2361,8 @@ def _cmd_final_holdout_edge(args: argparse.Namespace) -> int:
         candidate_sha256=candidate_sha256,
         lock_dir=Path(args.lock_dir),
         source_root=source_root,
+        reservation=reservation,
+        candidate_path=candidate_path,
     )
     print(f"final_holdout_result={output}")
     return 0
@@ -2380,6 +2395,16 @@ def _cmd_final_holdout_sequence(args: argparse.Namespace) -> int:
         )
     if candidate_sha256 != manifest.candidate_sha256:
         raise ValueError("frozen candidate hash does not match holdout manifest candidate_sha256")
+    validate_sequence_final_holdout_overrides(
+        candidate, max_rows=args.max_rows, max_snapshots=args.max_snapshots,
+        economic_target_notional=args.economic_target_notional,
+        economic_taker_fee_bps=args.economic_taker_fee_bps,
+        economic_slippage_bps=args.economic_slippage_bps, device=args.device,
+    )
+    reservation = reserve_final_holdout_evaluation(
+        manifest=manifest, candidate_sha256=candidate_sha256,
+        explicit_final_evaluation=args.explicit_final_evaluation, source_root=source_root,
+    )
     report = evaluate_l2_sequence_final_holdout(
         l2_path=Path(args.path),
         manifest=manifest,
@@ -2413,6 +2438,7 @@ def _cmd_final_holdout_sequence(args: argparse.Namespace) -> int:
             "economic_target_notional": candidate["economic_target_notional"],
             "economic_taker_fee_bps": candidate["economic_taker_fee_bps"],
             "economic_slippage_bps": candidate["economic_slippage_bps"],
+            "economic_latency_ms": candidate["economic_latency_ms"],
             "stateful_trades": report.stateful_trades,
             "stateful_turnover": report.stateful_turnover,
             "stateful_net_pnl": report.stateful_net_pnl,
@@ -2427,6 +2453,8 @@ def _cmd_final_holdout_sequence(args: argparse.Namespace) -> int:
         candidate_sha256=candidate_sha256,
         lock_dir=Path(args.lock_dir),
         source_root=source_root,
+        reservation=reservation,
+        candidate_path=candidate_path,
     )
     print(f"final_holdout_result={output}")
     return 0
@@ -2846,6 +2874,7 @@ def _cmd_l2_sequence_experiment(args: argparse.Namespace) -> int:
             economic_target_notional=args.economic_target_notional,
             economic_taker_fee_bps=args.economic_taker_fee_bps,
             economic_slippage_bps=args.economic_slippage_bps,
+            economic_latency_ms=args.economic_latency_ms,
             max_rows=args.max_rows,
             max_snapshots=args.max_snapshots,
             min_fold_count=args.min_fold_count,
