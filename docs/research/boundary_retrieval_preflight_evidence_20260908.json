@@ -1,0 +1,465 @@
+{
+  "assessment_metrics_computed": false,
+  "attempted_cases": 16,
+  "backend_selection_unchanged_by_dropout_probe_limitation": true,
+  "failed_mps_cases": 8,
+  "failure_interpretation": {
+    "cpu": "All eight CPU benchmark cases passed full-workload finite forecasts, future/prefix/partition checks and exact checkpoint/repeated forecasts. Separate unit tests independently verify kernel values and gradients. CPU is the reference; its cross-backend agreement fields are deliberately unmeasured/null.",
+    "parametric_mps": "Both cases failed the gradient agreement gate. The probe did not synchronize stochastic dropout masks across CPU and MPS, so it cannot isolate backend arithmetic error. Probability discrepancies were 2.108796756122855e-05 and 2.2687338049443007e-05, within the registered 1e-4 limit; gradient relative differences were 0.3483537237495077 and 0.36281525561644185. These are failed paired probes, not evidence of a 35 percent GPU arithmetic error. MPS was already ineligible through six separate retrieval stress failures.",
+    "retrieval_mps": "All six fixed/linear/nonlinear MPS cases produced nonfinite forecasts when the later normalized rows were replaced by 10000. This exceeds the bounded output range of the production quantile transform. The registered stress check nevertheless failed, so MPS is infeasible under this protocol. No CPU/MPS forecast agreement was measured for those failed cases."
+  },
+  "feasible_backend_summed_projected_seconds": {
+    "cpu": 659.9081090514264
+  },
+  "interpretation": "Synthetic feasibility only. No market accuracy, live inference latency or execution gain is established.",
+  "market_model_fits": 0,
+  "maximum_cpu_partition_errors": {
+    "future_prefix": 0.0,
+    "query_key_partition": 1.6253207499872246e-06,
+    "shorter_prefix": 2.9552113089970078e-08,
+    "single_query": 2.787269986204155e-07
+  },
+  "maximum_passing_sampled_rss_bytes": 1901543424,
+  "memory_scope": "Sampled RSS and GPU driver allocation; their simultaneous sum can double-count unified memory and is not an instantaneous hard peak.",
+  "no_retry_or_tolerance_relaxation": true,
+  "passed_cpu_cases": 8,
+  "protocol": "docs/research/boundary_retrieval_preflight_20260908.json",
+  "protocol_sha256": "ccaa3612fb9d81aa9d466ebdedd88ad483ae95655ce2fa163b7eb13a57c51dbc",
+  "records": [
+    {
+      "architecture": "fixed_metric",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_max_absolute_error": null,
+        "gradient_relative_l2_error": null,
+        "measured": false,
+        "probability_max_absolute_error": null,
+        "reference_backend": "cpu"
+      },
+      "checkpoint_forecasts_exact": true,
+      "checkpoint_save_reload_seconds": 5.4747109999880195,
+      "dimensions": 221,
+      "historical_bank_encoding_seconds": 0.08288754196837544,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_model_fits": 0,
+      "median_query_512_seconds": 0.25936687499051914,
+      "median_training_step_seconds": 0.0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 939622400,
+        "maximum_sampled_simultaneous_sum_bytes": 939622400
+      },
+      "partition_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "query_key_partition": 1.6253207499872246e-06,
+        "shorter_prefix": 0.0,
+        "single_query": 2.7683524000954307e-07
+      },
+      "projected_procedure_seconds": 19.88356577776085,
+      "query_512_seconds": [
+        0.2587632089853287,
+        0.25936687499051914,
+        0.2603324170340784
+      ],
+      "repeated_forecasts_exact": true,
+      "returncode": 0,
+      "seconds": 7.738538499979768,
+      "status": "passed",
+      "training_step_seconds": []
+    },
+    {
+      "architecture": "fixed_metric",
+      "backend": "mps",
+      "dimensions": 221,
+      "failure": "Worker exited 1; preserve its log and artifacts",
+      "log_sha256": "9a9e3dbfffdc30c58e5c348be867631e94287c26784527aec77fb791d3a0bce9",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "fixed_metric",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_max_absolute_error": null,
+        "gradient_relative_l2_error": null,
+        "measured": false,
+        "probability_max_absolute_error": null,
+        "reference_backend": "cpu"
+      },
+      "checkpoint_forecasts_exact": true,
+      "checkpoint_save_reload_seconds": 10.126515832962468,
+      "dimensions": 400,
+      "historical_bank_encoding_seconds": 0.10509529203409329,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_model_fits": 0,
+      "median_query_512_seconds": 0.28514108300441876,
+      "median_training_step_seconds": 0.0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1901543424,
+        "maximum_sampled_simultaneous_sum_bytes": 1901543424
+      },
+      "partition_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "query_key_partition": 1.1412680067657277e-06,
+        "shorter_prefix": 0.0,
+        "single_query": 2.787269986204155e-07
+      },
+      "projected_procedure_seconds": 25.981200631568754,
+      "query_512_seconds": [
+        0.28514108300441876,
+        0.28722254204330966,
+        0.2827974579995498
+      ],
+      "repeated_forecasts_exact": true,
+      "returncode": 0,
+      "seconds": 13.001201707986183,
+      "status": "passed",
+      "training_step_seconds": []
+    },
+    {
+      "architecture": "fixed_metric",
+      "backend": "mps",
+      "dimensions": 400,
+      "failure": "Worker exited 1; preserve its log and artifacts",
+      "log_sha256": "9a9e3dbfffdc30c58e5c348be867631e94287c26784527aec77fb791d3a0bce9",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "linear_nca",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_max_absolute_error": null,
+        "gradient_relative_l2_error": null,
+        "measured": false,
+        "probability_max_absolute_error": null,
+        "reference_backend": "cpu"
+      },
+      "checkpoint_forecasts_exact": true,
+      "checkpoint_save_reload_seconds": 3.072394250018988,
+      "dimensions": 221,
+      "historical_bank_encoding_seconds": 0.05973854102194309,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_model_fits": 0,
+      "median_query_512_seconds": 0.24989700003061444,
+      "median_training_step_seconds": 0.04920491704251617,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1249542144,
+        "maximum_sampled_simultaneous_sum_bytes": 1249542144
+      },
+      "partition_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "query_key_partition": 6.853221172775648e-07,
+        "shorter_prefix": 0.0,
+        "single_query": 2.2894262940997834e-07
+      },
+      "projected_procedure_seconds": 108.59596836254786,
+      "query_512_seconds": [
+        0.25406766700325534,
+        0.24804375000530854,
+        0.24989700003061444
+      ],
+      "repeated_forecasts_exact": true,
+      "returncode": 0,
+      "seconds": 6.228854792017955,
+      "status": "passed",
+      "training_step_seconds": [
+        0.047147125005722046,
+        0.04920491704251617,
+        0.04920675000175834
+      ]
+    },
+    {
+      "architecture": "linear_nca",
+      "backend": "mps",
+      "dimensions": 221,
+      "failure": "Worker exited 1; preserve its log and artifacts",
+      "log_sha256": "9a9e3dbfffdc30c58e5c348be867631e94287c26784527aec77fb791d3a0bce9",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "linear_nca",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_max_absolute_error": null,
+        "gradient_relative_l2_error": null,
+        "measured": false,
+        "probability_max_absolute_error": null,
+        "reference_backend": "cpu"
+      },
+      "checkpoint_forecasts_exact": true,
+      "checkpoint_save_reload_seconds": 3.9531700420193374,
+      "dimensions": 400,
+      "historical_bank_encoding_seconds": 0.07079641695600003,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_model_fits": 0,
+      "median_query_512_seconds": 0.2591865000431426,
+      "median_training_step_seconds": 0.06216458301059902,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1595506688,
+        "maximum_sampled_simultaneous_sum_bytes": 1595506688
+      },
+      "partition_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "query_key_partition": 5.767941897438789e-07,
+        "shorter_prefix": 0.0,
+        "single_query": 1.5226633015563706e-07
+      },
+      "projected_procedure_seconds": 124.74764948674056,
+      "query_512_seconds": [
+        0.25839116697898135,
+        0.27011145802680403,
+        0.2591865000431426
+      ],
+      "repeated_forecasts_exact": true,
+      "returncode": 0,
+      "seconds": 7.460183250019327,
+      "status": "passed",
+      "training_step_seconds": [
+        0.06216458301059902,
+        0.05810037499759346,
+        0.06233991699991748
+      ]
+    },
+    {
+      "architecture": "linear_nca",
+      "backend": "mps",
+      "dimensions": 400,
+      "failure": "Worker exited 1; preserve its log and artifacts",
+      "log_sha256": "9a9e3dbfffdc30c58e5c348be867631e94287c26784527aec77fb791d3a0bce9",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "nonlinear_nca",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_max_absolute_error": null,
+        "gradient_relative_l2_error": null,
+        "measured": false,
+        "probability_max_absolute_error": null,
+        "reference_backend": "cpu"
+      },
+      "checkpoint_forecasts_exact": true,
+      "checkpoint_save_reload_seconds": 3.3811404579901136,
+      "dimensions": 221,
+      "historical_bank_encoding_seconds": 0.25079212500713766,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_model_fits": 0,
+      "median_query_512_seconds": 0.2661223750328645,
+      "median_training_step_seconds": 0.06089108297601342,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1080213504,
+        "maximum_sampled_simultaneous_sum_bytes": 1080213504
+      },
+      "partition_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "query_key_partition": 1.5725330382299063e-07,
+        "shorter_prefix": 0.0,
+        "single_query": 1.1408174260818527e-07
+      },
+      "projected_procedure_seconds": 125.67665570454119,
+      "query_512_seconds": [
+        0.2661223750328645,
+        0.38697299995692447,
+        0.26318933395668864
+      ],
+      "repeated_forecasts_exact": true,
+      "returncode": 0,
+      "seconds": 7.716136250004638,
+      "status": "passed",
+      "training_step_seconds": [
+        0.06725424999604002,
+        0.06089108297601342,
+        0.059796417015604675
+      ]
+    },
+    {
+      "architecture": "nonlinear_nca",
+      "backend": "mps",
+      "dimensions": 221,
+      "failure": "Worker exited 1; preserve its log and artifacts",
+      "log_sha256": "9a9e3dbfffdc30c58e5c348be867631e94287c26784527aec77fb791d3a0bce9",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "nonlinear_nca",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_max_absolute_error": null,
+        "gradient_relative_l2_error": null,
+        "measured": false,
+        "probability_max_absolute_error": null,
+        "reference_backend": "cpu"
+      },
+      "checkpoint_forecasts_exact": true,
+      "checkpoint_save_reload_seconds": 4.343897124985233,
+      "dimensions": 400,
+      "historical_bank_encoding_seconds": 0.2503377499524504,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_model_fits": 0,
+      "median_query_512_seconds": 0.5730678329709917,
+      "median_training_step_seconds": 0.08872170798713341,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1582268416,
+        "maximum_sampled_simultaneous_sum_bytes": 1582268416
+      },
+      "partition_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "query_key_partition": 1.2823562589581172e-07,
+        "shorter_prefix": 0.0,
+        "single_query": 5.7174277645621885e-08
+      },
+      "projected_procedure_seconds": 222.67224762063415,
+      "query_512_seconds": [
+        0.36854649998713285,
+        0.5730678329709917,
+        0.5958482500282116
+      ],
+      "repeated_forecasts_exact": true,
+      "returncode": 0,
+      "seconds": 10.323723417008296,
+      "status": "passed",
+      "training_step_seconds": [
+        0.08872170798713341,
+        0.0987510000122711,
+        0.07918216701364145
+      ]
+    },
+    {
+      "architecture": "nonlinear_nca",
+      "backend": "mps",
+      "dimensions": 400,
+      "failure": "Worker exited 1; preserve its log and artifacts",
+      "log_sha256": "9a9e3dbfffdc30c58e5c348be867631e94287c26784527aec77fb791d3a0bce9",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "parametric",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_max_absolute_error": null,
+        "gradient_relative_l2_error": null,
+        "measured": false,
+        "probability_max_absolute_error": null,
+        "reference_backend": "cpu"
+      },
+      "checkpoint_forecasts_exact": true,
+      "checkpoint_save_reload_seconds": 0.005441749992314726,
+      "dimensions": 221,
+      "historical_bank_encoding_seconds": 3.6669662222266197e-06,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_model_fits": 0,
+      "median_query_512_seconds": 0.0009350840118713677,
+      "median_training_step_seconds": 0.015310290968045592,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 817102848,
+        "maximum_sampled_simultaneous_sum_bytes": 817102848
+      },
+      "partition_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "query_key_partition": 1.9457476685413866e-08,
+        "shorter_prefix": 0.0,
+        "single_query": 5.803713276630873e-08
+      },
+      "projected_procedure_seconds": 15.736697584226931,
+      "query_512_seconds": [
+        0.0009350840118713677,
+        0.000943291001021862,
+        0.0006888750358484685
+      ],
+      "repeated_forecasts_exact": true,
+      "returncode": 0,
+      "seconds": 1.2375663749990053,
+      "status": "passed",
+      "training_step_seconds": [
+        0.015310290968045592,
+        0.013968084007501602,
+        0.015487792028579861
+      ]
+    },
+    {
+      "architecture": "parametric",
+      "backend": "mps",
+      "dimensions": 221,
+      "failure": "Worker exited 1; preserve its log and artifacts",
+      "log_sha256": "8b06d6afe6411accdb2318f330e28ba6f9eb5289791c6257355bd989323bb8c4",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "parametric",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_max_absolute_error": null,
+        "gradient_relative_l2_error": null,
+        "measured": false,
+        "probability_max_absolute_error": null,
+        "reference_backend": "cpu"
+      },
+      "checkpoint_forecasts_exact": true,
+      "checkpoint_save_reload_seconds": 0.006344375025946647,
+      "dimensions": 400,
+      "historical_bank_encoding_seconds": 4.62500611320138e-06,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_model_fits": 0,
+      "median_query_512_seconds": 0.0025716249947436154,
+      "median_training_step_seconds": 0.01581812498625368,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1200783360,
+        "maximum_sampled_simultaneous_sum_bytes": 1200783360
+      },
+      "partition_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "query_key_partition": 2.0974121023309422e-08,
+        "shorter_prefix": 2.9552113089970078e-08,
+        "single_query": 4.3874901156648605e-08
+      },
+      "projected_procedure_seconds": 16.614123883406137,
+      "query_512_seconds": [
+        0.004692708025686443,
+        0.001373209001030773,
+        0.0025716249947436154
+      ],
+      "repeated_forecasts_exact": true,
+      "returncode": 0,
+      "seconds": 1.3726216670474969,
+      "status": "passed",
+      "training_step_seconds": [
+        0.015103084035217762,
+        0.01671383297070861,
+        0.01581812498625368
+      ]
+    },
+    {
+      "architecture": "parametric",
+      "backend": "mps",
+      "dimensions": 400,
+      "failure": "Worker exited 1; preserve its log and artifacts",
+      "log_sha256": "50bf9cbe49a49eab08b27cb9b22b94ecd41998b2182ef77201a39a068e293d03",
+      "returncode": 1,
+      "status": "failed"
+    }
+  ],
+  "selected_backend": "cpu",
+  "summary": "data/research/boundary_retrieval_preflight_20260908/summary.json",
+  "summary_sha256": "450bb88db4a73a59a57998bc49cce9713140fcc6405df7776b59e94bf46f3db8"
+}
