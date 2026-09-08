@@ -9,8 +9,7 @@ from functools import lru_cache
 from lob_forge.boundary_tardis_depth import _integer, _levels
 from lob_forge.boundary_tardis_fast import FastBinanceFuturesDepthState
 
-CERTIFIED_SEMANTICS = "captured_quote_and_explicit_tick_frontiers_v1"
-HISTORICAL_TICKS = {"BTCUSDT": "0.1", "ETHUSDT": "0.01"}
+CERTIFIED_SEMANTICS = "captured_quote_continuous_frontiers_v2"
 
 
 class CertifiedBinanceFuturesDepthState(FastBinanceFuturesDepthState):
@@ -27,12 +26,16 @@ class CertifiedBinanceFuturesDepthState(FastBinanceFuturesDepthState):
 
     def __init__(self, symbol, *, min_tick=None):
         super().__init__(symbol)
-        self.tick = Decimal(str(HISTORICAL_TICKS[symbol] if min_tick is None else min_tick))
-        if not self.tick.is_finite() or self.tick <= 0:
+        # Historical BTC data contains positive quantities at prices outside the
+        # nominal 0.1 grid. Default to continuous price-range certificates.
+        # Explicit tick extension is only valid when that assumption is supplied
+        # and justified separately; observing on-grid updates alone is no proof.
+        self.tick = None if min_tick is None else Decimal(str(min_tick))
+        if self.tick is not None and (not self.tick.is_finite() or self.tick <= 0):
             raise ValueError("A finite positive historical price tick is required")
         # Per-instance caches avoid retaining completed books through bound keys.
         self._tick_of = lru_cache(maxsize=131072)(self._price_tick)
-        self._price_of = lru_cache(maxsize=131072)(lambda n: float(self.tick * n))
+        self._price_of = lru_cache(maxsize=131072)(lambda n: n if self.tick is None else float(self.tick * n))
         self._level_u = ({}, {})
         self._frontier_ticks = [None, None]
         self._pending = []
@@ -43,6 +46,8 @@ class CertifiedBinanceFuturesDepthState(FastBinanceFuturesDepthState):
                                      "queued_quotes": 0, "explicit_frontier_ticks": 0}
 
     def _price_tick(self, price):
+        if self.tick is None:
+            return price
         value = Decimal(str(price)) / self.tick
         if not value.is_finite() or value <= 0 or value != value.to_integral_value():
             raise ValueError("Native price is outside the declared historical tick grid")
@@ -65,7 +70,7 @@ class CertifiedBinanceFuturesDepthState(FastBinanceFuturesDepthState):
     def _advance_frontiers(self):
         for side, direction in ((0, -1), (1, 1)):
             frontier = self._frontier_ticks[side]
-            while frontier + direction in self._level_u[side]:
+            while self.tick is not None and frontier + direction in self._level_u[side]:
                 frontier += direction
                 self.certification_counts["explicit_frontier_ticks"] += 1
             self._frontier_ticks[side] = frontier

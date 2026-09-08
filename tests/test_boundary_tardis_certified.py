@@ -93,3 +93,19 @@ def test_quote_certificate_rejects_contradictory_known_better_prices():
         book.observe_quote(1700_000_000, quote(20))
     assert (book.bids, book.asks, book.bid_frontier) == before
     assert not book.ready
+
+
+def test_continuous_certificates_accept_legacy_prices_without_inferring_gaps():
+    book = CertifiedBinanceFuturesDepthState("BTCUSDT")
+    book.apply(1500_000_000, snapshot())
+    book.apply(1600_000_000, delta(9, 20, 8, [["100", "0"], ["99", "0"], ["95.37", "10"],
+        ["94.33", "20"], ["93.00", "30"]]))
+    book.observe_quote(1700_000_000, quote(20, bid=95.37))
+    assert book.bid_frontier == 95.37
+    assert book.snapshot(1)[0][2:] == (95.37, 10.0)
+    assert book.snapshot(2) is None  # No assumption about prices between 95.37 and 94.33.
+    book.apply(1800_000_000, delta(21, 30, 20, [["95.37", "0"], ["94.33", "0"]]))
+    book.observe_quote(1900_000_000, quote(30, bid=93, bid_q=30))
+    book.apply(2000_000_000, delta(31, 40, 30, [["95.37", "10"], ["94.33", "20"]]))
+    assert book.snapshot(3) is not None  # All prices above the observed 93 best bid became known.
+    assert book.certification_counts["explicit_frontier_ticks"] == 0

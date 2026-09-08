@@ -1,0 +1,34 @@
+{
+  "failure_log_sha256": "9fe553f4d72bb994149dfdd46b8211789b8fef25751bf6091871c62e1f8d15af",
+  "model_fits": 0,
+  "next_definition": "Use continuous best-quote certificates with no historical minimum-tick assumption. A fixed tick-grid extension is not justified by the current nominal instrument tick when older resting price levels may exist.",
+  "off_assumed_grid_levels": [
+    {
+      "assumed_tick": "0.1",
+      "capture_ns": 1685587773136456200,
+      "line": 163996,
+      "price": "27168.37",
+      "publisher_time_ms": 1685587773052,
+      "quantity": "0.004",
+      "side": "a",
+      "symbol": "BTCUSDT",
+      "update_id": 2900236395057
+    },
+    {
+      "assumed_tick": "0.1",
+      "capture_ns": 1685587789588811600,
+      "line": 174423,
+      "price": "26794.33",
+      "publisher_time_ms": 1685587787943,
+      "quantity": "0.000",
+      "side": "b",
+      "symbol": "BTCUSDT",
+      "update_id": 2900239078481
+    }
+  ],
+  "raw_path": "data/research/boundary_tardis_raw_20260907/minute_0160/attempt_1.payload",
+  "raw_sha256": "9ee4e15b170fb564e4e9154d33a2d3a51eefbb0451a25c22e4738a27d635e11d",
+  "recorded_at_utc": "2026-09-08T01:13:43.465440+00:00",
+  "status": "failed_closed_before_any_model_fit",
+  "target_columns_read": false
+}

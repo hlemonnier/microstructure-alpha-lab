@@ -132,7 +132,7 @@ def sample_tardis_depth(paths, decisions, *, delays_ms=(100, 500), progress=None
             "current_epoch_snapshot_frontiers": {"bid": book.bid_frontier, "ask": book.ask_frontier}}
         if hasattr(book, "certification_counts"):
             checks[symbol]["certification"] = book.certification_counts.copy()
-            checks[symbol]["historical_tick"] = str(book.tick)
+            checks[symbol]["historical_tick"] = None if book.tick is None else str(book.tick)
         quotes[symbol] = native
     return samples, quotes, {"lines": lines, "disconnects": disconnects, "first_capture_ns": first_capture,
                              "last_capture_ns": previous_capture, "assets": checks}

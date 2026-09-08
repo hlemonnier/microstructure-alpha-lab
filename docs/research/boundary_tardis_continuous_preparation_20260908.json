@@ -1,0 +1,45 @@
+{
+  "amendment": "The previous source-only attempt failed closed on BTC price 27168.37 with quantity 0.004, outside the assumed 0.1 grid. The failure log and observed source facts are preserved. Historical resting prices can violate a nominal tick; their origin is not established here. No model was fitted or target read. This amendment changes source knowledge logic only; retain original dates, rows, delays and target definitions.",
+  "causal_availability": "Read native messages in original capture order. A quote ahead of the depth update ID waits in a bounded queue. Use the maximum depth/certificate capture and publisher clocks as information dependencies. Require all dependencies strictly before decision minus 100ms or 500ms. Independently require the most recent depth publisher and capture ages <= 1000ms; quote certificates do not refresh stale depth. Snapshots and disconnects reset the knowledge epoch. Preserve all original decision rows with explicit unavailable masks.",
+  "controls": "Preserve the completed initial-frontier replay. It has 0/7070 BTC and 1741/7070 ETH noon rows available at 100ms. Additional coverage is source evidence only, never a predictive gain.",
+  "date": "2023-06-01",
+  "delays_ms": [
+    100,
+    500
+  ],
+  "end_ms": 1685628000000,
+  "evidence_status": "development_data_only_on_exposed_date",
+  "implementation": "captured_quote_continuous_frontiers_v2",
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "data/research/boundary_tardis_depth_fast_20260907/depth_manifest.json": "ecbb5214b39e7b384b49a4bb6d78edfe55362b1a1ca9ff09aedc3d9068c596b8",
+    "data/research/boundary_tardis_raw_20260907/raw_manifest.json": "73a7ec5cae47ced9d7068c3656f3e9784930a86a43bb0f293dd07259fcf01510",
+    "docs/research/boundary_tardis_certified_preparation_20260908.json": "aed6202f7ebac0c5b92ba3fa42b1a674a5fd597c8df10df12ce92e734673ccf6",
+    "docs/research/boundary_tardis_continuous_parity_20260908.json": "952de8aff8fbe3b2abd590065375e4404c7158024f3a69b6f6874ac6f02d5e2c",
+    "docs/research/boundary_tardis_tick_grid_failure_20260908.json": "8165eb31981a8d9d61e77b7f950e9b852844c58736fdfeb873dc15bc8b30295c",
+    "scripts/assess_boundary_tardis_certified.py": "8212b889d6a2ce39e362a1c5651360cca4f02f731b42f2408ae2a839f2fb3b45",
+    "scripts/prepare_boundary_tardis_depth.py": "7bf8f32d81fa62ff9ef0fc6e794ece4b27b85f64ec682d4c9e891d25ec7295fc",
+    "src/lob_forge/boundary_tardis_certified.py": "11be981fd3d36d6c47e2ff6d4aa6cc9e44f96fede13f00bf81c757b9a67a8ca9",
+    "src/lob_forge/boundary_tardis_depth.py": "366ce578f0d6eb673998c8978a25113d8fce4058ad167c5e879e4c98abf378d7",
+    "src/lob_forge/boundary_tardis_fast.py": "ba21b27af5fca533159991b6ab64d47b1ce12372407e490d8ed0ad2229491735",
+    "src/lob_forge/boundary_tardis_observations.py": "ddd449851bfff1f608fce56ed3e403630fd1b0b777ee14a7604d753c7679e22d",
+    "tests/test_boundary_tardis_certified.py": "4ef6067a8d71006d52d19f249274223dce76a79453962e33c59526d922bd4d4e",
+    "tests/test_boundary_tardis_certified_observations.py": "38ae720954fdee0b0b58d50c521a705c580e4cd4b92d6a266b6a570fc1982d84"
+  },
+  "model_fits": 0,
+  "original_manifest": "data/research/boundary_event_clock_20260907/dataset_manifest.json",
+  "parent_preparation_protocol": "docs/research/boundary_tardis_certified_preparation_20260908.json",
+  "parent_protocol_sha256": "aed6202f7ebac0c5b92ba3fa42b1a674a5fd597c8df10df12ce92e734673ccf6",
+  "preserved_failed_attempt": "data/research/boundary_tardis_certified_20260908",
+  "proof": "An initial snapshot establishes all quantities inside its finite price ranges. A captured best bid at update ID k establishes zero bid quantity at every strictly higher price, and a best ask establishes zero ask quantity at every strictly lower price. Continuous replay through u >= k preserves that knowledge after absolute updates. A quote quantity never overwrites a later batch endpoint. Extend a frontier to the most extreme certified best price only; do not infer anything between separately observed levels outside that range. Both sides and prospective BBO are checked before mutation.",
+  "purpose": "Recover native depth coverage with continuous best-quote range certificates, making no assumption that older resting prices share the nominal current tick.",
+  "raw_manifest": "data/research/boundary_tardis_raw_20260907/raw_manifest.json",
+  "registered_at_utc": "2026-09-08T01:15:30.207835+00:00",
+  "source_validation": "Verify frozen hashes and full gzip CRC, futures snapshot bridge and pu/u continuity. No price tick is imposed. Require every available sampled BBO to match the most recent native quote by update ID, and full saved-array reload parity. The first complete ten-minute interval exactly matches baseline sample/quote arrays. Seven replay tests and one strict-timing/prefix test pass.",
+  "start_ms": 1685577600000,
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "target_columns_read": false
+}

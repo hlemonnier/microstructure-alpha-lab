@@ -59,7 +59,7 @@ def prepare(protocol_path, output):
         from lob_forge.boundary_tardis_fast import FastBinanceFuturesDepthState, iter_tardis_messages_fast
 
         implementation = {"state_factory": FastBinanceFuturesDepthState, "message_reader": iter_tardis_messages_fast}
-    elif protocol.get("implementation") == "captured_quote_and_explicit_tick_frontiers_v1":
+    elif protocol.get("implementation") == "captured_quote_continuous_frontiers_v2":
         from lob_forge.boundary_tardis_certified import CertifiedBinanceFuturesDepthState
         from lob_forge.boundary_tardis_fast import iter_tardis_messages_fast
 
