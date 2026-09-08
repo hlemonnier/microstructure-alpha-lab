@@ -1,0 +1,76 @@
+{
+  "architecture": "Exactly build_member_network(input_dim,hidden_size=64,members=1): two 64-unit ReLU layers and three logits. Reinitialize with the same seed for every variant. No dropout, learned temperature, additional embedding or ensemble expansion.",
+  "assessment": "Complete all three dates before score reveal. Compare every loss with its exact matched log control, matched fixed blends and the strongest retained complete procedure; report both assets, all dates and natural log loss. These exposed dates cannot satisfy the independent substantial-gain gate. Any promising candidate must transfer across broader dates before promotion.",
+  "checkpoint_selection": "Maximize previous-noon mean balanced accuracy using original historical priors, then minimize mean natural log loss, then retain the earlier epoch. Identical to fit_confirm_neural. Save every epoch record and exact native checkpoint.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "fixed_blends": "Average each of the eight new sources 50/50 with its representation-matched original HGB and with deep500_hgb, sixteen blends. Retain the entire completed ordered/Langevin family without changing forecasts. No weight search.",
+  "forecast_sources": 256,
+  "gradient_scale": "All losses have exactly the log-loss logit gradient (1/K-one_hot(y)) at uniform q. Pseudospherical gradient is K^alpha*s_y^alpha*(s-one_hot(y)); Brier uses K/2. This fixes one local scale, not the full optimization trajectory, curvature everywhere, effective learning rate everywhere or regularization equivalence.",
+  "hypothesis": "Test whether bounded strictly proper scoring rules improve finite-sample class discrimination under the same neural architecture and historical information. These rules alter the treatment of hard examples without changing the ideal class-balanced probability target. Boundedness and population propriety do not imply finite-sample calibration, robustness to arbitrary corruption, convex optimization, or a market gain.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "log_control": "Train all six log-loss controls and require exact state-dictionary and complete forecast parity with the saved original observations_neural/combined_neural models. Failure halts the family before assessment reveal; preserve failures and do not silently weaken parity.",
+  "losses": {
+    "brier": "For K=3, L=(K/2)*sum_c (softmax(u)_c - 1[c=y])^2.",
+    "log": "Exactly the existing unreduced torch cross_entropy(u,y).",
+    "spherical2": "For beta=2, alpha=(beta-1)/beta, s=softmax(beta*u), A=K^alpha/(beta-1), L=A*(1-s_y^alpha). Evaluate as -A*expm1(alpha*log_softmax(beta*u)_y).",
+    "spherical4": "The same pseudospherical proper loss with beta=4. Beta is finite and fixed; no beta-to-infinity or hard 0-1-loss limit is used."
+  },
+  "mathematical_verification": "Compare stable logit losses against independent probability/norm formulas; analytic gradients against autograd and finite differences; uniform-gradient matching; strict population optima and weighted posterior inversion; permutation and common-logit-shift invariance; extreme finite logits; and tiny-data log-control reproduction against fit_confirm_neural.",
+  "model_fits": 24,
+  "optimizer": {
+    "algorithm": "AdamW",
+    "batch_size": 1024,
+    "epochs": 12,
+    "gradient_norm_limit": 5.0,
+    "hidden_size": 64,
+    "learning_rate": 0.001,
+    "seed": 20260907,
+    "threads": 2,
+    "weight_decay": 0.01
+  },
+  "partition": "Use every original historical d-5 through d-2 stride-four row. Only the previous noon selects an epoch. Preserve all 7070 original noon assessment rows per asset/date. Recheck actual label release clocks, original row/label/time identity and original priors. No assessment label or same-day label enters fitting or checkpoint selection.",
+  "population_propriety": "For beta>1, s_y^alpha=q_y^(beta-1)/||q||_beta^(beta-1). Holder inequality makes the expected score uniquely maximal at q=eta on the probability simplex. The Brier excess risk is (K/2)*||q-eta||_2^2. Thus all four losses elicit the same ideal balanced posterior. This says nothing about fitted finite-network accuracy or calibration.",
+  "post_fit_panels": 3072,
+  "preflight": "Freeze full-row-count synthetic timing and resource checks separately after mathematical tests. Check every loss at both original input dimensions, native checkpoint recovery, causal prefix/row independence and finite gradients. Freeze limits and source hashes before running; preserve any failure. No paid compute.",
+  "preprocessing": "Reuse the exact frozen original quantile-normal transform, active columns, feature order and -1/+1 asset indicator. Verify exact normalized historical and validation matrices against completed records. No new features, feature selection, sample selection or query normalization.",
+  "primary_policy": "forecast_3600",
+  "primary_sources": [
+    {
+      "scope": "Gneiting and Raftery, JASA 2007: strictly proper quadratic, spherical and pseudospherical scores. The registered finite-K formulas and gradient normalization are independently derived; the source does not claim a gain on this market target.",
+      "url": "https://sites.stat.washington.edu/people/raftery/Research/PDF/Gneiting2007jasa.pdf"
+    },
+    {
+      "scope": "Williamson, Vernet and Reid, JMLR 2016: composite multiclass losses and the distinction between properness, links and other optimization properties.",
+      "url": "https://www.jmlr.org/papers/v17/14-294.html"
+    },
+    {
+      "scope": "Zhang and Sabuncu, NeurIPS 2018: generalized cross entropy motivates a different influence of hard examples. We use a proper probability parameterization and make no claim that stochastic market labels are corrupted labels.",
+      "url": "https://papers.nips.cc/paper_files/paper/2018/hash/f2925f97bc13ad2852a7a551802feea0-Abstract.html"
+    }
+  ],
+  "probability_target": "The network emits logits u and q=softmax(u), interpreted as the class-balanced posterior. Recover natural p proportional to q*pi[asset] with the exact original historical priors. There is no unregistered post-fit temperature, posterior power transform or target relabeling.",
+  "raw_gce_distinction": "Raw generalized cross entropy (1-s_y^alpha)/alpha has population optimizer s proportional to eta^(1/(1-alpha)); interpreting s directly as eta is incorrect. The registered natural logit parameterization q with s=softmax(beta*u) is the known pseudospherical scoring rule. It needs no inverse-link estimation or calibration fit.",
+  "registered_at_utc": "2026-09-08T16:54:26.050377+00:00",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "runtime": "Use the existing pinned two-thread CPU Torch runtime. Mathematical unit fits may run while another family is active, but no substantial synthetic or market fit runs concurrently with the ordered/Langevin study.",
+  "sample_weights": "Original float32 balanced_asset_weights: N/(6*n[asset,class]) on natural-order shuffled query minibatches. Keep every original historical row and the same numpy permutation stream across all loss variants.",
+  "stochastic_boost_assessment_scores_inspected": false,
+  "variants": [
+    "log",
+    "brier",
+    "spherical2",
+    "spherical4"
+  ]
+}
