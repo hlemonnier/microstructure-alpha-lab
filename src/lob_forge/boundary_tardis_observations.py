@@ -9,12 +9,13 @@ import numpy as np
 from lob_forge.boundary_tardis_depth import BinanceFuturesDepthState, iter_tardis_messages
 
 
-def sample_tardis_depth(paths, decisions, *, delays_ms=(100, 500), progress=None):
+def sample_tardis_depth(paths, decisions, *, delays_ms=(100, 500), progress=None,
+                        state_factory=BinanceFuturesDepthState, message_reader=iter_tardis_messages):
     delays = np.asarray(delays_ms)
     if (delays.ndim != 1 or not len(delays) or not np.issubdtype(delays.dtype, np.integer)
         or (delays < 0).any() or len(np.unique(delays)) != len(delays)):
         raise ValueError("Distinct nonnegative capture delays required")
-    books = {s: BinanceFuturesDepthState(s) for s in decisions}
+    books = {s: state_factory(s) for s in decisions}
     samples, queries, quote_arrays = {}, [], {}
     counts = {s: {"depth": 0, "depthSnapshot": 0, "bookTicker": 0} for s in decisions}
     for symbol, clock in decisions.items():
@@ -55,7 +56,7 @@ def sample_tardis_depth(paths, decisions, *, delays_ms=(100, 500), progress=None
         target["available"][i, j] = True
 
     for number, path in enumerate(paths, 1):
-        for capture, message in iter_tardis_messages(path):
+        for capture, message in message_reader(path):
             lines += 1
             if message is None:
                 disconnects += 1

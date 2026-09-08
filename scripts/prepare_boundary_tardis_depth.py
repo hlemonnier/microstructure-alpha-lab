@@ -54,8 +54,13 @@ def prepare(protocol_path, output):
             raise ValueError("Original decision source changed")
         clock = pd.read_parquet(file, columns=["decision_time"]).decision_time.to_numpy()
         clocks[symbol] = clock[(clock >= protocol["start_ms"]) & (clock < protocol["end_ms"])]
+    implementation = {}
+    if protocol.get("implementation") == "equivalence_checked_fast_replay":
+        from lob_forge.boundary_tardis_fast import FastBinanceFuturesDepthState, iter_tardis_messages_fast
+
+        implementation = {"state_factory": FastBinanceFuturesDepthState, "message_reader": iter_tardis_messages_fast}
     samples, quotes, checks = sample_tardis_depth([ROOT / r["payload_path"] for r in raw["records"]], clocks,
-        delays_ms=tuple(protocol["delays_ms"]),
+        delays_ms=tuple(protocol["delays_ms"]), **implementation,
         progress=lambda n, total, lines, done, all_queries: print(f"native_depth_slices={n}/{total} lines={lines} queries={done}/{all_queries}", flush=True))
     sessions = []
     for symbol in protocol["symbols"]:

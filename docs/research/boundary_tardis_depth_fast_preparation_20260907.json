@@ -1,0 +1,45 @@
+{
+  "coverage": "Keep all original decisions inside the fixed 14-hour interval. At each query retain 25 levels only if they lie inside the current epoch snapshot frontiers; otherwise explicit unavailability and zeros. Rolling buffers hold at most 10000 already parsed deltas for snapshot bridging; eviction does not discard updates from the current replayed book.",
+  "date": "2023-06-01",
+  "delays_ms": [
+    100,
+    500
+  ],
+  "end_ms": 1685628000000,
+  "equivalence_evidence": "docs/research/boundary_tardis_fast_parity_20260907.json",
+  "equivalence_sha256": "a2377f64bc84d94a2100d7ffaa20b116de101ccb6737b0cfcd9e4c04dc80f809",
+  "evidence_status": "development_data_only_on_exposed_date",
+  "implementation": "equivalence_checked_fast_replay",
+  "implementation_change": "Cache parsing at whole-second granularity while preserving exact fractional nanoseconds. Validate prospective best bid and ask before atomically mutating either side dictionary. Use partial selection for the top 25 levels. All observations, clocks, masks, native quotes and counters match the reference on the full initial 10-minute slice. Two additional tests compare random updates, deletions, snapshot reset, atomic failure and invalid clocks. No feature, source, target or sampling definition changes.",
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "data/research/boundary_tardis_raw_20260907/raw_manifest.json": "73a7ec5cae47ced9d7068c3656f3e9784930a86a43bb0f293dd07259fcf01510",
+    "docs/research/boundary_tardis_depth_preparation_20260907.json": "139df31bd204a3264aad660604d585a89dc69a1a9575f8cc5f13ccea69ccd906",
+    "docs/research/boundary_tardis_fast_parity_20260907.json": "a2377f64bc84d94a2100d7ffaa20b116de101ccb6737b0cfcd9e4c04dc80f809",
+    "docs/research/boundary_tardis_raw_acquisition_20260907.json": "ede408d5b54a9747fefe6e2c98d8ce26eebe934ab5ff88c117aa354df0c6d6dd",
+    "scripts/prepare_boundary_tardis_depth.py": "0694ed2fd79b7540342aa95f1fc1b17fc710597048f205af6c24da8c6e8d0924",
+    "src/lob_forge/boundary_tardis_depth.py": "366ce578f0d6eb673998c8978a25113d8fce4058ad167c5e879e4c98abf378d7",
+    "src/lob_forge/boundary_tardis_fast.py": "ba21b27af5fca533159991b6ab64d47b1ce12372407e490d8ed0ad2229491735",
+    "src/lob_forge/boundary_tardis_observations.py": "e1094b3b07d3c56327014fdafeb217f7c296cbe0d2fdb28755d70bcbdd194f59",
+    "tests/test_boundary_tardis_depth.py": "bc2afb6941f1e1fbfef6314d39482efb3c40e55633c9c5bc7e9ebeca1d4cec75",
+    "tests/test_boundary_tardis_fast.py": "5ccf23dd74f6273d28a7ee5a64dcc8e1c4649b1d17e80ea4ffcfa6a1cac09f78",
+    "tests/test_boundary_tardis_observations.py": "648fcf437a796d9d97a437f5c15d5d355a1268e0770f54844c71f9e5cd0ce424"
+  },
+  "model_fits": 0,
+  "original_manifest": "data/research/boundary_event_clock_20260907/dataset_manifest.json",
+  "parent_preparation_protocol": "docs/research/boundary_tardis_depth_preparation_20260907.json",
+  "parent_protocol_sha256": "139df31bd204a3264aad660604d585a89dc69a1a9575f8cc5f13ccea69ccd906",
+  "preserved_initial_attempt": "data/research/boundary_tardis_depth_20260907",
+  "purpose": "Measure sustained native Binance top-25 reconstruction and coverage on the original one-second decision clock before fitting any target-depth model.",
+  "raw_manifest": "data/research/boundary_tardis_raw_20260907/raw_manifest.json",
+  "registered_at_utc": "2026-09-08T00:31:11.990129+00:00",
+  "start_ms": 1685577600000,
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "target_columns_read": false,
+  "tests": "Three native replay tests and one sampling test pass, covering futures bridge, gaps, unknown snapshot frontier, native capture precision, real payload encoding, strict equality, late snapshots and untimestamped disconnect causality.",
+  "timing": "Strict source capture nanoseconds + added delay < decision milliseconds. The current book also requires an earlier publisher E; both publisher and capture ages at the delayed query must be at most 1000ms. Late initial snapshots become available at capture, after applying already buffered updates. No clock is backdated. Untimestamped disconnects invalidate only when the next timestamped message arrives, avoiding a future-dependent availability flag.",
+  "validation": "Verify every frozen raw/source artifact hash. Parse full gzip streams through EOF/CRC. Require futures snapshot bridge, pu/u continuity and uncrossed atomic state. Compare every available sampled BBO to the most recent native quote by update ID. Preserve native quote capture/E/T data separately and report duplicate/out-of-order arrivals. Verify full save/reload parity."
+}

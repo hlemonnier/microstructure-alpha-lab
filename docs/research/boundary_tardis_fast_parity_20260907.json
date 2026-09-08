@@ -1,0 +1,84 @@
+{
+  "all_parsed_messages_and_capture_timestamps_exact": true,
+  "all_replay_check_counters_exact": true,
+  "all_sampled_depth_coverage_clock_and_quote_arrays_exact": true,
+  "checks": {
+    "assets": {
+      "BTCUSDT": {
+        "available_rows_by_delay": [
+          598,
+          597
+        ],
+        "current_epoch_snapshot_frontiers": {
+          "ask": 27306.8,
+          "bid": 27097.4
+        },
+        "frontier_covered_rows_by_delay": [
+          598,
+          597
+        ],
+        "messages": {
+          "bookTicker": 83618,
+          "depth": 17989,
+          "depthSnapshot": 1
+        },
+        "quote_duplicate_ids": 0,
+        "quote_out_of_order_id_arrivals": 0,
+        "replayed_deltas": 17976,
+        "rolling_buffer_evictions": 7989,
+        "rows": 599,
+        "sampled_depth_quote_comparisons": 1195,
+        "sampled_depth_quote_mismatches": 0,
+        "snapshots": 1
+      },
+      "ETHUSDT": {
+        "available_rows_by_delay": [
+          598,
+          598
+        ],
+        "current_epoch_snapshot_frontiers": {
+          "ask": 1883.39,
+          "bid": 1862.58
+        },
+        "frontier_covered_rows_by_delay": [
+          598,
+          598
+        ],
+        "messages": {
+          "bookTicker": 49222,
+          "depth": 18033,
+          "depthSnapshot": 1
+        },
+        "quote_duplicate_ids": 0,
+        "quote_out_of_order_id_arrivals": 0,
+        "replayed_deltas": 18021,
+        "rolling_buffer_evictions": 8033,
+        "rows": 599,
+        "sampled_depth_quote_comparisons": 1196,
+        "sampled_depth_quote_mismatches": 0,
+        "snapshots": 1
+      }
+    },
+    "disconnects": 0,
+    "first_capture_ns": 1685577600008808300,
+    "last_capture_ns": 1685578199998826500,
+    "lines": 168864
+  },
+  "code_hashes": {
+    "scripts/prepare_boundary_tardis_depth.py": "0694ed2fd79b7540342aa95f1fc1b17fc710597048f205af6c24da8c6e8d0924",
+    "src/lob_forge/boundary_tardis_depth.py": "366ce578f0d6eb673998c8978a25113d8fce4058ad167c5e879e4c98abf378d7",
+    "src/lob_forge/boundary_tardis_fast.py": "ba21b27af5fca533159991b6ab64d47b1ce12372407e490d8ed0ad2229491735",
+    "src/lob_forge/boundary_tardis_observations.py": "e1094b3b07d3c56327014fdafeb217f7c296cbe0d2fdb28755d70bcbdd194f59",
+    "tests/test_boundary_tardis_fast.py": "5ccf23dd74f6273d28a7ee5a64dcc8e1c4649b1d17e80ea4ffcfa6a1cac09f78"
+  },
+  "fast_wall_seconds": 3.9185564999934286,
+  "interval": "2023-06-01 00:00 through 00:10 UTC",
+  "model_fits": 0,
+  "native_messages_compared": 168864,
+  "raw_path": "data/research/boundary_tardis_raw_20260907/minute_0000/attempt_1.payload",
+  "raw_sha256": "54d3a056e5c453e72fe29d3621c62bf4e6ecd4b1dcf179704854f370f44ee0ff",
+  "recorded_at_utc": "2026-09-08T00:28:45.388790+00:00",
+  "reference_wall_seconds": 11.911457624984905,
+  "timing_limit": "Single adjacent run while the independent fixed model experiment also uses CPU; operational timing only, not a controlled benchmark or predictive gain.",
+  "wall_ratio": 3.0397565085522897
+}
