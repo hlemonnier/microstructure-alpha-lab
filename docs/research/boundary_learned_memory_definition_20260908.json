@@ -1,0 +1,59 @@
+{
+  "architecture": "Project the original normalized input, including the original -1/+1 asset indicator, to 64 coordinates with Linear plus GELU. The memoryless branch uses Linear(64,192), GELU, Linear(192,64), GELU. The recurrent branches use one PyTorch 2.8 unidirectional GRU(64,64) or LSTM(64,64), batch_first=True, biases enabled, zero dropout and no projection. Each branch ends in Linear(64,3), with its final weight and bias initialized to zero. Other initial parameters use their ordinary PyTorch initializers with seed 20260908. Record exact parameter counts; the memoryless control approximates GRU parameter count, not every architecture exactly.",
+  "architectures": [
+    "instant_residual",
+    "gru_residual",
+    "lstm_residual"
+  ],
+  "backend_preflight": "After the current fading-memory study completes, benchmark all three branches at both production input dimensions on CPU with two threads and on the available Mac MPS backend, one case at a time. Use full float32 and deterministic-algorithm mode. Check finite forward/backward behavior, CPU/MPS posterior and gradient agreement, checkpoint reload, gap handling and future-prefix invariance before measuring repeated warmed optimization blocks. Select one common backend by the lower summed measured optimization-block time across the six architecture/dimension cases, only among backends passing all numerical and causality checks. Freeze exact preflight sizes, repetitions, tolerances, resource limits and source hashes separately before running the benchmark. Tiny GPU operator availability is not production feasibility or a speed claim.",
+  "base": "Exact existing single-member 64-by-64 neural checkpoint, training-only quantile normalizer, active columns, feature order and original per-asset priors. Freeze every original network parameter. It was fitted on d-5 through d-2 and selected on the previous noon. Its in-sample logits are not out-of-fold teacher predictions; all three branches share this limitation.",
+  "checkpoint_selection": "After each epoch, warm each previous-validation-day state using only preceding observed features, then evaluate the complete previous noon. Maximize the equal-asset mean balanced accuracy under original training priors, tie by lower natural log loss, then the earliest epoch. No checkpoint choice uses current assessment outcomes.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "fading_memory_assessment_scores_inspected": false,
+  "fixed_blends": "Retain all 145 sources from the complete fading-memory family. Add the six new source forecasts per date and, for each, fixed 50/50 blends with its original matched-representation HGB and deep500_hgb. No blend-weight search.",
+  "hypothesis": "A trained gate can choose which past observations to retain, unlike fixed random recurrent weights. Add a learned sequence correction to the existing frozen neural logits; compare a similarly sized memoryless residual branch to distinguish sequence information from additional supervised capacity.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "inference": "Start from zero at each asset/day and at coverage gaps, use the selected fixed branch weights throughout that day and retain the state between forward chunks. State computation may observe earlier same-day features but receives no labels. Preserve every original noon row. Persist base identity, branch state, architecture, feature schema, priors and source clock semantics.",
+  "model_fits": 18,
+  "optimization": "Six complete chronological epochs. One AdamW update per 512-second wall-clock training block, learning rate .0003, weight decay .01, gradient norm limit five. Accumulate the exact weighted cross-entropy numerator across its at-most-128-second recurrent segments and divide by the number of original stride-four supervised rows in that entire optimization block. Skip a block with no supervised rows. Use the original global historical asset/class weights N/(6*n_asset_class), not per-block frequencies. Only branch parameters are trainable. No learning-rate, seed or epoch-budget sweep.",
+  "parallel_training_streams": "Eight streams, one per asset/training date, aligned on relative integer UTC seconds. Available streams are processed independently and only batched for computation. Segment at each availability-pattern change and at 128-second boundaries; reset only missing streams, retaining the other streams. Detach recurrent gradients at segment boundaries while carrying the numerical hidden states. Reset all streams at the start of each epoch.",
+  "partition": "Same four historical training days d-5 through d-2, the complete previous noon for epoch selection, and every original 7070 noon query per asset/date. All selected training and validation labels must have been actually released before the next partition. Assessment labels cannot enter this frozen within-day forecaster.",
+  "post_fit_panels": 1956,
+  "posterior": "For original raw logits z_base and branch correction delta, recover natural probabilities from softmax(z_base+delta) times the original asset prior. A zero correction must reproduce the original saved forecasts exactly through an explicit per-row zero-correction path. Check nonzero corrections against the analytical posterior. No whole-query-dependent conditional operation is allowed.",
+  "primary_policy": "The unchanged prediction-only one-hour prior adaptation, initialized from the exact existing pre-noon prior. The secondary registered denominator is the common original historical observations_tree prior. Preserve all existing controls and their own policies exactly.",
+  "primary_sources": [
+    {
+      "scope": "Cho et al. motivate learned retention and reset gates. The proposed residual architecture is not their translation model.",
+      "url": "https://aclanthology.org/D14-1179.pdf"
+    },
+    {
+      "scope": "Use the installed framework gate convention, including reset multiplication after the hidden affine transform; this differs from the original GRU paper.",
+      "url": "https://docs.pytorch.org/docs/2.8/generated/torch.nn.GRU.html"
+    },
+    {
+      "scope": "Defines the exact one-layer unidirectional LSTM and hidden/cell-state interfaces.",
+      "url": "https://docs.pytorch.org/docs/2.8/generated/torch.nn.LSTM.html"
+    },
+    {
+      "scope": "Explains explicit use of the Mac GPU backend. Local tiny probes confirm availability outside the filesystem sandbox, not full-model speed.",
+      "url": "https://docs.pytorch.org/docs/2.8/notes/mps.html"
+    }
+  ],
+  "promotion": "Development only. Any substantial whole-procedure gain requires separately frozen independent dates and the existing continuing-research error budget. Neither gate equations nor GPU availability establishes accuracy.",
+  "registered_at_utc": "2026-09-08T05:22:50.594034+00:00",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "source_clock": "Advance on every original eligible one-second observation, before choosing the original calendar-stride-four supervised rows. Reset each asset/day state to zero at its beginning and on every non-one-second coverage gap. Missing observations never drive an invented zero-input recurrence. No backward pass through time at inference, future interpolation or future outcome input.",
+  "validation": "Test class-prior correction, zero residual equivalence, frozen original parameters, chronological state carry, gap resets, chunking and future-prefix invariance. Verify the 512-second accumulated gradient against a direct full-block calculation with irregular eligibility and unequal class counts. Test state detachment without numerical resets, per-stream independence, save/load and meaningful learning on a synthetic temporal task. Freeze final data, source and backend hashes after these checks. One substantial learner at a time; complete every date before revealing any new assessment metrics."
+}
