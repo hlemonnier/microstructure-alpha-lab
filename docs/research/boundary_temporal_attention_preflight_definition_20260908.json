@@ -1,0 +1,121 @@
+{
+  "architectures": [
+    "instant",
+    "uniform",
+    "age",
+    "content"
+  ],
+  "backend_selection": "Exactly sixteen results including failures. A backend qualifies only if all eight of its architecture/width cases pass. Minimize the sum of within-case median block times; CPU wins an exact tie. Query timings are reported but do not change this fixed selector. No retries or tolerance revisions under this protocol.",
+  "backends": [
+    "cpu",
+    "mps"
+  ],
+  "causal_delta_absolute_tolerance": 2e-05,
+  "completed_prerequisite_summaries": [
+    "results/boundary_stochastic_boost_screen_20260908/summary.json",
+    "results/boundary_proper_score_screen_20260908/summary.json",
+    "results/boundary_broad_accuracy_screen_20260908/summary.json"
+  ],
+  "config": {
+    "epochs": 6,
+    "gradient_norm_limit": 5.0,
+    "heads": 4,
+    "history_observations": 128,
+    "learning_rate": 0.0003,
+    "optimization_seconds": 512,
+    "seed": 20260908,
+    "weight_decay": 0.01,
+    "width": 64
+  },
+  "cross_backend_gradient_absolute_tolerance": 0.0001,
+  "cross_backend_gradient_relative_l2_tolerance": 0.005,
+  "cross_backend_probability_absolute_tolerance": 2e-05,
+  "current_stochastic_boost_scores_opened": false,
+  "deterministic_algorithms": true,
+  "dimension_scope": "Upper bounds including the asset indicator. Original active-column removal can reduce actual dimensions.",
+  "dimensions": [
+    221,
+    400
+  ],
+  "dtype": "float32",
+  "fresh_confirmation_content_opened": false,
+  "full_size_backend_cases_run": 0,
+  "gaps": {
+    "all_streams": [
+      0,
+      20
+    ],
+    "stream_0": [
+      231,
+      242
+    ],
+    "stream_4": [
+      401,
+      418
+    ]
+  },
+  "implementation_status": "implemented_orchestration_only_no_full_size_learner_preflight",
+  "input_hashes": {
+    "docs/research/boundary_temporal_attention_definition_20260908.json": "c63d2e5b6dbf82a3a63be81ac7d3d395fc96d1492eb83da6a05845cce5ef6a1a",
+    "docs/research/boundary_temporal_attention_implementation_evidence_20260908.json": "49decb3b0ab5a1afdcd0cfbb8812fb6912d57491b3a9f2b220579a7082e129c5",
+    "scripts/benchmark_boundary_temporal_attention.py": "b8565b99e2f252f3291174bcdc32aafbbbdaed2c0dfe66adb03c7d9c161f6c09",
+    "scripts/freeze_boundary_temporal_attention_preflight.py": "6b959f7dfdd12bf980273fb225c48ee952389b638622ef562c14daed14e085be",
+    "src/lob_forge/boundary_temporal_attention.py": "9ab902609e369c0693374b4d986be56f2b8695df0d3039bd1330910050e5ea40",
+    "tests/test_boundary_temporal_attention.py": "e0bf53d37b6b4018a203ad9525dafd8385578dfb58fd6bfa03463cca3da5bad3"
+  },
+  "limits": {
+    "block_seconds": 60,
+    "memory_sample_seconds": 0.25,
+    "rss_plus_driver_bytes": 12884901888,
+    "worker_rss_bytes": 10737418240,
+    "worker_seconds": 900
+  },
+  "market_model_fits": 0,
+  "missing_input_stress_value": 1e+25,
+  "mps_fallback_enabled": false,
+  "new_block_seconds": 512,
+  "orchestration_smoke_check": {
+    "initial_manual_assertion_failure": "A float32 reduction of valid float32 weights differed from 1017 by 0.00012207, just outside a hand-written 1e-7 relative smoke assertion. Using float64 accumulation gave 1017.0000106096268 and 1017.000002682209. No production code or frozen numerical/backend tolerance changed.",
+    "learner_fits": 0,
+    "log": "data/research/boundary_temporal_attention_implementation_20260908/preflight_orchestration_smoke.log",
+    "log_sha256": "140929fb4046cc08766cb50e53c803d759e5387784aca6f43820e58ba1d17b71",
+    "passed": true,
+    "scope": "Completeness, duplicate/nonfinite rejection, failed-case exclusion, no feasible backend, CPU tie preference, synthetic shapes/weights and 7070-query clock/probability sanity."
+  },
+  "prefix_rows": 127,
+  "projection": "6*169*median_block_seconds + 12*median_query_seconds, reported only as an operational extrapolation excluding full-grid allocation, normalization, preparation, paging, checkpointing, assessment and replay.",
+  "purpose": "Prospective exact operational definition for the already registered temporal-attention family; full-size runtime execution remains conditional on completion of the three earlier studies and the fresh-confirmation priority.",
+  "query_positions": "127, 131, ..., 635; 128 stride-four positions across each of eight streams.",
+  "query_probe": {
+    "alternate_chunk_rows": 97,
+    "default_chunk_rows": 512,
+    "extra_gap_milliseconds": 2000,
+    "future_change_start": 777,
+    "future_feature_stress_value": 10000.0,
+    "gap_start": 3700,
+    "rows": 7190,
+    "same_backend_checkpoint_exact": true,
+    "selected_queries": 7070,
+    "unselected_prefix_rows": 120,
+    "zero_correction_exact": true
+  },
+  "registered_at_utc": "2026-09-08T21:08:11.781060+00:00",
+  "required_prerequisite_fit_counts": [
+    24,
+    24,
+    40
+  ],
+  "resource_scope": "Sampled process RSS plus sampled MPS driver bytes can double-count unified allocations and miss instantaneous peaks. Full historical grid allocation, paging and market preparation are absent from this block benchmark.",
+  "synthetic_weights": "Compute N/(6*n_asset_class) once across the complete synthetic supervised block and freeze them for all updates; these are synthetic counts, not market four-day frequencies. No per-update rebalancing.",
+  "timed_blocks": 8,
+  "timed_full_query_repetitions": 3,
+  "timing_probe": "Continue the independently warmed model and its optimizer through eight timed updates. Time three complete 7070-query posterior evaluations at the fixed checked weights. Synchronize MPS before/after timing; do not fit a market model.",
+  "torch_threads": 2,
+  "training_shape": [
+    8,
+    639,
+    "D"
+  ],
+  "warmup_probe": "Start with the registered zero correction and complete three nonzero optimizer updates independently on each backend. CPU post-warmup parameters are then copied exactly for a separate fixed-weight probability and gradient arithmetic comparison. Report independent-training forecast agreement separately.",
+  "warmup_updates": 3
+}
