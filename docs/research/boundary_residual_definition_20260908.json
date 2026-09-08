@@ -1,0 +1,158 @@
+{
+  "assessment_decisions": 14140,
+  "base": "Fixed 50/50 natural-probability blend of the past_context_hgb and past_context_neural from the frozen native-depth screen. Both train only on May 27-30 and select on May 31. Exact parent checkpoint prediction parity is mandatory. Every June 1 training/validation base forecast is from this earlier model.",
+  "controls": "Include all thirty-six predictors from the completed native-depth screen with exact saved-row and posterior parity. Compare residual depth to residual top-one at matched delay/loss/depth and to the unchanged source-union residual. No extra assessment-stage blend or hyperparameter grid.",
+  "date": "2023-06-01",
+  "evidence_status": "development_only_on_exposed_date",
+  "features": "Five fixed representations from the native-depth experiment: the 399-column source union and its top-one/top-25 additions at 100ms/500ms. Add the frozen base negative/neutral and positive/neutral log odds plus asset ID. Training-only .001/.999 clipping applies to observed fields and log odds.",
+  "hypothesis": "Learn a conditional recent correction to a historical probability forecast. A fixed natural-probability blend can dilute new information, while a model trained only on one morning must relearn the entire relationship. Residual logit boosting starts from the frozen past-context HGB/MLP blend and learns only the new conditional correction.",
+  "mathematics": "For class/asset-balanced cross entropy the initial raw margin is log(p_base)-log(pi_morning), where pi_morning is the true training asset class frequency. Recover natural probabilities by multiplying the learned q by pi_morning and normalizing. For natural cross entropy with equal asset weight, use log(p_base) and no prior multiplication. A zero correction therefore preserves the natural parent. The zero-round prediction returns the exact parent probability bytes because XGBoost iteration_range=(0,0) means the full model, not zero trees.",
+  "model_fits": 20,
+  "model_fits_started": false,
+  "models": {
+    "combined_d2_balanced": {
+      "class_balanced": true,
+      "max_depth": 2,
+      "representation": "combined"
+    },
+    "combined_d2_natural": {
+      "class_balanced": false,
+      "max_depth": 2,
+      "representation": "combined"
+    },
+    "combined_d4_balanced": {
+      "class_balanced": true,
+      "max_depth": 4,
+      "representation": "combined"
+    },
+    "combined_d4_natural": {
+      "class_balanced": false,
+      "max_depth": 4,
+      "representation": "combined"
+    },
+    "top1_100_d2_balanced": {
+      "class_balanced": true,
+      "max_depth": 2,
+      "representation": "top1_100"
+    },
+    "top1_100_d2_natural": {
+      "class_balanced": false,
+      "max_depth": 2,
+      "representation": "top1_100"
+    },
+    "top1_100_d4_balanced": {
+      "class_balanced": true,
+      "max_depth": 4,
+      "representation": "top1_100"
+    },
+    "top1_100_d4_natural": {
+      "class_balanced": false,
+      "max_depth": 4,
+      "representation": "top1_100"
+    },
+    "top1_500_d2_balanced": {
+      "class_balanced": true,
+      "max_depth": 2,
+      "representation": "top1_500"
+    },
+    "top1_500_d2_natural": {
+      "class_balanced": false,
+      "max_depth": 2,
+      "representation": "top1_500"
+    },
+    "top1_500_d4_balanced": {
+      "class_balanced": true,
+      "max_depth": 4,
+      "representation": "top1_500"
+    },
+    "top1_500_d4_natural": {
+      "class_balanced": false,
+      "max_depth": 4,
+      "representation": "top1_500"
+    },
+    "top25_100_d2_balanced": {
+      "class_balanced": true,
+      "max_depth": 2,
+      "representation": "top25_100"
+    },
+    "top25_100_d2_natural": {
+      "class_balanced": false,
+      "max_depth": 2,
+      "representation": "top25_100"
+    },
+    "top25_100_d4_balanced": {
+      "class_balanced": true,
+      "max_depth": 4,
+      "representation": "top25_100"
+    },
+    "top25_100_d4_natural": {
+      "class_balanced": false,
+      "max_depth": 4,
+      "representation": "top25_100"
+    },
+    "top25_500_d2_balanced": {
+      "class_balanced": true,
+      "max_depth": 2,
+      "representation": "top25_500"
+    },
+    "top25_500_d2_natural": {
+      "class_balanced": false,
+      "max_depth": 2,
+      "representation": "top25_500"
+    },
+    "top25_500_d4_balanced": {
+      "class_balanced": true,
+      "max_depth": 4,
+      "representation": "top25_500"
+    },
+    "top25_500_d4_natural": {
+      "class_balanced": false,
+      "max_depth": 4,
+      "representation": "top25_500"
+    }
+  },
+  "parameters": {
+    "checkpoint_rounds": [
+      0,
+      16,
+      64,
+      128,
+      256
+    ],
+    "colsample_bytree": 1,
+    "gamma": 0,
+    "l1": 0,
+    "l2": 10,
+    "learning_rate": 0.025,
+    "max_bin": 256,
+    "max_depth": [
+      2,
+      4
+    ],
+    "min_child_weight": 30,
+    "rounds": 256,
+    "seed": 20260907,
+    "subsample": 1,
+    "threads": 2
+  },
+  "parent_depth_scores_inspected": false,
+  "partitions": "Identical June 1 full-morning training, actual release purges, morning validation and unchanged 7070 noon observations per asset as the native-depth screen. Morning fit/selection/checkpoint plus cached base inference must fit inside 290 seconds. No assessment labels enter fitting, preprocessing or checkpoint selection.",
+  "policies": [
+    "morning_full",
+    "forecast_3600"
+  ],
+  "post_fit_panels": 224,
+  "primary_source": "https://xgboost.readthedocs.io/en/release_2.1.0/prediction.html",
+  "promotion": "Exposed-date development only. No substantial gain is confirmed without a separately registered fresh-date confirmation.",
+  "registered_at_utc": "2026-09-08T01:42:53.629860+00:00",
+  "selection": "Train exactly one fixed 256-round path per configuration. Choose among 0,16,64,128,256 using mean asset balanced accuracy with the shared purged morning prior; tie break on natural log loss, then fewer rounds. Zero correction is an explicit candidate. Assessment scores are revealed only after all twenty paths and selected predictions are frozen.",
+  "source_hashes": {
+    "docs/research/boundary_tardis_model_definition_20260908.json": "c3957d0ccc65ce9d2035a6dfd1143027f56e1c61c314f1757320178c70bc6e60",
+    "docs/research/boundary_tardis_screen_20260908.json": "e91f5335055bb61d0148745e4e17c115b022d825ffafbd3a7f4646aa5ced7076",
+    "src/lob_forge/boundary_residual_boost.py": "40548f396527d115f9e3e44983709e7d32e09de01835468fcfded18c93ff5199",
+    "tests/test_boundary_residual_boost.py": "45d31db99b220141a51acee0649dcef350bc8771b3ca3d38ccb062ce0cf16585"
+  },
+  "source_scope": "XGBoost documents base_margin for continuing from another model and iteration_range for staged predictions. The installed 2.1.3 signature and native runtime were checked directly. This mechanism supplies no empirical forecast gain by itself.",
+  "validation": "Four mathematical/runtime test cases cover weighted logit rebasing, both natural and balanced calibration at a correct base, exact zero-correction identity, native save/reload, learning new missing information, and validation rejection of a harmful correction. Full suite and immutable input hashes are required before the first fit.",
+  "validation_checkpoint_evaluations": 100
+}
