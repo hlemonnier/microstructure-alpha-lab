@@ -1,0 +1,374 @@
+{
+  "basis_run": "results/boundary_basis_screen_20260907",
+  "blends": {
+    "combined_aux0_deep500_hgb": [
+      "combined_aux0",
+      "deep500_hgb"
+    ],
+    "combined_aux0_matched_hgb": [
+      "combined_aux0",
+      "combined_hgb"
+    ],
+    "combined_aux25_deep500_hgb": [
+      "combined_aux25",
+      "deep500_hgb"
+    ],
+    "combined_aux25_matched_hgb": [
+      "combined_aux25",
+      "combined_hgb"
+    ],
+    "combined_aux50_deep500_hgb": [
+      "combined_aux50",
+      "deep500_hgb"
+    ],
+    "combined_aux50_matched_hgb": [
+      "combined_aux50",
+      "combined_hgb"
+    ],
+    "observations_aux0_deep500_hgb": [
+      "observations_aux0",
+      "deep500_hgb"
+    ],
+    "observations_aux0_matched_hgb": [
+      "observations_aux0",
+      "observations_tree"
+    ],
+    "observations_aux25_deep500_hgb": [
+      "observations_aux25",
+      "deep500_hgb"
+    ],
+    "observations_aux25_matched_hgb": [
+      "observations_aux25",
+      "observations_tree"
+    ],
+    "observations_aux50_deep500_hgb": [
+      "observations_aux50",
+      "deep500_hgb"
+    ],
+    "observations_aux50_matched_hgb": [
+      "observations_aux50",
+      "observations_tree"
+    ]
+  },
+  "checks": {
+    "direct_cases_passed": 611,
+    "minimal_direct_cases_passed": 488,
+    "minimal_optional_module_skips": 46,
+    "minimal_optional_test_skips": 6,
+    "ruff_passed": true,
+    "target_and_model_cases_passed": 8
+  },
+  "context_run": "results/boundary_context_screen_20260907",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "definition": "docs/research/boundary_multihorizon_definition_20260908.json",
+  "definition_sha256": "1e3f9c6a069f275907fff718dc1fb33b5942be4d2e7ea16eafd9d8f7e46c2eec",
+  "depth_manifest": "data/research/boundary_bybit_depth_20260907/depth_manifest.json",
+  "distinct_assessment_decisions": 42420,
+  "embedding_assessment_scores_inspected": false,
+  "embedding_run": "results/boundary_embedding_screen_20260908",
+  "evidence_status": "development_only_on_exposed_dates",
+  "exact_zero_reproduction_fits": 6,
+  "finalization": "No model, target, loss, partition or selection change from the prospective definition. Target preparation is complete. An additional rejection of uint64 quote clocks beyond int64 does not change any recorded 2023 target; original preparation and source commit remain preserved. All embedding parent dates completed before this protocol was finalized, and their assessment scores have not yet been inspected.",
+  "fixed_design": {
+    "auxiliary_target_dates": [
+      "2023-05-29",
+      "2023-05-30",
+      "2023-05-31",
+      "2023-06-01",
+      "2023-06-02",
+      "2023-06-03",
+      "2023-06-04",
+      "2023-06-05",
+      "2023-06-06",
+      "2023-06-07",
+      "2023-06-08",
+      "2023-06-09"
+    ],
+    "auxiliary_weights": [
+      0,
+      0.25,
+      0.5
+    ],
+    "blends": "For each of six fitted outputs retain standalone probabilities, a fixed 50/50 matched-representation HGB blend and a fixed 50/50 deep500_hgb blend. Preserve all 35 registered embedding-study sources as unchanged controls. Total 53 sources x 3 dates x 2 assets x 2 policies = 636 panels.",
+    "controls": "Lambda zero bypasses auxiliary loss computation and must exactly reproduce original training history, selected weights and predictions. No fitting row or preprocessing change is permitted. This zero control is retrained for both representations on every date.",
+    "data_boundary": "Prepare auxiliary targets only for the twelve registered historical training days, never current assessment or validation targets beyond the existing primary labels. A date used for training may have been an earlier development assessment. Keep target-only artifacts separate from observation matrices. Verify original five-second labels and entry/future timestamp/midpoint identity against the unchanged features.",
+    "dates": [
+      "2023-06-03",
+      "2023-06-07",
+      "2023-06-11"
+    ],
+    "decision_policies": [
+      "registered",
+      "forecast_3600"
+    ],
+    "embedding_assessment_scores_inspected": false,
+    "evidence_status": "development_only_on_exposed_dates",
+    "exact_zero_reproduction_fits": 6,
+    "hypothesis": "Shared supervised prediction at one, two, five, ten and thirty seconds may teach persistent versus reverting price-discovery dynamics that a single thresholded endpoint target does not sufficiently supervise. Unlike the earlier nine-bin experiment, the extra targets describe different future times, not only finer bins at the same endpoint.",
+    "implementation_status": "prospective_definition_before_implementation",
+    "loss": "(1-lambda)*L_5 + lambda/4*(L_1+L_2+L_10+L_30), lambda fixed at 0, .25 or .5. Each L_h independently equalizes valid training asset/class mass using that head frequencies. Missing-target weights are zero and normalization retains equal total expected head loss. Every head must contain all three classes for both assets among valid rows; otherwise fail closed. Only the five-second head supplies inference and uses its original training class prior for natural posterior recovery.",
+    "min_tick": {
+      "BTCUSDT": 0.1,
+      "ETHUSDT": 0.01
+    },
+    "model_fits": 18,
+    "model_fits_started": false,
+    "network": "Construct the original one-member network first, preserving its initial weights and main head. Add four three-class linear heads after that construction, sharing only the original final hidden representation. The main forecast needs only the original network path. No realized future head enters another head or the forecast input.",
+    "new_auxiliary_fits": 12,
+    "post_fit_panels": 636,
+    "primary_sources": [
+      {
+        "scope": "Zhang and Zohren train encoder-decoder models for several event-count horizons on equity order books. Their evidence motivates joint supervision but does not establish improvement for our fixed-second crypto target or simpler shared-head architecture.",
+        "url": "https://arxiv.org/abs/2105.10430"
+      },
+      {
+        "scope": "The authors place PPO/GRPO/GSPO policies after a frozen supervised multi-horizon forecaster; their RL results concern downstream spread-scaled trading rewards, not improved predictive classification. This supports testing forecast representation directly under the user accuracy-first objective.",
+        "url": "https://arxiv.org/abs/2605.25527"
+      }
+    ],
+    "primary_target": "The existing exact three-class five-second target, same current assessment observations and decision policies. No easier or longer-horizon score substitutes for it.",
+    "promotion": "Exposed-date development only. No substantial discovery claim before separately frozen new-date confirmation and the continuing research error budget.",
+    "raw_resolution": "Common entry is the first raw quote at or after decision+100ms. For horizon h, future is the first quote at or after decision+100ms+h. Use exact_label_array with the existing half-spread/minimum-tick threshold computed at entry. Preserve first-in-source resolution at tied event timestamps. Future quote availability and actual release timestamp are retained separately for each head. Missing targets are masked; they never remove original feature/primary-target rows.",
+    "registered_at_utc": "2026-09-08T02:21:21.077491+00:00",
+    "representations": {
+      "combined": 399,
+      "observations": 220
+    },
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ],
+    "target_horizons_ms": [
+      5000,
+      1000,
+      2000,
+      10000,
+      30000
+    ],
+    "training": "Same recent4_stride4 training rows, previous-noon validation, twelve epochs, 64-by-64 scalar-input backbone, train-only original quantile-normal preprocessing, AdamW .001 with weight decay .01, gradient clip5, batch1024, seed20260907, CPU2. Select epoch solely by original five-second preceding-noon balanced accuracy then natural log loss.",
+    "validation": "Before scientific fitting, verify exact ties and timestamp resolution, missing future quotes, raw primary parity, future-label exclusion from inputs, head-wise asset/class weights, zero-loss control parity, finite auxiliary gradients and checkpoint recovery. Freeze final source/input hashes after source preparation. Complete every registered date before inspecting assessment outcomes."
+  },
+  "input_hashes": {
+    ".venv/lib/python3.12/site-packages/sklearn/.dylibs/libomp.dylib": "7fe04d06d824817d39e4c99ec44e837fd6b5f0f75f2cc3e77a384c298f3f1709",
+    "data/research/boundary_bybit_depth_20260907/depth_manifest.json": "e0cef0a7570a6ed73e0dcf17c371d4d879ca5e6f26aae3d9af6768757510f19b",
+    "data/research/boundary_bybit_flow_combined_20260907/flow_manifest.json": "8275e0e01acc88a1e2fd25d4de8f0d4b3a1f4f612c52360c6418e9b135da0c0a",
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "data/research/boundary_multihorizon_targets_20260908/target_manifest.json": "59808e8da81221c7ad3698e47f7ad5619590cfae732b15bc01933ab32698340b",
+    "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+    "data/research/boundary_regime_early_data_20260907/dataset_manifest.json": "251a2968d265da2d7819e417f22edb6bbc6888d483c820cefc6e21f8ff366c00",
+    "data/research/boundary_spot_features_20260907/feature_manifest.json": "0f9c4d60ff1b8942a0f6b4d05ce3a777b65a8f96565a2ab9b4e1da433d192ed6",
+    "docs/research/boundary_basis_definition_20260907.json": "a48120aa4a186d8ca4a87d897a921a6a46a90aa311b2dd6c719e321cf6b7a457",
+    "docs/research/boundary_basis_screen_20260907.json": "690d07386212a4bd3d6d1e8a610321ae540e17b91b17a62bdf18d26c356badfc",
+    "docs/research/boundary_bybit_depth_data_20260907.json": "6643568ab2d86cf5641dc5988cc7671fa95710fc537850707b2eae637ea08547",
+    "docs/research/boundary_bybit_depth_preparation_evidence_20260907.json": "b94278024cc749637bc10d5755bebb8909497734433ce47b7dfbf3f29546bb84",
+    "docs/research/boundary_bybit_feature_definition_20260907.json": "f68b560df164383b6566d6c0a73af9715adcc37e9cfc3abaeedd578d7a491b31",
+    "docs/research/boundary_bybit_flow_definition_20260907.json": "2ac586ea782f81cb05305fe1344964bae73bd490256dc2a31ddf5700e16933c6",
+    "docs/research/boundary_bybit_flow_namespace_revision_20260907.json": "55db30b988364cd7c3a3ddcee8ba3ba7af6d1888529d4069345c876f95f9966c",
+    "docs/research/boundary_bybit_flow_preparation_evidence_20260907.json": "69a8e167f41c1e96953bb2fab1339f21356165e48962845adf42cab9d0a4ec14",
+    "docs/research/boundary_bybit_flow_screen_20260907.json": "dbb330d4ce1d4efd89cdf14d606ffb9116f099bf9b1ad9092b87684d17e4e1c7",
+    "docs/research/boundary_bybit_screen_20260907.json": "de9a08a9fab9e533c467fb6b20f9d8b0fb2fdf38170683b8bd035287842d5f33",
+    "docs/research/boundary_context_screen_20260907.json": "750e452c319e16f98d7230fe0e9930282ff2389107fb1f163d48ca2220586cd7",
+    "docs/research/boundary_embedding_definition_20260908.json": "4a8cddc94fa12a4d05b4044198a949b62a04f476f6f5188e3ae5f24a3933f6a6",
+    "docs/research/boundary_embedding_screen_20260908.json": "601c7582089cc1be01d01099e517f3c80ddca1770f796f25c8fa6d54fca3f064",
+    "docs/research/boundary_embedding_synthetic_20260908.json": "8265711017edaa702d9a1fdfaf203a51196488fc29e79bca9f8a7f7d8940505d",
+    "docs/research/boundary_event_clock_data_20260907.json": "eeb20aa140e1845a0ecceb3ff5a3750ac9eb5e9e147cb00c49eb4c6c0ab499a2",
+    "docs/research/boundary_multihorizon_definition_20260908.json": "1e3f9c6a069f275907fff718dc1fb33b5942be4d2e7ea16eafd9d8f7e46c2eec",
+    "docs/research/boundary_multihorizon_preparation_20260908.json": "f8625f33bf82ac9e984cc6e9af58d1034af26f4a6c22825e9aeedab64bfc4a35",
+    "docs/research/boundary_multihorizon_preparation_evidence_20260908.json": "dbb515cd0a79a1b9f0e9c6f47915a6fe7c1ac22c3494481725926fd7d44a7f8d",
+    "docs/research/boundary_multihorizon_timestamp_guard_20260908.json": "d3b891832880315de80a1c0e514cc15dc5df80485b7a2718c6118937f220ea2e",
+    "docs/research/boundary_newton_definition_20260907.json": "e096aabee8655f3ec67bbc1c517bc27e829efba604743eb2d3f44725cc53b665",
+    "docs/research/boundary_newton_screen_20260907.json": "2aab9665af443943db2548710381900041c72a35471542f7240152d732010cfc",
+    "docs/research/boundary_regime_early_data_20260907_path_revision.json": "62627e534dcd040a0b7e617273b9786cb5ae089d0131e860ee857f1b33d38fab",
+    "docs/research/boundary_regime_screen_20260907.json": "4fae8cde7bdef941c045b027a7118c7c4d2e1d9a931b1dc959f75ebea126e79d",
+    "docs/research/boundary_spot_acquisition_20260907.json": "c446e2dd08a867a42e34a53c29394419a9829590dc4bb2d3159f9620f356d5be",
+    "docs/research/boundary_spot_features_20260907.json": "39bcb7ece5ad268f56f3365b3079a4f0a697692c608b6d21c5fff9d7658f4c4c",
+    "docs/research/boundary_spot_screen_20260907.json": "3447730968fdef9bc435854417f1b3138c6638f81db481b13102c3f435aeaaaa",
+    "results/boundary_basis_screen_20260907/dates/2023-06-03/completed.json": "0d610131065deb9065a607cd29016016a1dfd4ae6facd4f651f0033335138fcd",
+    "results/boundary_basis_screen_20260907/dates/2023-06-07/completed.json": "6ae28c326506ccd23d6d68a332a50514361a92849557ca99081cbd953b24bbf9",
+    "results/boundary_basis_screen_20260907/dates/2023-06-11/completed.json": "d00be23b6773c5c7596c61263060baad54c50ee26ca37943d81468d53388a106",
+    "results/boundary_basis_screen_20260907/frozen_screen.json": "9bcc514ac8b416fad99d4920da3e89bd6cf6d9b679c6aa7b2b1fd0e11a97f693",
+    "results/boundary_bybit_flow_screen_20260907/dates/2023-06-03/completed.json": "a0dfc24dcb262d2d1eef0e3270bc3ec0e0b247819b6247e176ac8c7b7603eae2",
+    "results/boundary_bybit_flow_screen_20260907/dates/2023-06-07/completed.json": "bc4a03fa57161531f2cf0720f67f2a756daa054acb7f7b923cdc98a85f312739",
+    "results/boundary_bybit_flow_screen_20260907/dates/2023-06-11/completed.json": "f8491e46017ae0acba7097f5e01d640e15f544f5c8e7a98db163f851c27965da",
+    "results/boundary_bybit_flow_screen_20260907/frozen_screen.json": "8c04144c5ce43ba90bf06b3f2e1e36ecc446cbfaf52e9864ebfe48490979a80b",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-03/completed.json": "af0aa96b9d991b971fdc1dea0f381f4b9febd7bd37dc32fbb5d1e8c53cc04c9f",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-07/completed.json": "4ad6020636f0bf9c9851705ced0bda2657a792ce323e67e7743be4b45d8e3f48",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-11/completed.json": "3f30b113acc878d286bc26b9e53c91dcdf3446bdf256a014a4bfecbdfdd79efa",
+    "results/boundary_bybit_screen_20260907/frozen_screen.json": "5dab5ddfc604c075d534a1f92ccebc5ce62671bbd0303577f32ec7e0739bfe05",
+    "results/boundary_context_screen_20260907/dates/2023-06-03/completed.json": "2c4ba3316024608045754677b28b290ec8648bca70cd860e3f38b08834586f72",
+    "results/boundary_context_screen_20260907/dates/2023-06-07/completed.json": "7d4c1ab83b30a4ce7eba420d0fe545a069a92c33e628f1af3fa7e5e2cb114811",
+    "results/boundary_context_screen_20260907/dates/2023-06-11/completed.json": "6a575ce54107493e9a3bc716d095f8d642f7501242402cf2e7a598f27a06172f",
+    "results/boundary_context_screen_20260907/frozen_screen.json": "e8c3e7a36ebaa582e597bb12b6a06bc88a438bf404b62083cf6003fd7b31fb64",
+    "results/boundary_embedding_screen_20260908/dates/2023-06-03/completed.json": "56d7c9d31db81786d8f9fbb98bea4dfa617b3deb9fdbb1c37fd693cc696db1e8",
+    "results/boundary_embedding_screen_20260908/dates/2023-06-07/completed.json": "b022c92f1885cfe450cfeb7c096cfcc2cfd66ccd92a7fff4c0ee5e4a7b789f13",
+    "results/boundary_embedding_screen_20260908/dates/2023-06-11/completed.json": "5cb8be469fe099f2696876f0e69c430a2f93e3722aa752e2ecbce8b7b4ec6c38",
+    "results/boundary_embedding_screen_20260908/frozen_screen.json": "a988bf6d3c4de942b4fb9ad64a2fea757c9a7609c8972aa0811892373aa3cdad",
+    "results/boundary_event_clock_screen_20260907/frozen_screen.json": "849473d278ed6c2135cb7fb19072fb61543d424b366244e801fcc889e1ac38e1",
+    "results/boundary_newton_screen_20260907/dates/2023-06-03/completed.json": "716f362fdaa2ea70fef1ec5b0cd9f9cdb7d65e61ca0df16d1097d1a77029f438",
+    "results/boundary_newton_screen_20260907/dates/2023-06-07/completed.json": "e3f5dde62d8e8bd626e1b747c4ef71dfce55589cedfc0fc8b08b52ea14fc5ea1",
+    "results/boundary_newton_screen_20260907/dates/2023-06-11/completed.json": "10f4e670581516704651a450b617289fba4dfa98922a918f9efaf24d56c449dc",
+    "results/boundary_newton_screen_20260907/frozen_screen.json": "74b57c6a106e03562facbfe287a34544ed5288db3b2f72b254e8528c0664a5eb",
+    "results/boundary_regime_screen_20260907/dates/2023-06-03/completed.json": "37e862cba17fab47af6eeb40774ec75da77730bf2fd54714a61a82218798f034",
+    "results/boundary_regime_screen_20260907/dates/2023-06-07/completed.json": "1a43aeebcda97b0af0a67a8428f5890f98c47c2a48a71621c1a7dcb6dc772c9e",
+    "results/boundary_regime_screen_20260907/dates/2023-06-11/completed.json": "b38f60f0ec879929790d4a00af47588c2e480b3a7cfe7fc030c2e8a45bc28cd9",
+    "results/boundary_regime_screen_20260907/frozen_screen.json": "0ed6b61c64414bf94a271aa1c2bbfa3dd726750cf618ebaccf9c55ca6bcfee40",
+    "results/boundary_same_day_priors_20260907/frozen_development.json": "f424b5367263eb79b4dc8c7710dfaca892c79d25b82a980fb0ffc82b4cd3887c",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/BTCUSDT_original_reference.npz": "188f73b12156197bd0f5830cc997d785dbcf8ab3c92ef97041c3a5b4e193883b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/ETHUSDT_original_reference.npz": "eef72f8c82c5dff40f216933d3d46305ff5718386682c2fc7363c52cca648117",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/BTCUSDT_original_reference.npz": "4f933993c79d03577087d3444f4d069c19e122c7900eb6abaa72af3f4996c74f",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/ETHUSDT_original_reference.npz": "ee38dacedb2daa2a7208b5aced550b3fd784877065168e0672d78141037eb82b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/BTCUSDT_original_reference.npz": "3d0379f61d60ddfee343f613bff27f8d3a4d54d7ffc29e3e84c03bf42c7a35b8",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/ETHUSDT_original_reference.npz": "9e1c4fda1b8826b582332acf29cbea9bbc1e8ca94e86cc38a9fb7b511b6cbf83",
+    "results/boundary_spot_screen_20260907/dates/2023-06-03/completed.json": "c6ea938e761f97d8488617c968ce390b2399c3b7b75c4974e8b57e3c5c5c7e0d",
+    "results/boundary_spot_screen_20260907/dates/2023-06-07/completed.json": "ab7f23a5169d99d38e539380e27bba62b08c38b661af00de76d2239a72411e31",
+    "results/boundary_spot_screen_20260907/dates/2023-06-11/completed.json": "86a93bbf5ab4c0509587cfc8dc00c339f73ba8148f24e1ca80cb8c46217efe78",
+    "results/boundary_spot_screen_20260907/frozen_screen.json": "ba3dee0757ff210690e2f55b5453ac1d85ffd71e9189f817afaf63a5e7acd49d",
+    "scripts/benchmark_boundary_embedding.py": "a653f5736fe977fee3e77738e9b40375e35f926b0fd278a9d66073085de309de",
+    "scripts/prepare_boundary_bybit_depth.py": "2bae13b857df2934d00d1b27785c37d976ce948d61b0a7a9664eed86b00b3871",
+    "scripts/prepare_boundary_bybit_flow.py": "985cf58a31e0a28508a7a0ae1d995b31bea549c8a53d12b4c0fac0018d0676a7",
+    "scripts/prepare_boundary_multihorizon_targets.py": "14a01ef90243c3ee727b18258799141d2354df623822dc9bb5cd80b6b1b12879",
+    "scripts/run_boundary_basis_screen.py": "a0d39e30aad0c3bb436fdc87fdf0bf09bdde34f30a1cdc4f01dab0b009d91d89",
+    "scripts/run_boundary_bybit_flow_screen.py": "1fa915149c880561261df62d267a2f123373fa4ab104709c93680afe3092fdd1",
+    "scripts/run_boundary_bybit_screen.py": "2028d56cf181af3a92592878357bf1adf8f0ae91f3423c1b37092967baf71ea6",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "scripts/run_boundary_context_screen.py": "84a3f1b5771ca70344f0bdefbe89a7f8169549ffa9a3102f35ac7f6594079a57",
+    "scripts/run_boundary_embedding_screen.py": "539466c8d38efc6fac72a3049ddb8bbb2dbc7540fbd7ca484e907653ee06b6c5",
+    "scripts/run_boundary_event_clock_screen.py": "929ff7adac3dd5d31655b521b85b8db01d15c9a4566317c10620fe7fc08f233d",
+    "scripts/run_boundary_multihorizon_screen.py": "8717f3324350ae89e24768f6d26625c86e6df698d140230c45b1fbe68edff795",
+    "scripts/run_boundary_newton_screen.py": "532e09aba31255ad48e2bc434ecd317a9d6a658a40e8260ef25b4d564946db38",
+    "scripts/run_boundary_regime_screen.py": "ce6249273bf524506442f904c57c450a04f509b3a9937620644a74872a1552e6",
+    "scripts/run_boundary_spot_screen.py": "9d12d9b57875bea3f1751d1b8e7afbeea484b3d372915249731603c6525f35c0",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_basis_inputs.py": "2bc9101a72d37986bb2217fe17b86cae3dad66d019c3ec766dac58b1f834459e",
+    "src/lob_forge/boundary_basis_state.py": "27f441b6e787909c724243ee061581b65ca67cfd2063dcfd7e49500e83af23e3",
+    "src/lob_forge/boundary_bybit_depth.py": "89b09ee4d7a721146f39d56bff02de04969ff1e675c1423fd060208637c09a67",
+    "src/lob_forge/boundary_bybit_features.py": "f18d01c4e71faa149799781faacfb22d941a73f5d10a9342d4b63f62773ef722",
+    "src/lob_forge/boundary_bybit_flow.py": "658620360350aaa52fb4dd298801826200f275e74a9b6b871fcf901237a89c65",
+    "src/lob_forge/boundary_bybit_flow_features.py": "48c54e2dfbb960fb81dd8e781df1581972565101d33cb7264637658f58f61b5d",
+    "src/lob_forge/boundary_bybit_flow_inputs.py": "6043898325dc6f369bfd849dd1c4d87bb0c36d0cdfc405a1483e5c9fa5e2f4c3",
+    "src/lob_forge/boundary_bybit_inputs.py": "09e3d7762528ba7cdf40d0d02eb3cb566f5d93e923a95142a10fa0f7ae24e38e",
+    "src/lob_forge/boundary_combined_inputs.py": "c304fe5028d4a6f63304ac9ca219d875900873f36c8188da8d9d535808af6e94",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_embedding.py": "77af034550c370e63205bd7a7cd64fa293638e54830649297bc54ce824e92e77",
+    "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+    "src/lob_forge/boundary_event_clock_inputs.py": "87f3c07457c3974f4c56e28b5c4dd302bf26cd5db09359258c6fa4425df373fe",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_long_context.py": "4b38c201d00819d3323171323fea130f9466d6afb04def9c4e2899472978bb16",
+    "src/lob_forge/boundary_long_context_inputs.py": "6c75af1304ac2795e40a078b2f1b7a60729ac634221d36672c51ecc15ae16240",
+    "src/lob_forge/boundary_multihorizon_model.py": "355f5d9865335195a8e5fd4108bfb0d0f75c58665f905e54cacfaf9780487489",
+    "src/lob_forge/boundary_multihorizon_targets.py": "e2d10a41313a5f3e906a5d450c97c2faf60ea2bacae21fcc6820c4c760f18d86",
+    "src/lob_forge/boundary_newton_boost.py": "b5ab01a91b47614b7b6995dabda1fa6e2de7bdc2388887e9299ae8076e62cc1e",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_regime_coverage.py": "d83f5088923d09ccd75a0e324e74fcd9d674ad57999452fab9115cd7284fbd50",
+    "src/lob_forge/boundary_spot_data.py": "677ecdba899cde8a2aef86514f0beb4e1802b283427aee7aa9efc6bdf6840562",
+    "src/lob_forge/boundary_spot_features.py": "22af9d596962de35e46a18ff44ff3c36b07b5ad8b878dc98cff1544153fb75bd",
+    "src/lob_forge/boundary_spot_inputs.py": "cda1f7c6bc296c70885703521ffcba93bbd94af71e338008f84d1404545bcc46",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "tests/test_boundary_basis_inputs.py": "19cc6f570a8471e1a546a5f403b0549e8ec74643847f189748af3658873a5027",
+    "tests/test_boundary_basis_state.py": "473c2b53852baf213fb932e81561c50ae7f3c201b6e19a35ea91b694a4ecb6e3",
+    "tests/test_boundary_bybit_depth.py": "8e09fdcc689d43a9f935c421222c5f838a2661bec32b0d00f01320a11bf4ad1d",
+    "tests/test_boundary_bybit_features.py": "7b45d2c6f431854a62690985fbe72e2afe838402d5bbd470151d299a6cd466ed",
+    "tests/test_boundary_bybit_flow.py": "f209d3bf639b7fa74f80b0e58141c63f6755b279c4908f920ab67e97e28345dd",
+    "tests/test_boundary_bybit_flow_features.py": "2e7a2a8f421a0bad8f1105434628fea957245867895c87d2b6de0a831177779b",
+    "tests/test_boundary_bybit_flow_inputs.py": "fb7293bf74f025ed5dc7dc4b717423991cb8c75b668d9862259f2a880a2a79c2",
+    "tests/test_boundary_bybit_inputs.py": "1e2ac5207042ed73570f33807b90d4753fd7d130a01f57dcd52b874aff867b16",
+    "tests/test_boundary_combined_inputs.py": "2c61e020bf654788487962ae706900f4f826daf6109a5d0e574ab9b80e0e1465",
+    "tests/test_boundary_embedding.py": "f1338ae7f665f6380b474ac6e1b8b7d7af682d412f21879b9dbc5bab5094cf5d",
+    "tests/test_boundary_event_clock.py": "bf2a7ac98f77b4f20101d1a770aa28bff8fb06a6f6f087b99e887fafa615cf56",
+    "tests/test_boundary_event_clock_inputs.py": "6b41cef94f3bd9587a0491fdb9aec588a6c1af557128c001264cf5220a7439b4",
+    "tests/test_boundary_long_context.py": "22e3c5992decaa4f0b4b2cfa21a2fcefd13af8df9632430067022098def2e233",
+    "tests/test_boundary_multihorizon_model.py": "a2f04d29a7b1bb6700fcd1f0f91cabc17b1389ac18f5a895fb5a51610272ac79",
+    "tests/test_boundary_multihorizon_targets.py": "d7590ad1f71f16c55486ac61d654db83b42c439720bde39a32e3a6f668c13eb6",
+    "tests/test_boundary_newton_boost.py": "6a75ae5c7794785d418e5ce9e87f8c9492bd0a4c8b7eff187e1ac4ef36f5cff9",
+    "tests/test_boundary_regime_coverage.py": "d56ca88ff3a27ae84289aa92c698bd9febf8ce1aad5521d5b4671dcf5a8b22d1",
+    "tests/test_boundary_spot_data.py": "1d310bafcff86e0ced23d9f4ae68eab6ec36983cf6ef4a59cda2133d18e72f35",
+    "tests/test_boundary_spot_features.py": "a03d49dbfda8553cfed389a5438b191e7123f2836bf61acd99f11d9a281903cf",
+    "tests/test_boundary_spot_inputs.py": "77ce5683593a0ef5d04ec1f18f9bc04bf638e853adbb5968d7e3949bf8e8a77d"
+  },
+  "manifest": "data/research/boundary_regime_data_20260907/dataset_manifest.json",
+  "model_fits": 18,
+  "model_fits_started": false,
+  "models": {
+    "combined_aux0": [
+      "combined",
+      0
+    ],
+    "combined_aux25": [
+      "combined",
+      0.25
+    ],
+    "combined_aux50": [
+      "combined",
+      0.5
+    ],
+    "observations_aux0": [
+      "observations",
+      0
+    ],
+    "observations_aux25": [
+      "observations",
+      0.25
+    ],
+    "observations_aux50": [
+      "observations",
+      0.5
+    ]
+  },
+  "new_auxiliary_fits": 12,
+  "post_fit_panels": 636,
+  "prior_run": "results/boundary_same_day_priors_20260907",
+  "registered_at_utc": "2026-09-08T02:38:10.756103+00:00",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "saved_baselines": [
+    "original_reference",
+    "observations_tree",
+    "observations_neural",
+    "observations_blend",
+    "combined_hgb",
+    "combined_neural",
+    "combined_blend",
+    "spot100_tree",
+    "top1_100_tree_old_neural",
+    "deep500_hgb",
+    "deep500_hgb_old_neural",
+    "observations_scalar1",
+    "observations_scalar8",
+    "observations_piecewise1",
+    "observations_piecewise8",
+    "combined_scalar1",
+    "combined_scalar8",
+    "combined_piecewise1",
+    "combined_piecewise8",
+    "observations_scalar1_matched_hgb",
+    "observations_scalar1_deep500_hgb",
+    "observations_scalar8_matched_hgb",
+    "observations_scalar8_deep500_hgb",
+    "observations_piecewise1_matched_hgb",
+    "observations_piecewise1_deep500_hgb",
+    "observations_piecewise8_matched_hgb",
+    "observations_piecewise8_deep500_hgb",
+    "combined_scalar1_matched_hgb",
+    "combined_scalar1_deep500_hgb",
+    "combined_scalar8_matched_hgb",
+    "combined_scalar8_deep500_hgb",
+    "combined_piecewise1_matched_hgb",
+    "combined_piecewise1_deep500_hgb",
+    "combined_piecewise8_matched_hgb",
+    "combined_piecewise8_deep500_hgb"
+  ],
+  "spot_manifest": "data/research/boundary_spot_features_20260907/feature_manifest.json",
+  "target_manifest": "data/research/boundary_multihorizon_targets_20260908/target_manifest.json"
+}
