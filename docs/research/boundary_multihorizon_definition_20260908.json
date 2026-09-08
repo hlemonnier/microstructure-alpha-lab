@@ -1,0 +1,79 @@
+{
+  "auxiliary_target_dates": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09"
+  ],
+  "auxiliary_weights": [
+    0,
+    0.25,
+    0.5
+  ],
+  "blends": "For each of six fitted outputs retain standalone probabilities, a fixed 50/50 matched-representation HGB blend and a fixed 50/50 deep500_hgb blend. Preserve all 35 registered embedding-study sources as unchanged controls. Total 53 sources x 3 dates x 2 assets x 2 policies = 636 panels.",
+  "controls": "Lambda zero bypasses auxiliary loss computation and must exactly reproduce original training history, selected weights and predictions. No fitting row or preprocessing change is permitted. This zero control is retrained for both representations on every date.",
+  "data_boundary": "Prepare auxiliary targets only for the twelve registered historical training days, never current assessment or validation targets beyond the existing primary labels. A date used for training may have been an earlier development assessment. Keep target-only artifacts separate from observation matrices. Verify original five-second labels and entry/future timestamp/midpoint identity against the unchanged features.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "embedding_assessment_scores_inspected": false,
+  "evidence_status": "development_only_on_exposed_dates",
+  "exact_zero_reproduction_fits": 6,
+  "hypothesis": "Shared supervised prediction at one, two, five, ten and thirty seconds may teach persistent versus reverting price-discovery dynamics that a single thresholded endpoint target does not sufficiently supervise. Unlike the earlier nine-bin experiment, the extra targets describe different future times, not only finer bins at the same endpoint.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "loss": "(1-lambda)*L_5 + lambda/4*(L_1+L_2+L_10+L_30), lambda fixed at 0, .25 or .5. Each L_h independently equalizes valid training asset/class mass using that head frequencies. Missing-target weights are zero and normalization retains equal total expected head loss. Every head must contain all three classes for both assets among valid rows; otherwise fail closed. Only the five-second head supplies inference and uses its original training class prior for natural posterior recovery.",
+  "min_tick": {
+    "BTCUSDT": 0.1,
+    "ETHUSDT": 0.01
+  },
+  "model_fits": 18,
+  "model_fits_started": false,
+  "network": "Construct the original one-member network first, preserving its initial weights and main head. Add four three-class linear heads after that construction, sharing only the original final hidden representation. The main forecast needs only the original network path. No realized future head enters another head or the forecast input.",
+  "new_auxiliary_fits": 12,
+  "post_fit_panels": 636,
+  "primary_sources": [
+    {
+      "scope": "Zhang and Zohren train encoder-decoder models for several event-count horizons on equity order books. Their evidence motivates joint supervision but does not establish improvement for our fixed-second crypto target or simpler shared-head architecture.",
+      "url": "https://arxiv.org/abs/2105.10430"
+    },
+    {
+      "scope": "The authors place PPO/GRPO/GSPO policies after a frozen supervised multi-horizon forecaster; their RL results concern downstream spread-scaled trading rewards, not improved predictive classification. This supports testing forecast representation directly under the user accuracy-first objective.",
+      "url": "https://arxiv.org/abs/2605.25527"
+    }
+  ],
+  "primary_target": "The existing exact three-class five-second target, same current assessment observations and decision policies. No easier or longer-horizon score substitutes for it.",
+  "promotion": "Exposed-date development only. No substantial discovery claim before separately frozen new-date confirmation and the continuing research error budget.",
+  "raw_resolution": "Common entry is the first raw quote at or after decision+100ms. For horizon h, future is the first quote at or after decision+100ms+h. Use exact_label_array with the existing half-spread/minimum-tick threshold computed at entry. Preserve first-in-source resolution at tied event timestamps. Future quote availability and actual release timestamp are retained separately for each head. Missing targets are masked; they never remove original feature/primary-target rows.",
+  "registered_at_utc": "2026-09-08T02:21:21.077491+00:00",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "target_horizons_ms": [
+    5000,
+    1000,
+    2000,
+    10000,
+    30000
+  ],
+  "training": "Same recent4_stride4 training rows, previous-noon validation, twelve epochs, 64-by-64 scalar-input backbone, train-only original quantile-normal preprocessing, AdamW .001 with weight decay .01, gradient clip5, batch1024, seed20260907, CPU2. Select epoch solely by original five-second preceding-noon balanced accuracy then natural log loss.",
+  "validation": "Before scientific fitting, verify exact ties and timestamp resolution, missing future quotes, raw primary parity, future-label exclusion from inputs, head-wise asset/class weights, zero-loss control parity, finite auxiliary gradients and checkpoint recovery. Freeze final source/input hashes after source preparation. Complete every registered date before inspecting assessment outcomes."
+}

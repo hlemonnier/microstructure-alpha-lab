@@ -1,0 +1,43 @@
+{
+  "auxiliary_targets_never_forecast_inputs": true,
+  "checks": "Three mathematical cases pass: exact decimal boundary identities and first timestamp-tie resolution; existing future releases under raw source truncation; rejection of invalid clocks and crossed prices. Every real session must verify official raw checksum/bytes, primary labels, raw quote resolutions and artifact reload equality.",
+  "dates": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09"
+  ],
+  "definition": "docs/research/boundary_multihorizon_definition_20260908.json",
+  "definition_sha256": "1e3f9c6a069f275907fff718dc1fb33b5942be4d2e7ea16eafd9d8f7e46c2eec",
+  "evidence_status": "development_only_on_exposed_dates",
+  "input_hashes": {
+    "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+    "docs/research/boundary_multihorizon_definition_20260908.json": "1e3f9c6a069f275907fff718dc1fb33b5942be4d2e7ea16eafd9d8f7e46c2eec",
+    "scripts/prepare_boundary_event_clock.py": "8a46c988f47ac8b638a4b4b330c2951d66225a47774bbb9a7330a1cc811bca36",
+    "scripts/prepare_boundary_multihorizon_targets.py": "14a01ef90243c3ee727b18258799141d2354df623822dc9bb5cd80b6b1b12879",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+    "src/lob_forge/boundary_multihorizon_targets.py": "336a68ac637cfe4166196ebfe21ef1d540a81fa90b237b8d7c546b7ff17f5f38",
+    "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0",
+    "tests/test_boundary_multihorizon_targets.py": "82b14b13d7788cc8fa2c67c654b6b3c59e63cf6d993a1820a49399a6e54ef6ee"
+  },
+  "min_tick": {
+    "BTCUSDT": 0.1,
+    "ETHUSDT": 0.01
+  },
+  "model_fits": 0,
+  "registered_at_utc": "2026-09-08T02:24:26.694888+00:00",
+  "source_manifest": "data/research/boundary_regime_data_20260907/dataset_manifest.json",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}
