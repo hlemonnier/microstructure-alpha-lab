@@ -53,3 +53,5 @@ def test_future_target_resolution_rejects_invalid_clocks_and_price_shapes():
         resolve_multihorizon_targets(np.array([100]), [11], [10], np.array([0]), min_tick=.1)
     with pytest.raises(ValueError, match="nonoverflowing"):
         resolve_multihorizon_targets(np.array([100]), [10], [11], np.array([np.iinfo(np.int64).max]), min_tick=.1)
+    with pytest.raises(ValueError, match="nonoverflowing"):
+        resolve_multihorizon_targets(np.array([2**63], dtype=np.uint64), [10], [11], np.array([0]), min_tick=.1)

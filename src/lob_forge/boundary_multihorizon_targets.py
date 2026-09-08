@@ -19,7 +19,7 @@ def resolve_multihorizon_targets(quote_times, bid, ask, decision_times, *, min_t
         raise ValueError("Aligned finite positive uncrossed quotes required")
     if (t < 0).any() or (d < 0).any() or (t[1:] < t[:-1]).any() or (d[1:] <= d[:-1]).any():
         raise ValueError("Chronological quotes and strictly increasing nonnegative decisions required")
-    if not np.isfinite(min_tick) or min_tick <= 0 or (d > np.iinfo(np.int64).max - 100 - max(HORIZONS_MS)).any():
+    if not np.isfinite(min_tick) or min_tick <= 0 or (t > np.iinfo(np.int64).max).any() or (d > np.iinfo(np.int64).max - 100 - max(HORIZONS_MS)).any():
         raise ValueError("Positive minimum tick and nonoverflowing decision timestamps required")
     t, d = t.astype(np.int64), d.astype(np.int64)
     entry = np.searchsorted(t, d + 100, side="left")

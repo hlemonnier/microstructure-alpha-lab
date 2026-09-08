@@ -1,0 +1,21 @@
+{
+  "all_primary_labels_raw_resolutions_and_reload_checks_exact": true,
+  "available_by_horizon": {
+    "1000": 2073424,
+    "10000": 2073208,
+    "2000": 2073400,
+    "30000": 2072728,
+    "5000": 2073328
+  },
+  "evidence_status": "development_only_on_exposed_dates",
+  "historical_training_targets_only": true,
+  "interpretation": "Separate target artifacts retain original rows, exact five-second labels, entry/future timestamps and midpoint values. Extra horizons are historical supervised targets, never observation fields. A longer-horizon unavailable target is masked without changing the original forecast universe.",
+  "manifest": "data/research/boundary_multihorizon_targets_20260908/target_manifest.json",
+  "manifest_sha256": "59808e8da81221c7ad3698e47f7ad5619590cfae732b15bc01933ab32698340b",
+  "model_fits": 0,
+  "preparation_protocol_sha256": "f8625f33bf82ac9e984cc6e9af58d1034af26f4a6c22825e9aeedab64bfc4a35",
+  "recorded_at_utc": "2026-09-08T02:28:13.368306+00:00",
+  "rows": 2073460,
+  "sessions": 24,
+  "target_artifact_bytes": 35095335
+}
