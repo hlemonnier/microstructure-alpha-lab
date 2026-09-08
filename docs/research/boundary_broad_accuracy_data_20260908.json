@@ -1,0 +1,33 @@
+{
+  "dates": [
+    "2023-06-12"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "input_hashes": {
+    "data/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-12.zip": "dfbe2dba90a61f2d6471f6d44eb8a01971efc182c24ac43b5da0ae70d76abc94",
+    "data/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-12.zip": "26de1697a3ff311ccada16631c60de1716709d39189eff35fcd177ff40147300",
+    "data/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-12.zip": "ae648a2c0a2adb5722a832fa2954b28ba3c1e16043ad059b3eb77ca2a5709bf2",
+    "data/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-12.zip": "c8fed7dd25256688e1143b95b62e099bab13e592ab8844fd7617d638f20ede6b",
+    "data/research/boundary_exact_labels_20260907/BTCUSDT/2023-06-12.parquet": "78f6ad22932a78d30f209bff3fa4ba5865e0e8e68105a4e32b6f54507dd0cc25",
+    "data/research/boundary_exact_labels_20260907/ETHUSDT/2023-06-12.parquet": "ed868c26d101ff9899e46c22ed75e1d8683dffb0ad1a4902e164d9ad6dd2e8ca",
+    "data/research/boundary_exact_labels_20260907/dataset_manifest.json": "e0b8c5b5658d98b57558c4974fdc45ab43faf08cf93686913ada8a9a357eedb5",
+    "docs/research/boundary_broad_accuracy_definition_20260908.json": "7d7b3169c504b50ad06e48bf1ba1a0c365050980ef608e145ed15c4af84ff413",
+    "scripts/prepare_boundary_event_clock.py": "8a46c988f47ac8b638a4b4b330c2951d66225a47774bbb9a7330a1cc811bca36",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+    "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+    "src/lob_forge/features.py": "d464532dbdeb9a054a8e138ec51b06ef75b6338f32a16ca69de9936fc8e15c24",
+    "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0",
+    "tests/test_boundary_event_clock.py": "bf2a7ac98f77b4f20101d1a770aa28bff8fb06a6f6f087b99e887fafa615cf56"
+  },
+  "market_model_fits": 0,
+  "original_data_immutable": true,
+  "purpose": "Prepare only the two missing already exposed June 12 event-clock sessions for the fixed-anchor breadth audit.",
+  "raw_download_required": false,
+  "registered_at_utc": "2026-09-08T17:18:24.703696+00:00",
+  "source_manifest": "data/research/boundary_exact_labels_20260907/dataset_manifest.json",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}

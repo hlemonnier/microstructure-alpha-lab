@@ -1,0 +1,73 @@
+{
+  "assessment_rows_per_source": 282800,
+  "candidate_scope": "This definition fits only the two already established observation-context anchors. Any transfer test of a selected boosting or proper-scoring challenger requires a separate prospective selection rule and executable protocol; no candidate is added implicitly.",
+  "data_readiness": "Existing event-clock features cover May 19 through June 11. Prepare June 12 for BTC and ETH using the already acquired official-checksummed raw quotes/trades and exact-label source records. Append the unchanged event-clock features in a new directory; preserve every original exact-label and quote-resolution field. Do not modify existing manifests or datasets.",
+  "dates": [
+    "2023-05-24",
+    "2023-05-25",
+    "2023-05-26",
+    "2023-05-27",
+    "2023-05-28",
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11",
+    "2023-06-12"
+  ],
+  "decision": "Use the broader evidence to choose the next research step. These exposed outcomes do not satisfy the fresh-date discovery gate, regardless of their magnitude.",
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "fixed_blend": "One 50/50 mean of the natural posteriors from observations_tree and observations_neural. No extra mixture or weight search.",
+  "implementation_status": "prospective_definition_before_new_feature_preparation_and_market_fits",
+  "independent_confirmation": false,
+  "model_fits": 40,
+  "models": [
+    "observations_tree",
+    "observations_neural"
+  ],
+  "neural": "Exactly fit_confirm_neural: original 64x64 ReLU MLP, 12 epochs, seed 20260907, AdamW .001/.01, batch 1024, clip 5, previous-noon checkpoint rule, original quantile-normal transform and asset indicator.",
+  "new_forecast_sources": 3,
+  "original_subset_reproduction": "On June 3, 7 and 11 require exact original neural state dictionaries, priors, feature schemas and full forecasts; require the HGB original clipping, priors, schemas and full-forecast parity. No silent weakening after a mismatch.",
+  "partition": "For assessment d use all original eligible rows from d-5 through d-2 at calendar stride four seconds. Previous-day noon selects only the neural epoch. Preserve all 7070 original assessment rows per asset/date. Require actual historical and validation label release clocks before the next partition.",
+  "post_fit_panels": 560,
+  "primary_policy": "forecast_3600",
+  "proper_score_market_fits": 0,
+  "purpose": "Measure whether the existing 220-feature observation-context procedure transfers across all twenty already exposed dates. Repeated three-date architecture tests do not establish broad transfer. This audit is a fixed-anchor diagnostic, not a new independent confirmation or a replacement for the substantial-gain gate.",
+  "registered_at_utc": "2026-09-08T17:18:24.701313+00:00",
+  "reporting": "Report the full twenty-date mean and both assets, every date effect, and the other seventeen dates as a separate descriptive subset. Those seventeen are also already exposed from earlier research and must not be called unseen.",
+  "representation": "Exactly the existing 220 observation-context features returned by context_columns(frame, observations); exclude released-outcome features. Same BTC/ETH peer and event-clock transformations, no Bybit/spot dependency.",
+  "retained_sources": [
+    "original_reference",
+    "matched_data_control",
+    "original_blend",
+    "pooled_balanced_tree_blend"
+  ],
+  "schedule": "The two-session feature preparation and read-only coverage checks may run while boosting fits. Run the forty substantial anchor fits sequentially after the current ordered/Langevin family and proper-scoring preflight/market family finish. No substantive learner concurrency.",
+  "source_preparation_scope": "Fifty feature sessions from May 19 through June 12, inclusive. Prepare only the missing two; reuse hashes for the other 48. No new data purchase or network download is required by the known source inventory.",
+  "stochastic_boost_assessment_scores_inspected": false,
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "three_date_development_subset": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "total_forecast_sources": 7,
+  "tree": "Exactly fit_weighted_boost(leaves=7,class_balanced=True): original 200-iteration HGB configuration, clipping, weights and prior semantics. No retuning or new loss.",
+  "validation": "Pin every source and data hash in a final executable protocol after preparation. Recheck all twenty completed records before opening any score. Preserve original natural probabilities and decision priors for retained controls. Fail on coverage, label, row, clock or frozen-control disagreement."
+}
