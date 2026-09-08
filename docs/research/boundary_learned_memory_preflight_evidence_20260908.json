@@ -1,0 +1,599 @@
+{
+  "all_twelve_cases_passed": true,
+  "assessment_metrics_computed": false,
+  "feasible_backend_summed_median_block_seconds": {
+    "cpu": 0.18899045851139817,
+    "mps": 1.9529983329994138
+  },
+  "interpretation": "CPU wins the prospectively defined sum of six case medians for these fixed small training blocks. Both backends pass. This is a local synthetic throughput comparison, not an accuracy gain or universal CPU/GPU speed claim.",
+  "market_model_fits": 0,
+  "maximum_causality_or_chunking_error": 1.7881393432617188e-07,
+  "maximum_cross_backend_gradient_relative_l2_error": 9.497175627023901e-07,
+  "maximum_cross_backend_probability_absolute_error": 7.898740167489038e-08,
+  "maximum_worker_rss_bytes": 665829376,
+  "mps_to_cpu_summed_median_time_ratio": 10.33384620780539,
+  "protocol": "docs/research/boundary_learned_memory_preflight_20260908.json",
+  "protocol_sha256": "cb57a41da482bfdcb93100fc6b9bda783bbf26b4db64304d5a966238b770ad28",
+  "recorded_at_utc": "2026-09-08T06:00:35.983697+00:00",
+  "records": [
+    {
+      "architecture": "instant_residual",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 0.0,
+        "gradient_max_absolute_error": 0.0,
+        "probability_max_absolute_error": 0.0
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 2.2351741790771484e-08,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 7.450580596923828e-09
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 221,
+      "end_gpu_driver_allocated_bytes": 0,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.1510643921792507
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.011278499994659796,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 344866816,
+      "seconds": 0.9569514580070972,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.010939583997242153,
+        0.010872457991354167,
+        0.012973457982297987,
+        0.01280120899900794,
+        0.011550833005458117,
+        0.011157041997648776,
+        0.011399957991670817,
+        0.010797625000122935
+      ],
+      "trainable_parameters": 39235,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "instant_residual",
+      "assessment_metrics_computed": false,
+      "backend": "mps",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 8.74799900461586e-07,
+        "gradient_max_absolute_error": 2.0489096641540527e-08,
+        "probability_max_absolute_error": 3.005628784746861e-08
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 5.587935447692871e-08,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 5.774199962615967e-08
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 221,
+      "end_gpu_driver_allocated_bytes": 37535744,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.151064295321703
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.11244327049644198,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 657047552,
+      "seconds": 9.555880917003378,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.11162920799688436,
+        0.11097108401008882,
+        0.1132573329959996,
+        0.11769824998918921,
+        0.11072916598641314,
+        0.11664612498134375,
+        0.10805841698311269,
+        0.11388033299590461
+      ],
+      "trainable_parameters": 39235,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "instant_residual",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 0.0,
+        "gradient_max_absolute_error": 0.0,
+        "probability_max_absolute_error": 0.0
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 2.9802322387695312e-08,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 1.4901161193847656e-08
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 400,
+      "end_gpu_driver_allocated_bytes": 0,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.159760445356369
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.011670854000840336,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 364314624,
+      "seconds": 0.6678399170050398,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.011311541980830953,
+        0.013039374985964969,
+        0.012497208983404562,
+        0.01191783300600946,
+        0.012353666010312736,
+        0.011423874995671213,
+        0.010745625011622906,
+        0.01140420901356265
+      ],
+      "trainable_parameters": 50691,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "instant_residual",
+      "assessment_metrics_computed": false,
+      "backend": "mps",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 7.271431511492644e-07,
+        "gradient_max_absolute_error": 2.0489096641540527e-08,
+        "probability_max_absolute_error": 3.545605820054476e-08
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 4.377216100692749e-08,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 4.842877388000488e-08
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 400,
+      "end_gpu_driver_allocated_bytes": 71139328,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.1597604062408209
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.11364545850665309,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 665829376,
+      "seconds": 3.7690522499906365,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.11566312500508502,
+        0.11375054201926105,
+        0.11393145800684579,
+        0.10953974997391924,
+        0.11354037499404512,
+        0.1097379160055425,
+        0.1114359589992091,
+        0.11721358299837448
+      ],
+      "trainable_parameters": 50691,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "gru_residual",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 0.0,
+        "gradient_max_absolute_error": 0.0,
+        "probability_max_absolute_error": 0.0
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 5.960464477539063e-08,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 2.9802322387695312e-08
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 221,
+      "end_gpu_driver_allocated_bytes": 0,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.149455465376377
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.04212337500939611,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 347095040,
+      "seconds": 1.1056555419927463,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.04174287500791252,
+        0.041710999998031184,
+        0.04304141699685715,
+        0.040899209008784965,
+        0.04250387501087971,
+        0.04339062498183921,
+        0.04255874999216758,
+        0.04110012500314042
+      ],
+      "trainable_parameters": 39363,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "gru_residual",
+      "assessment_metrics_computed": false,
+      "backend": "mps",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 5.712559790195458e-07,
+        "gradient_max_absolute_error": 2.0489096641540527e-08,
+        "probability_max_absolute_error": 7.898740167489038e-08
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 5.960464477539063e-08,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 1.4901161193847656e-07
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 221,
+      "end_gpu_driver_allocated_bytes": 29065216,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.1494554281234741
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.7085818960040342,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 644988928,
+      "seconds": 14.25280666697654,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.7080912920064293,
+        0.7152416250028182,
+        0.7095525419863407,
+        0.7048287500219885,
+        0.6999264580081217,
+        0.7090725000016391,
+        0.7015776250045747,
+        0.7170215419901069
+      ],
+      "trainable_parameters": 39363,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "gru_residual",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 0.0,
+        "gradient_max_absolute_error": 0.0,
+        "probability_max_absolute_error": 0.0
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 1.7881393432617188e-07,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 5.960464477539063e-08
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 400,
+      "end_gpu_driver_allocated_bytes": 0,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.1955103073269129
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.041085375007241964,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 369360896,
+      "seconds": 1.0775101670005824,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.04101924999849871,
+        0.039607874990906566,
+        0.04122037498746067,
+        0.03935479198116809,
+        0.042124625004362315,
+        0.04115150001598522,
+        0.041396915999939665,
+        0.040597832994535565
+      ],
+      "trainable_parameters": 50819,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "gru_residual",
+      "assessment_metrics_computed": false,
+      "backend": "mps",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 3.554818926317432e-07,
+        "gradient_max_absolute_error": 2.2351741790771484e-08,
+        "probability_max_absolute_error": 7.246951183592643e-08
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 1.4156103134155273e-07,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 1.7881393432617188e-07
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 400,
+      "end_gpu_driver_allocated_bytes": 62668800,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.195510333403945
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.7071383334987331,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 657620992,
+      "seconds": 13.077852958987933,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.7091053329932038,
+        0.7069310829974711,
+        0.7073455839999951,
+        0.7085354999871925,
+        0.698508999979822,
+        0.7239262920047622,
+        0.704735833016457,
+        0.7006627919909079
+      ],
+      "trainable_parameters": 50819,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "lstm_residual",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 0.0,
+        "gradient_max_absolute_error": 0.0,
+        "probability_max_absolute_error": 0.0
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 7.450580596923828e-08,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 1.1175870895385742e-08
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 221,
+      "end_gpu_driver_allocated_bytes": 0,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.1542300209403038
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.041355208508321084,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 348225536,
+      "seconds": 1.0460603329993319,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.04165504197590053,
+        0.04037345800315961,
+        0.04048216697992757,
+        0.04195699997944757,
+        0.04017187500721775,
+        0.041667459008749574,
+        0.04154329199809581,
+        0.04116712501854636
+      ],
+      "trainable_parameters": 47683,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "lstm_residual",
+      "assessment_metrics_computed": false,
+      "backend": "mps",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 9.497175627023901e-07,
+        "gradient_max_absolute_error": 3.91155481338501e-08,
+        "probability_max_absolute_error": 6.855484491197217e-08
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 1.1920928955078125e-07,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 1.1920928955078125e-07
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 221,
+      "end_gpu_driver_allocated_bytes": 56967168,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.1542300153523684
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.15387308299250435,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 645365760,
+      "seconds": 4.951497417001519,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.16386683299788274,
+        0.1539312079839874,
+        0.14007229200797155,
+        0.153026415995555,
+        0.16023691699956544,
+        0.1570617499819491,
+        0.1538149580010213,
+        0.1495397920079995
+      ],
+      "trainable_parameters": 47683,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "lstm_residual",
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 0.0,
+        "gradient_max_absolute_error": 0.0,
+        "probability_max_absolute_error": 0.0
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 4.842877388000488e-08,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 1.4901161193847656e-08
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 400,
+      "end_gpu_driver_allocated_bytes": 0,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.1583415288478136
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.04147714599093888,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 369442816,
+      "seconds": 1.092688167002052,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.04116241697920486,
+        0.04096149999531917,
+        0.04070108401356265,
+        0.04182995899464004,
+        0.04189762499299832,
+        0.04103391701937653,
+        0.042608417017618194,
+        0.041791875002672896
+      ],
+      "trainable_parameters": 59139,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "lstm_residual",
+      "assessment_metrics_computed": false,
+      "backend": "mps",
+      "backend_agreement": {
+        "gradient_global_relative_l2_error": 7.356714244140514e-07,
+        "gradient_max_absolute_error": 2.514570951461792e-08,
+        "probability_max_absolute_error": 6.143184327900286e-08
+      },
+      "causality_max_absolute_errors": {
+        "chunking": 1.4901161193847656e-07,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 1.1175870895385742e-07
+      },
+      "checkpoint_reload_exact": true,
+      "dimensions": 400,
+      "end_gpu_driver_allocated_bytes": 82182144,
+      "forward": {
+        "chunk_rows": 128,
+        "observed_rows": 2053,
+        "query_rows": 2053,
+        "state_resets": 2
+      },
+      "gradient_calculation": {
+        "forward_segments": 8,
+        "supervised_rows": 777,
+        "weighted_mean_loss": 1.1583415549248457
+      },
+      "market_model_fits": 0,
+      "median_block_seconds": 0.1573162915010471,
+      "memory_limit_scope": "Process high-water RSS plus end-of-case GPU driver allocation; conservative sum may double-count unified allocations and is not a sampled GPU peak.",
+      "process_high_water_rss_bytes": 658571264,
+      "seconds": 3.887047625001287,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.15686220800853334,
+        0.1641762499930337,
+        0.15805712499422953,
+        0.1579052919987589,
+        0.15553491699392907,
+        0.15777037499356084,
+        0.15210245799971744,
+        0.15338224999140948
+      ],
+      "trainable_parameters": 59139,
+      "zero_correction_exact": true
+    }
+  ],
+  "selected_backend": "cpu",
+  "summary": "data/research/boundary_learned_memory_preflight_20260908/summary.json",
+  "summary_sha256": "6b39afeaae03b025ff32730ba381a9c8b7766384b9ac7d02e09145dd5b8e3c95"
+}
