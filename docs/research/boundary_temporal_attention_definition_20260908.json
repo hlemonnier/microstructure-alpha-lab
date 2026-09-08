@@ -1,0 +1,82 @@
+{
+  "aggregation": "instant uses only the current value. uniform averages allowed past/current values. age uses four heads of dimension sixteen and one learned relative-age logit per head and lag 0..127, initialized to zero. content adds Linear(64,64) query and key maps, splitting into four heads; its score is current-query dot historical-key divided by sqrt(16), plus that same learned relative-age bias. Mask all disallowed keys before softmax. Concatenate head aggregates. Controls share the stem, values and readout design but have different trainable parameter counts; record counts and do not claim equal capacity.",
+  "architecture": "All branches use Linear(D,64) plus GELU as a pointwise stem, Linear(64,64) for values, and the same readout: concatenate the 64-coordinate current stem with a 64-coordinate aggregate, then Linear(128,128), GELU, Linear(128,64), GELU, Linear(64,3). Initialize the final head weight and bias to zero; use ordinary PyTorch initializers elsewhere. No dropout, batch normalization, layer normalization or encoder self-attention between history positions.",
+  "architectures": [
+    "instant",
+    "uniform",
+    "age",
+    "content"
+  ],
+  "backend_preflight": "After the registered boosting, proper-score and twenty-date anchor studies complete, benchmark all four branches at both production-width upper bounds on CPU with two threads and the available Mac MPS backend, one case at a time. Freeze exact shapes, warmups, timed blocks, repetitions, numerical tolerances and resource limits separately first. Verify finite forward/backward values, CPU/MPS probabilities and gradients after nonzero updates, checkpoint replay and future-prefix/chunk/gap independence. Choose one common passing backend by summed measured block time. Any full-run timing projection is an operational estimate, not a measured market runtime or memory guarantee.",
+  "base": "Freeze the exact original M1 64-by-64 neural checkpoint, training-only quantile normalizer, active columns, schema and asset priors. Reuse the original normalized complete historical grids and validation/query sequences from the completed learned-memory preparation. Original logits used in training are in-sample, not out-of-fold teachers; every branch shares this limitation.",
+  "checkpoint_selection": "Evaluate every complete previous noon after each epoch with its past-only windows. Maximize equal-asset mean balanced accuracy under the original training priors, then minimize natural log loss, then keep the earliest epoch. Select among epochs one through six only. No current-assessment checkpoint, seed, window-size, blend-weight or learning-rate search.",
+  "clock": "Original eligible one-second normalized observations. A window includes the current observation and at most 127 preceding one-second observations, restricted to the same contiguous asset/day segment. Missing observations and date boundaries terminate history. No future interpolation, actual assessment labels, cross-stream attention or whole-query normalization.",
+  "current_stochastic_boost_scores_opened": false,
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "execution_order": "Complete the already registered stochastic boosting, proper-score and broad twenty-date anchor studies first. Their definitions, settings and order are unchanged. If the broader development evidence supports a candidate for fresh independent confirmation, prioritize that confirmation before this additional architecture family. Preparing code and tiny correctness tests may proceed while the current study runs; one substantial learner at a time.",
+  "fixed_blends": "Retain all 256 sources from the complete proper-score family. Add eight new forecasts and sixteen fixed 50/50 blends with each branch representation's original HGB and deep500_hgb. Preserve original probabilities, labels, decision clocks and policies exactly. Separately compare the completed expert-feedback family and the broad audit on matching dates without changing the family inventory.",
+  "forecast_sources": 280,
+  "fresh_confirmation_content_opened": false,
+  "history_observations": 128,
+  "hypothesis": "A fixed-width recurrent state or fixed temporal average may compress useful past observations. A current-state query can instead select among explicitly retained past observations. This tests query-dependent temporal aggregation, not new raw information, a universal attention advantage or a TLOB replication.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "inference": "Use the selected fixed branch weights throughout a day. Recompute finite windows in bounded query chunks. Per-query history depends only on that query and its preceding contiguous observations, independent of later rows, other streams and chunk partition. Do not retain transformed keys across optimizer updates.",
+  "input_definition_hashes": {
+    "docs/research/boundary_broad_accuracy_definition_20260908.json": "7d7b3169c504b50ad06e48bf1ba1a0c365050980ef608e145ed15c4af84ff413",
+    "docs/research/boundary_broad_accuracy_transfer_context_20260908.json": "d06e4c2aed828fc79905a7e74bdd4359c0a97175d2ea5e19f7db3130a1a04de1",
+    "docs/research/boundary_learned_memory_definition_20260908.json": "fb359ad69f080b762ee7eea67bea53d10fcf95ba25c9d6d8fddb4b61ddfa39d0",
+    "docs/research/boundary_proper_score_definition_20260908.json": "a7e040c10aa0c5881200609cbae9be040eacdace6ceae278f81671587900d22b"
+  },
+  "model_fits": 24,
+  "optimization": {
+    "epochs": 6,
+    "gradient_norm_limit": 5.0,
+    "heads": 4,
+    "learning_rate": 0.0003,
+    "optimization_seconds": 512,
+    "optimizer": "AdamW",
+    "sample_weights": "Original N/(6*n_asset_class) global historical weights, float32; never recompute per-block frequencies.",
+    "seed": 20260908,
+    "weight_decay": 0.01,
+    "width": 64
+  },
+  "optimization_semantics": "Process eight independent asset/date streams aligned on relative UTC seconds, in chronological 512-second blocks. Recompute the at-most-127-second input prefix with the current branch weights for each block. Only the original stride-four targets inside that block enter the loss. Sum weighted cross-entropies across all eight streams and divide by the number of supervised rows in that entire block; take one update, skipping empty blocks. No recurrent numerical state or gradient is carried between blocks. Shared pointwise projections may be reused within a block; their backward gradient must equal a direct independent-window calculation including repeated uses of historical inputs.",
+  "post_fit_panels": 3360,
+  "posterior": "Add the branch correction to frozen original logits. Recover natural posteriors using the original asset prior. The exact existing zero-correction path must reproduce the saved original probabilities bit for bit; test nonzero corrections against the analytical posterior.",
+  "primary_policy": "forecast_3600",
+  "primary_sources": [
+    {
+      "scope": "Scaled dot-product attention and multiple projected heads; this is a finite-window residual readout, not the full encoder-decoder model.",
+      "url": "https://arxiv.org/html/1706.03762v7"
+    },
+    {
+      "scope": "LOB-specific attention and strong MLP comparisons motivate matching simple controls. The paper changes labeling and uses other data; no reported gain transfers to our target.",
+      "url": "https://arxiv.org/abs/2502.15757"
+    },
+    {
+      "scope": "Reports mixed transformer versus LSTM results, with stronger LSTM difference/movement performance in its comparisons. Architectural novelty alone is not evidence.",
+      "url": "https://arxiv.org/abs/2309.11400"
+    }
+  ],
+  "promotion": "No architecture or synthetic test proves a gain. Require a separately frozen fresh-date confirmation and all unchanged substantive, per-asset, date-count, log-loss and nominal research-budget gates. The later economic and execution requirements remain necessary for the overall goal.",
+  "registered_at_utc": "2026-09-08T20:22:16.462295+00:00",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "training_partition": "Same d-5 through d-2 dates and original calendar-stride-four supervised rows. Only the previous complete noon selects a checkpoint. Every historical and validation label must have actually been released before its next partition. Preserve all 7070 original assessment rows per asset/date.",
+  "validation": "Independent-window versus shared-projection forward and weighted-gradient agreement; exact zero correction; finite masked all-missing query behavior; coverage-gap, session and cross-stream isolation; relative-age orientation; all controls; future-prefix and partition invariance; persistence; and meaningful learning on a small synthetic query-dependent temporal task."
+}
