@@ -1,0 +1,47 @@
+{
+  "causal_availability": "Read native messages in original capture order. A quote ahead of the depth update ID waits in a bounded queue. Use the maximum depth/certificate capture and publisher clocks as information dependencies. Require all dependencies strictly before decision minus 100ms or 500ms. Independently require the most recent depth publisher and capture ages <= 1000ms; quote certificates do not refresh stale depth. Snapshots and disconnects reset the knowledge epoch. Preserve all original decision rows with explicit unavailable masks.",
+  "controls": "Preserve the completed initial-frontier replay. It has 0/7070 BTC and 1741/7070 ETH noon rows available at 100ms. Additional coverage is source evidence only, never a predictive gain.",
+  "date": "2023-06-01",
+  "delays_ms": [
+    100,
+    500
+  ],
+  "end_ms": 1685628000000,
+  "evidence_status": "development_data_only_on_exposed_date",
+  "historical_tick_grid": {
+    "BTCUSDT": "0.1",
+    "ETHUSDT": "0.01"
+  },
+  "implementation": "captured_quote_and_explicit_tick_frontiers_v1",
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "data/research/boundary_tardis_depth_fast_20260907/depth_manifest.json": "ecbb5214b39e7b384b49a4bb6d78edfe55362b1a1ca9ff09aedc3d9068c596b8",
+    "data/research/boundary_tardis_raw_20260907/raw_manifest.json": "73a7ec5cae47ced9d7068c3656f3e9784930a86a43bb0f293dd07259fcf01510",
+    "docs/research/boundary_tardis_certified_parity_20260908.json": "776e5d411dd6e7f5244f276f88ac7d490d617660efacf05c26deef5ce048cd17",
+    "docs/research/boundary_tardis_depth_fast_preparation_20260907.json": "99d554d08bb83a3a01e95a7187f3a2a97b690fa3ca2d0ba696871e923e9cfd90",
+    "docs/research/boundary_tardis_snapshot_inventory_20260907.json": "95f1f4542adb533468e72649679a0b0b4a5a0aa8aaeb7e7d1c95def6fc6df8ae",
+    "scripts/assess_boundary_tardis_certified.py": "8212b889d6a2ce39e362a1c5651360cca4f02f731b42f2408ae2a839f2fb3b45",
+    "scripts/prepare_boundary_tardis_depth.py": "1c7a65c4ceb909896031d158d897aa62793dfbef2162c7abb622629e822eea0d",
+    "src/lob_forge/boundary_tardis_certified.py": "94b790f107d713419ff651e1747fb567aeceae795fb48458be0c6df38857b542",
+    "src/lob_forge/boundary_tardis_depth.py": "366ce578f0d6eb673998c8978a25113d8fce4058ad167c5e879e4c98abf378d7",
+    "src/lob_forge/boundary_tardis_fast.py": "ba21b27af5fca533159991b6ab64d47b1ce12372407e490d8ed0ad2229491735",
+    "src/lob_forge/boundary_tardis_observations.py": "96d7d8c1bc1a3bd93612ceb7147c3d858cab7289afc3b775c5897fa0dd640025",
+    "tests/test_boundary_tardis_certified.py": "792200018fea582f6211ebe245d964448a3df4c7f18e6279cd654cd148fdad04",
+    "tests/test_boundary_tardis_certified_observations.py": "38ae720954fdee0b0b58d50c521a705c580e4cd4b92d6a266b6a570fc1982d84"
+  },
+  "model_fits": 0,
+  "original_manifest": "data/research/boundary_event_clock_20260907/dataset_manifest.json",
+  "parent_preparation_protocol": "docs/research/boundary_tardis_depth_fast_preparation_20260907.json",
+  "parent_protocol_sha256": "99d554d08bb83a3a01e95a7187f3a2a97b690fa3ca2d0ba696871e923e9cfd90",
+  "proof": "Initial snapshot quantities are known inside its finite bid/ask ranges, including omitted zero levels. Each absolute delta, including zero, reveals its exact price tick. Extend a frontier through adjacent explicitly observed ticks. At a captured best-quote update ID k, all better bid/ask prices are zero and the best quantities are given. Once continuous depth has reached u >= k, these facts remain known after later updates. Quote quantities never overwrite prices whose latest absolute batch endpoint is after k. A quote before the current snapshot epoch, or older than a used certificate, cannot extend knowledge. Both sides are checked for contradictions and crossing before mutation.",
+  "purpose": "Extend known Binance depth only using absolute native price updates and captured best-quote certificates. Test sustained coverage and source identity before defining any fitted depth-model experiment.",
+  "raw_manifest": "data/research/boundary_tardis_raw_20260907/raw_manifest.json",
+  "registered_at_utc": "2026-09-08T01:07:50.577023+00:00",
+  "source_validation": "Verify every frozen source hash and full gzip CRC. Require exact declared tick-grid prices, futures snapshot bridge and pu/u continuity. Every sampled available BBO must match the most recent native quote by update ID. Require saved-array reload identity. The first complete 10-minute source interval has exact baseline sample/quote parity; six new replay tests and one timing/prefix test pass.",
+  "start_ms": 1685577600000,
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "target_columns_read": false
+}

@@ -1,0 +1,162 @@
+{
+  "all_initial_sample_and_quote_arrays_exact": true,
+  "baseline_checks": {
+    "assets": {
+      "BTCUSDT": {
+        "available_rows_by_delay": [
+          597,
+          597
+        ],
+        "current_epoch_snapshot_frontiers": {
+          "ask": 27306.8,
+          "bid": 27097.4
+        },
+        "frontier_covered_rows_by_delay": [
+          597,
+          597
+        ],
+        "messages": {
+          "bookTicker": 83618,
+          "depth": 17989,
+          "depthSnapshot": 1
+        },
+        "quote_duplicate_ids": 0,
+        "quote_out_of_order_id_arrivals": 0,
+        "replayed_deltas": 17976,
+        "rolling_buffer_evictions": 7989,
+        "rows": 598,
+        "sampled_depth_quote_comparisons": 1194,
+        "sampled_depth_quote_mismatches": 0,
+        "snapshots": 1
+      },
+      "ETHUSDT": {
+        "available_rows_by_delay": [
+          596,
+          596
+        ],
+        "current_epoch_snapshot_frontiers": {
+          "ask": 1883.39,
+          "bid": 1862.58
+        },
+        "frontier_covered_rows_by_delay": [
+          596,
+          596
+        ],
+        "messages": {
+          "bookTicker": 49222,
+          "depth": 18033,
+          "depthSnapshot": 1
+        },
+        "quote_duplicate_ids": 0,
+        "quote_out_of_order_id_arrivals": 0,
+        "replayed_deltas": 18021,
+        "rolling_buffer_evictions": 8033,
+        "rows": 597,
+        "sampled_depth_quote_comparisons": 1192,
+        "sampled_depth_quote_mismatches": 0,
+        "snapshots": 1
+      }
+    },
+    "disconnects": 0,
+    "first_capture_ns": 1685577600008808300,
+    "last_capture_ns": 1685578199998826500,
+    "lines": 168864
+  },
+  "baseline_manifest_sha256": "ecbb5214b39e7b384b49a4bb6d78edfe55362b1a1ca9ff09aedc3d9068c596b8",
+  "certified_checks": {
+    "assets": {
+      "BTCUSDT": {
+        "available_rows_by_delay": [
+          597,
+          597
+        ],
+        "certification": {
+          "explicit_frontier_ticks": 1017,
+          "ignored_older_quotes": 51,
+          "queued_quotes": 51,
+          "used_quotes": 0
+        },
+        "current_epoch_snapshot_frontiers": {
+          "ask": 27364.8,
+          "bid": 27053.7
+        },
+        "frontier_covered_rows_by_delay": [
+          597,
+          597
+        ],
+        "historical_tick": "0.1",
+        "messages": {
+          "bookTicker": 83618,
+          "depth": 17989,
+          "depthSnapshot": 1
+        },
+        "quote_duplicate_ids": 0,
+        "quote_out_of_order_id_arrivals": 0,
+        "replayed_deltas": 17976,
+        "rolling_buffer_evictions": 7989,
+        "rows": 598,
+        "sampled_depth_quote_comparisons": 1194,
+        "sampled_depth_quote_mismatches": 0,
+        "snapshots": 1
+      },
+      "ETHUSDT": {
+        "available_rows_by_delay": [
+          596,
+          596
+        ],
+        "certification": {
+          "explicit_frontier_ticks": 283,
+          "ignored_older_quotes": 37,
+          "queued_quotes": 37,
+          "used_quotes": 0
+        },
+        "current_epoch_snapshot_frontiers": {
+          "ask": 1886.11,
+          "bid": 1862.47
+        },
+        "frontier_covered_rows_by_delay": [
+          596,
+          596
+        ],
+        "historical_tick": "0.01",
+        "messages": {
+          "bookTicker": 49222,
+          "depth": 18033,
+          "depthSnapshot": 1
+        },
+        "quote_duplicate_ids": 0,
+        "quote_out_of_order_id_arrivals": 0,
+        "replayed_deltas": 18021,
+        "rolling_buffer_evictions": 8033,
+        "rows": 597,
+        "sampled_depth_quote_comparisons": 1192,
+        "sampled_depth_quote_mismatches": 0,
+        "snapshots": 1
+      }
+    },
+    "disconnects": 0,
+    "first_capture_ns": 1685577600008808300,
+    "last_capture_ns": 1685578199998826500,
+    "lines": 168864
+  },
+  "certified_seconds": 4.482626124983653,
+  "code_hashes": {
+    "scripts/assess_boundary_tardis_certified.py": "8212b889d6a2ce39e362a1c5651360cca4f02f731b42f2408ae2a839f2fb3b45",
+    "scripts/prepare_boundary_tardis_depth.py": "1c7a65c4ceb909896031d158d897aa62793dfbef2162c7abb622629e822eea0d",
+    "src/lob_forge/boundary_tardis_certified.py": "94b790f107d713419ff651e1747fb567aeceae795fb48458be0c6df38857b542",
+    "src/lob_forge/boundary_tardis_depth.py": "366ce578f0d6eb673998c8978a25113d8fce4058ad167c5e879e4c98abf378d7",
+    "src/lob_forge/boundary_tardis_fast.py": "ba21b27af5fca533159991b6ab64d47b1ce12372407e490d8ed0ad2229491735",
+    "src/lob_forge/boundary_tardis_observations.py": "96d7d8c1bc1a3bd93612ceb7147c3d858cab7289afc3b775c5897fa0dd640025",
+    "tests/test_boundary_tardis_certified.py": "792200018fea582f6211ebe245d964448a3df4c7f18e6279cd654cd148fdad04",
+    "tests/test_boundary_tardis_certified_observations.py": "38ae720954fdee0b0b58d50c521a705c580e4cd4b92d6a266b6a570fc1982d84"
+  },
+  "interval": "2023-06-01 00:00-00:10 UTC",
+  "model_fits": 0,
+  "raw_path": "data/research/boundary_tardis_raw_20260907/minute_0000/attempt_1.payload",
+  "raw_sha256": "54d3a056e5c453e72fe29d3621c62bf4e6ecd4b1dcf179704854f370f44ee0ff",
+  "recorded_at_utc": "2026-09-08T01:05:20.108706+00:00",
+  "reference_seconds": 3.0389446250046603,
+  "semantics": "captured_quote_and_explicit_tick_frontiers_v1",
+  "target_columns_read": false,
+  "timing_limit": "Single adjacent operational run, not a controlled performance benchmark."
+}

@@ -59,6 +59,13 @@ def prepare(protocol_path, output):
         from lob_forge.boundary_tardis_fast import FastBinanceFuturesDepthState, iter_tardis_messages_fast
 
         implementation = {"state_factory": FastBinanceFuturesDepthState, "message_reader": iter_tardis_messages_fast}
+    elif protocol.get("implementation") == "captured_quote_and_explicit_tick_frontiers_v1":
+        from lob_forge.boundary_tardis_certified import CertifiedBinanceFuturesDepthState
+        from lob_forge.boundary_tardis_fast import iter_tardis_messages_fast
+
+        implementation = {"state_factory": CertifiedBinanceFuturesDepthState, "message_reader": iter_tardis_messages_fast}
+    elif protocol.get("implementation") is not None:
+        raise ValueError("Unrecognized registered depth-replay implementation")
     samples, quotes, checks = sample_tardis_depth([ROOT / r["payload_path"] for r in raw["records"]], clocks,
         delays_ms=tuple(protocol["delays_ms"]), **implementation,
         progress=lambda n, total, lines, done, all_queries: print(f"native_depth_slices={n}/{total} lines={lines} queries={done}/{all_queries}", flush=True))

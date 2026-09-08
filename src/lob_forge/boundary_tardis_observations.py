@@ -39,10 +39,12 @@ def sample_tardis_depth(paths, decisions, *, delays_ms=(100, 500), progress=None
     def sample(query):
         cutoff, symbol, i, j = query
         book, target = books[symbol], samples[symbol]
+        knowledge_capture = getattr(book, "knowledge_capture_ns", None)
+        knowledge_publisher = getattr(book, "knowledge_publisher_ms", None)
         if book.available_time_ns is not None:
-            target["capture_times_ns"][i, j] = book.available_time_ns
+            target["capture_times_ns"][i, j] = max(book.available_time_ns, knowledge_capture or 0)
         if book.publisher_time_ms is not None:
-            target["publisher_times_ms"][i, j] = book.publisher_time_ms
+            target["publisher_times_ms"][i, j] = max(book.publisher_time_ms, knowledge_publisher or 0)
         if book.last_u is not None:
             target["update_ids"][i, j] = book.last_u
         snapshot = book.snapshot(25)
@@ -50,7 +52,9 @@ def sample_tardis_depth(paths, decisions, *, delays_ms=(100, 500), progress=None
         if snapshot is None:
             return
         if (not 0 < cutoff - book.available_time_ns <= 1_000_000_000
-            or not 0 < cutoff - book.publisher_time_ms * 1_000_000 <= 1_000_000_000):
+            or not 0 < cutoff - book.publisher_time_ms * 1_000_000 <= 1_000_000_000
+            or (knowledge_capture is not None and knowledge_capture >= cutoff)
+            or (knowledge_publisher is not None and knowledge_publisher * 1_000_000 >= cutoff)):
             return
         target["depth"][i, j] = snapshot
         target["available"][i, j] = True
@@ -93,6 +97,8 @@ def sample_tardis_depth(paths, decisions, *, delays_ms=(100, 500), progress=None
                 quotes["capture_times_ns"].append(capture)
                 quotes["publisher_times_ms"].append(data["E"])
                 quotes["transaction_times_ms"].append(data["T"])
+                if hasattr(books[symbol], "observe_quote"):
+                    books[symbol].observe_quote(capture, data)
             else:
                 books[symbol].apply(capture, message)
         if progress is not None:
@@ -124,6 +130,9 @@ def sample_tardis_depth(paths, decisions, *, delays_ms=(100, 500), progress=None
             "rows": len(target["decision_times"]), "sampled_depth_quote_comparisons": compared, "sampled_depth_quote_mismatches": 0,
             "quote_duplicate_ids": len(repeated), "quote_out_of_order_id_arrivals": int((np.diff(native["ids"]) < 0).sum()),
             "current_epoch_snapshot_frontiers": {"bid": book.bid_frontier, "ask": book.ask_frontier}}
+        if hasattr(book, "certification_counts"):
+            checks[symbol]["certification"] = book.certification_counts.copy()
+            checks[symbol]["historical_tick"] = str(book.tick)
         quotes[symbol] = native
     return samples, quotes, {"lines": lines, "disconnects": disconnects, "first_capture_ns": first_capture,
                              "last_capture_ns": previous_capture, "assets": checks}
