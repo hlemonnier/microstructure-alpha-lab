@@ -1,0 +1,80 @@
+{
+  "blends": "For each of four TabICL outputs per date, retain fixed 50/50 natural-probability blends with its full-data historical matched-representation HGB, deep500_hgb, and observations_neural. No blending-weight search.",
+  "context_budget_rows": 3072,
+  "context_histories": [
+    "recent4_stride4",
+    "full_morning"
+  ],
+  "context_selection": "For each history independently, uniformly sample without replacement inside each asset/class cell with seed 20260908. Use min(512, smallest available cell count) rows per cell, giving equal mass to all six cells. Reuse exactly those rows for both representations and the matched HGB. Record unique source decision times, full pool counts, sampled counts and actual label-release cutoffs. No assessment feature or label enters selection.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "hypothesis": "A transformer pretrained on synthetic tabular tasks can infer a useful nonlinear decision rule from a compact context of released market examples. Compare historical and same-morning contexts to test adaptation without gradient updates.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "market_model_procedures_started": false,
+  "matched_control": "The unchanged seven-leaf, 200-iteration HGB is fit on exactly the same sampled examples and feature schema, with the existing training-only clipping and equal asset/class weights. All 53 previously frozen multi-horizon sources remain explicit controls.",
+  "matched_hgb_fits": 12,
+  "model": {
+    "allow_auto_download": false,
+    "average_logits": true,
+    "batch_size": 1,
+    "checkpoint": "tabicl-classifier-v2-20260212.ckpt",
+    "checkpoint_sha256": "bdc7dbd5e4ff21f8f0456fcf90c6b7cdf72dbea960f2d05b19bec19f9b3d4ed0",
+    "class_shuffle_method": "shift",
+    "device": "cpu",
+    "feat_shuffle_method": "latin",
+    "kv_cache": true,
+    "n_estimators": 2,
+    "n_jobs": 2,
+    "norm_methods": [
+      "none",
+      "power"
+    ],
+    "offload_mode": "cpu",
+    "outlier_threshold": 4.0,
+    "query_batch_size": 64,
+    "random_state": 20260908,
+    "softmax_temperature": 0.9,
+    "use_amp": false,
+    "use_fa3": false
+  },
+  "operational_limits": {
+    "morning_ready_seconds_before_first_forecast": 1920,
+    "one_worker_at_a_time": true,
+    "worker_rss_bytes": 10737418240,
+    "worker_seconds": 1800
+  },
+  "partitions": "Historical context pools use d-5 through d-2 with the existing four-second calendar stride, with actual target releases before d-1 00:00. Same-morning pools use 00:02 through 11:30 on d, with every actual target release at or before 11:30. No validation-based tuning. Assessment retains exactly 7070 original observations per asset/date from 12:02 to 13:59:50.",
+  "post_fit_panels": 876,
+  "posterior": "Case-control selection changes the asset class prior. For sampled-context posterior q, recover the full pre-sampling context-pool posterior as normalize(q * pool_prior / sampled_prior) separately for each asset. Sampling is uniform within asset/class, so this is the Bayes prior correction under the empirical class-conditional sampling model. The learned q remains an approximation; correction alone does not guarantee calibration. HGB stores its true sampled priors and receives the same external correction. Store actual pool priors, never assessment frequencies. Historical and morning probabilities are explicitly cohort-conditional estimates; fixed blends combine these natural estimates.",
+  "preflight_evidence": "docs/research/boundary_tabicl_preflight_evidence_20260908.json",
+  "primary_policy": "forecast_3600 using exactly the existing initial morning prior and prediction-only one-hour half-life update; no assessment labels update thresholds.",
+  "primary_sources": [
+    {
+      "scope": "Official TabICLv2 classification/regression architecture and synthetic pretraining; benchmark performance is motivation only.",
+      "url": "https://arxiv.org/abs/2602.11139"
+    },
+    {
+      "scope": "Official source at pinned commit 0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3, local checkpoint with automatic downloads disabled.",
+      "url": "https://github.com/soda-inria/tabicl"
+    }
+  ],
+  "promotion": "This is exposed-date development. No published benchmark result or synthetic operational result establishes a market gain. Any substantial candidate requires a separately frozen independent-date confirmation and the existing selection-budget control.",
+  "registered_at_utc": "2026-09-08T03:07:45.256108+00:00",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "scope": "Four contexts per date: two histories times two representations, each with 3072 requested rows and two fixed normalization/feature-shuffle members. This CPU-bounded pilot uses fewer members than the publisher default of eight. The 3072 context lies between the verified 1536 and 6144 synthetic cases. It is chosen from operational measurements before any market transformer score.",
+  "secondary_policy": "For all new sources use the common full-data historical observations_tree training prior as the fixed registered decision prior, including morning contexts. Keep each old source original registered prior unchanged. Save natural posterior recovery priors separately from decision priors.",
+  "tabicl_context_procedures": 12,
+  "total_market_model_procedures": 24,
+  "validation": "Before market procedures, test deterministic disjoint class-balanced sampling, prior correction against analytic Bayes sampling, schema/class-order guards, and a small synthetic two-member checkpoint round trip with future-query and query-batch invariance. Freeze final source/data/runtime hashes after implementation and tests. Actual workers read context labels and query features only. Report fit/cache/save/load readiness plus context preparation against the 1920-second morning gap, measured one-row and full-universe throughput. Preserve failures and partial artifacts; operational failures do not count as predictive losses. Complete all three dates before inspecting any scores."
+}

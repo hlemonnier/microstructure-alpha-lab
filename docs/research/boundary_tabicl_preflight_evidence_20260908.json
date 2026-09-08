@@ -1,0 +1,117 @@
+{
+  "all_four_cases_passed": true,
+  "evidence_status": "synthetic_operational_and_causality_checks_only",
+  "interpretation": "Synthetic CPU feasibility and conditional query invariance only. No market observations, targets or accuracy scores were read. The numerical worker uses two threads; only its own RSS is polled, without enumerating unrelated processes. Polling may miss shorter peaks; time and memory stops are operational limits, not empirical accuracy failures.",
+  "market_model_procedures": 0,
+  "protocol_sha256": "b5a5c21a7d9d38d64aada54626fbdc008f6b75c5c9950e330e889bfa393201a2",
+  "records": [
+    {
+      "case": {
+        "context_rows": 192,
+        "features": 32,
+        "verify_cache": true
+      },
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "peak_observed_worker_rss_bytes": 817119232,
+      "result": {
+        "cached_uncached_max_absolute_error": 0.0,
+        "case": {
+          "context_rows": 192,
+          "features": 32,
+          "verify_cache": true
+        },
+        "fit_seconds": 0.4203269160061609,
+        "later_query_change_max_absolute_error": 0.0,
+        "market_model_procedures": 0,
+        "predict_64_seconds": 0.05088345898548141,
+        "probability_checks_passed": true,
+        "shorter_query_batch_max_absolute_error": 0.0,
+        "synthetic_only": true
+      },
+      "result_sha256": "308c98bed1ff5a37bd890325504daa750ee7137d477d8bedbaee1fb5e72472c2",
+      "returncode": 0,
+      "seconds": 3.9639062079950236,
+      "stop_reason": null
+    },
+    {
+      "case": {
+        "context_rows": 1536,
+        "features": 220
+      },
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "peak_observed_worker_rss_bytes": 4026728448,
+      "result": {
+        "cached_uncached_max_absolute_error": null,
+        "case": {
+          "context_rows": 1536,
+          "features": 220
+        },
+        "fit_seconds": 7.131476790993474,
+        "later_query_change_max_absolute_error": 0.0,
+        "market_model_procedures": 0,
+        "predict_64_seconds": 0.2562969169812277,
+        "probability_checks_passed": true,
+        "shorter_query_batch_max_absolute_error": 0.0,
+        "synthetic_only": true
+      },
+      "result_sha256": "d0a40743a0df01df194bdb816385918516f47ea5d28b9b6d1763ab836b0b0a81",
+      "returncode": 0,
+      "seconds": 10.13956495799357,
+      "stop_reason": null
+    },
+    {
+      "case": {
+        "context_rows": 1536,
+        "features": 399
+      },
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "peak_observed_worker_rss_bytes": 5117394944,
+      "result": {
+        "cached_uncached_max_absolute_error": null,
+        "case": {
+          "context_rows": 1536,
+          "features": 399
+        },
+        "fit_seconds": 16.82760129199596,
+        "later_query_change_max_absolute_error": 0.0,
+        "market_model_procedures": 0,
+        "predict_64_seconds": 0.57547425001394,
+        "probability_checks_passed": true,
+        "shorter_query_batch_max_absolute_error": 0.0,
+        "synthetic_only": true
+      },
+      "result_sha256": "42554029e11e3c47bc019b30ff112038d9f9ae8bd1bfb6aad7cb46a4df66224b",
+      "returncode": 0,
+      "seconds": 20.492321833007736,
+      "stop_reason": null
+    },
+    {
+      "case": {
+        "context_rows": 6144,
+        "features": 399
+      },
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "peak_observed_worker_rss_bytes": 8332394496,
+      "result": {
+        "cached_uncached_max_absolute_error": null,
+        "case": {
+          "context_rows": 6144,
+          "features": 399
+        },
+        "fit_seconds": 213.46235704200808,
+        "later_query_change_max_absolute_error": 0.0,
+        "market_model_procedures": 0,
+        "predict_64_seconds": 0.7453948339971248,
+        "probability_checks_passed": true,
+        "shorter_query_batch_max_absolute_error": 0.0,
+        "synthetic_only": true
+      },
+      "result_sha256": "3d6f16a4f8c55c8c9a480384285bf5cc33690d16ee09933bb0599d011c2747c4",
+      "returncode": 0,
+      "seconds": 218.84136841702275,
+      "stop_reason": null
+    }
+  ],
+  "summary": "data/research/boundary_tabicl_20260908/synthetic_monitor_revision/summary.json",
+  "summary_sha256": "0d2bd2b5f583d4c205ecb614c85b8af1e193be786f173301d0dd5d2fb7dcfad7"
+}
