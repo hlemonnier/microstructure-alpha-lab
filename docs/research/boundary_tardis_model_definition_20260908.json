@@ -1,0 +1,185 @@
+{
+  "blend_weights": [
+    0.5,
+    0.5
+  ],
+  "blends": {
+    "combined_blend": [
+      "combined_hgb",
+      "combined_neural"
+    ],
+    "combined_hgb_past_neural": [
+      "combined_hgb",
+      "past_context_neural"
+    ],
+    "combined_neural_past_hgb": [
+      "combined_neural",
+      "past_context_hgb"
+    ],
+    "observations_blend": [
+      "observations_hgb",
+      "observations_neural"
+    ],
+    "observations_hgb_past_neural": [
+      "observations_hgb",
+      "past_context_neural"
+    ],
+    "observations_neural_past_hgb": [
+      "observations_neural",
+      "past_context_hgb"
+    ],
+    "past_context_blend": [
+      "past_context_hgb",
+      "past_context_neural"
+    ],
+    "top1_100_blend": [
+      "top1_100_hgb",
+      "top1_100_neural"
+    ],
+    "top1_100_hgb_past_neural": [
+      "top1_100_hgb",
+      "past_context_neural"
+    ],
+    "top1_100_neural_past_hgb": [
+      "top1_100_neural",
+      "past_context_hgb"
+    ],
+    "top1_500_blend": [
+      "top1_500_hgb",
+      "top1_500_neural"
+    ],
+    "top1_500_hgb_past_neural": [
+      "top1_500_hgb",
+      "past_context_neural"
+    ],
+    "top1_500_neural_past_hgb": [
+      "top1_500_neural",
+      "past_context_hgb"
+    ],
+    "top25_100_blend": [
+      "top25_100_hgb",
+      "top25_100_neural"
+    ],
+    "top25_100_hgb_past_neural": [
+      "top25_100_hgb",
+      "past_context_neural"
+    ],
+    "top25_100_neural_past_hgb": [
+      "top25_100_neural",
+      "past_context_hgb"
+    ],
+    "top25_500_blend": [
+      "top25_500_hgb",
+      "top25_500_neural"
+    ],
+    "top25_500_hgb_past_neural": [
+      "top25_500_hgb",
+      "past_context_neural"
+    ],
+    "top25_500_neural_past_hgb": [
+      "top25_500_neural",
+      "past_context_hgb"
+    ]
+  },
+  "comparisons": "Compare each top-25 model/blend with its identical top-one source/delay/model control, the unchanged source union, original context, newly trained historical context controls, and three preserved original prediction controls. Freeze all fourteen fits before revealing any assessment score. A single exposed date can identify a research candidate but cannot confirm a substantial gain.",
+  "date": "2023-06-01",
+  "decision_contract": "Both policies are applied to every model. morning_full divides natural probabilities by the shared purged full-morning class prior. forecast_3600 uses the existing causal EWM forecast-prior rule initialized with already released morning outcomes. No hindsight class frequencies are used. Natural accuracy and log loss remain separate secondary metrics.",
+  "distinct_assessment_decisions": 14140,
+  "evidence_status": "development_only_on_exposed_date",
+  "feature_counts": {
+    "combined": 399,
+    "observations": 220,
+    "top1_100": 433,
+    "top1_500": 433,
+    "top25_100": 498,
+    "top25_500": 498
+  },
+  "features": "Preserve the existing 399-column union exactly. The native BBO adds 27 own plus seven simultaneous peer fields, including availability. Top-25 adds 88 own plus eleven peer fields. The existing tested normalized curve, distance, cumulative imbalance, concentration, weighted price and endpoint pressure algebra is reused. Endpoint pressure is not integrated flow. Both native representations use the identical certified top-25 availability mask; retain unavailable original rows.",
+  "hypothesis": "The target venue liquidity profile may contain five-second forecasting information absent from top-of-book, spot and another venue. Matched delayed native BBO controls separate deeper quantities from the source and timestamp treatment.",
+  "learners": "Unchanged class/asset-balanced HGB: seven leaves, 200 rounds, learning rate .05, min leaf 100, L2 10 and training-only .001/.999 clipping. Unchanged twelve-epoch 64-wide MLP with training-only quantile normalization and preceding validation selection. Both recover natural posteriors using their own training asset priors. Fixed probability blends combine natural probabilities; component recovery priors are retained in model metadata.",
+  "model_fits": 14,
+  "model_fits_started": false,
+  "models": {
+    "combined_hgb": [
+      "combined",
+      "hgb"
+    ],
+    "combined_neural": [
+      "combined",
+      "neural"
+    ],
+    "observations_hgb": [
+      "observations",
+      "hgb"
+    ],
+    "observations_neural": [
+      "observations",
+      "neural"
+    ],
+    "past_context_hgb": [
+      "past",
+      "hgb"
+    ],
+    "past_context_neural": [
+      "past",
+      "neural"
+    ],
+    "top1_100_hgb": [
+      "top1_100",
+      "hgb"
+    ],
+    "top1_100_neural": [
+      "top1_100",
+      "neural"
+    ],
+    "top1_500_hgb": [
+      "top1_500",
+      "hgb"
+    ],
+    "top1_500_neural": [
+      "top1_500",
+      "neural"
+    ],
+    "top25_100_hgb": [
+      "top25_100",
+      "hgb"
+    ],
+    "top25_100_neural": [
+      "top25_100",
+      "neural"
+    ],
+    "top25_500_hgb": [
+      "top25_500",
+      "hgb"
+    ],
+    "top25_500_neural": [
+      "top25_500",
+      "neural"
+    ]
+  },
+  "partitions": "Historical 220-column controls use May 27-30 with fixed four-second stride after causal feature construction; validation is May 31 noon. All six morning representations use the same June 1 00:02 to 11:30 decision rows with actual label release no later than 11:30. Validation decisions are 11:30:10 to 11:57, with actual release no later than 11:57:10. Assessment is the unchanged 12:02 to 13:59:49 window, 7070 rows per asset. Each candidate morning fit, or sum of its two morning blend fits, must complete within the 290-second cached-data computation interval.",
+  "policies": [
+    "morning_full",
+    "forecast_3600"
+  ],
+  "post_fit_panels": 144,
+  "promotion": "No automatic promotion or independent-gain claim. Any convincing development candidate needs a separately frozen new-date confirmation and the continuing research error budget.",
+  "registered_at_utc": "2026-09-08T01:24:55.399403+00:00",
+  "saved_baselines": [
+    "original_reference",
+    "original_blend",
+    "pooled_blend"
+  ],
+  "source_hashes": {
+    "scripts/run_boundary_tardis_screen.py": "65c39627a6a81498573d47b905eedf7b28c4afd0638a4e6492f39e2ba9dbc8e8",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_morning_adaptation.py": "cb42e5af1fbef7677b1b2ea1f0c62a248c64a7e4c2e334bdadf4b43448162ae9",
+    "src/lob_forge/boundary_tardis_features.py": "a15f853b220835a9645f677f183c0e2d8d9174081c504af985240b5381156873",
+    "src/lob_forge/boundary_tardis_inputs.py": "f98663831e146b9b5fc7d3eaf601bbc4fd7db1bcb66f6e812b823ededa4f8c0a",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "tests/test_boundary_tardis_features.py": "090ce2bd027a3e7e390b9007016edceb59d9f39a96cd2e282772963b36988d69",
+    "tests/test_boundary_tardis_inputs.py": "050abd25bd9f79be7b3e6b66ef8b7c85b5ec9c15d3cafc967ef2b7630f526dc0"
+  },
+  "source_timing": "Each depth feature requires both captured-source and publisher dependencies strictly before decision minus the registered 100ms or 500ms delay. The source preparation separately requires the latest depth to be fresh, and preserves continuous best-quote range certificates without assuming a nominal price tick. The original Binance source and exact five-second label remain unchanged.",
+  "validation": "Three feature/loader tests verify strict dual clocks, explicit unavailable masks, label independence, prefix invariance, BBO/deeper separation, exact original rows and disjoint schemas. A complete real paired loader comparison must pass before fitting. Original neural checkpoint and all assessment labels/times must match saved artifacts. New models and predictions require exact save/reload parity."
+}
