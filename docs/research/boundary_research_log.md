@@ -86,6 +86,8 @@ The [broader-cache replay](boundary_broad_accuracy_replay_evidence_20260908.json
 
 The [fresh-date reservation](boundary_confirmation_round2_reservation_20260908.md) is complete: all eighty official archives for June 13 through July 2 are local and match their prospectively frozen SHA256 hashes and byte lengths, totaling 6,101,803,204 bytes. Every archive remains opaque to the research workflow; no new market record, feature, label, model or assessment score was opened or created. These are the twenty chronological successors to the exposed data. A separate model/evaluation protocol must still be frozen before content use, so acquisition alone neither spends a statistical round nor establishes independent predictive or economic gain.
 
+The [broader-audit transfer context](boundary_broad_accuracy_transfer_context_20260908.json) regroups only previously revealed results. The current observation blend gains 6.3951 balanced-accuracy points over the original registered reference on the recent three dates, but only 0.8297 points over the earlier blend using the same forecast-prior rule. That earlier blend scores 56.3124% on those three dates and 53.0854% on the other seventeen. This reinforces the need for the already scheduled twenty-date audit; it is no new model result, fresh inference or change to the registered execution order.
+
 ## Reproduction and validation
 
 The branch preserves each research family in a separate commit. Legacy protocols pin source hashes and must be replayed at their matching commit. Re-running legacy scripts against corrected label code is intentionally rejected by provenance checks.

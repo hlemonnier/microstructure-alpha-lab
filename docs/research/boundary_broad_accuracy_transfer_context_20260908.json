@@ -1,0 +1,295 @@
+{
+  "active_stochastic_boost_scores_opened": false,
+  "complete_prior_source_policy_comparisons": [
+    {
+      "partitions": {
+        "all_twenty": {
+          "asset_date_panels": 40,
+          "balanced_accuracy": 0.5060847569384069,
+          "dates": 20,
+          "log_loss": 0.9601141394341426,
+          "natural_accuracy": 0.5448585572842999
+        },
+        "other_seventeen": {
+          "asset_date_panels": 34,
+          "balanced_accuracy": 0.5058403995278109,
+          "dates": 17,
+          "log_loss": 0.9681480886094779,
+          "natural_accuracy": 0.5371495132706549
+        },
+        "three_recent": {
+          "asset_date_panels": 6,
+          "balanced_accuracy": 0.5074694489317843,
+          "dates": 3,
+          "log_loss": 0.9145884274405761,
+          "natural_accuracy": 0.5885431400282886
+        }
+      },
+      "policy": "registered",
+      "source": "original_reference"
+    },
+    {
+      "partitions": {
+        "all_twenty": {
+          "asset_date_panels": 40,
+          "balanced_accuracy": 0.5082181102457981,
+          "dates": 20,
+          "log_loss": 0.9601141394341426,
+          "natural_accuracy": 0.5448585572842999
+        },
+        "other_seventeen": {
+          "asset_date_panels": 34,
+          "balanced_accuracy": 0.5041315994342885,
+          "dates": 17,
+          "log_loss": 0.9681480886094779,
+          "natural_accuracy": 0.5371495132706549
+        },
+        "three_recent": {
+          "asset_date_panels": 6,
+          "balanced_accuracy": 0.5313750048443519,
+          "dates": 3,
+          "log_loss": 0.9145884274405761,
+          "natural_accuracy": 0.5885431400282886
+        }
+      },
+      "policy": "forecast_3600",
+      "source": "original_reference"
+    },
+    {
+      "partitions": {
+        "all_twenty": {
+          "asset_date_panels": 40,
+          "balanced_accuracy": 0.512411486897894,
+          "dates": 20,
+          "log_loss": 0.9352611891628915,
+          "natural_accuracy": 0.5579101838755304
+        },
+        "other_seventeen": {
+          "asset_date_panels": 34,
+          "balanced_accuracy": 0.5139910072282393,
+          "dates": 17,
+          "log_loss": 0.9519459756316201,
+          "natural_accuracy": 0.5456610366919045
+        },
+        "three_recent": {
+          "asset_date_panels": 6,
+          "balanced_accuracy": 0.5034608716926037,
+          "dates": 3,
+          "log_loss": 0.8407140658400961,
+          "natural_accuracy": 0.6273220179160773
+        }
+      },
+      "policy": "registered",
+      "source": "matched_data_control"
+    },
+    {
+      "partitions": {
+        "all_twenty": {
+          "asset_date_panels": 40,
+          "balanced_accuracy": 0.5160921644173478,
+          "dates": 20,
+          "log_loss": 0.9352611891628915,
+          "natural_accuracy": 0.5579101838755304
+        },
+        "other_seventeen": {
+          "asset_date_panels": 34,
+          "balanced_accuracy": 0.5118775493035044,
+          "dates": 17,
+          "log_loss": 0.9519459756316201,
+          "natural_accuracy": 0.5456610366919045
+        },
+        "three_recent": {
+          "asset_date_panels": 6,
+          "balanced_accuracy": 0.5399749833957941,
+          "dates": 3,
+          "log_loss": 0.8407140658400961,
+          "natural_accuracy": 0.6273220179160773
+        }
+      },
+      "policy": "forecast_3600",
+      "source": "matched_data_control"
+    },
+    {
+      "partitions": {
+        "all_twenty": {
+          "asset_date_panels": 40,
+          "balanced_accuracy": 0.5238929125707633,
+          "dates": 20,
+          "log_loss": 0.8749625627366842,
+          "natural_accuracy": 0.5896322489391796
+        },
+        "other_seventeen": {
+          "asset_date_panels": 34,
+          "balanced_accuracy": 0.5285182617741296,
+          "dates": 17,
+          "log_loss": 0.8932605446112364,
+          "natural_accuracy": 0.5769032365421416
+        },
+        "three_recent": {
+          "asset_date_panels": 6,
+          "balanced_accuracy": 0.4976826004183544,
+          "dates": 3,
+          "log_loss": 0.7712739987808883,
+          "natural_accuracy": 0.6617633191890617
+        }
+      },
+      "policy": "registered",
+      "source": "original_blend"
+    },
+    {
+      "partitions": {
+        "all_twenty": {
+          "asset_date_panels": 40,
+          "balanced_accuracy": 0.5356943538342598,
+          "dates": 20,
+          "log_loss": 0.8749625627366842,
+          "natural_accuracy": 0.5896322489391796
+        },
+        "other_seventeen": {
+          "asset_date_panels": 34,
+          "balanced_accuracy": 0.5308538100784724,
+          "dates": 17,
+          "log_loss": 0.8932605446112364,
+          "natural_accuracy": 0.5769032365421416
+        },
+        "three_recent": {
+          "asset_date_panels": 6,
+          "balanced_accuracy": 0.5631241017837212,
+          "dates": 3,
+          "log_loss": 0.7712739987808883,
+          "natural_accuracy": 0.6617633191890617
+        }
+      },
+      "policy": "forecast_3600",
+      "source": "original_blend"
+    },
+    {
+      "partitions": {
+        "all_twenty": {
+          "asset_date_panels": 40,
+          "balanced_accuracy": 0.52556530973156,
+          "dates": 20,
+          "log_loss": 0.8754743780461095,
+          "natural_accuracy": 0.5892362093352193
+        },
+        "other_seventeen": {
+          "asset_date_panels": 34,
+          "balanced_accuracy": 0.5305514491548641,
+          "dates": 17,
+          "log_loss": 0.893826855969821,
+          "natural_accuracy": 0.5765371495132706
+        },
+        "three_recent": {
+          "asset_date_panels": 6,
+          "balanced_accuracy": 0.49731051966617024,
+          "dates": 3,
+          "log_loss": 0.7714770031450776,
+          "natural_accuracy": 0.6611975483262612
+        }
+      },
+      "policy": "registered",
+      "source": "pooled_balanced_tree_blend"
+    },
+    {
+      "partitions": {
+        "all_twenty": {
+          "asset_date_panels": 40,
+          "balanced_accuracy": 0.5353503914536241,
+          "dates": 20,
+          "log_loss": 0.8754743780461095,
+          "natural_accuracy": 0.5892362093352193
+        },
+        "other_seventeen": {
+          "asset_date_panels": 34,
+          "balanced_accuracy": 0.530573010965701,
+          "dates": 17,
+          "log_loss": 0.893826855969821,
+          "natural_accuracy": 0.5765371495132706
+        },
+        "three_recent": {
+          "asset_date_panels": 6,
+          "balanced_accuracy": 0.5624222142185218,
+          "dates": 3,
+          "log_loss": 0.7714770031450776,
+          "natural_accuracy": 0.6611975483262612
+        }
+      },
+      "policy": "forecast_3600",
+      "source": "pooled_balanced_tree_blend"
+    }
+  ],
+  "current_observation_blend_recent_gain_pp": {
+    "against_earlier_same_policy_original_blend": 0.8296500194900136,
+    "against_original_registered_reference": 6.395115304683707,
+    "against_same_policy_original_reference": 4.004559713426947
+  },
+  "current_three_date_sources": [
+    {
+      "all_twenty": null,
+      "other_dates_status": "not_evaluated_by_this_source",
+      "other_seventeen": null,
+      "policy": "forecast_3600",
+      "source": "observations_blend",
+      "three_recent": {
+        "balanced_accuracy": 0.5714206019786213,
+        "log_loss": 0.7631135070742353,
+        "macro_f1": 0.48902995324311965,
+        "natural_accuracy": 0.6649222065063649
+      }
+    },
+    {
+      "all_twenty": null,
+      "other_dates_status": "not_evaluated_by_this_source",
+      "other_seventeen": null,
+      "policy": "forecast_3600",
+      "source": "combined_instant_hgb_old_neural",
+      "three_recent": {
+        "balanced_accuracy": 0.5734078854692947,
+        "log_loss": 0.7622057348545054,
+        "macro_f1": 0.4902420755020533,
+        "natural_accuracy": 0.6643328618576143
+      }
+    }
+  ],
+  "evidence_status": "descriptive_aggregation_of_previously_revealed_development_results",
+  "fresh_reserved_content_opened": false,
+  "independent_confirmation": false,
+  "market_model_fits": 0,
+  "new_prediction_sources": 0,
+  "other_dates": [
+    "2023-05-24",
+    "2023-05-25",
+    "2023-05-26",
+    "2023-05-27",
+    "2023-05-28",
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-12"
+  ],
+  "prior_reference_asset_date_policy_panels_reproduced_across_source_studies": 12,
+  "recent_dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "recorded_at_utc": "2026-09-08T19:53:45.152993+00:00",
+  "scope": "The date groups were already specified by the broad-audit definition. These are descriptive regroupings after all prior source scores were revealed, not a newly preregistered experiment or fresh inference. Every listed source/policy retains all twenty dates; the current observation and combined sources have only three-date evidence. This changes no model, source selection, registered schedule or success gate.",
+  "sources": {
+    "docs/research/boundary_broad_accuracy_definition_20260908.json": "7d7b3169c504b50ad06e48bf1ba1a0c365050980ef608e145ed15c4af84ff413",
+    "docs/research/boundary_retrieval_evidence_20260908.json": "870476ed324fd2a7aa6379b1806b2d8c8c4cf8fd860b9a9bf1fcdd09421b3484",
+    "docs/research/boundary_same_day_priors_evidence_20260907.json": "20f516d9e8402e33d67bb5e794173fca97244b385fd7b696c579370a97334810",
+    "results/boundary_retrieval_screen_20260908/summary.json": "9b4d9494940ca333579c4bbb7ba5c2b21635bfd8ecc1cdc2c46273fa4fe0b58b",
+    "results/boundary_same_day_priors_20260907/summary.json": "60cae5449b85ace7fa0b4583c383f9ae8233b73de2ec30c35245d357beda9813"
+  },
+  "subgroups_from_existing_definition": "docs/research/boundary_broad_accuracy_definition_20260908.json",
+  "substantial_gain_confirmed": false
+}

@@ -1,8 +1,21 @@
 # Twenty-date observation-model audit: data ready
 
-The data preparation is complete. No model has been fitted by this audit and no new accuracy result has been computed. Its purpose is to test the existing 220-feature neural/tree procedure across all twenty previously exposed dates, instead of relying only on June 3, 7 and 11.
+The data preparation is complete, and this audit's forty model fits remain pending. The diagnostic below regroups previously revealed scores. The audit will test the existing 220-feature neural/tree procedure across all twenty previously exposed dates, extending the three-date comparison on June 3, 7 and 11.
 
 The observation-only blend scores 57.1421% on those three dates, just 0.1987 percentage points below the strongest retained 57.3408% procedure. It is a useful fixed baseline for checking transfer because it requires no additional venue feed. Those figures are development results, not a projection for the other dates.
+
+## Why broader date coverage matters
+
+The [descriptive comparison of already revealed results](boundary_broad_accuracy_transfer_context_20260908.json) uses the three recent dates and the other seventeen dates already fixed by this audit. The original reference is unchanged; `forecast_3600` denotes the existing causal forecast-prior decision rule.
+
+| Existing forecast | Three recent dates | Other seventeen dates | All twenty dates |
+| --- | ---: | ---: | ---: |
+| Original reference, registered rule | 50.7469% | 50.5840% | 50.6085% |
+| Original reference, forecast_3600 | 53.1375% | 50.4132% | 50.8218% |
+| Earlier original blend, forecast_3600 | 56.3124% | 53.0854% | 53.5694% |
+| Current observation blend, forecast_3600 | 57.1421% | Pending | Pending |
+
+The current observation blend gains 6.3951 percentage points over the original registered reference on the recent three-date sample. Its gain is 4.0046 points against that reference using the same decision rule, and 0.8297 points against the earlier blend using that rule. The earlier blend's stronger score on the recent subgroup shows why the three-date difference cannot establish transfer. These are exposed-data descriptions; the full twenty-date retraining and later fresh confirmation remain necessary. No schedule, fitting rule or success threshold changes.
 
 ## Verified data
 
