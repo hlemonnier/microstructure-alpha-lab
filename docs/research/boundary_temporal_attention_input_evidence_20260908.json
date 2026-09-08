@@ -1,0 +1,61 @@
+{
+  "attention_runtime_cases_run": 0,
+  "backend_scope": "Original frozen CPU model inference only. No attention fitting, full-size attention runtime case or MPS attention validation.",
+  "current_stochastic_boost_scores_opened": false,
+  "family_inventory_check": {
+    "fixed_blends": 16,
+    "matched_references_valid": true,
+    "new_models": 8,
+    "panels": 3360,
+    "retained": 256,
+    "unique_sources": 280
+  },
+  "fresh_confirmation_content_opened": false,
+  "historical_and_validation_release_cutoffs_passed": true,
+  "market_model_fits": 0,
+  "new_assessment_metrics_computed": false,
+  "original_labels_clocks_priors_and_global_weights_exact": true,
+  "output_artifacts_verified": 17,
+  "protocol": "docs/research/boundary_temporal_attention_input_replay_20260908.json",
+  "protocol_sha256": "0d43c849947a9c9f144a507ae42992a1df66d4cf07b68edcec00ec30b4f45827",
+  "recorded_at_utc": "2026-09-08T21:29:26.853552+00:00",
+  "replayed_historical_logits_exact": true,
+  "replayed_validation_and_query_logits_and_probabilities_exact": true,
+  "representations": {
+    "combined": {
+      "dimensions_by_date": {
+        "2023-06-03": 381,
+        "2023-06-07": 381,
+        "2023-06-11": 381
+      },
+      "query_rows": 42420,
+      "training_rows": 515922,
+      "validation_rows": 42420
+    },
+    "observations": {
+      "dimensions_by_date": {
+        "2023-06-03": 215,
+        "2023-06-07": 215,
+        "2023-06-11": 215
+      },
+      "query_rows": 42420,
+      "training_rows": 515922,
+      "validation_rows": 42420
+    }
+  },
+  "ruff_files_passed": [
+    "scripts/run_boundary_temporal_attention_screen.py",
+    "scripts/verify_boundary_temporal_attention_inputs.py"
+  ],
+  "seconds": 29.193410208972637,
+  "source_artifacts_per_date": [
+    47,
+    47,
+    47
+  ],
+  "source_inventory_scope": "The previously completed retrieval family supplies unchanged original controls for this replay. The future market family must still retain all 256 proper-score sources.",
+  "status": "original_inputs_and_forecasts_reproduced_without_fitting",
+  "summary": "data/research/boundary_temporal_attention_input_replay_20260908/summary.json",
+  "summary_sha256": "82c20ec5e80a5dc2bd8435aeedc5344d82f93be2d3438fae491a101419a33f1a",
+  "training_count_scope": "Each representation replays the same 515922 supervised asset/date observations. Summing the two representations does not mean twice as many independent examples."
+}
