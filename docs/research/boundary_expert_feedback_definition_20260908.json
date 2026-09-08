@@ -1,0 +1,73 @@
+{
+  "adaptive_family": {
+    "contexts": [
+      "global",
+      "confidence_context"
+    ],
+    "half_life_seconds": [
+      300,
+      1800
+    ],
+    "learning_rates": [
+      0.03,
+      0.1
+    ]
+  },
+  "adaptive_trajectories": 48,
+  "assessment": "Freeze all six asset/date trajectories for every case before metric reveal. Compare every adaptive case with frozen-reference, fixed-weight controls, its global/context match, both assets and every date. All dates are exposed development data. The ongoing CatBoost scores are excluded and remain sealed; compare that separately completed family before any later promotion.",
+  "base_model_fits": 0,
+  "causality_and_replay": "Before revealing any family score, require the frozen-reference control to reproduce original complete p and both decision policies exactly. Verify all rows, labels and clocks; exact integer releases >=decision+5100; prefix invariance when unreleased labels or future expert forecasts change; independent explicit discounted-sum parity; exact repeated and saved-trajectory replay.",
+  "context": "Normalize the reference p/prior row to sum one. Context is its argmax class times three plus the top-two margin bin [0,.1), [.1,.25), [.25,1]. Margins exactly .1 and .25 enter the higher bin. Nine contexts; original saved forecast_3600 priors are used.",
+  "controls": [
+    "frozen_reference",
+    "uniform_eight",
+    "fixed_reference_prior"
+  ],
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "discount": "At decision t, S_m(t)=sum_{i:release_i<=t} eta*2^(-(t-decision_i)/(1000*half_life_seconds))*ell_i,m. Apply exponential decay to accumulated state and add each newly released loss exactly once with its original decision age. Do not treat the nominal horizon as the actual release time.",
+  "evidence_status": "development_only_on_exposed_dates",
+  "feedback": "Full-information delayed supervised feedback: once the exact target quote arrives, all experts losses are observable. This is not a bandit or reinforcement-learning environment. Outcomes with release after the current decision never enter state.",
+  "forecast_sources": 11,
+  "hypothesis": "Some complementary expert errors may be predictable from delayed realized losses and the reference confidence context. Test low-dimensional coefficient adaptation without refitting any base learner. The hindsight ceiling is not assumed attainable.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "initial_weights": "Reference receives 1/2; each of the other eight experts receives 1/16. Uniform-eight control assigns 1/8 to each individual and zero to the reference. All states reset independently per asset/date at the first original noon row.",
+  "loss": "For expert m and released label y_i, ell_i,m = (min_c pi_train,c / pi_train,y_i) * 1[d_i,m != y_i], in [0,1]. d_i,m is its frozen forecast_3600 hard decision. The fixed historical prior makes this a bounded proxy for class-balanced error; it is not an exact current balanced-risk loss under prior shift.",
+  "models": [
+    "observations_tree",
+    "observations_neural",
+    "deep500_hgb",
+    "combined_instant_hgb",
+    "combined_piecewise8",
+    "combined_gru_residual",
+    "selected96_c12288_tabicl",
+    "observations_nonlinear_nca",
+    "combined_instant_hgb_old_neural"
+  ],
+  "post_fit_panels": 132,
+  "prediction": "Take the arithmetic mixture of the unchanged natural expert posteriors at the current row. Recompute the existing causal forecast_3600 prior policy for this mixture from the same frozen initial prior. Also retain the original registered historical-prior decision control. Mixture probabilities remain normalized; calibration is not guaranteed.",
+  "primary_sources": [
+    {
+      "scope": "Freund and Schapire 1997 motivates exponential expert weighting; this is not AdaBoost training.",
+      "url": "https://www.sciencedirect.com/science/article/pii/S002200009791504X"
+    },
+    {
+      "scope": "Joulani et al. 2013 motivates treating actual delayed feedback explicitly; the registered procedure is not a replication of their meta-algorithm guarantees.",
+      "url": "https://proceedings.mlr.press/v28/joulani13.html"
+    }
+  ],
+  "reference": "combined_instant_hgb_old_neural",
+  "registered_at_utc": "2026-09-08T18:27:58.421737+00:00",
+  "resources": "This is a small coefficient-only study over nine saved forecast vectors, not a substantial base-model fit. Use one CPU thread, sampled RSS below 1 GiB and 60 seconds per asset/date trajectory; first run a bounded full-length synthetic case. It may run alongside the existing two-thread boosting worker only after passing that small resource preflight. Do not change any pinned source or input of the running boosting family.",
+  "source_run": "results/boundary_retrieval_screen_20260908",
+  "stochastic_boost_assessment_scores_inspected": false,
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "theory_scope": "Classical expert-advice results concern their stated loss/game. Discounting, confidence contexts, delayed feedback, class-prior mismatch and argmax of a probability mixture change that setting. No regret bound or guaranteed balanced-accuracy gain is claimed for this registered finite procedure.",
+  "weights": "Global weights are softmax(log(initial_weights)-S_global). Mix 95% learned weights with 5% initial weights. Context variant averages this result with the identically floored softmax from only historical rows in the current confidence context. No gate networks or fitted thresholds."
+}
