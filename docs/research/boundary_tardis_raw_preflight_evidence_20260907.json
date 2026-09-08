@@ -1,0 +1,142 @@
+{
+  "assessment_labels_read": false,
+  "code_hashes": {
+    "scripts/assess_boundary_tardis_preflight.py": "3fa60974ba0f8828afcaaf084defa181606353b789668dc766e9e3b3f139bb45",
+    "src/lob_forge/boundary_tardis_depth.py": "366ce578f0d6eb673998c8978a25113d8fce4058ad167c5e879e4c98abf378d7",
+    "tests/test_boundary_tardis_depth.py": "bc2afb6941f1e1fbfef6314d39482efb3c40e55633c9c5bc7e9ebeca1d4cec75"
+  },
+  "disconnects": 0,
+  "first_capture_ns": 1685577600008808300,
+  "format": "plain_ndjson_despite_gz_suffix",
+  "headers_sha256": "8fffe8114827f65d9fdbebe68d7e506de9db96f7fdc6622a714297193b9f6a11",
+  "http_status": 200,
+  "last_capture_ns": 1685577659993277400,
+  "lines": 17441,
+  "model_fits": 0,
+  "protocol_sha256": "b62004ee9c3709fdcc821bbb888565cae04dc64fb3aab4640d4affdd99db1e80",
+  "publisher_clock_discrepancy": "docs/research/boundary_tardis_raw_clock_findings_20260907.json",
+  "records": [
+    {
+      "applied_deltas": 1543,
+      "buffer_evictions": 0,
+      "depth_quote_mismatches": 0,
+      "depth_states_compared_to_latest_quote_by_update_id": 1541,
+      "futures_snapshot_bridge_and_pu_continuity_passed": true,
+      "initial_snapshot_frontier_enforced": true,
+      "latest_quote_mismatches": 0,
+      "native_messages": {
+        "bookTicker": 7644,
+        "depth": 1556,
+        "depthSnapshot": 1
+      },
+      "native_quote_ids_absent_from_official_day": 1,
+      "native_quotes": 7644,
+      "observed_capture_minus_publisher_ms": {
+        "bookTicker": {
+          "max": 574.744,
+          "median": 3.46415,
+          "min": 1.9752,
+          "negative_count": 0
+        },
+        "depth": {
+          "max": 571.6212,
+          "median": 2.45495,
+          "min": 1.879,
+          "negative_count": 0
+        },
+        "depthSnapshot": {
+          "max": 1201.379,
+          "median": 1201.379,
+          "min": 1201.379,
+          "negative_count": 0
+        }
+      },
+      "official_archive_path": "data/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-01.zip",
+      "official_archive_sha256": "4c2eacb52de302de717cf7c7d4193cb80ae1bc7da4bfa1c1dcfd60a9b32ae28c",
+      "official_quote_comparison_fields": [
+        "ask",
+        "ask_qty",
+        "bid",
+        "bid_qty",
+        "transaction_time"
+      ],
+      "official_quote_mismatches": 0,
+      "provider_minus_official_publisher_ms": {
+        "different_count": 3775,
+        "max": 72,
+        "median": 0,
+        "min": -9
+      },
+      "reconstructible_top25_states": 1541,
+      "shared_depth_quote_update_ids": 136,
+      "shared_official_quote_update_ids": 7643,
+      "snapshot_capture_not_backdated": true,
+      "snapshots": 1,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "applied_deltas": 1562,
+      "buffer_evictions": 0,
+      "depth_quote_mismatches": 0,
+      "depth_states_compared_to_latest_quote_by_update_id": 1560,
+      "futures_snapshot_bridge_and_pu_continuity_passed": true,
+      "initial_snapshot_frontier_enforced": true,
+      "latest_quote_mismatches": 0,
+      "native_messages": {
+        "bookTicker": 6665,
+        "depth": 1574,
+        "depthSnapshot": 1
+      },
+      "native_quote_ids_absent_from_official_day": 0,
+      "native_quotes": 6665,
+      "observed_capture_minus_publisher_ms": {
+        "bookTicker": {
+          "max": 573.5434,
+          "median": 4.0861,
+          "min": 1.8953,
+          "negative_count": 0
+        },
+        "depth": {
+          "max": 571.3795,
+          "median": 2.1798,
+          "min": 1.699,
+          "negative_count": 0
+        },
+        "depthSnapshot": {
+          "max": 1052.9252,
+          "median": 1052.9252,
+          "min": 1052.9252,
+          "negative_count": 0
+        }
+      },
+      "official_archive_path": "data/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-01.zip",
+      "official_archive_sha256": "934e1464b24726be58c27c884b4b3c312b2b40ef7b5cb88c5272e20379bae752",
+      "official_quote_comparison_fields": [
+        "ask",
+        "ask_qty",
+        "bid",
+        "bid_qty",
+        "transaction_time"
+      ],
+      "official_quote_mismatches": 0,
+      "provider_minus_official_publisher_ms": {
+        "different_count": 3015,
+        "max": 38,
+        "median": 0,
+        "min": -5
+      },
+      "reconstructible_top25_states": 1560,
+      "shared_depth_quote_update_ids": 107,
+      "shared_official_quote_update_ids": 6665,
+      "snapshot_capture_not_backdated": true,
+      "snapshots": 1,
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "scope": "One-minute reconstructibility and official quote parity only. No whole-day availability or predictive performance claim.",
+  "source_bytes": 6499271,
+  "source_path": "data/research/boundary_tardis_raw_preflight_20260907/minute0.ndjson.gz",
+  "source_sha256": "8d7daebbbda6168df8891e9f54d993e4b6c132a4156f5c9f0fc54b6d8267bf2d",
+  "substantial_gain_confirmed": false,
+  "transport_amendment_sha256": "c0d0f13542f1d8dab3e0f0dec25fe46e64d89692f41200556e09413a5de74506"
+}

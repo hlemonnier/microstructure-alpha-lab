@@ -1,0 +1,9 @@
+{
+  "amendment": "Permit parsing this successful plain NDJSON response, preserving its original bytes and filename. No additional requests, dates, labels or model fits. Do not treat its .gz suffix as an encoding assertion.",
+  "observed_transport": "HTTP 200, Content-Type application/json, no Content-Encoding; payload begins with an ISO capture timestamp despite compression=gzip request parameter.",
+  "parent_protocol_sha256": "b62004ee9c3709fdcc821bbb888565cae04dc64fb3aab4640d4affdd99db1e80",
+  "payload_shape_already_inspected": "First 2500 text characters only; no full stream counts, snapshot inventory or replay outcomes inspected.",
+  "registered_at_utc": "2026-09-07T23:39:06.487204+00:00",
+  "response_bytes": 6499271,
+  "response_sha256": "8d7daebbbda6168df8891e9f54d993e4b6c132a4156f5c9f0fc54b6d8267bf2d"
+}

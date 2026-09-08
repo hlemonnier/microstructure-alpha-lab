@@ -1,0 +1,21 @@
+{
+  "failure_log_path": "data/research/boundary_tardis_raw_preflight_20260907/initial_parity_failure.log",
+  "failure_log_sha256": "60d080ac38eaf18c4126019372ac3672e26af26e4dfbcce30452b0d192b15b6a",
+  "followup": "Keep strict exact BBO/T content comparison and report all E differences separately. Preserve both original target/feature clocks and provider capture/E clocks. Any new feature join must use provider capture availability and its own stated information delay, never replace official timestamps by provider E. No labels or models are changed.",
+  "initial_assessor_sha256": "784d00872fca6f0601fe3af3bd411e91fb2f3d65cd6193e161a92dbbb068f994",
+  "initial_check": "Require identical BBO prices, quantities, transaction timestamp T and publisher timestamp E at shared update IDs across provider and official Binance archive.",
+  "interpretation": "Distinct publisher-clock observations cannot be treated as identical records even with the same economic update. No claim about the mechanism of the timestamp discrepancy is established by this sample.",
+  "model_fits": 0,
+  "observed_provider_minus_official_E_ms_ranges": {
+    "BTCUSDT": [
+      -9,
+      72
+    ],
+    "ETHUSDT": [
+      -5,
+      38
+    ]
+  },
+  "outcome": "Full tuple equality failed. BBO values and T agree at all 14308 common quote IDs; E differs for 3775/7643 BTC IDs and 3015/6665 ETH IDs.",
+  "recorded_at_utc": "2026-09-07T23:52:01.295341+00:00"
+}

@@ -1,0 +1,48 @@
+{
+  "authentication": "None; official HTTP API documentation permits the first day of each month without an API key. No challenge solving, credentials, subscription or payment.",
+  "checks": "Record HTTP status, response headers, byte count and SHA256. Parse provider capture timestamps and exchange-native messages only after validating successful compressed data. Check whether usable initial snapshots and sequential depth updates are present. Do not infer reconstructibility from metadata alone.",
+  "endpoint": "https://api.tardis.dev/v1/data-feeds/binance-futures",
+  "limits": {
+    "compressed_bytes": 20971520,
+    "requests": 1,
+    "timeout_seconds": 30
+  },
+  "metadata_path": "data/research/boundary_tardis_raw_preflight_20260907/exchange.json",
+  "metadata_sha256": "2a2824d0192365aa104a6f6e35fc7b29a5b54d0e1e45bb5747e01192ef80d79d",
+  "model_fits": 0,
+  "parameters": {
+    "compression": "gzip",
+    "filters": [
+      {
+        "channel": "depth",
+        "symbols": [
+          "btcusdt",
+          "ethusdt"
+        ]
+      },
+      {
+        "channel": "depthSnapshot",
+        "symbols": [
+          "btcusdt",
+          "ethusdt"
+        ]
+      },
+      {
+        "channel": "bookTicker",
+        "symbols": [
+          "btcusdt",
+          "ethusdt"
+        ]
+      }
+    ],
+    "from": "2023-06-01",
+    "offset": 0,
+    "sliceSize": 1
+  },
+  "primary_sources": [
+    "https://docs.tardis.dev/api/http-api-reference.md",
+    "https://docs.tardis.dev/historical-data-details/binance-futures.md"
+  ],
+  "purpose": "Test the providers documented, unauthenticated first-day raw-data API as a distinct public interface from the previously unavailable daily CSV download. Inspect one minute only; no fitted model, labels or assessment outcomes.",
+  "registered_at_utc": "2026-09-07T23:31:42.670187+00:00"
+}
