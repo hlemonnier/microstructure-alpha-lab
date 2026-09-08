@@ -1,0 +1,107 @@
+{
+  "assessment_metrics_computed": false,
+  "completed_synthetic_context_procedures": 2,
+  "cpu_mps_probability_agreement": "Not measured: both MPS procedures stopped at the registered sampled memory ceiling before completing their checks. CPU records contain a zero initialization in that field; it is not evidence of cross-backend agreement.",
+  "cpu_records": [
+    {
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "causality_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "shorter_prefix": 0.0,
+        "single_query": 2.224660729965855e-06
+      },
+      "checkpoint_forecasts_exact": true,
+      "context_rows": 3072,
+      "cpu_mps_probability_max_absolute_error": 0.0,
+      "features_including_asset": 97,
+      "fit_save_reload_ready_seconds": 20.621331417001784,
+      "fit_seconds": 19.25385500001721,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 3145531392,
+        "maximum_sampled_simultaneous_sum_bytes": 3145531392
+      },
+      "memory_scope": "Sampled process RSS and MPS driver allocation; their simultaneous sum may double-count unified memory and is not an instantaneous hard peak.",
+      "pretrained_weights_unchanged": true,
+      "projected_ready_plus_full_query_seconds": 79.27504792743412,
+      "query_repetition_seconds": [
+        2.145780958002433,
+        2.123812082980294,
+        2.0586133330361918
+      ],
+      "query_rows": 512,
+      "repeated_query_forecasts_exact": true,
+      "seconds": 32.47056866600178,
+      "status": "passed"
+    },
+    {
+      "assessment_metrics_computed": false,
+      "backend": "cpu",
+      "causality_max_absolute_errors": {
+        "future_prefix": 0.0,
+        "shorter_prefix": 0.0,
+        "single_query": 1.1792431410251325e-06
+      },
+      "checkpoint_forecasts_exact": true,
+      "context_rows": 12288,
+      "cpu_mps_probability_max_absolute_error": 0.0,
+      "features_including_asset": 97,
+      "fit_save_reload_ready_seconds": 199.8170756669715,
+      "fit_seconds": 192.52002004202222,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 7383793664,
+        "maximum_sampled_simultaneous_sum_bytes": 7383793664
+      },
+      "memory_scope": "Sampled process RSS and MPS driver allocation; their simultaneous sum may double-count unified memory and is not an instantaneous hard peak.",
+      "pretrained_weights_unchanged": true,
+      "projected_ready_plus_full_query_seconds": 291.5343295711882,
+      "query_repetition_seconds": [
+        3.276669082988519,
+        3.3210207920055836,
+        3.5272730420110747
+      ],
+      "query_rows": 512,
+      "repeated_query_forecasts_exact": true,
+      "seconds": 219.39406987500843,
+      "status": "passed"
+    }
+  ],
+  "failed_synthetic_context_procedures": 2,
+  "interpretation": "CPU passes both original registered sizes, exact same-backend checkpoint/repeat checks, and causality tolerances. MPS is ineligible. Only CPU may be used by the subsequent market screen; neither context size nor any tolerance is relaxed. These checks establish local synthetic feasibility, not accuracy or live trading latency.",
+  "market_model_fits": 0,
+  "maximum_cpu_query_partition_error": 2.224660729965855e-06,
+  "maximum_cpu_sampled_rss_bytes": 7383793664,
+  "mps_failures": {
+    "12288": {
+      "gpu_driver_bytes": 15884304384,
+      "readings": {
+        "maximum_sampled_gpu_driver_bytes": 15884304384,
+        "maximum_sampled_rss_bytes": 709525504,
+        "maximum_sampled_simultaneous_sum_bytes": 15935422464
+      },
+      "reason": "registered_sampled_memory_ceiling",
+      "rss_bytes": 51118080
+    },
+    "3072": {
+      "gpu_driver_bytes": 12938133504,
+      "readings": {
+        "maximum_sampled_gpu_driver_bytes": 12938133504,
+        "maximum_sampled_rss_bytes": 609796096,
+        "maximum_sampled_simultaneous_sum_bytes": 12982484992
+      },
+      "reason": "registered_sampled_memory_ceiling",
+      "rss_bytes": 44351488
+    }
+  },
+  "procedure_attempts": 4,
+  "protocol": "docs/research/boundary_tabicl_feature_budget_preflight_20260908.json",
+  "protocol_sha256": "23448e63dbadd452aa89f8c32fb350af4943cf4f2de317ff69e68b67a2fd2e34",
+  "recorded_at_utc": "2026-09-08T15:03:59.041920+00:00",
+  "selected_backend": "cpu",
+  "summary": "data/research/boundary_tabicl_feature_budget_preflight_20260908/summary.json",
+  "summary_sha256": "de36bb0734d3b61b6bc8c9ab74e91ffd4bd0d7fb52097e4f28f239dd4912eec0"
+}
