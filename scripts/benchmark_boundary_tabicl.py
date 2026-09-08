@@ -83,24 +83,28 @@ def run(protocol_path, output):
         environment = {**os.environ, "HF_HUB_OFFLINE": "1", "HF_HUB_DISABLE_IMPLICIT_TOKEN": "1"}
         with log.open("w") as stream:
             process = subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT, env=environment)
+            write_json(output / f"case_{index}_launch.json", {"worker_pid": process.pid, "command": command})
             monitored = psutil.Process(process.pid)
-            while process.poll() is None:
-                try:
-                    rss = monitored.memory_info().rss + sum(child.memory_info().rss for child in monitored.children(recursive=True))
-                    peak = max(peak, rss)
-                except psutil.NoSuchProcess:
-                    pass
-                if peak > protocol["per_case_rss_limit_bytes"]:
-                    reason = "registered_rss_limit"
-                elif time.monotonic() - start > protocol["per_case_seconds_limit"]:
-                    reason = "registered_time_limit"
-                if reason:
+            try:
+                while process.poll() is None:
+                    try:
+                        peak = max(peak, monitored.memory_info().rss)
+                    except psutil.NoSuchProcess:
+                        pass
+                    if peak > protocol["per_case_rss_limit_bytes"]:
+                        reason = "registered_worker_rss_limit"
+                    elif time.monotonic() - start > protocol["per_case_seconds_limit"]:
+                        reason = "registered_time_limit"
+                    if reason:
+                        process.kill()
+                        break
+                    time.sleep(.2)
+            finally:
+                if process.poll() is None:
                     process.kill()
-                    break
-                time.sleep(.2)
-            code = process.wait()
+                code = process.wait()
         record = {"case": case, "returncode": code, "stop_reason": reason, "seconds": time.monotonic() - start,
-            "peak_observed_process_tree_rss_bytes": peak, "log_sha256": sha256_file(log)}
+            "peak_observed_worker_rss_bytes": peak, "log_sha256": sha256_file(log)}
         if destination.exists():
             record["result"] = json.loads(destination.read_text())
             record["result_sha256"] = sha256_file(destination)
@@ -109,7 +113,7 @@ def run(protocol_path, output):
         print(f"tabicl_synthetic_case={index + 1}/{len(protocol['cases'])} status={code} seconds={record['seconds']:.1f}", flush=True)
     write_json(output / "summary.json", {"protocol_sha256": sha256_file(protocol_path), "records": records,
         "evidence_status": "synthetic_operational_and_causality_checks_only", "market_model_procedures": 0,
-        "interpretation": "Synthetic CPU feasibility and conditional query invariance only. No market observations, targets or accuracy scores were read. RSS is polled and may miss shorter peaks; time and memory stops are operational limits, not empirical accuracy failures."})
+        "interpretation": "Synthetic CPU feasibility and conditional query invariance only. No market observations, targets or accuracy scores were read. The numerical worker uses two threads; only its own RSS is polled, without enumerating unrelated processes. Polling may miss shorter peaks; time and memory stops are operational limits, not empirical accuracy failures."})
 
 
 if __name__ == "__main__":
