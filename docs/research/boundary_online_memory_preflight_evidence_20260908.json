@@ -1,0 +1,88 @@
+{
+  "actual_market_performance_established": false,
+  "assessment_metrics_computed": false,
+  "dependencies": {
+    "numpy": "2.0.2",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.5.2",
+    "scipy": "1.18.1",
+    "torch": "2.8.0"
+  },
+  "market_model_fits": 0,
+  "preflight_protocol": "docs/research/boundary_online_memory_preflight_20260908.json",
+  "preflight_protocol_sha256": "9bd9e5a5885cf2c4ed6afcf649a0e8be6d2221140326cc6ead852ff5d3869934",
+  "python": "3.12.14",
+  "recorded_at_utc": "2026-09-08T04:42:02.176496+00:00",
+  "records": [
+    {
+      "assessment_metrics_computed": false,
+      "dimensions": 220,
+      "finite_normalized_forecasts": true,
+      "kind": "prequential",
+      "maximum_update_seconds": 0.05466683302074671,
+      "optimizer_steps": 180,
+      "process_high_water_rss_bytes": 572899328,
+      "publication_allowance_seconds": 10,
+      "query_rows": 14140,
+      "replay_rows": 6144,
+      "seconds": 4.03970066702459
+    },
+    {
+      "assessment_metrics_computed": false,
+      "dimensions": 399,
+      "finite_normalized_forecasts": true,
+      "kind": "prequential",
+      "maximum_update_seconds": 0.01551841601030901,
+      "optimizer_steps": 180,
+      "process_high_water_rss_bytes": 851427328,
+      "publication_allowance_seconds": 10,
+      "query_rows": 14140,
+      "replay_rows": 6144,
+      "seconds": 4.711147458001506
+    },
+    {
+      "chunk_rows": 2048,
+      "chunking_max_errors": {
+        "ema": 0.0,
+        "instant": 0.0,
+        "reservoir": 0.0
+      },
+      "dimensions": 220,
+      "finite_bounded_states": true,
+      "first_observation_time": 0,
+      "future_prefix_max_error": 0,
+      "kind": "fading_memory",
+      "last_observation_time": 16383000,
+      "observations_per_second": 16256.10509299645,
+      "observed_rows": 16384,
+      "process_high_water_rss_bytes": 947306496,
+      "retained_rows": 4096,
+      "seconds": 1.0078675000113435,
+      "shorter_stream_max_error": 0,
+      "state_resets": 1
+    },
+    {
+      "chunk_rows": 2048,
+      "chunking_max_errors": {
+        "ema": 0.0,
+        "instant": 0.0,
+        "reservoir": 0.0
+      },
+      "dimensions": 399,
+      "finite_bounded_states": true,
+      "first_observation_time": 0,
+      "future_prefix_max_error": 0,
+      "kind": "fading_memory",
+      "last_observation_time": 16383000,
+      "observations_per_second": 10165.263344737623,
+      "observed_rows": 16384,
+      "process_high_water_rss_bytes": 1051951104,
+      "retained_rows": 4096,
+      "seconds": 1.611763458000496,
+      "shorter_stream_max_error": 0,
+      "state_resets": 1
+    }
+  ],
+  "summary": "data/research/boundary_online_memory_preflight_20260908/summary.json",
+  "summary_sha256": "2ca0222d53de2c6e74c9c27de9a5a9760145223ea103a4c2fffd89c606537a99"
+}
