@@ -1,0 +1,44 @@
+{
+  "approved_unsandboxed_mps_available": true,
+  "assessment_metrics_computed": false,
+  "cuda_available": false,
+  "current_frozen_experiments": "Retain their registered two-thread CPU backend. Any future GPU model requires a separately pinned synthetic runtime and numerical-causality assessment before market fitting.",
+  "filesystem_sandbox_mps_available": false,
+  "interpretation": "The earlier CPU-only capability reading described the filesystem-sandbox context, not a hardware limitation. Approved local execution exposes the Mac GPU. Tiny GRU and LSTM forward/backward operations succeed. This establishes availability, not production throughput, memory feasibility, deterministic equivalence or predictive gain.",
+  "logical_cpus": 10,
+  "machine": "arm64",
+  "market_model_fits": 0,
+  "mps_built": true,
+  "operating_system": "Darwin",
+  "operator_probe": "data/research/boundary_mps_operator_probe_20260908.json",
+  "operator_probe_sha256": "9498733e562991e6573268b0c66fc7836868eb3f54916addecd31c4ad9c554d9",
+  "operator_results": [
+    {
+      "allocated_bytes": 17664,
+      "finite_input_gradient": true,
+      "finite_output": true,
+      "operator": "gru",
+      "output_shape": [
+        2,
+        8,
+        16
+      ],
+      "status": "passed"
+    },
+    {
+      "allocated_bytes": 20992,
+      "finite_input_gradient": true,
+      "finite_output": true,
+      "operator": "lstm",
+      "output_shape": [
+        2,
+        8,
+        16
+      ],
+      "status": "passed"
+    }
+  ],
+  "optimizer_steps": 0,
+  "recorded_at_utc": "2026-09-08T05:11:00.250105+00:00",
+  "torch": "2.8.0"
+}
