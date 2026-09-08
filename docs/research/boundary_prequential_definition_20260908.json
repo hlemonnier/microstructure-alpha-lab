@@ -1,0 +1,80 @@
+{
+  "assessment": "All original 7070 noon observations per asset/date, 42420 distinct rows across three exposed dates. Retain all 73 sources registered in the transformer screen, irrespective of their as-yet unseen scores. For each of ten new trajectory outputs per date, retain standalone forecasts and fixed 50/50 blends with the historical matched-representation HGB and deep500_hgb.",
+  "bias_trajectories": 6,
+  "clock": "Reset from the original checkpoint at 11:00 each date. At each integer UTC minute 11:00 through 13:59, train using source decisions in the previous 1800 seconds whose actual future quote time plus 100ms is at or before that minute. Publish that update ten seconds later; the previous model supplies all predictions before publication. Each update must complete within the fixed ten-second allowance. Preserve and reject any timing violation as operationally infeasible rather than changing its delay after scores. No current or future label may enter its own prediction.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "feedback_semantics": "Canonical actual future_event_time plus a separately imposed 100ms observation allowance. Window age is measured from source decision time. Every query retains its original five-second exact label. Earlier assessment outcomes may train later forecasts only after release; this is a prequential deployment procedure, not an independent row-by-row fixed-model test.",
+  "frozen_reproduction_trajectories": 6,
+  "full_network_trajectories": 18,
+  "hypothesis": "Within-session supervised adaptation can track changing feature/target relationships that fixed noon checkpoints and prior-only updates cannot. Historical class-balanced replay may constrain forgetting. This is delayed-feedback supervised learning, with prediction before feedback, and is distinct from the completed pre-noon fine-tuning and three-bias calibration studies.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "maximum_optimizer_steps": 4320,
+  "model_trajectories": 30,
+  "model_trajectories_started": false,
+  "optimization": "One AdamW step per minute on the exact aggregate gradient (1-replay_weight)*L_recent + replay_weight*L_historical. Accumulate losses in batches of 1024 with each batch sum divided by its full cohort size, then clip gradient norm at five and step once. Full-network weight decay .01. The bias control freezes all original parameters and updates a zero-initialized 2-by-3 asset-specific logit offset with zero weight decay. Adam state persists within one date only. CPU two threads, deterministic seed 20260908. No epoch selection, validation-based tuning or stopping based on assessment performance.",
+  "planned_updates_per_adaptive_trajectory": 180,
+  "post_fit_panels": 1236,
+  "prediction": "Natural probabilities always use original per-asset training priors after softmax of current logits and optional bias. Zero adaptation uses the original full-noon prediction path and must reproduce saved forecasts exactly. Changing future features or not-yet-released labels must leave earlier adaptive predictions unchanged, including during the ten-second publication interval.",
+  "primary_policy": "Unchanged prediction-only one-hour prior adaptation initialized from the same pre-noon prior. Secondary registered policy uses the same common full historical observations_tree prior for new outputs; preserve old controls exactly.",
+  "primary_sources": [
+    {
+      "scope": "Pham et al. motivate combining fast adaptation and stored past knowledge in online forecasting. This proposed update is not their FSNet architecture.",
+      "url": "https://arxiv.org/abs/2202.11672"
+    },
+    {
+      "scope": "Csaba et al. explicitly separate delayed label arrival from current input arrival and study memory replay. Their vision-stream gains do not transfer to this market task; our replay is class-balanced historical sampling, not their importance-weighted feature matching.",
+      "url": "https://arxiv.org/abs/2312.00923"
+    },
+    {
+      "scope": "Kim et al. motivate test-time forecasting adaptation with newly observed outcomes. Our three-class target has a single full future release; no partially observed target is substituted.",
+      "url": "https://arxiv.org/abs/2501.04970"
+    }
+  ],
+  "promotion": "Exposed-date development only. Any promising result needs a separately frozen independent-date confirmation of the complete causal online procedure, including warmup, delayed feedback, replay and publication timing. No generic online-learning theorem guarantees market improvement or removes date dependence.",
+  "recent_objective": "Compute class frequencies using only the released 30-minute window, separately per asset. The original network logits z recover natural probabilities as normalize(softmax(z)*pi_original). Therefore recent balanced CE uses logits z + log(pi_original) - log(pi_recent), with weight N/(6*n_asset_class) per example. This preserves the original inference posterior contract while fitting the recent population. Skip an update, for every corresponding variant, if any asset/class cell is absent.",
+  "registered_at_utc": "2026-09-08T03:28:56.122609+00:00",
+  "replay": "Draw one immutable historical bank of at most 6144 unique rows, equal counts in each asset/class cell, from the same original four-day training cohort using seed 20260908. Retain original cohort priors. Under this stratified sampling, unweighted CE on original logits z estimates the original equal-asset/class objective; do not replace the original prior by the bank sampling prior. Use every bank row when replay_weight=.5.",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "starting_checkpoints": "Exact existing single-member 64-by-64 observations_neural and combined_neural checkpoints, fitted on d-5 through d-2 with the previous noon for epoch selection. Their training-only normalizers, feature schemas and original asset priors remain fixed.",
+  "tabicl_assessment_scores_inspected": false,
+  "validation": "Verify exact class-weighted loss and replay gradients against full-cohort calculations; original/recent logit rebasing; strict release and publication clocks; unchanged forecasts under future-label and future-feature perturbations; prefix behavior; zero-adaptation parity; serialization of network, bias and optimizer state; a finite synthetic delayed-feedback adaptation. Freeze final source/data/checkpoint hashes after implementation and tests. Run after the current transformer family finishes, one substantial learner at a time. Complete all three new trajectories families before inspecting any new scores.",
+  "variants": {
+    "bias_recent": {
+      "learning_rate": 0.001,
+      "replay_weight": 0.0,
+      "scope": "asset_bias"
+    },
+    "frozen": {
+      "learning_rate": 0.0,
+      "replay_weight": 0.0,
+      "scope": "none"
+    },
+    "full_recent": {
+      "learning_rate": 0.0001,
+      "replay_weight": 0.0,
+      "scope": "full_network"
+    },
+    "full_replay": {
+      "learning_rate": 0.0001,
+      "replay_weight": 0.5,
+      "scope": "full_network"
+    },
+    "full_replay_fast": {
+      "learning_rate": 0.0003,
+      "replay_weight": 0.5,
+      "scope": "full_network"
+    }
+  }
+}
