@@ -78,6 +78,8 @@ The later raw quote-sequence screen completed nine fits and 192 panels; none bea
 
 The [twenty-date observation-model audit](boundary_broad_accuracy_preparation_20260908.md) now has its full data cache prepared and verified. Fifty sessions preserve the original 220-feature schema and 282,800 assessment rows, with exact label, clock and storage parity. The two missing June 12 sessions were built from already local official-checksummed files. Its fixed neural/tree anchors and unchanged blend will be fitted after the current boosting and proper-scoring families; those forty fits have not run and the final execution protocol is not yet frozen. The other seventeen dates were also previously exposed, so this broader diagnostic cannot supply independent confirmation.
 
+The completed [error-overlap diagnostic](boundary_error_geometry_report_20260908.md) fits no models. Its fixed eight individual experts plus the retained blend share all wrong decisions on 29.7888% of balanced mass, accounting for 69.8296% of the reference's balanced error. Realized-label selection among their saved decisions yields a 70.2112% hindsight ceiling, not a forecast or a learned gate. Equal probability averaging lowers natural Brier by only 0.1458% relative to the best individual. Every original row and source metric is reproduced, and three independent mathematical tests pass. This supports measuring common errors and causal expert selection; it establishes no new predictive gain.
+
 ## Reproduction and validation
 
 The branch preserves each research family in a separate commit. Legacy protocols pin source hashes and must be replayed at their matching commit. Re-running legacy scripts against corrected label code is intentionally rejected by provenance checks.

@@ -1,0 +1,72 @@
+{
+  "brier_identity": "For the fixed equal mean of eight natural posterior vectors, average squared error minus mean-posterior squared error equals mean squared deviation about the mean, row by row. Verify the independent pair-distance identity in tests. This guarantees improvement over average individual Brier, not over the strongest expert and not in balanced accuracy.",
+  "current_stochastic_boost_scores_opened": false,
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policy": "forecast_3600",
+  "equal_probability_members": [
+    "observations_tree",
+    "observations_neural",
+    "deep500_hgb",
+    "combined_instant_hgb",
+    "combined_piecewise8",
+    "combined_gru_residual",
+    "selected96_c12288_tabicl",
+    "observations_nonlinear_nca"
+  ],
+  "evidence_status": "descriptive_only_on_exposed_dates",
+  "hindsight_ceiling_scope": "Realized labels choose a correct hard decision if any of these nine saved procedures has one. This is an unattainable hindsight selector statistic, not a prediction, Bayes accuracy bound, independent result, or proof that a causal gate can learn the selection. It is only an upper ceiling for choosing among this finite set of saved hard decisions on these same exposed rows.",
+  "input_hashes": {
+    "results/boundary_retrieval_screen_20260908/dates/2023-06-03/completed.json": "8abff66c4371e14e25d05f23448a73798bb39a66f04ba20bf3f9bab0a08de930",
+    "results/boundary_retrieval_screen_20260908/dates/2023-06-07/completed.json": "fea019fb2bf996be428b0ef8f11636a24b50911d40678ed2c095d38915f796d6",
+    "results/boundary_retrieval_screen_20260908/dates/2023-06-11/completed.json": "6a5faebb33a788a8951f447826ccca3870100cd1e3533ba224e8f21fd09afa09",
+    "results/boundary_retrieval_screen_20260908/frozen_screen.json": "3ec84f567704e412c528a99c1fcdbde8a7aa9dff93ac781c5a9b3adde281870b",
+    "results/boundary_retrieval_screen_20260908/summary.json": "9b4d9494940ca333579c4bbb7ba5c2b21635bfd8ecc1cdc2c46273fa4fe0b58b",
+    "scripts/assess_boundary_error_geometry.py": "35ab3d9dc6c1535e71168e430276a10de43b0843972a9e3609a4ba94ac8edc68",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "scripts/run_boundary_event_clock_screen.py": "929ff7adac3dd5d31655b521b85b8db01d15c9a4566317c10620fe7fc08f233d",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_error_geometry.py": "1eaf2efb25e23d0d07a2f761895433787bee09ae2f00b46e5268149b3e07d0ca",
+    "src/lob_forge/study_provenance.py": "4ff68b51ad8e71ed9c192c85f676c654884629906a8ab7b68d286e9405c895a0",
+    "tests/test_boundary_error_geometry.py": "a32c28ac59cf80e1b7357c1f6fcb3dd41a0a7c21faf0889fd99b528b66b99050"
+  },
+  "metric_weights": "Compute balanced masses as sum_i mask_i/(3*n_class(i)) within each asset/date, then average the six panels equally. Natural Brier uses equal row weights within each panel and the same equal panel average. Never subtract the two differently weighted quantities.",
+  "model_fits": 0,
+  "models": [
+    "observations_tree",
+    "observations_neural",
+    "deep500_hgb",
+    "combined_instant_hgb",
+    "combined_piecewise8",
+    "combined_gru_residual",
+    "selected96_c12288_tabicl",
+    "observations_nonlinear_nca",
+    "combined_instant_hgb_old_neural"
+  ],
+  "new_mathematical_tests_passed": 3,
+  "primary_sources": [
+    {
+      "scope": "Squared-error ambiguity decomposition; this diagnostic extends the elementary identity componentwise to three-class probabilities.",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/1994/file/b8c37e33defde51cf91e1e03e51657da-Paper.pdf"
+    },
+    {
+      "scope": "Historical cross-validated combination is a possible later research direction. No Super Learner is fitted, and its asymptotic guarantees are not assumed for these dependent rows.",
+      "url": "https://biostats.bepress.com/ucbbiostat/paper266/"
+    }
+  ],
+  "purpose": "Measure whether completed model errors contain complementary hard decisions and whether the exact Brier ambiguity reduction is material. No learned gate, weight fitting, probability change or model promotion is performed.",
+  "reference": "combined_instant_hgb_old_neural",
+  "registered_at_utc": "2026-09-08T18:11:07.894389+00:00",
+  "reporting": "Report every expert, both assets, all dates, reference-rescue and reference-harm masses, pairwise disagreement, correct-expert-count distribution, unanimous errors, Brier identity and residual geometry. No selection on a displayed subset.",
+  "residual_matrix": "Uncentered vector-residual Gram matrix and cosine under natural row weights. Undefined zero-residual cosine is null. These are not Pearson correlations.",
+  "selection_scope": "Fixed eight representative completed learners plus the strongest retained complete reference. Existing marginal development scores were already known. This is not an unselected library or independent inference.",
+  "source_run": "results/boundary_retrieval_screen_20260908",
+  "source_verification": "Hash protocol inputs before reading results; verify all three completed source inventories transitively; require exact original row/label/clock alignment and reproduce original per-panel balanced accuracies within 1e-12.",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ]
+}
