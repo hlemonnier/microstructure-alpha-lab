@@ -1,0 +1,47 @@
+{
+  "clock": "Update on every available original one-second observation before selecting the existing four-second supervised training rows. Reset states to zero at the start of each asset/day and after any non-one-second gap. Never interpolate missing observations, carry state across gaps, or run the recurrence backward. All original noon rows remain eligible.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "decision_rule": "For new sources, fixed registered denominator is the common original historical observations_tree prior. Primary forecast_3600 uses the exact existing pre-noon initial prior and prediction-only one-hour half-life adaptation. Preserve all old controls and their registered priors exactly.",
+  "drive": "With seed 20260908, draw a Gaussian input matrix with 256 output coordinates, scaled by 1/sqrt(input_dimension), and a Gaussian bias with standard deviation .1. Split into two 128-coordinate drives. Generate one orthogonal recurrent matrix Q by QR with positive diagonal convention; R=.9*Q. All three mechanisms share the exact same drive and random construction within a representation/date.",
+  "evidence_status": "development_only_on_exposed_dates",
+  "fixed_blends": "For each of the six representation/mechanism pairs, retain the 50/50 tree/neural blend. For each of twelve individual learners also retain a 50/50 blend with the original observations_neural and a 50/50 blend with deep500_hgb. Keep the 103 sources of the prequential screen. No weighting search or seed sweep.",
+  "generator_normalizer": "Use the exact existing original neural checkpoint normalizer and active columns for each representation/date; it was fitted only on d-5 through d-2. No new normalization sees validation or assessment data. Include the original asset indicator, -1 for BTC and +1 for ETH, in the projected drive.",
+  "hypothesis": "The completed quote encoder observed finite 64/512-event histories. A continuous nonlinear recurrent state can retain ordered interactions over longer wall-clock intervals, without expensive backpropagation through the full day. Compare it with both instantaneous random features and simple exponential memory to isolate recurrence from added feature capacity.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "mathematical_contract": "Because tanh is one-Lipschitz and ||R||_2=.9, each reservoir block contracts differences in initial states by at most c=1-lambda+lambda*.9, namely .99 and .999 per one-second step. Coordinates remain in [-1,1] from a zero start. These are stability and fading-memory statements, not accuracy guarantees. A fixed 128-state random realization is not guaranteed to attain a universal approximation theorem.",
+  "mechanisms": {
+    "ema": "For each block, s_t=(1-lambda)*s_previous + lambda*tanh(drive_t), with lambda=.1 and .01.",
+    "instant": "Concatenate tanh(drive_fast_t) and tanh(drive_slow_t); no temporal state.",
+    "reservoir": "For each block, s_t=(1-lambda)*s_previous + lambda*tanh(drive_t + R*s_previous), with lambda=.1 and .01."
+  },
+  "model_fits": 36,
+  "partitions": "Original d-5 through d-2 historical cohort at calendar stride four; full previous noon validation; exactly 7070 original noon decisions per asset/date. States before noon use only prior observations of that date and the fixed past-fitted input transform. Future target values never enter state generation.",
+  "post_fit_panels": 1740,
+  "primary_sources": [
+    {
+      "scope": "Grigoryeva and Ortega prove universality for an echo-state model class under fading-memory assumptions; the theorem does not establish finite-width random-model accuracy.",
+      "url": "https://arxiv.org/abs/1806.00797"
+    },
+    {
+      "scope": "Gonon and Ortega establish universal approximation with echo-state and fading-memory properties; use as architectural motivation, not a quantitative market forecast.",
+      "url": "https://arxiv.org/abs/2010.12047"
+    }
+  ],
+  "promotion": "Exposed-date development only. Any substantial candidate requires fresh independently frozen confirmation of the whole generator/readout procedure. Neither approximation theory nor a larger feature basis establishes a market gain.",
+  "readout": "Append the 256 generated coordinates to the complete original feature representation. Fit the unchanged seven-leaf HGB and the existing twelve-epoch 64-by-64 single-member neural procedure. Preserve prior correction, equal asset/class weights, previous-noon checkpoint selection and all supervised row clocks.",
+  "registered_at_utc": "2026-09-08T04:02:24.285210+00:00",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "tabicl_and_prequential_assessment_scores_inspected": false,
+  "validation": "Test QR/spectral norm, analytic contraction, boundedness, state carry versus chunking, reset after gaps, future-prefix invariance, frozen normalization, and zero recurrent matrix equivalence to the EMA control. Run a score-free synthetic throughput test at production dimensions before freezing final source/data hashes. Do not mutate current experiment inputs. Run after the registered transformer and prequential families, one substantial learner at a time. Complete all three dates before inspecting scores."
+}
