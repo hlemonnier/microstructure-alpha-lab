@@ -1,0 +1,70 @@
+{
+  "architectures": {
+    "piecewise1": {
+      "encoding": "quantile_piecewise_linear",
+      "members": 1
+    },
+    "piecewise8": {
+      "encoding": "quantile_piecewise_linear",
+      "members": 8
+    },
+    "scalar1": {
+      "encoding": "original_quantile_normal",
+      "members": 1
+    },
+    "scalar8": {
+      "encoding": "original_quantile_normal",
+      "members": 8
+    }
+  },
+  "blends": "For each of eight representation/architecture outputs, retain its standalone natural probabilities, a fixed 50/50 blend with its matched representation HGB, and a fixed 50/50 blend with the previously frozen deep500_hgb. Both decision policies remain registered and forecast_3600. The eleven saved controls give 35 sources x 3 dates x 2 assets x 2 policies = 420 panels.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "encoding": "Drop only features constant on training rows. Each active original feature has at most 32 equal-probability training bins with duplicate edges removed. Clip values to that feature training minimum and maximum; interpolate inside its bin. The projected embedding is bias plus the sum of all earlier bin weights plus the fractional current-bin weight. Four embedding coordinates per feature; no parameter sharing across features. This clipped-tail design differs from the unbounded-tail version in the original embedding paper. Knots use no labels or validation/assessment rows.",
+  "evidence_status": "development_only_on_exposed_dates",
+  "exact_scalar_reproduction_fits": 6,
+  "hypothesis": "Learn separate nonlinear numerical feature representations before cross-feature mixing. The existing scalar-input MLP and earlier shared-parameter ensemble did not test quantile piecewise-linear feature embeddings. Fixed shared-member averaging may reduce variance of these richer feature maps.",
+  "implementation": "Use cumulative bin weights and gather the current bin, avoiding a dense observation-by-feature-by-bin tensor. Test forward values and gradients against a direct dense formulation. Append the asset scalar after embedding and mix features only inside the existing two-layer 64-wide backbone. Eight-member models reuse the existing shared linear weights, member-specific input/output scales and independent output heads.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "model_fits": 24,
+  "model_fits_started": false,
+  "new_architecture_fits": 18,
+  "optimization": "Unchanged twelve epochs, AdamW learning rate .001, weight decay .01, gradient clip 5, batch size 1024, seed 20260907 and CPU two threads. Average member cross-entropy losses with equal asset/class training weights. Select once by preceding-noon mean asset balanced accuracy, then natural log loss. No architecture or epoch sweep beyond the four fixed cells.",
+  "partitions": "Original recent four training days d-5 through d-2 at fixed four-second stride; previous-day noon validation; unchanged 7070 observations per asset/date at current noon. Exact existing fields, labels and timestamps required.",
+  "post_fit_panels": 420,
+  "posterior": "Recover each member natural probabilities with the true training asset class prior, then average natural member probabilities. With one member this must exactly reproduce the original scalar MLP training/checkpoint predictions. The averaging contract is explicit; do not silently mix averaged weighted posteriors with averaged natural posteriors.",
+  "primary_sources": [
+    {
+      "scope": "Gorishniy, Rubachev and Babenko study numerical feature embeddings, including quantile-based piecewise-linear encodings. We borrow the mathematical representation, with an explicitly different clipped-tail convention.",
+      "url": "https://arxiv.org/abs/2203.05556"
+    },
+    {
+      "scope": "Gorishniy, Kotelnikov and Babenko combine shared-parameter MLP ensembles and numerical feature embeddings. Our smaller fixed eight-member architecture is inspired by this approach, not a replication of their tuned benchmark setup.",
+      "url": "https://arxiv.org/abs/2410.24210"
+    }
+  ],
+  "promotion": "No published benchmark gain is transferred to this market task. This remains exposed-date development and requires a separately frozen new-date confirmation before a substantial discovery claim.",
+  "registered_at_utc": "2026-09-08T02:00:08.630826+00:00",
+  "representations": {
+    "combined": 399,
+    "observations": 220
+  },
+  "residual_assessment_scores_inspected": false,
+  "saved_baselines": [
+    "original_reference",
+    "observations_tree",
+    "observations_neural",
+    "observations_blend",
+    "combined_hgb",
+    "combined_neural",
+    "combined_blend",
+    "spot100_tree",
+    "top1_100_tree_old_neural",
+    "deep500_hgb",
+    "deep500_hgb_old_neural"
+  ],
+  "validation": "Before scientific fits, verify training-only knots, duplicate/constant handling, interval interpolation and clipping, dense/sparse forward-and-gradient parity, per-member natural posterior recovery, exact scalar1 reproduction, finite fitting and checkpoint reload. Run a bounded synthetic throughput check to report feasibility without inspecting market assessment scores. Freeze final source/input hashes after implementation and tests. Complete all three dates before reading their scores."
+}

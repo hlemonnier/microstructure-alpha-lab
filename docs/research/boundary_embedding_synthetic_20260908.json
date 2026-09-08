@@ -1,0 +1,139 @@
+{
+  "evidence_status": "synthetic_operational_measurement_only",
+  "interpretation": "Single CPU run of forward/backward/optimizer steps; excludes preprocessing and validation. No predictive inference follows.",
+  "market_data_read": false,
+  "model_screen_fits": 0,
+  "python": "3.12.14",
+  "records": [
+    {
+      "architecture": "scalar1",
+      "batch_size": 1024,
+      "features": 220,
+      "mean_step_seconds": 0.0008595913997851313,
+      "parameter_count": 18563,
+      "step_seconds": [
+        0.0010097080084960908,
+        0.0006463750032708049,
+        0.0007085829856805503,
+        0.0006923750042915344,
+        0.0012409159971866757
+      ],
+      "timed_steps": 5,
+      "warmup_steps": 1
+    },
+    {
+      "architecture": "scalar8",
+      "batch_size": 1024,
+      "features": 220,
+      "mean_step_seconds": 0.00567877521389164,
+      "parameter_count": 24128,
+      "step_seconds": [
+        0.005076375004136935,
+        0.005883000005269423,
+        0.0057472080225124955,
+        0.005736459017498419,
+        0.005950834020040929
+      ],
+      "timed_steps": 5,
+      "warmup_steps": 1
+    },
+    {
+      "architecture": "piecewise1",
+      "batch_size": 1024,
+      "features": 220,
+      "mean_step_seconds": 0.010087857994949444,
+      "parameter_count": 89843,
+      "step_seconds": [
+        0.00992245800443925,
+        0.010478500014869496,
+        0.009827332978602499,
+        0.010460457997396588,
+        0.009750540979439393
+      ],
+      "timed_steps": 5,
+      "warmup_steps": 1
+    },
+    {
+      "architecture": "piecewise8",
+      "batch_size": 1024,
+      "features": 220,
+      "mean_step_seconds": 0.02261613359441981,
+      "parameter_count": 100688,
+      "step_seconds": [
+        0.024656166991917416,
+        0.022569166991161183,
+        0.023128667002310976,
+        0.021402624988695607,
+        0.021324041998013854
+      ],
+      "timed_steps": 5,
+      "warmup_steps": 1
+    },
+    {
+      "architecture": "scalar1",
+      "batch_size": 1024,
+      "features": 399,
+      "mean_step_seconds": 0.001246900192927569,
+      "parameter_count": 30019,
+      "step_seconds": [
+        0.0010799589799717069,
+        0.0013390000094659626,
+        0.0011174999817740172,
+        0.0011501669941935688,
+        0.0015478749992325902
+      ],
+      "timed_steps": 5,
+      "warmup_steps": 1
+    },
+    {
+      "architecture": "scalar8",
+      "batch_size": 1024,
+      "features": 399,
+      "mean_step_seconds": 0.007181158202001825,
+      "parameter_count": 37016,
+      "step_seconds": [
+        0.007720749999862164,
+        0.0069962920097168535,
+        0.007536082994192839,
+        0.007164375012507662,
+        0.006488290993729606
+      ],
+      "timed_steps": 5,
+      "warmup_steps": 1
+    },
+    {
+      "architecture": "piecewise1",
+      "batch_size": 1024,
+      "features": 399,
+      "mean_step_seconds": 0.017238983407150955,
+      "parameter_count": 159295,
+      "step_seconds": [
+        0.017497125023510307,
+        0.01739850000012666,
+        0.017108833009842783,
+        0.017511666985228658,
+        0.016678792017046362
+      ],
+      "timed_steps": 5,
+      "warmup_steps": 1
+    },
+    {
+      "architecture": "piecewise8",
+      "batch_size": 1024,
+      "features": 399,
+      "mean_step_seconds": 0.03474292480386794,
+      "parameter_count": 175868,
+      "step_seconds": [
+        0.03547920798882842,
+        0.034646500018425286,
+        0.03543183300644159,
+        0.03444600000511855,
+        0.03371108300052583
+      ],
+      "timed_steps": 5,
+      "warmup_steps": 1
+    }
+  ],
+  "threads": 2,
+  "torch": "2.8.0"
+}
