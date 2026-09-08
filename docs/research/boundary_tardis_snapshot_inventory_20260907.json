@@ -1,0 +1,32 @@
+{
+  "assessment_labels_read": false,
+  "model_fits": 0,
+  "raw_manifest_sha256": "73a7ec5cae47ced9d7068c3656f3e9784930a86a43bb0f293dd07259fcf01510",
+  "recorded_at_utc": "2026-09-08T00:42:39.486483+00:00",
+  "snapshots": [
+    {
+      "ask_frontier": 1883.39,
+      "ask_levels": 1000,
+      "best_ask": 1872.85,
+      "best_bid": 1872.84,
+      "bid_frontier": 1862.58,
+      "bid_levels": 1000,
+      "capture": "2023-06-01T00:00:01.4869252Z",
+      "publisher_time": 1685577600434,
+      "symbol": "ETHUSDT",
+      "update_id": 2899808070319
+    },
+    {
+      "ask_frontier": 27306.8,
+      "ask_levels": 1000,
+      "best_ask": 27201.2,
+      "best_bid": 27201.1,
+      "bid_frontier": 27097.4,
+      "bid_levels": 1000,
+      "capture": "2023-06-01T00:00:01.6333790Z",
+      "publisher_time": 1685577600432,
+      "symbol": "BTCUSDT",
+      "update_id": 2899808070315
+    }
+  ]
+}
