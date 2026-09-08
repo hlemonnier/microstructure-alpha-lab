@@ -16,7 +16,7 @@ from lob_forge.binance_vision import sha256_file
 from lob_forge.boundary_event_inputs import utc_ms
 from lob_forge.boundary_fading_memory import FadingMemoryMap, observe_selected
 from lob_forge.boundary_pooled import PooledForecaster, build_member_network
-from lob_forge.boundary_prequential import SYMBOLS, run_prequential
+from lob_forge.boundary_prequential import SYMBOLS, decoded_release_clock, run_prequential
 from run_boundary_confirmation import write_json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,14 +51,14 @@ def prequential(dimensions, output):
     anchors = np.arange(utc_ms(day, "11:00:00"), utc_ms(day, "14:00:00"), 60000, dtype=np.int64)
     begin = time.monotonic()
     predictions, state, history = run_prequential(base, "full_replay_fast", stream, labels,
-        {s: times for s in SYMBOLS}, {s: times + 5100 for s in SYMBOLS}, query, {s: times[keep] for s in SYMBOLS},
+        {s: times for s in SYMBOLS}, {s: decoded_release_clock((times + 5100).astype(np.float64)) for s in SYMBOLS}, query, {s: times[keep] for s in SYMBOLS},
         (replay_x, replay_y, replay_assets), anchors)
     elapsed = time.monotonic() - begin
     if history["optimizer_steps"] != 180 or any(p.shape != (7070, 3) for p in predictions.values()):
         raise ValueError("Production-size synthetic trajectory changed")
     write_json(output / f"prequential_{dimensions}_history.json", history)
     return {"kind": "prequential", "dimensions": dimensions, "seconds": elapsed,
-        "optimizer_steps": state.updates, "query_rows": 14140, "replay_rows": 6144,
+        "optimizer_steps": state.updates, "query_rows": 14140, "replay_rows": 6144, "release_clock_storage_dtype": "float64",
         "maximum_update_seconds": history["max_update_seconds"], "publication_allowance_seconds": 10,
         "finite_normalized_forecasts": True, "assessment_metrics_computed": False}
 

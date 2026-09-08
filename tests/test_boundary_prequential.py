@@ -9,7 +9,7 @@ from sklearn.preprocessing import QuantileTransformer  # noqa: E402
 
 from lob_forge.boundary_morning_adaptation import prior_rebasing_offsets  # noqa: E402
 from lob_forge.boundary_pooled import PooledForecaster, balanced_asset_weights, build_member_network  # noqa: E402
-from lob_forge.boundary_prequential import SYMBOLS, PrequentialState, integer_clock, released_window, run_prequential  # noqa: E402
+from lob_forge.boundary_prequential import SYMBOLS, PrequentialState, decoded_release_clock, integer_clock, released_window, run_prequential  # noqa: E402
 
 
 def original_model():
@@ -49,6 +49,18 @@ def test_window_uses_actual_release_observation_delay_and_original_age():
         integer_clock(np.array([2**63], dtype=np.uint64), strict=True)
     with pytest.raises(ValueError, match="Nonoverflowing"):
         integer_clock(np.array([1.5]), strict=True)
+
+
+def test_parquet_release_clock_accepts_exact_binary64_without_rounding():
+    expected = np.array([1685788205104, 1685788205105, 1685788205105, 1685788206111], dtype=np.int64)
+    np.testing.assert_array_equal(decoded_release_clock(expected.astype(np.float64)), expected)
+    np.testing.assert_array_equal(decoded_release_clock(expected), expected)
+    origins = expected - 5100
+    # The adapter preserves one-millisecond distinctions and coincident releases.
+    np.testing.assert_array_equal(released_window(origins[[0, 1, 3]], decoded_release_clock(expected[[0, 1, 3]].astype(float)), int(expected[1]) + 100), [True, True, False])
+    for invalid in [np.array([1.5]), np.array([np.nan]), np.array([np.inf]), np.array([float(2**53)]), np.array([1.], dtype=np.float32)]:
+        with pytest.raises(ValueError):
+            decoded_release_clock(invalid)
 
 
 def test_accumulated_recent_and_replay_gradient_matches_full_cohort_mean():

@@ -38,6 +38,21 @@ def integer_clock(values, *, strict):
     return clock
 
 
+def decoded_release_clock(values):
+    """Decode the parquet release column without rounding fractional timestamps.
+
+    Canonical feature files store some event-time columns as binary64 because
+    unresolved rows were originally nullable. Eligible resolved rows must be
+    finite exact integers strictly inside binary64's consecutive-integer range.
+    """
+    raw = np.asarray(values)
+    if raw.dtype == np.dtype("float64"):
+        if raw.ndim != 1 or not np.isfinite(raw).all() or (np.abs(raw) >= 2**53).any() or (raw != np.trunc(raw)).any():
+            raise ValueError("Exactly integral finite binary64 release milliseconds required")
+        raw = raw.astype(np.int64)
+    return integer_clock(raw, strict=False)
+
+
 def released_window(origins, releases, anchor_ms, *, window_seconds=1800, observation_delay_ms=100):
     origins, releases = integer_clock(origins, strict=True), integer_clock(releases, strict=False)
     if origins.shape != releases.shape or (releases <= origins).any():

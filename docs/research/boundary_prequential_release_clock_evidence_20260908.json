@@ -1,0 +1,130 @@
+{
+  "dependencies": {
+    "numpy": "2.0.2",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.5.2",
+    "scipy": "1.18.1",
+    "torch": "2.8.0"
+  },
+  "diagnostic": "data/research/boundary_release_clock_diagnostic_20260908.json",
+  "diagnostic_sha256": "c844e91a2e77e46a175c6c97eca97315f6f2554af69fdf23c6a8a564bd1c74b1",
+  "failure": {
+    "artifact_hashes": {
+      "dates/2023-06-03/attempt.json": "4f39dd65e6bdb44e2c825856a91ccf715973b9a571cdb1594e0ab1e5a8878c1d",
+      "dates/2023-06-03/inputs/2023-05-29.json": "252022b3b640de6768e14432cc786a714b0cd7df7ae83a1403546bab3034a10d",
+      "dates/2023-06-03/inputs/2023-05-30.json": "f042309d6d51af14a13e8129bce5423a7c81f32a95f306c05daddaed4ccb8575",
+      "dates/2023-06-03/inputs/2023-05-31.json": "77dffece80dacc16118769acda96be9ad19adabfd5b248ab43d6acd15968886a",
+      "dates/2023-06-03/inputs/2023-06-01.json": "d13caf54b8791a0eb590ed3c9974aafb6bc4e68ef055689e388b2ce9d02a7cb4",
+      "dates/2023-06-03/inputs/2023-06-03.json": "31704c6d57e7eb384a8f2ea9401d3e376d32f2d77788cb7528b34280e29783ca",
+      "dates/2023-06-03/observations_frozen/history.json": "4c20f6fa163a8ed9ba5902d3cc5e36ae7760e524b508fddbebade67f4d9d384a",
+      "dates/2023-06-03/observations_frozen/model.pt": "51adf05734540141cd441d987e1ef04cc23e44631a5884538ca422f3063a9839",
+      "dates/2023-06-03/observations_frozen/normalizer.joblib": "8a8927d98814c0b7e30e3dfd6775d0a2ec055b6fd447e9b6625d2b896e532e16",
+      "dates/2023-06-03/observations_frozen/online.pt": "71eaf7f7aa2f7f8f9ea9b896075abf58e7d87b40542439e8820677abdd68b57c",
+      "dates/2023-06-03/observations_replay.npz": "b3fec2a65f4bf1c99b93a8e0bac5f3dd3386412bd0474fd408801b9d5f807fd4",
+      "dates/2023-06-03/preparation.json": "08b461f7b3005163733c49b51e42422c3b649ab719ffa828ca2e1a38addc1c86",
+      "frozen_screen.json": "1ec773e644a1332eba1fc54fc4f00516f1e9d8986e536700b7cb39a719791a82",
+      "progress.json": "b2fd64ccbee749c0e7d01f34748af2717311f73f984fa770c5803ddbed9e320c",
+      "stdout.log": "4439ac7b5f69fab68f6fa64797d38cb1957195174e3fd41352b23960260952a7"
+    },
+    "attempted_trajectories": 2,
+    "completed_dates": 0,
+    "completed_trajectories": [
+      "observations_frozen"
+    ],
+    "error": "ValueError: Nonoverflowing integer-millisecond vectors required",
+    "failed_trajectory": "observations_bias_recent",
+    "new_assessment_scores_inspected": false,
+    "optimizer_steps": 0
+  },
+  "failure_manifest_sha256": "4a4a8697b75902bd34e72a6a791c0c44ae148e6485866885bb86b56586ca8ff9",
+  "failure_run": "results/boundary_prequential_screen_20260908",
+  "focused_tests": "13 passed: eight online/clock tests and five fading-memory tests",
+  "new_assessment_scores_inspected": false,
+  "protocol": "docs/research/boundary_prequential_screen_release_clock_20260908.json",
+  "protocol_sha256": "e3776aa55a78b03c072ce08f21aadc43bf42e8e6f203b0282706832663e7307e",
+  "python": "3.12.14",
+  "recorded_at_utc": "2026-09-08T04:52:41.428287+00:00",
+  "resolved_source_timestamps_with_exact_integer_roundtrip": 2418881,
+  "source_changes": [
+    "scripts/benchmark_boundary_online_memory.py",
+    "scripts/run_boundary_prequential_screen.py",
+    "src/lob_forge/boundary_prequential.py",
+    "tests/test_boundary_prequential.py"
+  ],
+  "source_sessions": 28,
+  "synthetic_cases": [
+    {
+      "assessment_metrics_computed": false,
+      "dimensions": 220,
+      "finite_normalized_forecasts": true,
+      "kind": "prequential",
+      "maximum_update_seconds": 0.020492875017225742,
+      "optimizer_steps": 180,
+      "process_high_water_rss_bytes": 571555840,
+      "publication_allowance_seconds": 10,
+      "query_rows": 14140,
+      "release_clock_storage_dtype": "float64",
+      "replay_rows": 6144,
+      "seconds": 3.69690220800112
+    },
+    {
+      "assessment_metrics_computed": false,
+      "dimensions": 399,
+      "finite_normalized_forecasts": true,
+      "kind": "prequential",
+      "maximum_update_seconds": 0.013333374983631074,
+      "optimizer_steps": 180,
+      "process_high_water_rss_bytes": 850001920,
+      "publication_allowance_seconds": 10,
+      "query_rows": 14140,
+      "release_clock_storage_dtype": "float64",
+      "replay_rows": 6144,
+      "seconds": 4.674732084007701
+    },
+    {
+      "chunk_rows": 2048,
+      "chunking_max_errors": {
+        "ema": 0.0,
+        "instant": 0.0,
+        "reservoir": 0.0
+      },
+      "dimensions": 220,
+      "finite_bounded_states": true,
+      "first_observation_time": 0,
+      "future_prefix_max_error": 0,
+      "kind": "fading_memory",
+      "last_observation_time": 16383000,
+      "observations_per_second": 16098.536722058461,
+      "observed_rows": 16384,
+      "process_high_water_rss_bytes": 942407680,
+      "retained_rows": 4096,
+      "seconds": 1.0177322500094306,
+      "shorter_stream_max_error": 0,
+      "state_resets": 1
+    },
+    {
+      "chunk_rows": 2048,
+      "chunking_max_errors": {
+        "ema": 0.0,
+        "instant": 0.0,
+        "reservoir": 0.0
+      },
+      "dimensions": 399,
+      "finite_bounded_states": true,
+      "first_observation_time": 0,
+      "future_prefix_max_error": 0,
+      "kind": "fading_memory",
+      "last_observation_time": 16383000,
+      "observations_per_second": 10254.407172910522,
+      "observed_rows": 16384,
+      "process_high_water_rss_bytes": 1049493504,
+      "retained_rows": 4096,
+      "seconds": 1.5977520419983193,
+      "shorter_stream_max_error": 0,
+      "state_resets": 1
+    }
+  ],
+  "synthetic_market_fits": 0,
+  "synthetic_preflight": "data/research/boundary_online_memory_preflight_release_clock_20260908/summary.json",
+  "synthetic_preflight_sha256": "54784920fdc412125c2a6c14dcfb99c21d8118e257f1167e3e9a3128668dd48c"
+}

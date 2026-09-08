@@ -21,7 +21,7 @@ from lob_forge.boundary_combined_inputs import load_combined_inputs, original_co
 from lob_forge.boundary_event_inputs import utc_ms
 from lob_forge.boundary_forecasts import classification_metrics
 from lob_forge.boundary_pooled import PooledForecaster
-from lob_forge.boundary_prequential import SYMBOLS, VARIANTS, PrequentialState, run_prequential, save_history
+from lob_forge.boundary_prequential import SYMBOLS, VARIANTS, PrequentialState, decoded_release_clock, run_prequential, save_history
 from lob_forge.boundary_regime_coverage import calendar_stride_mask, history_cohorts
 from lob_forge.boundary_tabicl import select_balanced_context
 from run_boundary_confirmation import noon, save_predictions, write_json
@@ -56,7 +56,7 @@ def prepare(day, protocol, folder):
             raw = next(r for r in sessions if r["symbol"] == symbol)
             resolved = pd.read_parquet(ROOT / raw["features_path"], columns=["decision_time", "label", "future_event_time"]).set_index("decision_time").loc[times[key]]
             np.testing.assert_array_equal(resolved.label.to_numpy(), y[key])
-            releases = resolved.future_event_time.to_numpy()
+            releases = decoded_release_clock(resolved.future_event_time.to_numpy())
             if current in training_days:
                 mask = calendar_stride_mask(times[key], utc_ms(current), stride_seconds=4)
                 if (releases[mask] >= cutoff).any():
