@@ -38,7 +38,7 @@ A separately [registered matched-control extension](boundary_morning_controls_20
 
 ## Validation and evidence status
 
-The implementation suite passes 568 direct tests with the research dependencies. Minimal-dependency CI passes 476 direct cases, skipping 6 optional tests and 35 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
+The implementation suite passes 578 direct tests with the research dependencies. Minimal-dependency CI passes 479 direct cases, skipping 6 optional tests and 38 optional modules. The new research files pass Ruff. The five CI mypy targets were unchanged from the verified first-round push.
 
 Both fixed screens are complete. Their outcomes remain developmental, with no substantial-gain or economic-performance claim.
 
@@ -141,5 +141,25 @@ The [basis-state definition](boundary_basis_definition_20260907.json), committed
 Two observed logarithmic bases are used: Bybit mid-price versus Binance mid-price, and Bybit mid-price versus the latest available spot trade. Exponential half lives are ten, sixty and three hundred seconds. Mean and variance use strictly earlier observations; the current value enters only after its innovation is computed. Features include the past level, innovation, standardized innovation, volatility and availability. Missing sources have zero statistical weight, and day or one-second coverage breaks reset state. The standard-deviation floor is 0.001 basis points. No label enters these calculations.
 
 The 32 own and six peer fields expand the exact 399-column union to 437. Four tests verify explicit historical weighting, resets, missing observations, prefix invariance, invariance to a constant premium, logarithmic units, unchanged labels and simultaneous peer joins. A full paired May 29 comparison preserves all original features, labels and timestamps. The [registered screen](boundary_basis_screen_20260907.json) compares the existing HGB, neural and deep-XGBoost learners, including a new neural control on the unchanged union. It fixes twelve fits and 252 panels on the same three development dates. All models must finish before outcomes are revealed.
+
+The [completed basis results](boundary_basis_evidence_20260907.json) do not establish a large gain. The basis HGB/original-neural blend reaches 57.2845% balanced accuracy, below the strongest existing depth blend at 57.3006%. Basis features improve the standalone HGB by 0.0484 percentage points and the deep balanced XGBoost by 0.0644 points; the matched neural component is essentially unchanged. The best basis XGBoost/HGB blend has log loss 0.759584 but balanced accuracy 57.1908%. Better probability loss here does not establish better class-balanced accuracy.
+
+## Native queue-flow information
+
+The [native-flow definition](boundary_bybit_flow_definition_20260907.json) tests information discarded by endpoint comparisons: quantity added and later removed within a window can leave the endpoint unchanged while producing large gross activity. Known-price revisions are integrated over one, five and fifteen seconds. Three exponential price-distance kernels use the previous spread as their unit. Unknown quantities outside the previously visible depth are excluded and counted; decreases cannot be attributed separately to trades and cancellations. [Cont, Kukanov and Stoikov](https://arxiv.org/abs/1011.6402) motivate order-flow imbalance, without supplying a performance claim for this crypto experiment.
+
+The [one-day preparation evidence](boundary_bybit_flow_preflight_evidence_20260907.json) covers 850,387 BTC messages on June 3: 13,989,340 known-price revisions and 628,704 unresolved frontier updates. Original sampled publisher clocks and BBO depths match exactly. Snapshots and gaps reset coverage; all upper window boundaries are strict. No target columns are read during preparation. Expansion across the remaining 27 sessions is in progress under the [data protocol](boundary_bybit_flow_data_20260907.json).
+
+The frozen model definition uses matched BBO-flow and deeper-flow representations at 100ms and 500ms added publisher delays. The original 399 fields remain exact. BBO flow adds 24 own and five peer fields; deeper flow adds 93 own and ten peer fields. The same HGB and neural learners give 24 fits and 312 fixed assessment panels on the three exposed dates. No flow models have been fitted at this checkpoint.
+
+## Target-venue native depth and capture clocks
+
+The [documented Tardis raw HTTP API](https://docs.tardis.dev/api/http-api-reference.md) provides unauthenticated first-day-of-month data. The [one-minute preflight](boundary_tardis_raw_preflight_evidence_20260907.json) successfully retrieved 6,499,271 bytes with 17,441 native messages. The response was plain NDJSON despite the requested gzip encoding; a [transport-only amendment](boundary_tardis_raw_preflight_transport_20260907.json) preserves the original bytes and permits parsing their actual format.
+
+Both Binance Futures books bridge their snapshots with `U <= lastUpdateId <= u` and then satisfy `pu == previous u`, following [Binance's futures reconstruction contract](https://developers.binance.com/en/docs/products/derivatives-trading-usds-futures/websocket-market-streams/How-to-manage-a-local-order-book-correctly). All 3,101 reconstructed top-25 states agree with the most recent quote by exchange update ID. At 14,308 shared provider/official quote IDs, prices, quantities and transaction times match exactly. This is data reconstruction evidence, not predictive evidence.
+
+The initial full-tuple comparison failed because publisher timestamps differ between the two recordings: 3,775 BTC and 3,015 ETH shared updates have unequal `E` values. The largest observed provider-minus-official differences are 72ms and 38ms. The [clock findings](boundary_tardis_raw_clock_findings_20260907.json) preserve that failure and distinguish exact economic-content agreement from clock disagreement. Capture timestamps retain 100ns resolution in this sample, and late snapshot arrival is never backdated to its earlier exchange timestamp. Initial snapshot frontiers constrain which deeper levels can be certified as known.
+
+A [bounded source-only acquisition](boundary_tardis_raw_acquisition_20260907.json) is expanding to June 1 00:00–14:00, an already exposed date. It will establish sustained reconstruction, finite-depth coverage and capture-time behavior before any learner experiment is defined. It supplies no fresh confirmation date and no trading or predictive-performance claim.
 
 Any selected combination still requires a fresh, separately registered confirmation round and the continuing nominal research error budget.
