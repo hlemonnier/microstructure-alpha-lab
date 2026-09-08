@@ -1,0 +1,156 @@
+{
+  "feature_counts": {
+    "combined": 399,
+    "observations": 220,
+    "top1_100": 433,
+    "top1_500": 433,
+    "top25_100": 498,
+    "top25_500": 498
+  },
+  "initial_frontier_manifest_sha256": "ecbb5214b39e7b384b49a4bb6d78edfe55362b1a1ca9ff09aedc3d9068c596b8",
+  "labels_compared_but_no_scores_computed": true,
+  "model_definition_sha256": "c3957d0ccc65ce9d2035a6dfd1143027f56e1c61c314f1757320178c70bc6e60",
+  "model_fits": 0,
+  "native_manifest_sha256": "c940aa6d7ffc57ac56e1e9ad99982388b8e7e63ef5284c9258eea971b89052ce",
+  "recorded_at_utc": "2026-09-08T01:31:23.998146+00:00",
+  "sessions": [
+    {
+      "all_399_original_fields_labels_times_exact": true,
+      "all_decisions_delays_update_ids_exact": true,
+      "all_native_quote_arrays_exact": true,
+      "certified_available_by_delay": [
+        50225,
+        50206
+      ],
+      "certified_noon_available_by_delay": [
+        7070,
+        7070
+      ],
+      "dependency_clocks_never_backdated": true,
+      "lost_availability_by_delay": [
+        0,
+        0
+      ],
+      "noon_rows": 7070,
+      "original_available_by_delay": [
+        4465,
+        4467
+      ],
+      "original_model_rows_retained": 50151,
+      "original_noon_available_by_delay": [
+        0,
+        0
+      ],
+      "original_overlap_top25_exact": true,
+      "rows": 50396,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "all_399_original_fields_labels_times_exact": true,
+      "all_decisions_delays_update_ids_exact": true,
+      "all_native_quote_arrays_exact": true,
+      "certified_available_by_delay": [
+        50297,
+        50296
+      ],
+      "certified_noon_available_by_delay": [
+        7070,
+        7070
+      ],
+      "dependency_clocks_never_backdated": true,
+      "lost_availability_by_delay": [
+        0,
+        0
+      ],
+      "noon_rows": 7070,
+      "original_available_by_delay": [
+        11244,
+        11233
+      ],
+      "original_model_rows_retained": 50151,
+      "original_noon_available_by_delay": [
+        1741,
+        1736
+      ],
+      "original_overlap_top25_exact": true,
+      "rows": 50395,
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "source_checks": {
+    "assets": {
+      "BTCUSDT": {
+        "available_rows_by_delay": [
+          50225,
+          50206
+        ],
+        "certification": {
+          "explicit_frontier_ticks": 0,
+          "ignored_older_quotes": 51,
+          "queued_quotes": 2531,
+          "used_quotes": 399
+        },
+        "current_epoch_snapshot_frontiers": {
+          "ask": 27347.9,
+          "bid": 26600.0
+        },
+        "frontier_covered_rows_by_delay": [
+          50296,
+          50283
+        ],
+        "historical_tick": null,
+        "messages": {
+          "bookTicker": 6598024,
+          "depth": 1775580,
+          "depthSnapshot": 1
+        },
+        "quote_duplicate_ids": 0,
+        "quote_out_of_order_id_arrivals": 0,
+        "replayed_deltas": 1775567,
+        "rolling_buffer_evictions": 1765580,
+        "rows": 50396,
+        "sampled_depth_quote_comparisons": 100431,
+        "sampled_depth_quote_mismatches": 0,
+        "snapshots": 1
+      },
+      "ETHUSDT": {
+        "available_rows_by_delay": [
+          50297,
+          50296
+        ],
+        "certification": {
+          "explicit_frontier_ticks": 0,
+          "ignored_older_quotes": 37,
+          "queued_quotes": 1575,
+          "used_quotes": 242
+        },
+        "current_epoch_snapshot_frontiers": {
+          "ask": 1889.61,
+          "bid": 1837.94
+        },
+        "frontier_covered_rows_by_delay": [
+          50379,
+          50379
+        ],
+        "historical_tick": null,
+        "messages": {
+          "bookTicker": 3605947,
+          "depth": 1780736,
+          "depthSnapshot": 1
+        },
+        "quote_duplicate_ids": 0,
+        "quote_out_of_order_id_arrivals": 0,
+        "replayed_deltas": 1780724,
+        "rolling_buffer_evictions": 1770736,
+        "rows": 50395,
+        "sampled_depth_quote_comparisons": 100593,
+        "sampled_depth_quote_mismatches": 0,
+        "snapshots": 1
+      }
+    },
+    "disconnects": 0,
+    "first_capture_ns": 1685577600008808300,
+    "last_capture_ns": 1685627999999647200,
+    "lines": 13760289
+  }
+}

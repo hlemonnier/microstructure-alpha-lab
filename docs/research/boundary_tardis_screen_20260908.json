@@ -1,0 +1,254 @@
+{
+  "blend_weights": [
+    0.5,
+    0.5
+  ],
+  "blends": {
+    "combined_blend": [
+      "combined_hgb",
+      "combined_neural"
+    ],
+    "combined_hgb_past_neural": [
+      "combined_hgb",
+      "past_context_neural"
+    ],
+    "combined_neural_past_hgb": [
+      "combined_neural",
+      "past_context_hgb"
+    ],
+    "observations_blend": [
+      "observations_hgb",
+      "observations_neural"
+    ],
+    "observations_hgb_past_neural": [
+      "observations_hgb",
+      "past_context_neural"
+    ],
+    "observations_neural_past_hgb": [
+      "observations_neural",
+      "past_context_hgb"
+    ],
+    "past_context_blend": [
+      "past_context_hgb",
+      "past_context_neural"
+    ],
+    "top1_100_blend": [
+      "top1_100_hgb",
+      "top1_100_neural"
+    ],
+    "top1_100_hgb_past_neural": [
+      "top1_100_hgb",
+      "past_context_neural"
+    ],
+    "top1_100_neural_past_hgb": [
+      "top1_100_neural",
+      "past_context_hgb"
+    ],
+    "top1_500_blend": [
+      "top1_500_hgb",
+      "top1_500_neural"
+    ],
+    "top1_500_hgb_past_neural": [
+      "top1_500_hgb",
+      "past_context_neural"
+    ],
+    "top1_500_neural_past_hgb": [
+      "top1_500_neural",
+      "past_context_hgb"
+    ],
+    "top25_100_blend": [
+      "top25_100_hgb",
+      "top25_100_neural"
+    ],
+    "top25_100_hgb_past_neural": [
+      "top25_100_hgb",
+      "past_context_neural"
+    ],
+    "top25_100_neural_past_hgb": [
+      "top25_100_neural",
+      "past_context_hgb"
+    ],
+    "top25_500_blend": [
+      "top25_500_hgb",
+      "top25_500_neural"
+    ],
+    "top25_500_hgb_past_neural": [
+      "top25_500_hgb",
+      "past_context_neural"
+    ],
+    "top25_500_neural_past_hgb": [
+      "top25_500_neural",
+      "past_context_hgb"
+    ]
+  },
+  "bybit_manifest": "data/research/boundary_bybit_depth_20260907/depth_manifest.json",
+  "comparisons": "Compare each top-25 model/blend with its identical top-one source/delay/model control, the unchanged source union, original context, newly trained historical context controls, and three preserved original prediction controls. Freeze all fourteen fits before revealing any assessment score. A single exposed date can identify a research candidate but cannot confirm a substantial gain.",
+  "date": "2023-06-01",
+  "decision_contract": "Both policies are applied to every model. morning_full divides natural probabilities by the shared purged full-morning class prior. forecast_3600 uses the existing causal EWM forecast-prior rule initialized with already released morning outcomes. No hindsight class frequencies are used. Natural accuracy and log loss remain separate secondary metrics.",
+  "distinct_assessment_decisions": 14140,
+  "evidence_status": "development_only_on_exposed_date",
+  "feature_counts": {
+    "combined": 399,
+    "observations": 220,
+    "top1_100": 433,
+    "top1_500": 433,
+    "top25_100": 498,
+    "top25_500": 498
+  },
+  "features": "Preserve the existing 399-column union exactly. The native BBO adds 27 own plus seven simultaneous peer fields, including availability. Top-25 adds 88 own plus eleven peer fields. The existing tested normalized curve, distance, cumulative imbalance, concentration, weighted price and endpoint pressure algebra is reused. Endpoint pressure is not integrated flow. Both native representations use the identical certified top-25 availability mask; retain unavailable original rows.",
+  "historical_validation_day": "2023-05-31",
+  "hypothesis": "The target venue liquidity profile may contain five-second forecasting information absent from top-of-book, spot and another venue. Matched delayed native BBO controls separate deeper quantities from the source and timestamp treatment.",
+  "input_hashes": {
+    "data/research/boundary_bybit_depth_20260907/depth_manifest.json": "e0cef0a7570a6ed73e0dcf17c371d4d879ca5e6f26aae3d9af6768757510f19b",
+    "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+    "data/research/boundary_spot_features_20260907/feature_manifest.json": "0f9c4d60ff1b8942a0f6b4d05ce3a777b65a8f96565a2ab9b4e1da433d192ed6",
+    "data/research/boundary_tardis_continuous_20260908/depth_manifest.json": "c940aa6d7ffc57ac56e1e9ad99982388b8e7e63ef5284c9258eea971b89052ce",
+    "data/research/boundary_tardis_input_parity_20260908/evidence.json": "3ea1277367c6ce27887a403d8c70b09bcd9ec3677724bc1b5268673ed24f39d7",
+    "docs/research/boundary_tardis_continuous_parity_20260908.json": "952de8aff8fbe3b2abd590065375e4404c7158024f3a69b6f6874ac6f02d5e2c",
+    "docs/research/boundary_tardis_continuous_preparation_20260908.json": "534dfc1d32c00490a81d5a5d53966c1725d29be988a429ce30fd3833e1ee19ef",
+    "docs/research/boundary_tardis_model_definition_20260908.json": "c3957d0ccc65ce9d2035a6dfd1143027f56e1c61c314f1757320178c70bc6e60",
+    "docs/research/boundary_tardis_preparation_evidence_20260908.json": "3ea1277367c6ce27887a403d8c70b09bcd9ec3677724bc1b5268673ed24f39d7",
+    "results/boundary_confirmation_exact_labels_20260907/dates/2023-06-01/completed.json": "1927861c392f94a2ea1b99816a819f98a32816fbb3280697fdb7d3422d747da9",
+    "results/boundary_confirmation_exact_labels_20260907/frozen_study.json": "24618c66426aac78d0dac58b5a4a4f931ef941ccb0b356f7977008583139dd01",
+    "results/boundary_pooled_tree_confirmation_20260907/dates/2023-06-01/completed.json": "2d7f849d82b0da552cf3e431bc03a2f2174b1e0aa398cd20e0665f08860cc3d4",
+    "results/boundary_pooled_tree_confirmation_20260907/frozen_study.json": "2693130772ef24794f223b884ef99f6cf4c359e80b94c416d6e4d618f495dcf2",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-01/BTCUSDT_original_reference.npz": "4f976f6b4b6f52e4d34baf3a651b966907640c0dcb02fc47dcdc6c353f37e14d",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-01/ETHUSDT_original_reference.npz": "0314f54c083c8c8f25ffe31551a9cbdb4559414cd0f1386c60ee026d758b1531",
+    "scripts/assess_boundary_tardis_inputs.py": "37750663e3582637cbb860431830b1b092337d17d7dba453b7fe77a18dbf31c9",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "scripts/run_boundary_event_clock_screen.py": "929ff7adac3dd5d31655b521b85b8db01d15c9a4566317c10620fe7fc08f233d",
+    "scripts/run_boundary_tardis_screen.py": "65c39627a6a81498573d47b905eedf7b28c4afd0638a4e6492f39e2ba9dbc8e8",
+    "src/lob_forge/baselines.py": "33e0c1fc49fbe820b5985f903165cea44e2d245dea7c9ad9e1355a622d5e3ec4",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_bybit_features.py": "f18d01c4e71faa149799781faacfb22d941a73f5d10a9342d4b63f62773ef722",
+    "src/lob_forge/boundary_bybit_inputs.py": "09e3d7762528ba7cdf40d0d02eb3cb566f5d93e923a95142a10fa0f7ae24e38e",
+    "src/lob_forge/boundary_combined_inputs.py": "c304fe5028d4a6f63304ac9ca219d875900873f36c8188da8d9d535808af6e94",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_confirmation_stats.py": "395fdcb1dcc91dcb7bfba489a9209f6df94a593b0aaf7fae075169f46731d1c0",
+    "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+    "src/lob_forge/boundary_event_clock_inputs.py": "87f3c07457c3974f4c56e28b5c4dd302bf26cd5db09359258c6fa4425df373fe",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_events.py": "eb014e9732a78e67a5aabfc75ee28339cd5e8c3297845978538362b5a514069a",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_long_context.py": "4b38c201d00819d3323171323fea130f9466d6afb04def9c4e2899472978bb16",
+    "src/lob_forge/boundary_long_context_inputs.py": "6c75af1304ac2795e40a078b2f1b7a60729ac634221d36672c51ecc15ae16240",
+    "src/lob_forge/boundary_morning_adaptation.py": "cb42e5af1fbef7677b1b2ea1f0c62a248c64a7e4c2e334bdadf4b43448162ae9",
+    "src/lob_forge/boundary_neural.py": "fd2fe736bc5a0ce6d6882433ba0fea7fda6c51de0f4cc20b7414447af8a775fb",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_regime_coverage.py": "d83f5088923d09ccd75a0e324e74fcd9d674ad57999452fab9115cd7284fbd50",
+    "src/lob_forge/boundary_spot_features.py": "22af9d596962de35e46a18ff44ff3c36b07b5ad8b878dc98cff1544153fb75bd",
+    "src/lob_forge/boundary_spot_inputs.py": "cda1f7c6bc296c70885703521ffcba93bbd94af71e338008f84d1404545bcc46",
+    "src/lob_forge/boundary_tardis_features.py": "a15f853b220835a9645f677f183c0e2d8d9174081c504af985240b5381156873",
+    "src/lob_forge/boundary_tardis_inputs.py": "f98663831e146b9b5fc7d3eaf601bbc4fd7db1bcb66f6e812b823ededa4f8c0a",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "src/lob_forge/data_sources.py": "51ee46e6f9217a50f05dface55d4aa1334d95c6ccf3656a7a416550f75b98ff7",
+    "src/lob_forge/execution_sim.py": "49fd60a656b7cdcef052bc3cca4cd23aa99aca45f2300876231ba842c21bbc4b",
+    "src/lob_forge/experiments.py": "47cc25c5658a26e98b85dee109b739ef38e9ae6808179e992e72c74e70535994",
+    "src/lob_forge/features.py": "d464532dbdeb9a054a8e138ec51b06ef75b6338f32a16ca69de9936fc8e15c24",
+    "src/lob_forge/holdout.py": "74760d58a13d818758ba049bdb6697b1a6a832acf9281088c41f8fdd37716f5b",
+    "src/lob_forge/l2_replay.py": "2d6084f333253631252c586d2771be92ad07fefeeba37faf48477b3dc6b707ab",
+    "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0",
+    "src/lob_forge/memory_guard.py": "d560206cd4925265a247ca186d0467f085f095c64fe7a82fa2e8003e69053498",
+    "src/lob_forge/ml_models.py": "674eb66b0097a8021d7d810f430d1c07608bcd05eb33b2851eb8bb0956afd03e",
+    "src/lob_forge/protocol.py": "529bdb9b14e28eef1fffa40db4cb6fedb3d026a918382bb1745be7d63654f41c",
+    "tests/test_boundary_tardis_features.py": "090ce2bd027a3e7e390b9007016edceb59d9f39a96cd2e282772963b36988d69",
+    "tests/test_boundary_tardis_inputs.py": "050abd25bd9f79be7b3e6b66ef8b7c85b5ec9c15d3cafc967ef2b7630f526dc0"
+  },
+  "learners": "Unchanged class/asset-balanced HGB: seven leaves, 200 rounds, learning rate .05, min leaf 100, L2 10 and training-only .001/.999 clipping. Unchanged twelve-epoch 64-wide MLP with training-only quantile normalization and preceding validation selection. Both recover natural posteriors using their own training asset priors. Fixed probability blends combine natural probabilities; component recovery priors are retained in model metadata.",
+  "manifest": "data/research/boundary_regime_data_20260907/dataset_manifest.json",
+  "model_definition": "docs/research/boundary_tardis_model_definition_20260908.json",
+  "model_definition_sha256": "c3957d0ccc65ce9d2035a6dfd1143027f56e1c61c314f1757320178c70bc6e60",
+  "model_fits": 14,
+  "model_fits_started": false,
+  "models": {
+    "combined_hgb": [
+      "combined",
+      "hgb"
+    ],
+    "combined_neural": [
+      "combined",
+      "neural"
+    ],
+    "observations_hgb": [
+      "observations",
+      "hgb"
+    ],
+    "observations_neural": [
+      "observations",
+      "neural"
+    ],
+    "past_context_hgb": [
+      "past",
+      "hgb"
+    ],
+    "past_context_neural": [
+      "past",
+      "neural"
+    ],
+    "top1_100_hgb": [
+      "top1_100",
+      "hgb"
+    ],
+    "top1_100_neural": [
+      "top1_100",
+      "neural"
+    ],
+    "top1_500_hgb": [
+      "top1_500",
+      "hgb"
+    ],
+    "top1_500_neural": [
+      "top1_500",
+      "neural"
+    ],
+    "top25_100_hgb": [
+      "top25_100",
+      "hgb"
+    ],
+    "top25_100_neural": [
+      "top25_100",
+      "neural"
+    ],
+    "top25_500_hgb": [
+      "top25_500",
+      "hgb"
+    ],
+    "top25_500_neural": [
+      "top25_500",
+      "neural"
+    ]
+  },
+  "native_manifest": "data/research/boundary_tardis_continuous_20260908/depth_manifest.json",
+  "partitions": "Historical 220-column controls use May 27-30 with fixed four-second stride after causal feature construction; validation is May 31 noon. All six morning representations use the same June 1 00:02 to 11:30 decision rows with actual label release no later than 11:30. Validation decisions are 11:30:10 to 11:57, with actual release no later than 11:57:10. Assessment is the unchanged 12:02 to 13:59:49 window, 7070 rows per asset. Each candidate morning fit, or sum of its two morning blend fits, must complete within the 290-second cached-data computation interval.",
+  "policies": [
+    "morning_full",
+    "forecast_3600"
+  ],
+  "post_fit_panels": 144,
+  "preparation_evidence": "docs/research/boundary_tardis_preparation_evidence_20260908.json",
+  "primary_run": "results/boundary_confirmation_exact_labels_20260907",
+  "prior_run": "results/boundary_same_day_priors_20260907",
+  "promotion": "No automatic promotion or independent-gain claim. Any convincing development candidate needs a separately frozen new-date confirmation and the continuing research error budget.",
+  "registered_at_utc": "2026-09-08T01:32:56.476965+00:00",
+  "saved_baselines": [
+    "original_reference",
+    "original_blend",
+    "pooled_blend"
+  ],
+  "secondary_run": "results/boundary_pooled_tree_confirmation_20260907",
+  "source_hashes": {
+    "scripts/run_boundary_tardis_screen.py": "65c39627a6a81498573d47b905eedf7b28c4afd0638a4e6492f39e2ba9dbc8e8",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_morning_adaptation.py": "cb42e5af1fbef7677b1b2ea1f0c62a248c64a7e4c2e334bdadf4b43448162ae9",
+    "src/lob_forge/boundary_tardis_features.py": "a15f853b220835a9645f677f183c0e2d8d9174081c504af985240b5381156873",
+    "src/lob_forge/boundary_tardis_inputs.py": "f98663831e146b9b5fc7d3eaf601bbc4fd7db1bcb66f6e812b823ededa4f8c0a",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "tests/test_boundary_tardis_features.py": "090ce2bd027a3e7e390b9007016edceb59d9f39a96cd2e282772963b36988d69",
+    "tests/test_boundary_tardis_inputs.py": "050abd25bd9f79be7b3e6b66ef8b7c85b5ec9c15d3cafc967ef2b7630f526dc0"
+  },
+  "source_timing": "Each depth feature requires both captured-source and publisher dependencies strictly before decision minus the registered 100ms or 500ms delay. The source preparation separately requires the latest depth to be fresh, and preserves continuous best-quote range certificates without assuming a nominal price tick. The original Binance source and exact five-second label remain unchanged.",
+  "spot_manifest": "data/research/boundary_spot_features_20260907/feature_manifest.json",
+  "validation": "Three feature/loader tests verify strict dual clocks, explicit unavailable masks, label independence, prefix invariance, BBO/deeper separation, exact original rows and disjoint schemas. A complete real paired loader comparison must pass before fitting. Original neural checkpoint and all assessment labels/times must match saved artifacts. New models and predictions require exact save/reload parity."
+}
