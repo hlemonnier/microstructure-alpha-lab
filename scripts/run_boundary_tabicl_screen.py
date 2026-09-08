@@ -27,6 +27,7 @@ from lob_forge.boundary_forecasts import classification_metrics
 from lob_forge.boundary_morning_adaptation import morning_masks
 from lob_forge.boundary_regime_coverage import calendar_stride_mask, history_cohorts
 from lob_forge.boundary_tabicl import SYMBOLS, TABICL_SETTINGS, TabiclForecaster, case_control_posterior, fit_tabicl_context, select_balanced_context
+from lob_forge.boundary_tabicl_preprocessing import fallback_counts
 from lob_forge.boundary_weighted_boost import fit_weighted_boost
 from run_boundary_confirmation import noon, save_predictions, write_json
 from run_boundary_event_clock_screen import check_completed
@@ -175,6 +176,8 @@ def train_and_forecast(features, labels, population, queries, algorithm, folder,
             "single_query_max_error": float(np.max(np.abs(single - p[:1]))), "single_query_seconds": single_seconds}
     del model
     gc.collect()
+    if algorithm == "tabicl":
+        fallback_counts(restored.estimator, reset=True)
     begin = time.monotonic()
     forecasts = {s: predict(restored, queries[s], s) for s in SYMBOLS}
     prediction_seconds = time.monotonic() - begin
@@ -183,6 +186,7 @@ def train_and_forecast(features, labels, population, queries, algorithm, folder,
         "query_rows": sum(len(queries[s]) for s in SYMBOLS), "checks": checks,
         "posterior_contract": "sampled_context_to_full_context_pool_prior_correction",
         "population_priors": {s: np.asarray(population[s]).tolist() for s in SYMBOLS},
+        "actual_query_power_fallback_rows": fallback_counts(restored.estimator) if algorithm == "tabicl" else {},
         "model_procedures": 1, "optimizer_training": algorithm == "hgb"}
     return forecasts, metadata
 

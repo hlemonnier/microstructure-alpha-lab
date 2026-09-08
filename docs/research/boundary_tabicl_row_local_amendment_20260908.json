@@ -1,0 +1,92 @@
+{
+  "amends": {
+    "protocol": "docs/research/boundary_tabicl_screen_20260908.json",
+    "sha256": "041ff92bc4cdf64ed383459c994ee46cd9a2bd8e315320a7c6c0ecd7432f42ab"
+  },
+  "assessment_scores_inspected": false,
+  "evidence_status": "development_only_on_exposed_dates",
+  "failure_log": "results/boundary_tabicl_screen_20260908/dates/2023-06-03/workers/full_morning_combined_tabicl/stdout.log",
+  "failure_log_sha256": "7577a1258a04213bd6638993d48abedbf5cae9537f0b61603a75374252257600",
+  "finding": "The official power-preprocessing transform catches any query-batch ValueError and clips every row to training bounds. A later-row overflow therefore changes otherwise valid earlier extrapolations. The registered changed-later-query check detected a maximum difference of 3.48594491e-5 in the June 3 full-morning combined context. No first-date completion marker or assessment summary was produced.",
+  "fix": "Keep fitted statistics, power exponents, training transforms, attention caches, model weights and all settings unchanged. Replace the batch-wide fallback with recursive row isolation. Only an individually failing query is clipped to the existing training bounds; all other rows preserve their ordinary transform. Apply a local serializable adapter, leaving official source files unchanged. Track real assessment-query fallback counts separately from synthetic perturbation checks. Retain the original causality tolerances.",
+  "initial_completed_model_procedures": 7,
+  "initial_model_procedure_attempts": 8,
+  "initial_records": [
+    {
+      "completed": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "full_morning_combined_hgb",
+      "peak_observed_worker_rss_bytes": 384057344,
+      "returncode": 0,
+      "seconds": 4.985558791988296,
+      "stop_reason": null
+    },
+    {
+      "completed": false,
+      "log_sha256": "7577a1258a04213bd6638993d48abedbf5cae9537f0b61603a75374252257600",
+      "model": "full_morning_combined_tabicl",
+      "peak_observed_worker_rss_bytes": 8345976832,
+      "returncode": 1,
+      "seconds": 85.39155337502598,
+      "stop_reason": null
+    },
+    {
+      "completed": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "full_morning_observations_hgb",
+      "peak_observed_worker_rss_bytes": 309264384,
+      "returncode": 0,
+      "seconds": 4.079966749995947,
+      "stop_reason": null
+    },
+    {
+      "completed": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "full_morning_observations_tabicl",
+      "peak_observed_worker_rss_bytes": 6292553728,
+      "returncode": 0,
+      "seconds": 144.55546274999506,
+      "stop_reason": null
+    },
+    {
+      "completed": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "recent4_stride4_combined_hgb",
+      "peak_observed_worker_rss_bytes": 389644288,
+      "returncode": 0,
+      "seconds": 5.3964313750038855,
+      "stop_reason": null
+    },
+    {
+      "completed": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "recent4_stride4_combined_tabicl",
+      "peak_observed_worker_rss_bytes": 7701348352,
+      "returncode": 0,
+      "seconds": 284.3143309580046,
+      "stop_reason": null
+    },
+    {
+      "completed": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "recent4_stride4_observations_hgb",
+      "peak_observed_worker_rss_bytes": 260587520,
+      "returncode": 0,
+      "seconds": 4.587516499974299,
+      "stop_reason": null
+    },
+    {
+      "completed": true,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "recent4_stride4_observations_tabicl",
+      "peak_observed_worker_rss_bytes": 5096669184,
+      "returncode": 0,
+      "seconds": 148.58445129197207,
+      "stop_reason": null
+    }
+  ],
+  "registered_at_utc": "2026-09-08T03:45:44.425893+00:00",
+  "restart": "Preserve all eight initial procedure attempts and partial artifacts. After unit tests, synthetic two-member checkpoint tests and a score-free reproduction on the failed saved context, freeze updated source hashes and restart all 24 procedures in a distinct output directory. Do not reuse initial market forecasts for the amended comparison. Count both the eight initial attempts and the 24 restarted procedures.",
+  "unchanged": "Three dates, 3072-row context, two members, model checkpoint, contexts, priors, features, baselines, 876 panels, time/memory limits and all promotion rules.",
+  "verification_scope": "Prefix probabilities and preprocessing invariance only; no accuracy, outcome-conditioned selection or labels are used in the saved-context diagnostic."
+}

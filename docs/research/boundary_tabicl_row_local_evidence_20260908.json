@@ -1,0 +1,92 @@
+{
+  "assessment_scores_inspected": false,
+  "saved_context_diagnostic": {
+    "path": "data/research/boundary_tabicl_20260908/row_local_diagnostic.json",
+    "result": {
+      "additional_context_fits": 0,
+      "assessment_scores_inspected": false,
+      "perturbation_diagnostic_fallback_counts": {
+        "power": 96
+      },
+      "protocol_sha256": "7bc519c3b8b265b86aeeee478d81bba4c377900b6cb847d335c719a51381d87b",
+      "purpose": "Query-causality verification on the already failed saved context; no target labels or accuracy metrics read.",
+      "records": {
+        "BTCUSDT": {
+          "fixed_later_query_max_error": 0.0,
+          "fixed_shorter_query_max_error": 0.0,
+          "original_later_query_max_error": 3.4859449060065106e-05,
+          "unperturbed_prefix_change": 0.0
+        },
+        "ETHUSDT": {
+          "fixed_later_query_max_error": 0.0,
+          "fixed_shorter_query_max_error": 0.0,
+          "original_later_query_max_error": 0.0,
+          "unperturbed_prefix_change": 0.0
+        }
+      }
+    },
+    "sha256": "cfac165e95bce267c3e660c45dfba537bb89c4390a092d8309928c78b0fea00f"
+  },
+  "synthetic_wrapper": {
+    "path": "data/research/boundary_tabicl_20260908/synthetic_wrapper_row_local/summary.json",
+    "result": {
+      "evidence_status": "synthetic_operational_and_causality_checks_only",
+      "market_model_procedures": 0,
+      "metadata": {
+        "actual_query_power_fallback_rows": {
+          "power": 0
+        },
+        "algorithm": "tabicl",
+        "checks": {
+          "BTCUSDT": {
+            "checkpoint_forecast_exact": true,
+            "later_query_max_error": 0.0,
+            "shorter_query_max_error": 0.0,
+            "single_query_max_error": 2.3487752132123063e-07,
+            "single_query_seconds": 0.021466124977450818
+          },
+          "ETHUSDT": {
+            "checkpoint_forecast_exact": true,
+            "later_query_max_error": 0.0,
+            "shorter_query_max_error": 0.0,
+            "single_query_max_error": 3.9089421208227115e-07,
+            "single_query_seconds": 0.019180667004548013
+          }
+        },
+        "fit_and_cache_seconds": 2.004045457986649,
+        "fit_and_serialization_seconds": 2.0797745829913765,
+        "fit_save_reload_ready_seconds": 2.3515542079985607,
+        "full_universe_query_seconds": 0.12318549997871742,
+        "model_procedures": 1,
+        "optimizer_training": false,
+        "population_priors": {
+          "BTCUSDT": [
+            0.1,
+            0.8,
+            0.1
+          ],
+          "ETHUSDT": [
+            0.2,
+            0.6,
+            0.2
+          ]
+        },
+        "posterior_contract": "sampled_context_to_full_context_pool_prior_correction",
+        "query_rows": 128
+      },
+      "protocol_sha256": "ee2b9e1f6fac9a57174f13f259b5a6aec1b17087be078f0b90cf354c7b8b0e95"
+    },
+    "sha256": "9f77cbd694883a613d0a3f9b6931242a52944f1e74c4b2ed3785394821d1e5df"
+  },
+  "verification": {
+    "focused_preprocessing_and_wrapper_tests": 9,
+    "focused_prequential_tests": 7,
+    "full_direct_tests": 627,
+    "full_skips": 0,
+    "git_diff_check": "passed",
+    "minimal_direct_tests": 488,
+    "minimal_optional_module_skips": 49,
+    "minimal_optional_test_skips": 6,
+    "ruff": "passed"
+  }
+}

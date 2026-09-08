@@ -14,9 +14,10 @@ from typing import Any
 import numpy as np
 
 from lob_forge.binance_vision import sha256_file
+from lob_forge.boundary_tabicl_preprocessing import install_row_local_power_fallback
 
 SYMBOLS = ("BTCUSDT", "ETHUSDT")
-SEMANTICS = "tabicl_case_control_prior_v1"
+SEMANTICS = "tabicl_case_control_prior_v2_row_local_power"
 TABICL_SETTINGS = {
     "n_estimators": 2, "norm_methods": ["none", "power"], "batch_size": 1,
     "checkpoint_version": "tabicl-classifier-v2-20260212.ckpt", "kv_cache": True,
@@ -136,6 +137,7 @@ class TabiclForecaster:
         if metadata["semantics"] != SEMANTICS or sha256_file(Path(metadata["checkpoint"])) != metadata["checkpoint_sha256"] or sha256_file(folder / "context.pkl") != metadata["context_sha256"]:
             raise ValueError("Pinned pretrained weights, local context or posterior semantics changed")
         estimator = TabICLClassifier.load(folder / "context.pkl", device="cpu")
+        install_row_local_power_fallback(estimator)
         return cls(estimator, metadata["columns"],
                    {s: np.array(p) for s, p in metadata["population_priors"].items()},
                    {s: np.array(p) for s, p in metadata["sampled_priors"].items()},
@@ -168,4 +170,5 @@ def fit_tabicl_context(features, labels, population_priors, *, checkpoint, check
     model = TabiclForecaster(estimator, columns, population_priors, sampled, str(Path(checkpoint).resolve()), checkpoint_sha256)
     matrix = np.concatenate([model.matrix(features[s], s) for s in SYMBOLS])
     estimator.fit(matrix, np.concatenate([labels[s] for s in SYMBOLS]))
+    install_row_local_power_fallback(estimator)
     return model
