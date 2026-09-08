@@ -20,18 +20,18 @@ PEER_DEEP = tuple(f"native_deep_w{w}_pressure_{s}s" for w in (5, 20) for s in (1
 
 
 def original_flow_columns(frame):
-    return [c for c in frame.columns if not c.startswith(("flow_", "peer_flow_"))]
+    return [c for c in frame.columns if not c.startswith(("native_flow_", "peer_native_flow_"))]
 
 
 def select_flow_variant(frame, variant):
     if variant not in FLOW_VARIANTS:
         raise ValueError("Use a registered native-flow representation")
-    own, peer = f"flow_{variant}__", f"peer_flow_{variant}__"
+    own, peer = f"native_flow_{variant}__", f"peer_native_flow_{variant}__"
     columns = [c for c in frame.columns if c.startswith((own, peer))]
     if not columns:
         raise ValueError("Requested native-flow observations are absent")
     result = frame[original_flow_columns(frame) + columns].copy()
-    return result.rename(columns={c: ("flow_" + c[len(own):] if c.startswith(own) else "peer_flow_" + c[len(peer):]) for c in columns})
+    return result.rename(columns={c: ("native_flow_" + c[len(own):] if c.startswith(own) else "peer_native_flow_" + c[len(peer):]) for c in columns})
 
 
 def load_flow_inputs(root, manifest_path, depth_manifest_path, spot_manifest_path, flow_manifest_path):
@@ -61,8 +61,8 @@ def load_flow_inputs(root, manifest_path, depth_manifest_path, spot_manifest_pat
             pieces = [original]
             for variant, (delay, deep) in FLOW_VARIANTS.items():
                 peer = [*PEER_BBO, *(PEER_DEEP if deep else ())]
-                pieces.append(additions[symbol, variant].loc[times[symbol, day]].reset_index(drop=True).add_prefix(f"flow_{variant}__"))
-                pieces.append(additions[other, variant].loc[times[symbol, day], peer].reset_index(drop=True).add_prefix(f"peer_flow_{variant}__"))
+                pieces.append(additions[symbol, variant].loc[times[symbol, day]].reset_index(drop=True).add_prefix(f"native_flow_{variant}__"))
+                pieces.append(additions[other, variant].loc[times[symbol, day], peer].reset_index(drop=True).add_prefix(f"peer_native_flow_{variant}__"))
             combined = pd.concat(pieces, axis=1)
             pd.testing.assert_frame_equal(combined[original_flow_columns(combined)], original, check_exact=True)
             if not np.isfinite(combined.to_numpy()).all() or combined.columns.duplicated().any():

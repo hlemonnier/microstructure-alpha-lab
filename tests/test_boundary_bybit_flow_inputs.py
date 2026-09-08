@@ -15,7 +15,8 @@ def test_native_flow_loader_preserves_targets_rows_and_simultaneous_peer_feature
     day = "2023-06-03"
     clock = np.arange(8, dtype=np.int64) * 1000 + 100000
     keys = [(s, day) for s in ("BTCUSDT", "ETHUSDT")]
-    frames = {k: pd.DataFrame({"original": np.arange(4), "foreign_observation": 2.0, "aux_observation": 3.0}) for k in keys}
+    frames = {k: pd.DataFrame({"original": np.arange(4), "foreign_observation": 2.0, "aux_observation": 3.0,
+                             "flow_existing_original_signal": 4.0}) for k in keys}
     labels = {k: np.array([-1, 0, 1, -1]) for k in keys}
     times = {k: clock[2:6].copy() for k in keys}
     originals = {k: v.copy() for k, v in frames.items()}
@@ -44,8 +45,8 @@ def test_native_flow_loader_preserves_targets_rows_and_simultaneous_peer_feature
         for variant, (_, deep) in FLOW_VARIANTS.items():
             selected = select_flow_variant(x[key], variant)
             peer = select_flow_variant(x[other], variant)
-            assert len(selected.columns) == 3 + (103 if deep else 29)
-            np.testing.assert_array_equal(selected.peer_flow_native_bbo_pressure_1s, peer.flow_native_bbo_pressure_1s)
+            assert len(selected.columns) == 4 + (103 if deep else 29)
+            np.testing.assert_array_equal(selected.peer_native_flow_native_bbo_pressure_1s, peer.native_flow_native_bbo_pressure_1s)
             schemas[variant] = list(selected.columns)
         assert schemas["bbo100"] == schemas["bbo500"]
         assert schemas["deep100"] == schemas["deep500"]

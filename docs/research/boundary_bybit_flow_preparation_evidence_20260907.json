@@ -1,0 +1,14 @@
+{
+  "artifact_bytes": 3550785492,
+  "known_level_updates": 524716974,
+  "manifest": "data/research/boundary_bybit_flow_combined_20260907/flow_manifest.json",
+  "manifest_sha256": "8275e0e01acc88a1e2fd25d4de8f0d4b3a1f4f612c52360c6418e9b135da0c0a",
+  "model_fits": 0,
+  "native_messages": 23518127,
+  "only_decision_time_read": true,
+  "original_publisher_and_depth_parity": true,
+  "original_rows": 2419034,
+  "save_reload_parity": true,
+  "sessions": 28,
+  "unresolved_level_updates": 22783890
+}

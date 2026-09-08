@@ -1,0 +1,291 @@
+{
+  "basis_run": "results/boundary_basis_screen_20260907",
+  "context_run": "results/boundary_context_screen_20260907",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "definition": "docs/research/boundary_bybit_flow_definition_20260907.json",
+  "definition_sha256": "2ac586ea782f81cb05305fe1344964bae73bd490256dc2a31ddf5700e16933c6",
+  "depth_manifest": "data/research/boundary_bybit_depth_20260907/depth_manifest.json",
+  "depth_run": "results/boundary_bybit_screen_20260907",
+  "distinct_assessment_decisions": 42420,
+  "evidence_status": "development_only_on_exposed_dates",
+  "finalization": "The committed 24-fit definition is unchanged. A pre-fit namespace-only correction preserves 18 preexisting flow_ columns. Add completed flow artifact hashes and verify real paired input parity before fitting.",
+  "fixed_design": {
+    "blend_weights": [
+      0.5,
+      0.5
+    ],
+    "blends": {
+      "bbo100_blend": [
+        "bbo100_hgb",
+        "bbo100_neural"
+      ],
+      "bbo100_hgb_old_neural": [
+        "bbo100_hgb",
+        "observations_neural"
+      ],
+      "bbo500_blend": [
+        "bbo500_hgb",
+        "bbo500_neural"
+      ],
+      "bbo500_hgb_old_neural": [
+        "bbo500_hgb",
+        "observations_neural"
+      ],
+      "deep100_blend": [
+        "deep100_hgb",
+        "deep100_neural"
+      ],
+      "deep100_hgb_old_neural": [
+        "deep100_hgb",
+        "observations_neural"
+      ],
+      "deep100_neural_combined_hgb": [
+        "deep100_neural",
+        "combined_hgb"
+      ],
+      "deep500_blend": [
+        "deep500_hgb",
+        "deep500_neural"
+      ],
+      "deep500_hgb_old_neural": [
+        "deep500_hgb",
+        "observations_neural"
+      ],
+      "deep500_neural_combined_hgb": [
+        "deep500_neural",
+        "combined_hgb"
+      ]
+    },
+    "checks": "Seven focused extraction, feature and loader tests pass. Includes round-trip volume, unknown frontier levels, snapshots/gaps, strict timing, prefix causality, quantity/price units, side reflection, all original labels/rows and exact simultaneous peer joins. Full suite will be recorded separately.",
+    "dates": [
+      "2023-06-03",
+      "2023-06-07",
+      "2023-06-11"
+    ],
+    "decision_policies": [
+      "registered",
+      "forecast_3600"
+    ],
+    "delays_ms": [
+      100,
+      500
+    ],
+    "distinct_assessment_decisions": 42420,
+    "evidence_status": "development_only_on_exposed_dates",
+    "feature_counts": {
+      "bbo_own": 24,
+      "bbo_peer": 5,
+      "bbo_total": 428,
+      "deep_own": 93,
+      "deep_peer": 10,
+      "deep_total": 502
+    },
+    "features": "399 original source-union fields retained. For each window: availability, signed log BBO OFI divided by current delayed BBO depth, log gross OFI/depth, net/gross efficiency, signed log return in bps, log absolute return path in bps, net/path efficiency, log message rate per second. Deep extension adds four log queue-revision masses/depth, signed log net pressure/depth, net/gross pressure, same-side recycling at each of three exponential distance widths, plus known update rate and unresolved fraction. Unavailable fields zero with explicit masks.",
+    "hypothesis": "Integrating native queue revisions retains transient replenishment and removal activity discarded by sampled endpoint books. Native BBO flow is a matched source/cadence control for additional changes at known deeper price levels.",
+    "model_fits": 24,
+    "model_fits_started": false,
+    "model_parameters": "Original fixed pooled class/asset-balanced HGB: 7 leaves, 200 rounds, learning rate .05, min leaf 100, L2 10, training quantile clipping .001/.999. Original 12-epoch 64-wide MLP with training-only quantile normalization, balanced loss, prior-day noon checkpoint selection; no new architecture or hyperparameter sweep.",
+    "models": {
+      "bbo100_hgb": [
+        "bbo100",
+        "hgb"
+      ],
+      "bbo100_neural": [
+        "bbo100",
+        "neural"
+      ],
+      "bbo500_hgb": [
+        "bbo500",
+        "hgb"
+      ],
+      "bbo500_neural": [
+        "bbo500",
+        "neural"
+      ],
+      "deep100_hgb": [
+        "deep100",
+        "hgb"
+      ],
+      "deep100_neural": [
+        "deep100",
+        "neural"
+      ],
+      "deep500_hgb": [
+        "deep500",
+        "hgb"
+      ],
+      "deep500_neural": [
+        "deep500",
+        "neural"
+      ]
+    },
+    "partitions": "Four previous training dates d-5 through d-2 with fixed four-second stride after causal feature construction; prior-day noon validation; unchanged current-day 12:02 through 13:59:49 assessments.",
+    "peer_fields": "BBO pressure at 1/5s, BBO gross, message rate and availability at 1s. Deep adds width 5/20 pressures at 1/5s and unresolved fraction at 1s. Exact simultaneous decision-time join only.",
+    "post_fit_panels": 312,
+    "primary_source": "https://arxiv.org/abs/1011.6402",
+    "registered_at_utc": "2026-09-07T23:46:00.929399+00:00",
+    "saved_baselines": [
+      "original_reference",
+      "observations_blend",
+      "spot100_tree",
+      "top1_100_tree_old_neural",
+      "combined_hgb",
+      "combined_neural",
+      "observations_neural",
+      "combined_blend"
+    ],
+    "selection": "Freeze all fits across all three dates before score inspection. Rank against matched no-flow learners, native BBO controls and strongest saved depth blend. Development gains require new-date confirmation; no independent gain is claimed here.",
+    "source_hashes": {
+      "scripts/prepare_boundary_bybit_flow.py": "985cf58a31e0a28508a7a0ae1d995b31bea549c8a53d12b4c0fac0018d0676a7",
+      "scripts/run_boundary_bybit_flow_screen.py": "1fa915149c880561261df62d267a2f123373fa4ab104709c93680afe3092fdd1",
+      "src/lob_forge/boundary_bybit_flow.py": "658620360350aaa52fb4dd298801826200f275e74a9b6b871fcf901237a89c65",
+      "src/lob_forge/boundary_bybit_flow_features.py": "48c54e2dfbb960fb81dd8e781df1581972565101d33cb7264637658f58f61b5d",
+      "src/lob_forge/boundary_bybit_flow_inputs.py": "447859acf0bf28bb6debd9070de021f85a466946c4fb8bd524f0f07ddb0c2510",
+      "tests/test_boundary_bybit_flow.py": "f209d3bf639b7fa74f80b0e58141c63f6755b279c4908f920ab67e97e28345dd",
+      "tests/test_boundary_bybit_flow_features.py": "2e7a2a8f421a0bad8f1105434628fea957245867895c87d2b6de0a831177779b",
+      "tests/test_boundary_bybit_flow_inputs.py": "8e2db8ea0ca660f3c948d5dbfe3f4de3d0b18d1ebe4d01441378e1e9783df241"
+    },
+    "source_scope": "Order-flow imbalance motivates the mechanism. This is an inspired crypto prediction experiment, not a replication or import of published performance.",
+    "timing": "Strict publisher-time + added delay < Binance decision time, with full-window coverage after snapshots/gaps. No measured receive-time guarantee. Retain all original rows and the unchanged five-second exact labels.",
+    "widths_in_prior_spreads": [
+      1,
+      5,
+      20
+    ],
+    "windows_ms": [
+      1000,
+      5000,
+      15000
+    ]
+  },
+  "flow_manifest": "data/research/boundary_bybit_flow_combined_20260907/flow_manifest.json",
+  "input_hashes": {
+    ".venv/lib/python3.12/site-packages/sklearn/.dylibs/libomp.dylib": "7fe04d06d824817d39e4c99ec44e837fd6b5f0f75f2cc3e77a384c298f3f1709",
+    "data/research/boundary_bybit_depth_20260907/depth_manifest.json": "e0cef0a7570a6ed73e0dcf17c371d4d879ca5e6f26aae3d9af6768757510f19b",
+    "data/research/boundary_bybit_flow_combined_20260907/flow_manifest.json": "8275e0e01acc88a1e2fd25d4de8f0d4b3a1f4f612c52360c6418e9b135da0c0a",
+    "data/research/boundary_event_clock_20260907/dataset_manifest.json": "dd4da6a1877e10e7c388b9ada7abd944933d0122a75de32120064aac7ee78efb",
+    "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+    "data/research/boundary_regime_early_data_20260907/dataset_manifest.json": "251a2968d265da2d7819e417f22edb6bbc6888d483c820cefc6e21f8ff366c00",
+    "data/research/boundary_spot_features_20260907/feature_manifest.json": "0f9c4d60ff1b8942a0f6b4d05ce3a777b65a8f96565a2ab9b4e1da433d192ed6",
+    "docs/research/boundary_basis_definition_20260907.json": "a48120aa4a186d8ca4a87d897a921a6a46a90aa311b2dd6c719e321cf6b7a457",
+    "docs/research/boundary_basis_screen_20260907.json": "690d07386212a4bd3d6d1e8a610321ae540e17b91b17a62bdf18d26c356badfc",
+    "docs/research/boundary_bybit_depth_data_20260907.json": "6643568ab2d86cf5641dc5988cc7671fa95710fc537850707b2eae637ea08547",
+    "docs/research/boundary_bybit_depth_preparation_evidence_20260907.json": "b94278024cc749637bc10d5755bebb8909497734433ce47b7dfbf3f29546bb84",
+    "docs/research/boundary_bybit_feature_definition_20260907.json": "f68b560df164383b6566d6c0a73af9715adcc37e9cfc3abaeedd578d7a491b31",
+    "docs/research/boundary_bybit_flow_definition_20260907.json": "2ac586ea782f81cb05305fe1344964bae73bd490256dc2a31ddf5700e16933c6",
+    "docs/research/boundary_bybit_flow_namespace_revision_20260907.json": "55db30b988364cd7c3a3ddcee8ba3ba7af6d1888529d4069345c876f95f9966c",
+    "docs/research/boundary_bybit_flow_preparation_evidence_20260907.json": "69a8e167f41c1e96953bb2fab1339f21356165e48962845adf42cab9d0a4ec14",
+    "docs/research/boundary_bybit_screen_20260907.json": "de9a08a9fab9e533c467fb6b20f9d8b0fb2fdf38170683b8bd035287842d5f33",
+    "docs/research/boundary_context_screen_20260907.json": "750e452c319e16f98d7230fe0e9930282ff2389107fb1f163d48ca2220586cd7",
+    "docs/research/boundary_event_clock_data_20260907.json": "eeb20aa140e1845a0ecceb3ff5a3750ac9eb5e9e147cb00c49eb4c6c0ab499a2",
+    "docs/research/boundary_newton_definition_20260907.json": "e096aabee8655f3ec67bbc1c517bc27e829efba604743eb2d3f44725cc53b665",
+    "docs/research/boundary_newton_screen_20260907.json": "2aab9665af443943db2548710381900041c72a35471542f7240152d732010cfc",
+    "docs/research/boundary_regime_early_data_20260907_path_revision.json": "62627e534dcd040a0b7e617273b9786cb5ae089d0131e860ee857f1b33d38fab",
+    "docs/research/boundary_regime_screen_20260907.json": "4fae8cde7bdef941c045b027a7118c7c4d2e1d9a931b1dc959f75ebea126e79d",
+    "docs/research/boundary_spot_acquisition_20260907.json": "c446e2dd08a867a42e34a53c29394419a9829590dc4bb2d3159f9620f356d5be",
+    "docs/research/boundary_spot_features_20260907.json": "39bcb7ece5ad268f56f3365b3079a4f0a697692c608b6d21c5fff9d7658f4c4c",
+    "docs/research/boundary_spot_screen_20260907.json": "3447730968fdef9bc435854417f1b3138c6638f81db481b13102c3f435aeaaaa",
+    "results/boundary_basis_screen_20260907/dates/2023-06-03/completed.json": "0d610131065deb9065a607cd29016016a1dfd4ae6facd4f651f0033335138fcd",
+    "results/boundary_basis_screen_20260907/dates/2023-06-07/completed.json": "6ae28c326506ccd23d6d68a332a50514361a92849557ca99081cbd953b24bbf9",
+    "results/boundary_basis_screen_20260907/dates/2023-06-11/completed.json": "d00be23b6773c5c7596c61263060baad54c50ee26ca37943d81468d53388a106",
+    "results/boundary_basis_screen_20260907/frozen_screen.json": "9bcc514ac8b416fad99d4920da3e89bd6cf6d9b679c6aa7b2b1fd0e11a97f693",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-03/completed.json": "af0aa96b9d991b971fdc1dea0f381f4b9febd7bd37dc32fbb5d1e8c53cc04c9f",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-07/completed.json": "4ad6020636f0bf9c9851705ced0bda2657a792ce323e67e7743be4b45d8e3f48",
+    "results/boundary_bybit_screen_20260907/dates/2023-06-11/completed.json": "3f30b113acc878d286bc26b9e53c91dcdf3446bdf256a014a4bfecbdfdd79efa",
+    "results/boundary_bybit_screen_20260907/frozen_screen.json": "5dab5ddfc604c075d534a1f92ccebc5ce62671bbd0303577f32ec7e0739bfe05",
+    "results/boundary_context_screen_20260907/dates/2023-06-03/completed.json": "2c4ba3316024608045754677b28b290ec8648bca70cd860e3f38b08834586f72",
+    "results/boundary_context_screen_20260907/dates/2023-06-07/completed.json": "7d4c1ab83b30a4ce7eba420d0fe545a069a92c33e628f1af3fa7e5e2cb114811",
+    "results/boundary_context_screen_20260907/dates/2023-06-11/completed.json": "6a575ce54107493e9a3bc716d095f8d642f7501242402cf2e7a598f27a06172f",
+    "results/boundary_context_screen_20260907/frozen_screen.json": "e8c3e7a36ebaa582e597bb12b6a06bc88a438bf404b62083cf6003fd7b31fb64",
+    "results/boundary_event_clock_screen_20260907/frozen_screen.json": "849473d278ed6c2135cb7fb19072fb61543d424b366244e801fcc889e1ac38e1",
+    "results/boundary_newton_screen_20260907/dates/2023-06-03/completed.json": "716f362fdaa2ea70fef1ec5b0cd9f9cdb7d65e61ca0df16d1097d1a77029f438",
+    "results/boundary_newton_screen_20260907/dates/2023-06-07/completed.json": "e3f5dde62d8e8bd626e1b747c4ef71dfce55589cedfc0fc8b08b52ea14fc5ea1",
+    "results/boundary_newton_screen_20260907/dates/2023-06-11/completed.json": "10f4e670581516704651a450b617289fba4dfa98922a918f9efaf24d56c449dc",
+    "results/boundary_newton_screen_20260907/frozen_screen.json": "74b57c6a106e03562facbfe287a34544ed5288db3b2f72b254e8528c0664a5eb",
+    "results/boundary_regime_screen_20260907/dates/2023-06-03/completed.json": "37e862cba17fab47af6eeb40774ec75da77730bf2fd54714a61a82218798f034",
+    "results/boundary_regime_screen_20260907/dates/2023-06-07/completed.json": "1a43aeebcda97b0af0a67a8428f5890f98c47c2a48a71621c1a7dcb6dc772c9e",
+    "results/boundary_regime_screen_20260907/dates/2023-06-11/completed.json": "b38f60f0ec879929790d4a00af47588c2e480b3a7cfe7fc030c2e8a45bc28cd9",
+    "results/boundary_regime_screen_20260907/frozen_screen.json": "0ed6b61c64414bf94a271aa1c2bbfa3dd726750cf618ebaccf9c55ca6bcfee40",
+    "results/boundary_same_day_priors_20260907/frozen_development.json": "f424b5367263eb79b4dc8c7710dfaca892c79d25b82a980fb0ffc82b4cd3887c",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/BTCUSDT_original_reference.npz": "188f73b12156197bd0f5830cc997d785dbcf8ab3c92ef97041c3a5b4e193883b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-03/ETHUSDT_original_reference.npz": "eef72f8c82c5dff40f216933d3d46305ff5718386682c2fc7363c52cca648117",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/BTCUSDT_original_reference.npz": "4f933993c79d03577087d3444f4d069c19e122c7900eb6abaa72af3f4996c74f",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-07/ETHUSDT_original_reference.npz": "ee38dacedb2daa2a7208b5aced550b3fd784877065168e0672d78141037eb82b",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/BTCUSDT_original_reference.npz": "3d0379f61d60ddfee343f613bff27f8d3a4d54d7ffc29e3e84c03bf42c7a35b8",
+    "results/boundary_same_day_priors_20260907/priors/2023-06-11/ETHUSDT_original_reference.npz": "9e1c4fda1b8826b582332acf29cbea9bbc1e8ca94e86cc38a9fb7b511b6cbf83",
+    "results/boundary_spot_screen_20260907/dates/2023-06-03/completed.json": "c6ea938e761f97d8488617c968ce390b2399c3b7b75c4974e8b57e3c5c5c7e0d",
+    "results/boundary_spot_screen_20260907/dates/2023-06-07/completed.json": "ab7f23a5169d99d38e539380e27bba62b08c38b661af00de76d2239a72411e31",
+    "results/boundary_spot_screen_20260907/dates/2023-06-11/completed.json": "86a93bbf5ab4c0509587cfc8dc00c339f73ba8148f24e1ca80cb8c46217efe78",
+    "results/boundary_spot_screen_20260907/frozen_screen.json": "ba3dee0757ff210690e2f55b5453ac1d85ffd71e9189f817afaf63a5e7acd49d",
+    "scripts/prepare_boundary_bybit_depth.py": "2bae13b857df2934d00d1b27785c37d976ce948d61b0a7a9664eed86b00b3871",
+    "scripts/prepare_boundary_bybit_flow.py": "985cf58a31e0a28508a7a0ae1d995b31bea549c8a53d12b4c0fac0018d0676a7",
+    "scripts/run_boundary_basis_screen.py": "a0d39e30aad0c3bb436fdc87fdf0bf09bdde34f30a1cdc4f01dab0b009d91d89",
+    "scripts/run_boundary_bybit_flow_screen.py": "1fa915149c880561261df62d267a2f123373fa4ab104709c93680afe3092fdd1",
+    "scripts/run_boundary_bybit_screen.py": "2028d56cf181af3a92592878357bf1adf8f0ae91f3423c1b37092967baf71ea6",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "scripts/run_boundary_context_screen.py": "84a3f1b5771ca70344f0bdefbe89a7f8169549ffa9a3102f35ac7f6594079a57",
+    "scripts/run_boundary_event_clock_screen.py": "929ff7adac3dd5d31655b521b85b8db01d15c9a4566317c10620fe7fc08f233d",
+    "scripts/run_boundary_newton_screen.py": "532e09aba31255ad48e2bc434ecd317a9d6a658a40e8260ef25b4d564946db38",
+    "scripts/run_boundary_regime_screen.py": "ce6249273bf524506442f904c57c450a04f509b3a9937620644a74872a1552e6",
+    "scripts/run_boundary_spot_screen.py": "9d12d9b57875bea3f1751d1b8e7afbeea484b3d372915249731603c6525f35c0",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_basis_inputs.py": "2bc9101a72d37986bb2217fe17b86cae3dad66d019c3ec766dac58b1f834459e",
+    "src/lob_forge/boundary_basis_state.py": "27f441b6e787909c724243ee061581b65ca67cfd2063dcfd7e49500e83af23e3",
+    "src/lob_forge/boundary_bybit_depth.py": "89b09ee4d7a721146f39d56bff02de04969ff1e675c1423fd060208637c09a67",
+    "src/lob_forge/boundary_bybit_features.py": "f18d01c4e71faa149799781faacfb22d941a73f5d10a9342d4b63f62773ef722",
+    "src/lob_forge/boundary_bybit_flow.py": "658620360350aaa52fb4dd298801826200f275e74a9b6b871fcf901237a89c65",
+    "src/lob_forge/boundary_bybit_flow_features.py": "48c54e2dfbb960fb81dd8e781df1581972565101d33cb7264637658f58f61b5d",
+    "src/lob_forge/boundary_bybit_flow_inputs.py": "6043898325dc6f369bfd849dd1c4d87bb0c36d0cdfc405a1483e5c9fa5e2f4c3",
+    "src/lob_forge/boundary_bybit_inputs.py": "09e3d7762528ba7cdf40d0d02eb3cb566f5d93e923a95142a10fa0f7ae24e38e",
+    "src/lob_forge/boundary_combined_inputs.py": "c304fe5028d4a6f63304ac9ca219d875900873f36c8188da8d9d535808af6e94",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+    "src/lob_forge/boundary_event_clock_inputs.py": "87f3c07457c3974f4c56e28b5c4dd302bf26cd5db09359258c6fa4425df373fe",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_long_context.py": "4b38c201d00819d3323171323fea130f9466d6afb04def9c4e2899472978bb16",
+    "src/lob_forge/boundary_long_context_inputs.py": "6c75af1304ac2795e40a078b2f1b7a60729ac634221d36672c51ecc15ae16240",
+    "src/lob_forge/boundary_newton_boost.py": "b5ab01a91b47614b7b6995dabda1fa6e2de7bdc2388887e9299ae8076e62cc1e",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_regime_coverage.py": "d83f5088923d09ccd75a0e324e74fcd9d674ad57999452fab9115cd7284fbd50",
+    "src/lob_forge/boundary_spot_data.py": "677ecdba899cde8a2aef86514f0beb4e1802b283427aee7aa9efc6bdf6840562",
+    "src/lob_forge/boundary_spot_features.py": "22af9d596962de35e46a18ff44ff3c36b07b5ad8b878dc98cff1544153fb75bd",
+    "src/lob_forge/boundary_spot_inputs.py": "cda1f7c6bc296c70885703521ffcba93bbd94af71e338008f84d1404545bcc46",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "tests/test_boundary_basis_inputs.py": "19cc6f570a8471e1a546a5f403b0549e8ec74643847f189748af3658873a5027",
+    "tests/test_boundary_basis_state.py": "473c2b53852baf213fb932e81561c50ae7f3c201b6e19a35ea91b694a4ecb6e3",
+    "tests/test_boundary_bybit_depth.py": "8e09fdcc689d43a9f935c421222c5f838a2661bec32b0d00f01320a11bf4ad1d",
+    "tests/test_boundary_bybit_features.py": "7b45d2c6f431854a62690985fbe72e2afe838402d5bbd470151d299a6cd466ed",
+    "tests/test_boundary_bybit_flow.py": "f209d3bf639b7fa74f80b0e58141c63f6755b279c4908f920ab67e97e28345dd",
+    "tests/test_boundary_bybit_flow_features.py": "2e7a2a8f421a0bad8f1105434628fea957245867895c87d2b6de0a831177779b",
+    "tests/test_boundary_bybit_flow_inputs.py": "fb7293bf74f025ed5dc7dc4b717423991cb8c75b668d9862259f2a880a2a79c2",
+    "tests/test_boundary_bybit_inputs.py": "1e2ac5207042ed73570f33807b90d4753fd7d130a01f57dcd52b874aff867b16",
+    "tests/test_boundary_combined_inputs.py": "2c61e020bf654788487962ae706900f4f826daf6109a5d0e574ab9b80e0e1465",
+    "tests/test_boundary_event_clock.py": "bf2a7ac98f77b4f20101d1a770aa28bff8fb06a6f6f087b99e887fafa615cf56",
+    "tests/test_boundary_event_clock_inputs.py": "6b41cef94f3bd9587a0491fdb9aec588a6c1af557128c001264cf5220a7439b4",
+    "tests/test_boundary_long_context.py": "22e3c5992decaa4f0b4b2cfa21a2fcefd13af8df9632430067022098def2e233",
+    "tests/test_boundary_newton_boost.py": "6a75ae5c7794785d418e5ce9e87f8c9492bd0a4c8b7eff187e1ac4ef36f5cff9",
+    "tests/test_boundary_regime_coverage.py": "d56ca88ff3a27ae84289aa92c698bd9febf8ce1aad5521d5b4671dcf5a8b22d1",
+    "tests/test_boundary_spot_data.py": "1d310bafcff86e0ced23d9f4ae68eab6ec36983cf6ef4a59cda2133d18e72f35",
+    "tests/test_boundary_spot_features.py": "a03d49dbfda8553cfed389a5438b191e7123f2836bf61acd99f11d9a281903cf",
+    "tests/test_boundary_spot_inputs.py": "77ce5683593a0ef5d04ec1f18f9bc04bf638e853adbb5968d7e3949bf8e8a77d"
+  },
+  "manifest": "data/research/boundary_regime_data_20260907/dataset_manifest.json",
+  "model_fits": 24,
+  "namespace_revision": "docs/research/boundary_bybit_flow_namespace_revision_20260907.json",
+  "namespace_revision_sha256": "55db30b988364cd7c3a3ddcee8ba3ba7af6d1888529d4069345c876f95f9966c",
+  "newton_run": "results/boundary_newton_screen_20260907",
+  "post_fit_panels": 312,
+  "prior_run": "results/boundary_same_day_priors_20260907",
+  "registered_at_utc": "2026-09-07T23:10:04.284130+00:00",
+  "spot_manifest": "data/research/boundary_spot_features_20260907/feature_manifest.json"
+}

@@ -1,0 +1,56 @@
+{
+  "initial_failure_log": "data/research/boundary_bybit_flow_loader_parity_20260907/initial_namespace_failure.log",
+  "initial_failure_sha256": "1f22c993c4a862d1cbe707c7c2e9e7377b3e8bebb9eefdb1a207baa953b4c3ae",
+  "model_fits": 0,
+  "new_hashes": {
+    "src/lob_forge/boundary_bybit_flow_inputs.py": "6043898325dc6f369bfd849dd1c4d87bb0c36d0cdfc405a1483e5c9fa5e2f4c3",
+    "tests/test_boundary_bybit_flow_inputs.py": "fb7293bf74f025ed5dc7dc4b717423991cb8c75b668d9862259f2a880a2a79c2"
+  },
+  "old_hashes": {
+    "src/lob_forge/boundary_bybit_flow_inputs.py": "447859acf0bf28bb6debd9070de021f85a466946c4fb8bd524f0f07ddb0c2510",
+    "tests/test_boundary_bybit_flow_inputs.py": "8e2db8ea0ca660f3c948d5dbfe3f4de3d0b18d1ebe4d01441378e1e9783df241"
+  },
+  "parent_definition_sha256": "2ac586ea782f81cb05305fe1344964bae73bd490256dc2a31ddf5700e16933c6",
+  "real_paired_validation": {
+    "assessment_scores_inspected": false,
+    "checks": [
+      {
+        "date": "2023-05-29",
+        "original_columns": 399,
+        "original_features_labels_times_exact": true,
+        "rows": 86097,
+        "symbol": "BTCUSDT",
+        "variant_columns": {
+          "bbo100": 428,
+          "bbo500": 428,
+          "deep100": 502,
+          "deep500": 502
+        }
+      },
+      {
+        "date": "2023-05-29",
+        "original_columns": 399,
+        "original_features_labels_times_exact": true,
+        "rows": 86097,
+        "symbol": "ETHUSDT",
+        "variant_columns": {
+          "bbo100": 428,
+          "bbo500": 428,
+          "deep100": 502,
+          "deep500": 502
+        }
+      }
+    ],
+    "input_hashes": {
+      "data/research/boundary_bybit_depth_20260907/depth_manifest.json": "e0cef0a7570a6ed73e0dcf17c371d4d879ca5e6f26aae3d9af6768757510f19b",
+      "data/research/boundary_bybit_flow_loader_parity_20260907/base.json": "4bc66af6f022656c9bf38884cde1cb212f46e9b9e5c1b204787d07cffbfb9661",
+      "data/research/boundary_bybit_flow_loader_parity_20260907/flow.json": "a91a86e6bfcff05f4626be6c621b902b2ff349787dcea126e13f78b7fd1daf48",
+      "data/research/boundary_spot_features_20260907/feature_manifest.json": "0f9c4d60ff1b8942a0f6b4d05ce3a777b65a8f96565a2ab9b4e1da433d192ed6"
+    },
+    "model_fits": 0
+  },
+  "reason": "Real paired-loader validation failed closed before any fitting because the broad flow_ prefix also matched 18 existing columns. Rename only the added-column namespace to native_flow_ and peer_native_flow_; preserve the original 399 columns and every selected feature value.",
+  "registered_at_utc": "2026-09-08T00:11:06.436434+00:00",
+  "regression_test": "Original flow_ columns are explicitly present in the loader fixture and must survive unchanged.",
+  "research_settings_changed": false
+}
