@@ -1,0 +1,13 @@
+# Exact compatibility correction before the twenty-date retry
+
+The original twenty-date run stopped on May 24 after its two workers completed successfully. The post-fit check compared a stored constant prior repeated across 7,070 rows with the same prior stored as a three-element vector. NumPy rejected the different shapes. No assessment metric or leaderboard was computed; no date received a completion marker.
+
+The correction permits only `(3,)` and `(number_of_queries, 3)` storage, broadcasts those arrays, and compares every value exactly. It neither normalizes nor averages values and uses no equality tolerance. Four regression tests cover identical decisions, dynamic priors, a single changed floating-point bit, invalid shapes and non-finite/non-positive values. All 320 retained prior pairs across the twenty dates pass: 160 constant-vector comparisons and 160 dynamic-array comparisons. This check fits no model and computes no assessment score.
+
+The original attempt, including both successful checkpoints and the partial prediction file, is preserved in `results/boundary_broad_accuracy_screen_20260908_initial_prior_broadcast_failure`. The original runner and process log are retained in `data/research/boundary_broad_prior_shape_revision_20260909`. The original protocol remains unchanged at SHA256 `adaf2aa8decd39f1e39a8de02a8d35c48399101205544a35f2376fa8c2b30c76`.
+
+The [separate execution amendment](boundary_broad_accuracy_prior_shape_revision_20260909.json), SHA256 `3aae5cd8e3f01c07a1504bd732776b015b2a81b367b92a6c06c0e43c1611b908`, freezes 389 inputs before repeating the complete forty-fit family. Both initial fits count separately: a complete retry means 42 fit attempts in total. Models, seeds, dates, data, transforms, loss, validation selection, priors, decision policies, 560 reporting panels, resource limits and the substantial-gain gate are unchanged. All twenty dates remain exposed development data.
+
+Validation passed 675 direct tests with the full research runtime and no skips. The minimal runtime passed 488 tests, with six optional tests and 59 optional modules skipped because their dependencies are absent. Exact artifact inventories and the 320 comparison records are in the [compatibility evidence](boundary_broad_accuracy_prior_shape_evidence_20260909.json), SHA256 `e98bc9852b3c99ea848ecd7e1cfebdc6680f4ed769ef6ba21024acba8522c895`.
+
+The completed attention input-only replay included the old broad runner as an unused member of its source inventory. Its original protocol and evidence remain unchanged and reproducible at their recorded commit. The completed proper-loss study did not pin this runner. Future attention execution will freeze the revised current sources after the broad audit completes.

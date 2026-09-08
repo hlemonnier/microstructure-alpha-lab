@@ -1,0 +1,5014 @@
+{
+  "all_320_comparisons_exact": true,
+  "audit_artifact_hashes": {
+    "data/research/boundary_broad_prior_shape_revision_20260909/failed_parent_process.log": "1bf9aa8962dbd232b9e899a6b52404fcaabb8f8a3372b2946d4e48846747a7cb",
+    "data/research/boundary_broad_prior_shape_revision_20260909/freeze_revision.py": "153da65e3b6f56eb126c44b8d1343078db87f7175931a7450f5b9608a0d85ec8",
+    "data/research/boundary_broad_prior_shape_revision_20260909/full_tests.log": "10e27d2f82db82f1011b965d93085249833a8fdbca33a7785b3ed18c0cb1537c",
+    "data/research/boundary_broad_prior_shape_revision_20260909/minimal_tests.log": "9f75ca685001b5fa111aebacc6104f17190568d936b62b1d59184dd3afcb212a",
+    "data/research/boundary_broad_prior_shape_revision_20260909/original_broad_runner.py": "f92e22bb1974dc8fbeabd0e2a0dd4fb11a53d126177dd0085a12f09b868268bf"
+  },
+  "completed_initial_dates": 0,
+  "failed_attempt": "results/boundary_broad_accuracy_screen_20260908_initial_prior_broadcast_failure",
+  "failed_attempt_artifact_hashes": {
+    "dates/2023-05-24/assessment.npz": "974bc27366ca149c245af7ba5f7c8ef7b77fcfcc17a678e8eba4ecbfb6530cb3",
+    "dates/2023-05-24/predictions/BTCUSDT_original_reference_registered.npz": "f79ade5d459c7edabb918c4d3eb719da185a4e72b07f02e027a574aa5ab337d8",
+    "dates/2023-05-24/preparation_metadata.json": "d4afead76d81e06e561768d27100ba2b0937deecd9c7caf0157c3b30e5a56748",
+    "dates/2023-05-24/prepared.json": "bcd68f1982514c8a013176e303a639c25d2b4e22b5cfbf926e80d2c14840857d",
+    "dates/2023-05-24/queries.joblib": "b4d6578e5d8bff4d27e35c04ce0b770ad9303bb58988f34cca793148014f74ad",
+    "dates/2023-05-24/training.joblib": "48559fae232a516013d5927da7eeaabb0ab339df6a2bf224b28ee874517b4adb",
+    "dates/2023-05-24/workers/observations_neural/forecasts.npz": "13d85fff2ef052fb611641da3b1e6e1fc5dc706f1889c9293246f6d338c326ab",
+    "dates/2023-05-24/workers/observations_neural/model/model.pt": "e915206fc47151ff9473a204ecff69e6f738c99b5d946dea63c239157b59c267",
+    "dates/2023-05-24/workers/observations_neural/model/normalizer.joblib": "1f99149f0a4b64fdccf4365bfd588d6118698c10d4dfe9263901c77bca760eb4",
+    "dates/2023-05-24/workers/observations_neural/operational.json": "842d9ff8119e14bbed95f22dc4cac196dae9fcf7e4b7d480c002c110e958e20f",
+    "dates/2023-05-24/workers/observations_neural/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "dates/2023-05-24/workers/observations_neural/succeeded.json": "bd1917146670089ef60f097e424e5637ee2607f678efe35f4509410b421c93bc",
+    "dates/2023-05-24/workers/observations_neural/supervision.json": "aa260f98305bc0f82e8a8b47096899cceee3bc60da8b4ba04ce004d4310a855a",
+    "dates/2023-05-24/workers/observations_neural/training_history.json": "39eb450b295f485c1a5fdd13701847b648c8577c36ae4354b4acc00f6d9a128a",
+    "dates/2023-05-24/workers/observations_tree/forecasts.npz": "b1ea22b94eb4cd7b8dda4deb3a9bc7202ed8f152783b76578fdb0b2185ea4434",
+    "dates/2023-05-24/workers/observations_tree/model.joblib": "e189ace650aa977e3634d494d46923b4f6a352ca9fbc71e1443f433e4cda95ee",
+    "dates/2023-05-24/workers/observations_tree/operational.json": "f6b928cfefd541ea5ac1c0a120712b30008f9f8a54a7503d1a18686192c618de",
+    "dates/2023-05-24/workers/observations_tree/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "dates/2023-05-24/workers/observations_tree/succeeded.json": "75cc22b1044b98f51414e2548f0f4b71e559c81cb2736aa9bf575e9c72593f1b",
+    "dates/2023-05-24/workers/observations_tree/supervision.json": "909188d17b5730d9717fa95b0671fcd2ba81d6ba0729d3bd686bcaa9999c0b47",
+    "frozen_screen.json": "fdda058a0c069349bf646fdb6b8904b821a0d0a8a64c82ad68fdcde67be616db",
+    "progress.json": "c550dfddb06d200faf8b4ae9cb28d420f2124047e8e49008082e0dfad2fac3b2"
+  },
+  "fix_commit": "d13d311ab8ea61153246ede542e9d28ab3ab1b64",
+  "full_runtime_tests_passed": 675,
+  "full_runtime_tests_skipped": 0,
+  "minimal_optional_modules_skipped": 59,
+  "minimal_optional_tests_skipped": 6,
+  "minimal_runtime_tests_passed": 488,
+  "new_assessment_metrics_computed": false,
+  "new_model_fits_for_compatibility_check": 0,
+  "original_commit": "c0469f0f986bf3060c22514ac4ecfe2761e0b3d7",
+  "original_protocol": "docs/research/boundary_broad_accuracy_screen_20260908.json",
+  "original_protocol_sha256": "adaf2aa8decd39f1e39a8de02a8d35c48399101205544a35f2376fa8c2b30c76",
+  "provenance_scope": "The completed attention input-only replay pinned the old broad runner as an unused source-closure member. That protocol and replay remain unchanged and reproducible at their original commit. The proper-loss parent did not pin this runner. Future attention execution protocols must pin the revised current code.",
+  "reason": "The first day completed both model fits, then post-fit prior verification rejected (7070, 3) versus (3,) storage of identical constant values. No assessment score was computed or revealed.",
+  "recorded_at_utc": "2026-09-08T22:26:25.395129+00:00",
+  "retained_prior_comparisons": [
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-24",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-25",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-26",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-27",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-28",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-31",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-01",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-02",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-03",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-04",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-05",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-06",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-07",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-08",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-09",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-10",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-11",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_reference",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "matched_data_control",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "original_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "registered",
+      "replayed_shape": [
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-06-12",
+      "exact_after_canonical_broadcast": true,
+      "model": "pooled_balanced_tree_blend",
+      "policy": "forecast_3600",
+      "replayed_shape": [
+        7070,
+        3
+      ],
+      "rows": 7070,
+      "stored_shape": [
+        7070,
+        3
+      ],
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "successful_initial_fits": 2,
+  "unchanged_experiment": "Same forty fits, seeds, dates, histories, transforms, loss, weights, epoch rule, priors, comparisons, policies, 560 panels, resource limits and substantial-gain criteria. Repeat both first-day fits explicitly; no implicit resume or model selection."
+}
