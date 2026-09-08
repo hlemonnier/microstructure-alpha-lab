@@ -1,0 +1,111 @@
+{
+  "architectures": [
+    "instant_residual",
+    "gru_residual",
+    "lstm_residual"
+  ],
+  "assessment_metrics_computed": false,
+  "backends": [
+    "cpu",
+    "mps"
+  ],
+  "causality_and_chunk_absolute_tolerance": 2e-05,
+  "cross_backend_gradient_absolute_tolerance": 0.0001,
+  "cross_backend_gradient_relative_l2_tolerance": 0.005,
+  "cross_backend_probability_absolute_tolerance": 2e-05,
+  "deterministic_algorithms": true,
+  "dimension_scope": "Upper bounds including the original asset indicator; original constant-column removal may reduce actual production input dimensions.",
+  "dimensions": [
+    221,
+    400
+  ],
+  "dtype": "float32",
+  "gaps": {
+    "all_streams": [
+      0,
+      120
+    ],
+    "stream_0": [
+      231,
+      242
+    ],
+    "stream_4": [
+      401,
+      418
+    ]
+  },
+  "gradient_probe": "Use a fixed nonzero output-head weight to exercise every parameter; compare exact same CPU-initialized parameters before optimizer steps.",
+  "inference_probe": {
+    "alternate_chunk": 97,
+    "default_chunk": 128,
+    "future_change_start": 777,
+    "gap_start": 1029,
+    "rows": 2053,
+    "same_backend_checkpoint_exact": true,
+    "zero_correction_exact": true
+  },
+  "input_hashes": {
+    "docs/research/boundary_fading_memory_definition_20260908.json": "b31cf21c635549f736da8787a9f212effa13bf559e23d632f1ec05b65c8218a4",
+    "docs/research/boundary_learned_memory_definition_20260908.json": "fb359ad69f080b762ee7eea67bea53d10fcf95ba25c9d6d8fddb4b61ddfa39d0",
+    "docs/research/boundary_prequential_definition_20260908.json": "1f5abbdd836004b9e9af576839d048078f8275c13a112995bf0f84b89eb6a13e",
+    "scripts/benchmark_boundary_learned_memory.py": "a1fa1a5e4ec789fe3465bf38bbdc69f8a455a72c22c3741ef7b155c7b31b2a60",
+    "scripts/benchmark_boundary_online_memory.py": "f61f5bc99c06f12f93f9a727db618b7ed31f746414a6fb05ca25111329e514d0",
+    "scripts/run_boundary_confirmation.py": "29948febd13857663d4401abf0164357b959b662fa93daefec4edbcbb00ec024",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_adaptive_priors.py": "bcf2a0c2f28fb655d82659448e5c3b88fa99fb5335a2ae222f506adaed70ebc2",
+    "src/lob_forge/boundary_basis_inputs.py": "2bc9101a72d37986bb2217fe17b86cae3dad66d019c3ec766dac58b1f834459e",
+    "src/lob_forge/boundary_basis_state.py": "27f441b6e787909c724243ee061581b65ca67cfd2063dcfd7e49500e83af23e3",
+    "src/lob_forge/boundary_bybit_depth.py": "89b09ee4d7a721146f39d56bff02de04969ff1e675c1423fd060208637c09a67",
+    "src/lob_forge/boundary_bybit_features.py": "f18d01c4e71faa149799781faacfb22d941a73f5d10a9342d4b63f62773ef722",
+    "src/lob_forge/boundary_bybit_flow.py": "658620360350aaa52fb4dd298801826200f275e74a9b6b871fcf901237a89c65",
+    "src/lob_forge/boundary_bybit_flow_features.py": "48c54e2dfbb960fb81dd8e781df1581972565101d33cb7264637658f58f61b5d",
+    "src/lob_forge/boundary_bybit_flow_inputs.py": "6043898325dc6f369bfd849dd1c4d87bb0c36d0cdfc405a1483e5c9fa5e2f4c3",
+    "src/lob_forge/boundary_bybit_inputs.py": "09e3d7762528ba7cdf40d0d02eb3cb566f5d93e923a95142a10fa0f7ae24e38e",
+    "src/lob_forge/boundary_combined_inputs.py": "c304fe5028d4a6f63304ac9ca219d875900873f36c8188da8d9d535808af6e94",
+    "src/lob_forge/boundary_confirm_model.py": "a7bf19a10437ed11e3cd25b5adb47bee1b45d061edc71fd0347492ecf14121d3",
+    "src/lob_forge/boundary_confirmation_integrity.py": "8b4a195ee1cb1779920f5af67485f9c3f14d25f44c8cd762b59e0dac763fdef9",
+    "src/lob_forge/boundary_embedding.py": "77af034550c370e63205bd7a7cd64fa293638e54830649297bc54ce824e92e77",
+    "src/lob_forge/boundary_event_clock.py": "0dddaaa52f71017b7d1fb77358effccab3284738f585daccf1fad2b2b3d93b4b",
+    "src/lob_forge/boundary_event_clock_inputs.py": "87f3c07457c3974f4c56e28b5c4dd302bf26cd5db09359258c6fa4425df373fe",
+    "src/lob_forge/boundary_event_inputs.py": "2e9191db085afcf6cae5af98210eabf41a005afbd1d334fabbb477bf24b449ab",
+    "src/lob_forge/boundary_fading_memory.py": "2881efd10ee2bf6994268c687a1965ba808ed36f48201ee71ceb28dc1d9384c7",
+    "src/lob_forge/boundary_forecasts.py": "9dffe2b3c1cec6f8550685350740ccfe0602a8571cbd46b516fea2ecdde1e59a",
+    "src/lob_forge/boundary_learned_memory.py": "320fcff11402bae858e13af61c63965a07d977974b0477c96a0af1eec4841067",
+    "src/lob_forge/boundary_long_context.py": "4b38c201d00819d3323171323fea130f9466d6afb04def9c4e2899472978bb16",
+    "src/lob_forge/boundary_long_context_inputs.py": "6c75af1304ac2795e40a078b2f1b7a60729ac634221d36672c51ecc15ae16240",
+    "src/lob_forge/boundary_multihorizon_model.py": "355f5d9865335195a8e5fd4108bfb0d0f75c58665f905e54cacfaf9780487489",
+    "src/lob_forge/boundary_multihorizon_targets.py": "e2d10a41313a5f3e906a5d450c97c2faf60ea2bacae21fcc6820c4c760f18d86",
+    "src/lob_forge/boundary_newton_boost.py": "b5ab01a91b47614b7b6995dabda1fa6e2de7bdc2388887e9299ae8076e62cc1e",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_prequential.py": "00989ebb7df1b721724de1b7b02d3a81f18ebfc86c0d0e7a00b8c4203e69f415",
+    "src/lob_forge/boundary_regime_coverage.py": "d83f5088923d09ccd75a0e324e74fcd9d674ad57999452fab9115cd7284fbd50",
+    "src/lob_forge/boundary_spot_data.py": "677ecdba899cde8a2aef86514f0beb4e1802b283427aee7aa9efc6bdf6840562",
+    "src/lob_forge/boundary_spot_features.py": "22af9d596962de35e46a18ff44ff3c36b07b5ad8b878dc98cff1544153fb75bd",
+    "src/lob_forge/boundary_spot_inputs.py": "cda1f7c6bc296c70885703521ffcba93bbd94af71e338008f84d1404545bcc46",
+    "src/lob_forge/boundary_tabicl.py": "21a23e89dd6a4b9824db3faddd9e60c8b832752d48f980b93f4202cc412a35fe",
+    "src/lob_forge/boundary_tabicl_preprocessing.py": "a5fb63c18b15b7b4dafb045d34b6979e96c61abd23111c9311dadeee25b53cd1",
+    "src/lob_forge/boundary_weighted_boost.py": "58afdcded64b091f42873453b66a642f9cc361d2a2808ae6dbb46fbb4acfdec0",
+    "tests/test_boundary_prequential.py": "8a2216fd063f37dcc2256d9323c08e2d99166fa5118f2b08639039587b5f2984"
+  },
+  "market_model_fits": 0,
+  "maximum_block_seconds": 60,
+  "maximum_case_seconds": 900,
+  "maximum_rss_plus_driver_bytes": 12884901888,
+  "memory_measurement": "Per-worker process high-water RSS plus end-of-case MPS driver allocation, potentially double-counting unified memory; not a GPU peak estimate.",
+  "mps_fallback_enabled": false,
+  "purpose": "Synthetic production-dimension numerical and runtime comparison before any learned-memory market fitting. No market observations or scores.",
+  "registered_at_utc": "2026-09-08T05:49:56.378897+00:00",
+  "seed": 20260908,
+  "selection": "One common backend minimizing the sum of six within-case median warmed block times among backends passing every case. CPU wins an exact tie. A failed backend remains recorded; no numerical tolerance adjustment or retry occurs under this protocol.",
+  "supervision_stride_seconds": 4,
+  "synthetic_labels": "Independent categorical [0.2,0.6,0.2], original six-cell global loss balancing.",
+  "timed_blocks": 8,
+  "torch_threads": 2,
+  "training_shape": [
+    8,
+    512
+  ],
+  "truncation_seconds": 128,
+  "warmup_blocks": 2,
+  "worker_isolation": "Twelve sequential fresh Python processes; stdout and failures retained; one substantial learner at a time."
+}
