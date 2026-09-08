@@ -1,0 +1,6160 @@
+{
+  "adaptive_trajectories": 48,
+  "all_declared_inputs_and_completed_artifacts_reverified": true,
+  "base_model_fits": 0,
+  "best_adaptive_case": "confidence_context_eta10_h300",
+  "comparisons": {
+    "fixed_reference_prior": {
+      "asset_gain_pp": {
+        "BTCUSDT": -0.07092869919796962,
+        "ETHUSDT": 0.11441432037149202
+      },
+      "date_gain_pp": {
+        "2023-06-03": 0.05666996388425938,
+        "2023-06-07": 0.07330578033404311,
+        "2023-06-11": -0.06474731245804666
+      },
+      "mean_balanced_accuracy_gain_pp": 0.021742810586755645,
+      "natural_log_loss_ratio": 0.9998509425546198
+    },
+    "frozen_reference": {
+      "asset_gain_pp": {
+        "BTCUSDT": -0.08009039447635091,
+        "ETHUSDT": 0.12783673216489877
+      },
+      "date_gain_pp": {
+        "2023-06-03": 0.20051961199600843,
+        "2023-06-07": 0.2612318203338626,
+        "2023-06-11": -0.3901319257970548
+      },
+      "mean_balanced_accuracy_gain_pp": 0.023873168844268378,
+      "natural_log_loss_ratio": 0.997834222464604
+    },
+    "global_eta10_h300": {
+      "asset_gain_pp": {
+        "BTCUSDT": 0.031487715960532014,
+        "ETHUSDT": 0.03547386546323139
+      },
+      "date_gain_pp": {
+        "2023-06-03": -0.029243625531316653,
+        "2023-06-07": 0.10626227146162126,
+        "2023-06-11": 0.0234237262053405
+      },
+      "mean_balanced_accuracy_gain_pp": 0.0334807907118817,
+      "natural_log_loss_ratio": 1.0000133529333715
+    },
+    "uniform_eight": {
+      "asset_gain_pp": {
+        "BTCUSDT": 0.08575422826474499,
+        "ETHUSDT": -0.051772713671405235
+      },
+      "date_gain_pp": {
+        "2023-06-03": -0.18313003326043686,
+        "2023-06-07": -0.01811270188352143,
+        "2023-06-11": 0.2522150070339624
+      },
+      "mean_balanced_accuracy_gain_pp": 0.016990757296664327,
+      "natural_log_loss_ratio": 1.00044968544613
+    }
+  },
+  "evidence_status": "development_only_on_exposed_dates",
+  "implementation_validation": {
+    "full_dependency_complete_suite_passed": 663,
+    "full_optional_modules_skipped": 0,
+    "full_optional_tests_skipped": 0,
+    "minimal_optional_modules_skipped": 57,
+    "minimal_optional_tests_skipped": 6,
+    "minimal_suite_passed": 488,
+    "ruff_and_compilation_passed": true,
+    "targeted_mathematical_tests_passed": 3
+  },
+  "local_summary": "results/boundary_expert_feedback_screen_20260908/summary.json",
+  "maximum_checked_trajectory_seconds": 0.46108224999625236,
+  "protocol": "docs/research/boundary_expert_feedback_screen_20260908.json",
+  "protocol_sha256": "17f7bb4f66f5f569e92ece2e6ea99ba6bf5f76481ce6f70d1ba333108f1db91f",
+  "released_loss_vector_updates": 339072,
+  "substantial_gain_confirmed": false,
+  "summary": {
+    "all_six_panels_frozen_before_score_reveal": true,
+    "artifact_hashes": {
+      "attempt.json": "648af1917bae65d05ed16c14d806437241d53a324eb810736cfd38f213cb37bd",
+      "panels/2023-06-03/BTCUSDT/completed.json": "c1274f426f304c416faaa692984a76a331c7cdef0c4c1e14fcddb549f3f86e93",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta03_h1800/forecast_3600.npz": "d9bd818fd945d1bc9e4a1be81f085a4010faaf045500d837282fec1701453507",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta03_h1800/operational.json": "903c02610eaf548cf37975f4feb6e9a5abaac6fac4e79852ad44e38e09407a52",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta03_h1800/registered.npz": "187be26965d925525fd10dd19daecf9b646478e3ebc689dd0a57a5a4ff68ef39",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta03_h1800/trajectory.npz": "21efc9fed13aa8d3eccca22abe5f6a3bbfa99dca3f036153636864d9e95d6339",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta03_h300/forecast_3600.npz": "b97c6af1348bb6ec81bdb7128e87e14127e8a0fd51921b867a1acd4c2bec99e0",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta03_h300/operational.json": "fbdc02b3aa09298f332341520f346204c102ab83b77bc776d28802117000b621",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta03_h300/registered.npz": "2b954047f2d93be103f467688bb4af97658ebd71dfea87349d107105131672aa",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta03_h300/trajectory.npz": "d47847ed208d1a48477238307c648e7bf89600b5ded7924beebd45de28d5680a",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta10_h1800/forecast_3600.npz": "05e0c09e0da01bfd6799e73140f757608e421c0caf877dc9cb33c7f318ab55f9",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta10_h1800/operational.json": "291d60ddab6560a8e9d3bec9532e6ef6f9bf17be2ce51760f7b7cad60acc9c90",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta10_h1800/registered.npz": "cf24a67758267a2f5ea8f02b209648746bbee2fb7dc5e97b3fe7450904ef6cf3",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta10_h1800/trajectory.npz": "67767b569636da844c53304bc4f8f57fc6e274677abe4edda187810a2aca1540",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta10_h300/forecast_3600.npz": "aee722e1451a0f82fc648448bddd1d30642f76145a529522cfc9eb21bd77e8a9",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta10_h300/operational.json": "dd6b34687aa22f03fd878eadaf816d7d19d9e7d57c8b2cd104daca1c91c6d503",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta10_h300/registered.npz": "4f11549e03b18fe6f594bd785b6cd46adaf0a4f3fe1623caf5a704cacac1ea9a",
+      "panels/2023-06-03/BTCUSDT/confidence_context_eta10_h300/trajectory.npz": "15dbf8549295c0f1b5cf160e9964b63f0554679a5af6f6cab886e573823fd90f",
+      "panels/2023-06-03/BTCUSDT/fixed_reference_prior/forecast_3600.npz": "b64cc5d4a676440ed73227c806217f6812286181e6fdefab0518fe32169f0726",
+      "panels/2023-06-03/BTCUSDT/fixed_reference_prior/operational.json": "911d3afff27ce957e448eee0bf11b0a30831a831a0f68a7c96b395a6587034ee",
+      "panels/2023-06-03/BTCUSDT/fixed_reference_prior/registered.npz": "4cb30f221a257d3db8588f3c7f72e1556041d1f052216c0bc49a4ae5dec5064a",
+      "panels/2023-06-03/BTCUSDT/fixed_reference_prior/trajectory.npz": "d5da04fdbcd11caa73639108192c2de897824d0cc6aa430a0a5a88b2e07df99f",
+      "panels/2023-06-03/BTCUSDT/frozen_reference/forecast_3600.npz": "0569c0d28f422a9003a652a4760c8a19802988f7cf815cea94e4ce9646f5384a",
+      "panels/2023-06-03/BTCUSDT/frozen_reference/operational.json": "98d3f5a61e1fb382e2b3416ea7623cb01062e57aa579f46802751e25aa4edc85",
+      "panels/2023-06-03/BTCUSDT/frozen_reference/registered.npz": "e131bf81ef76339c6d237d0e3dabebccf879d12440879eab4ba054b57c6d44b1",
+      "panels/2023-06-03/BTCUSDT/frozen_reference/trajectory.npz": "39d2098b45470e96ad17cd13e00a59e569429f500643c60474c08e307f4128c2",
+      "panels/2023-06-03/BTCUSDT/global_eta03_h1800/forecast_3600.npz": "5e8007735493e5342a77389434d9f89a2098763ca2d4cee0e9de05b6aca29b36",
+      "panels/2023-06-03/BTCUSDT/global_eta03_h1800/operational.json": "2af5340da57aee558a5447307a45d37a099fdd05c75260f428d721f059771b1d",
+      "panels/2023-06-03/BTCUSDT/global_eta03_h1800/registered.npz": "02abedfa19fbbd46c9bf57ebf0ab74b9da284b88ca8a7b8477b5da27098cb954",
+      "panels/2023-06-03/BTCUSDT/global_eta03_h1800/trajectory.npz": "64a87dc2d3f6d5ec6f2336f36d2786b55c5b12ea464cc8a4b12d5c383f92429b",
+      "panels/2023-06-03/BTCUSDT/global_eta03_h300/forecast_3600.npz": "7514da2f4efa2f4a0b5974aaf98891da91fd65d40a4bdee8852ba1bca0e1bb84",
+      "panels/2023-06-03/BTCUSDT/global_eta03_h300/operational.json": "31294485b21e9eca577ff8e34b7b5804980cee96690cd646457354c38211bcd2",
+      "panels/2023-06-03/BTCUSDT/global_eta03_h300/registered.npz": "d463399086aaf31d298a60689ac6902d2dc5e791d44b3adc94616fbb3622a596",
+      "panels/2023-06-03/BTCUSDT/global_eta03_h300/trajectory.npz": "5c0879e5628c034bcf23493311fcf218fbad9a3c790d0ecad3c1295df055ae37",
+      "panels/2023-06-03/BTCUSDT/global_eta10_h1800/forecast_3600.npz": "29880274bece509bc99fb468fb3dac1c106686d4fb838c41705888807c1a3793",
+      "panels/2023-06-03/BTCUSDT/global_eta10_h1800/operational.json": "d22ce5cca606e88978bd42c732f0faa2178646b5f33e7625ea507e0070adbb4e",
+      "panels/2023-06-03/BTCUSDT/global_eta10_h1800/registered.npz": "d28fb9122a186f18b7538887a759227719f7ac2566e358c37539b8b2ad2427c4",
+      "panels/2023-06-03/BTCUSDT/global_eta10_h1800/trajectory.npz": "69699397344c4d0259e0ed9d1fb478068faa67172fc60ec7b3899baa2e7ff2fe",
+      "panels/2023-06-03/BTCUSDT/global_eta10_h300/forecast_3600.npz": "5483f1ef2b0682145a816ca29cd483eef5907a9343d2d4dec503de718e2612ff",
+      "panels/2023-06-03/BTCUSDT/global_eta10_h300/operational.json": "9a620e2302ded38f952ad40a64447ba2da11616f5fedb4bab0938f3d8c18d79b",
+      "panels/2023-06-03/BTCUSDT/global_eta10_h300/registered.npz": "320d1ff3ca3f6e78af2743881bbfcd3418a668ce7b442a9fa6c57ba3236b2216",
+      "panels/2023-06-03/BTCUSDT/global_eta10_h300/trajectory.npz": "422da66e5aa2f416aca16a06332e89293319a5ee8bbca423b2715ca5a844bd6b",
+      "panels/2023-06-03/BTCUSDT/uniform_eight/forecast_3600.npz": "a6ab46274213b4b874062dde344463f3ebf57a997bcaad7d96393bbdb80367ac",
+      "panels/2023-06-03/BTCUSDT/uniform_eight/operational.json": "96a99fc8b4e4301aad25ddb035582372dded95e3a283048bcbab3ecba255b6f5",
+      "panels/2023-06-03/BTCUSDT/uniform_eight/registered.npz": "199c7bc2aa23b0f88dc861a7055d962dc6057c256f754927f0cfa4833fb96a18",
+      "panels/2023-06-03/BTCUSDT/uniform_eight/trajectory.npz": "7484fc97f42acdaf2c428892352488eaf9e3c2d65a752100a4cd3034c3dfbab6",
+      "panels/2023-06-03/ETHUSDT/completed.json": "0ce7930577e2362e49e6659f3b0008d0a6bdf326da5c7b30ff4e9cf608441bc1",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta03_h1800/forecast_3600.npz": "8e2816ebbe61a313675d270125b322071206107859493a289ffbbb8d03e5d731",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta03_h1800/operational.json": "5619b401a5dafe52c7ddac9dd436368c840fcbeb43a143f7b5074c8a28e8b8c7",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta03_h1800/registered.npz": "20b51d62c7c5bdc93360cf42a4543b895039449fac954da064419e528742fa27",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta03_h1800/trajectory.npz": "d98220a7a10680240a6571ef997788c4661f64b831f7e6439ffdfa79e4dfd5a8",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta03_h300/forecast_3600.npz": "c58cbdc6df19d6109d221fa1be9e05c7d37f9b555017fae3dbbd694efbac461e",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta03_h300/operational.json": "27a1828b2a2d8e79553943d1d9b679a813f73a285036f9c8d7bd7b3d33a9c39f",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta03_h300/registered.npz": "caee0fad7a59dcf4994753045df1f6039551ad385db9c13b7d9b3633d0c0ac81",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta03_h300/trajectory.npz": "2c9825bee814f16de8aea2625b31fc1919d7e18ebbfcbcbebd051b403a17f644",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta10_h1800/forecast_3600.npz": "cfa8098e3f5de6b38db4b80de57adaef371ee1e45945753c9a0f70801d69ef16",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta10_h1800/operational.json": "e2d6ae5f536c4db60c9376bc32b65289697b751b3224f8f861b8e58304a9fd9b",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta10_h1800/registered.npz": "c2a6907bfc56b5eccc0d0102f630c4f8c33aba99861b149135d2ce71b8e29443",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta10_h1800/trajectory.npz": "e501944c1257e670c2991c47f0f419f72d9986e6f30d5e57eb881962ef1dd399",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta10_h300/forecast_3600.npz": "dd1aff95ffb617f68f0ca7d19ac2ff7f0ab699b4294f63f6ca2469ca00405289",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta10_h300/operational.json": "1c1f9f3f4b9d30352941b3c2181096c2b7c778d2e8a7a1cbd6523eb1875e6c79",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta10_h300/registered.npz": "d11160110e42bc26e2f359add264933d67d3ef79a1f1fbd2e6d3cabea8244455",
+      "panels/2023-06-03/ETHUSDT/confidence_context_eta10_h300/trajectory.npz": "855308ae81d1432605de66e2ab63cf76342456cf1aad6ffe13a22cb0ddf701bd",
+      "panels/2023-06-03/ETHUSDT/fixed_reference_prior/forecast_3600.npz": "993d4130cd2131d5658169f266b44fb5e80b623cdf390a5c4f8c516eed082ff5",
+      "panels/2023-06-03/ETHUSDT/fixed_reference_prior/operational.json": "f6144692e4302f0deb11c536877f585ecb07053adac8930025f3020a653736d4",
+      "panels/2023-06-03/ETHUSDT/fixed_reference_prior/registered.npz": "fec46f73b10c2d2c13f0b19f335ebf0592a15db53d4ea669bf28ad6528c4f51a",
+      "panels/2023-06-03/ETHUSDT/fixed_reference_prior/trajectory.npz": "0ebfa75a1a9d614aae527a6a15744bcf7c4c03dbc9a9a4a8b2cded38d380948e",
+      "panels/2023-06-03/ETHUSDT/frozen_reference/forecast_3600.npz": "2b02ea77d91c407c729ea2e13d1a5fa70da34cb35bf5b26d707af56c23a6143e",
+      "panels/2023-06-03/ETHUSDT/frozen_reference/operational.json": "880c28a2ff374a04a5e9329f0d60ad1e2c6f51f4aea757982e6b705014176b01",
+      "panels/2023-06-03/ETHUSDT/frozen_reference/registered.npz": "4d76f2f0625bac0aaa4d27a44d1c03f183ebacf9132eae282d4217bbcb419fea",
+      "panels/2023-06-03/ETHUSDT/frozen_reference/trajectory.npz": "7c180aa14215f6fa164139f7b006542a3481782bae2cdb106f48a99025e3d0f3",
+      "panels/2023-06-03/ETHUSDT/global_eta03_h1800/forecast_3600.npz": "d1334f146d30e0be8c167ac2815632b89e717846f4695c693b225dffa88b2412",
+      "panels/2023-06-03/ETHUSDT/global_eta03_h1800/operational.json": "43efdb0348a6aaddef0bca32a1ac3931100b52994580b0ca5d72d489e7f62767",
+      "panels/2023-06-03/ETHUSDT/global_eta03_h1800/registered.npz": "199fd507533a6168dc4d74b570a6e2a33080b3d1d9b93730a14064c7f235fa91",
+      "panels/2023-06-03/ETHUSDT/global_eta03_h1800/trajectory.npz": "f9d98ffcf53e19c10ff1907caa5e1b00d05ec88011fde5981222edf47f6c95ca",
+      "panels/2023-06-03/ETHUSDT/global_eta03_h300/forecast_3600.npz": "e2269fe9c874026308b7e36637786b7528047e34c6061a107ffa0a66f7d96868",
+      "panels/2023-06-03/ETHUSDT/global_eta03_h300/operational.json": "71d041f36b9c4650647ae917935079b403f7f5e57fbf6382168b5fedc17f80a1",
+      "panels/2023-06-03/ETHUSDT/global_eta03_h300/registered.npz": "ac931706a83fbd30e1a5d47c97316051df985e535bd5ad19c29a48348e26dd57",
+      "panels/2023-06-03/ETHUSDT/global_eta03_h300/trajectory.npz": "9a555f48d9009f2981458dc0731e129e7b9594e8429db89dd521d880ec02cab9",
+      "panels/2023-06-03/ETHUSDT/global_eta10_h1800/forecast_3600.npz": "8f607fe8263fa19422b0d24f404843076634bdec6f1f056090cdc17a980c6ad8",
+      "panels/2023-06-03/ETHUSDT/global_eta10_h1800/operational.json": "343e4d9a5035f677ef5ff6227b7f7f0c8ac2914aa3db0705076917f4962c98ef",
+      "panels/2023-06-03/ETHUSDT/global_eta10_h1800/registered.npz": "fbb54550f75ccc11cf5c48b8501cc7d5c52b839c001795bfbc5f0ccce0fc6833",
+      "panels/2023-06-03/ETHUSDT/global_eta10_h1800/trajectory.npz": "365b8d6d6e85f266f97df433c0861b8c6a715c21b866c1ee28a33f059efa8ce1",
+      "panels/2023-06-03/ETHUSDT/global_eta10_h300/forecast_3600.npz": "8c1335e048ff2aa052e518a8a3cb88207a34ce8218b989b80ff133ce09058803",
+      "panels/2023-06-03/ETHUSDT/global_eta10_h300/operational.json": "321fda1c244331dc3cb0a53ef47eddc2c0063fbe5857d47928a2d217d6c21dd8",
+      "panels/2023-06-03/ETHUSDT/global_eta10_h300/registered.npz": "87bf624c40dae1ec245eb62fc3fbf418d7297426efad64fc835ff360b32745e6",
+      "panels/2023-06-03/ETHUSDT/global_eta10_h300/trajectory.npz": "fbb3ec5f53f33ddf93f14677488fd3c6272f661732e3c361da153e2dd6ee7537",
+      "panels/2023-06-03/ETHUSDT/uniform_eight/forecast_3600.npz": "19372a3c203c31559facf0c8df804e0c8c033f8dd587da8c94f1c388b24873c0",
+      "panels/2023-06-03/ETHUSDT/uniform_eight/operational.json": "d1dad9cf2ef29a5893e3b88400f2697376220e1ba70d54dfefcc076bfb53bcbc",
+      "panels/2023-06-03/ETHUSDT/uniform_eight/registered.npz": "7a21241efcd11519eb4c38313dd611e51503ddd3e9ea9b8ceb8c7e1ec4af6556",
+      "panels/2023-06-03/ETHUSDT/uniform_eight/trajectory.npz": "11ef7fb474881ef36eb6eac3eb9858667557748b707fa0e2161c71967f4f8d92",
+      "panels/2023-06-07/BTCUSDT/completed.json": "f9eea5f76a3ec36719b3d285a348cea6352ec0909719edd318800e511b951e68",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta03_h1800/forecast_3600.npz": "e3cceb565abfa936c958f8d6ee888df49974c302b15b905868210e307c7e9870",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta03_h1800/operational.json": "98189d4fe2fbf22f4a3b350bb6df359381cdd2b3f4678a3298790997726c6d61",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta03_h1800/registered.npz": "8118420166919700846078f53669562b7febb7bb467ab221acb3693d814fbd28",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta03_h1800/trajectory.npz": "626e037af7be2437af2441703baa8400faa0610a1955c4621e89008639063613",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta03_h300/forecast_3600.npz": "8861318fa152649f3e136b9380ebae3697c7f53ee94ece760991212c304b7111",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta03_h300/operational.json": "2f93a6bacfd3f51112ba91668bfa667becf91d17e4cba099b77317f486691dfe",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta03_h300/registered.npz": "744099e08ac8de428a4eade04ab937e8f166f30eabfa407387013ef07ca8cbd5",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta03_h300/trajectory.npz": "d61805faf42fda8862caf2758246e93e7d2cac151298c0a815fd1d7aca4e7c8f",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta10_h1800/forecast_3600.npz": "28a29f1903457708cc3f30d640c4c8d891459f498e98d8ac3fd4c700f26a9ace",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta10_h1800/operational.json": "777baf58243bdf6a312d9cb1d1fd6e7661a4824de48dbc4b1465471c5dc3c7d6",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta10_h1800/registered.npz": "875723b2311e1bda4246f72fdd1dfe8d6bfdb11435bb75f7ade45861ba8cd204",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta10_h1800/trajectory.npz": "319d8beeb5a34bb031cc2eb644b452d2cc6d780908921ec2464261ccff7f4995",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta10_h300/forecast_3600.npz": "e48752c87c98b6401153c4a4fd0d405cfe93c7929f863de4836eb1839569fb7a",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta10_h300/operational.json": "09a53cc8a2b4aa9ef7274804e51b830031688a4bef99624b5f5a707e00b36f11",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta10_h300/registered.npz": "e580ec4bcc5178d608f831068e14209eb258077869595d28c663aaaea1ec7217",
+      "panels/2023-06-07/BTCUSDT/confidence_context_eta10_h300/trajectory.npz": "ac80fbf5fd8d60e24fe2980c874f07bd28a45e849d5041d2c822e4cdef90a3f9",
+      "panels/2023-06-07/BTCUSDT/fixed_reference_prior/forecast_3600.npz": "c9595e4a6c1ab7711ebc60186200985cd9ae62a45b011ac5c2ac7f7bee818f85",
+      "panels/2023-06-07/BTCUSDT/fixed_reference_prior/operational.json": "46bdbb6fa1ff880bde666f183aea8199e7015af331e3707d8f7d6d5e04f9cdad",
+      "panels/2023-06-07/BTCUSDT/fixed_reference_prior/registered.npz": "d0d2959dd357309104d4528e622b5c19a4624c4d301e4340738ff2b0f47dc368",
+      "panels/2023-06-07/BTCUSDT/fixed_reference_prior/trajectory.npz": "b5a8d0cacd09f9a3fbf150d9df2302e6f29c0871e36c406775e32dd9d7beec99",
+      "panels/2023-06-07/BTCUSDT/frozen_reference/forecast_3600.npz": "fcc59dcdf401ae9d156fad7b86c1116a26a66ac501bfcbe507ec72c6c3089eec",
+      "panels/2023-06-07/BTCUSDT/frozen_reference/operational.json": "63f10b86ba55d5617f966b3c9f171448a20107747162d5904ae2dbaf9a5694c6",
+      "panels/2023-06-07/BTCUSDT/frozen_reference/registered.npz": "3f5e811fbe66a91df0b6505a145d319413e01912797d4b3ce5550382957b88b1",
+      "panels/2023-06-07/BTCUSDT/frozen_reference/trajectory.npz": "3be24178cb7ec3a9980d58cf05574ed80372f950276e1c9bcd2def4424bad711",
+      "panels/2023-06-07/BTCUSDT/global_eta03_h1800/forecast_3600.npz": "9b1af57903f6cde5ca35e7dad74897a8586850632c62b9323a15cfa3fe0f63dd",
+      "panels/2023-06-07/BTCUSDT/global_eta03_h1800/operational.json": "8ffc5feb7532cabe647cdbdf7871e1a2da125d2d5cfee5e8557b0b92df8df184",
+      "panels/2023-06-07/BTCUSDT/global_eta03_h1800/registered.npz": "678c3b00439c730f77f4eed7d7063ef456b29a5c52c2fdb486c74833fdc31068",
+      "panels/2023-06-07/BTCUSDT/global_eta03_h1800/trajectory.npz": "6db38c1090d060dcc637e049c35db6c27ff85c7a954b745d9b3d7f08e4d0b535",
+      "panels/2023-06-07/BTCUSDT/global_eta03_h300/forecast_3600.npz": "b824d22b6579816eb46d213c46351b7f72adeeeb58027fb9d8c8a3301fb2cfa7",
+      "panels/2023-06-07/BTCUSDT/global_eta03_h300/operational.json": "3d86effb5b805e79a7348cc01eb8cb96de84baa2970be45bcf88d73de9fef123",
+      "panels/2023-06-07/BTCUSDT/global_eta03_h300/registered.npz": "f05d40c2a72142a95128f5c15405a9d4757aab94ac8b47703c9482a5b6892dc5",
+      "panels/2023-06-07/BTCUSDT/global_eta03_h300/trajectory.npz": "ea2f2af293993d6abc81dca39adea10d3f59240e241c54d6f8e2bd7867434dfc",
+      "panels/2023-06-07/BTCUSDT/global_eta10_h1800/forecast_3600.npz": "3570cdc227b802123b048e3f34f0f989e3cab7f1faa92659edc26736ba6af3fb",
+      "panels/2023-06-07/BTCUSDT/global_eta10_h1800/operational.json": "0e63b35c92b6615b016ac9b3ed059ac8fec46682b9a69c781e7f53857e90419c",
+      "panels/2023-06-07/BTCUSDT/global_eta10_h1800/registered.npz": "45a068c2bbfd292c6eb399d84506667df98d555a4f966ed26aecf18c8369c766",
+      "panels/2023-06-07/BTCUSDT/global_eta10_h1800/trajectory.npz": "79ec1a7a02e03cf91c2022b41f34c351e37ea2f50fdcee0d29d87a9103299cc9",
+      "panels/2023-06-07/BTCUSDT/global_eta10_h300/forecast_3600.npz": "cf0bbb86e54096b57c6339e31c5aa787d8100002f9c9e73824498fe79337502b",
+      "panels/2023-06-07/BTCUSDT/global_eta10_h300/operational.json": "75323c034de9aae4a050204a3d9fd3023879acb76bef8b48046cc0aad0186177",
+      "panels/2023-06-07/BTCUSDT/global_eta10_h300/registered.npz": "f75d6df2a88343c0d97a9f65e76dea689daf1c84b1a3e24be62b711369013706",
+      "panels/2023-06-07/BTCUSDT/global_eta10_h300/trajectory.npz": "f018bf1361184361f964cecc4c7aa80d2789d65a67b6f4f244ab41c1d5b0f392",
+      "panels/2023-06-07/BTCUSDT/uniform_eight/forecast_3600.npz": "287a2616e2c13f63d85fe62469e8136a1fe37d128209437bb69a364c223a81d2",
+      "panels/2023-06-07/BTCUSDT/uniform_eight/operational.json": "1df7a7de05972ad17061f3bdb6342733c6f236097e1adfd52097e034e163a2b7",
+      "panels/2023-06-07/BTCUSDT/uniform_eight/registered.npz": "8d7af7f2a2d1e6bdfa92352440b427ce90734faee20fe4db0c23d64674345999",
+      "panels/2023-06-07/BTCUSDT/uniform_eight/trajectory.npz": "b196903650b7218cfffd0abd8c4741ba3bb1462df09e5423c6d1e733687b2658",
+      "panels/2023-06-07/ETHUSDT/completed.json": "ab8f60973ce30f0d5aee30303e4dddfd6383984774f10057eff89e3dbb22d0ed",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta03_h1800/forecast_3600.npz": "4d01ee774e11c1b593061b2439080e75b5ef53cb43690374fcc1a44f42dc4068",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta03_h1800/operational.json": "1aea20527e989b7b2110519a8b3429afdb2610af37fbeef5f90928a4319e4bea",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta03_h1800/registered.npz": "22d4742394e6941d0149369fa75600c7e1570c4f2e6a17b7d78fb0dfecae7c64",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta03_h1800/trajectory.npz": "b7865815cdb122da87fb33198c0bed1f8625a9d5106eaa5a0a4b3f214b1bcb3b",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta03_h300/forecast_3600.npz": "051be9b75a1f69ba69e959b9536e7133a50426af6077bdd67a361ce46e06fe81",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta03_h300/operational.json": "d7b2b47da0d20bcaaef258a4f937b913f7af236fa0092b46a573ea7efc350b1b",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta03_h300/registered.npz": "569a536b76b53c7d3487ddeb80a2d095228186a0e9eb6be562f47e8d62b78c1a",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta03_h300/trajectory.npz": "36b4c1d5494abc8ab5225bc1d2f552a6c32bf5ec03809033e89944e81928819f",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta10_h1800/forecast_3600.npz": "77d9b9d59143563b66c243ce63988e88cce094ca5af24f1101b7d3c1399c33db",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta10_h1800/operational.json": "9c2973553210d7a1e530be5953a0e445ce02adf5836902346d159cc0379d8a94",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta10_h1800/registered.npz": "1bd7c3729461a1c10ac7b04d65f1a864bbbc201f77b367854c07e1e1b9c8137c",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta10_h1800/trajectory.npz": "200e2b43d624977b693c035edd7561941965a50bb935be3056b039e0c6868e33",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta10_h300/forecast_3600.npz": "746730ea42745c8d3177f9f0c7084ed6fd8f5be173b074032981b339a806f038",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta10_h300/operational.json": "3f945d4607787605f43a10367a95a8d6061adf3239952d45bae3133b2e81bbbe",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta10_h300/registered.npz": "153839d7d8ddbb9a03ddccb99e59d9276c4e9e78a67615eb5138ae760063acfd",
+      "panels/2023-06-07/ETHUSDT/confidence_context_eta10_h300/trajectory.npz": "fbcc5f17d95998dc625d5280780e790759f11ac3870e417b61701ec26230df67",
+      "panels/2023-06-07/ETHUSDT/fixed_reference_prior/forecast_3600.npz": "8ac52d549a36d2a8e90b85b8770972b6e5ebcd367d4792fc213a251f4b19a674",
+      "panels/2023-06-07/ETHUSDT/fixed_reference_prior/operational.json": "83140af1a8d7aa7e6d3272cfc797bcf4905dbef0144053738da5489566aaf3b3",
+      "panels/2023-06-07/ETHUSDT/fixed_reference_prior/registered.npz": "1f909147e718d4b35a3d6ea5c5e7ef1d09d53170de3ecdc807bf8e46d9a3406b",
+      "panels/2023-06-07/ETHUSDT/fixed_reference_prior/trajectory.npz": "9483d6af920dc9a68db0636d084a332e2390c04f818f71b0b9c4323bcf490d2c",
+      "panels/2023-06-07/ETHUSDT/frozen_reference/forecast_3600.npz": "88a4bfdd6ce48cdc83e461c6380e56db75da1a300ed8fe43778c6b11906e9f9f",
+      "panels/2023-06-07/ETHUSDT/frozen_reference/operational.json": "9409a19c7f5c567de36547b692de2e594081dfd8e377720757267c1bb402582f",
+      "panels/2023-06-07/ETHUSDT/frozen_reference/registered.npz": "2abca2b84e29993ceeee8f7258ab653599eaddf26a74f3e02012604fed33d3fc",
+      "panels/2023-06-07/ETHUSDT/frozen_reference/trajectory.npz": "6b8b3e3b829725c2a926acf20b2dfdb76e94a3e536e4e4c65891b1af2895737a",
+      "panels/2023-06-07/ETHUSDT/global_eta03_h1800/forecast_3600.npz": "1303b41e0f542e13a7c2d321d08172ed1e533a2761f4609de110498ce73de232",
+      "panels/2023-06-07/ETHUSDT/global_eta03_h1800/operational.json": "86f4a70698066062923d7ee8d3181af5fa768af7a9362d1fea382565560e0255",
+      "panels/2023-06-07/ETHUSDT/global_eta03_h1800/registered.npz": "926ddf490d44b784482027167c344ba9cb34eb132d69f38e22bb2ce9ac393e87",
+      "panels/2023-06-07/ETHUSDT/global_eta03_h1800/trajectory.npz": "ca6d151751034ac42aa05fe8618fe24b7c649426932bfd57f8730b8ca271e735",
+      "panels/2023-06-07/ETHUSDT/global_eta03_h300/forecast_3600.npz": "2fe8a21880be9d160b842ac43a9349c98a64db473a6a234bbe31eb0e4cbc6b6d",
+      "panels/2023-06-07/ETHUSDT/global_eta03_h300/operational.json": "bb35b70c956dc8c3737de6d49832843d9c28161d2617e1103f1c5befe5f13562",
+      "panels/2023-06-07/ETHUSDT/global_eta03_h300/registered.npz": "46801e23a4043e91b9994f22906cd2a0d922a60c150c2120dc83521ce9ddea0f",
+      "panels/2023-06-07/ETHUSDT/global_eta03_h300/trajectory.npz": "b85a1abe1c07fa3a3cffd4bca21f3349f3ca1e3ef744245b0b0a2bdfa02d89bf",
+      "panels/2023-06-07/ETHUSDT/global_eta10_h1800/forecast_3600.npz": "91b0e18037060dfd083c5fbedb9a13443caec259edd611fe1a21b24a9838b414",
+      "panels/2023-06-07/ETHUSDT/global_eta10_h1800/operational.json": "3cd59dc2da5777362e2ecbbd19bbd839625e340a9b97dcca0fff5d7a6e73684e",
+      "panels/2023-06-07/ETHUSDT/global_eta10_h1800/registered.npz": "cd69948ccc5231b1dff9a43ee7d0dc98a42174f74b544ee79e736e0ebffdc044",
+      "panels/2023-06-07/ETHUSDT/global_eta10_h1800/trajectory.npz": "0ff788a073030b2cdf24c81de32cb71512258856868d72d4539162db396cb377",
+      "panels/2023-06-07/ETHUSDT/global_eta10_h300/forecast_3600.npz": "7b882ab514088d2f71b7c2570c9f12add999f6ecc5c4c4d675b3faba5582da89",
+      "panels/2023-06-07/ETHUSDT/global_eta10_h300/operational.json": "55b0b66da8a6d7d4bac9570d6311095e05d7d5bfc5c04b2e1f6e681619bf675e",
+      "panels/2023-06-07/ETHUSDT/global_eta10_h300/registered.npz": "71e0582675f08a4ad91a4de850dc4cd9d177b07b09e55dcb512b07cfc94ba5e8",
+      "panels/2023-06-07/ETHUSDT/global_eta10_h300/trajectory.npz": "bbd5f8a3603224ae170ba3b6a511a709cdbfbe7918b6675a0552c83f31cd60da",
+      "panels/2023-06-07/ETHUSDT/uniform_eight/forecast_3600.npz": "7b821ff339d51a79477811b3da8913b1fabea2bdba6b6f144aad925d18691b96",
+      "panels/2023-06-07/ETHUSDT/uniform_eight/operational.json": "afb1ada50e6aec23f86933d31c2f38f838c8d001ebd72b6381fe75281b6f00f7",
+      "panels/2023-06-07/ETHUSDT/uniform_eight/registered.npz": "b5d88447a6d8229facad824e1fce2e4e7f11e5c2aa6e5edac0623a2d19223a18",
+      "panels/2023-06-07/ETHUSDT/uniform_eight/trajectory.npz": "46de3573a81587fa113eb71ae602ef5fd5ceb7987591d3069b9e1220476638c1",
+      "panels/2023-06-11/BTCUSDT/completed.json": "ac3066e0f725c82a6781aa78ed6f09052521e13b54b91129cb496c6500d509ad",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta03_h1800/forecast_3600.npz": "b898305c34ec53b3c9dc88c49b9a67c27b5f42b2b204198a6a1c5191fd237c9e",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta03_h1800/operational.json": "b213e6f489470c1925650adbd2ddd68b99f4ec8675e6b2385969745274ea0215",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta03_h1800/registered.npz": "c11a78d61d81d2eac712eb1d2aa624cc105d4220a86f0cb8916a39a89f544381",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta03_h1800/trajectory.npz": "44d66a71c78b60bcfebdf935b85498a818a56af31c4d78479696c8216e9cc75e",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta03_h300/forecast_3600.npz": "c71d01f1cbaf63c9d13679dc755e96bf372f1a9f714b3376ae58f0279820d74f",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta03_h300/operational.json": "ed33ee5c6c8803e5e189243d87e787a96bb1e3e10eab27bca5aeeb893ada537d",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta03_h300/registered.npz": "ffc144708379af5450a7b5a2778bbfcd73a3596bdfb805c564b4b439e638f4cb",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta03_h300/trajectory.npz": "e64faad2bf94816aad1c93892f078127edd844168cafa4859ea5c90e82d66a9b",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta10_h1800/forecast_3600.npz": "f93deb6f2fbab4047d680aded99db3c8d527b661296d02f00852af54e002e0ff",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta10_h1800/operational.json": "32ed52be44381157f2528a47b7d93de20259742987cd165be368dc3549cc3ba3",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta10_h1800/registered.npz": "674642dbf98dd8521d6c6b3cabfc9a92327a0a7b90ec37abc5f25c531827db24",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta10_h1800/trajectory.npz": "ee95dc6fcc7948ca681165462401e2ea9e5225d229f75864fba2d0ea199b0d39",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta10_h300/forecast_3600.npz": "0c3430adddacf6f94af5b706016dae813a89d3e3570e4638ecf82af378f659ae",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta10_h300/operational.json": "afffd36fe3bf6fc0f26f8914201c02ee2e3a0b3df87cbf4ed5db7719feca6023",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta10_h300/registered.npz": "7239d51f8f77d37386c0bd95878d28fc9531321394d02ecf6b5fec8bcf43682f",
+      "panels/2023-06-11/BTCUSDT/confidence_context_eta10_h300/trajectory.npz": "037934d38f6fa91680c81f7423651752f52d538052f702a6fafa3392b796559b",
+      "panels/2023-06-11/BTCUSDT/fixed_reference_prior/forecast_3600.npz": "5b397379f5c12ac0a7311a7112a5adff35dc36cb8a91f5fb4fe93b5b81d56085",
+      "panels/2023-06-11/BTCUSDT/fixed_reference_prior/operational.json": "81199b193f3ba095a339fabd9842526492e8c9b30fabc110daff72c518e68e6c",
+      "panels/2023-06-11/BTCUSDT/fixed_reference_prior/registered.npz": "1459baa2f6aece6a279f3e43aa5cadcf9d4e6345183ebd1c9be15228ed6a2aa9",
+      "panels/2023-06-11/BTCUSDT/fixed_reference_prior/trajectory.npz": "8ba896f7272230f9285770b6a74f91796b5e9d8738a494f633e0a584a64f3689",
+      "panels/2023-06-11/BTCUSDT/frozen_reference/forecast_3600.npz": "cfdcb90b03a04e87539588ee068637df0865524dc4644d9f6e5e7798cde33561",
+      "panels/2023-06-11/BTCUSDT/frozen_reference/operational.json": "1fd3e5fb3450251434ddf416b17fc951eee81c31dc582040e1839c3e4376be17",
+      "panels/2023-06-11/BTCUSDT/frozen_reference/registered.npz": "97cbe22b3c78d8e0e3b51f6443a8ff3877833ead993756254ceac01322a257e0",
+      "panels/2023-06-11/BTCUSDT/frozen_reference/trajectory.npz": "c1664ce94bf3e39beb515890fce4615bd17f380c203d93daf3c9d9cbcb28b42f",
+      "panels/2023-06-11/BTCUSDT/global_eta03_h1800/forecast_3600.npz": "146d0ef296362a41f2fe7fcb466321e164f438a4f6ab9bd89abb0ec8dbc63253",
+      "panels/2023-06-11/BTCUSDT/global_eta03_h1800/operational.json": "a0ffa09ebd27bbaa23b0b1564563f74e34c6dec1b512271418395b6afa8e77eb",
+      "panels/2023-06-11/BTCUSDT/global_eta03_h1800/registered.npz": "89e1f8a3ad84839b1dcbccb9b87904dafe7d72755d60cbb90a339db172c7ddae",
+      "panels/2023-06-11/BTCUSDT/global_eta03_h1800/trajectory.npz": "19c6dd1bcb045687a0cd222e24708ae6d3490078663b9300b840ede0d2ed4cda",
+      "panels/2023-06-11/BTCUSDT/global_eta03_h300/forecast_3600.npz": "358f5e0111d96aa858b0e566b1596dad61cbc8dcb6e7c5f55afa742d62ee6c8a",
+      "panels/2023-06-11/BTCUSDT/global_eta03_h300/operational.json": "4fbc311013f2efb9bb2ac2a0aaa08a751e2fc41efa4c62d42eaf43b7262cd8c5",
+      "panels/2023-06-11/BTCUSDT/global_eta03_h300/registered.npz": "11e6a620c8aa88440b2b4530fe2ef5efe77c8414aef93e029c33d34b8cceaff7",
+      "panels/2023-06-11/BTCUSDT/global_eta03_h300/trajectory.npz": "b8e777b3f18b4d93189d28620ce9417229feb3ddf60550d0d5873c278f2fc4eb",
+      "panels/2023-06-11/BTCUSDT/global_eta10_h1800/forecast_3600.npz": "099c8b55b0671cde4fc1b7606ed78bb8829a49aa243f8fe8f6777af261a35b01",
+      "panels/2023-06-11/BTCUSDT/global_eta10_h1800/operational.json": "d9b7f6ecc0236eb866cf7f79e62a5b651161d2f99d567fd019925e4a356e1417",
+      "panels/2023-06-11/BTCUSDT/global_eta10_h1800/registered.npz": "7f58ff077a2e344be2b76ced417560fe34a8256da2e9235029c89d613583a4b1",
+      "panels/2023-06-11/BTCUSDT/global_eta10_h1800/trajectory.npz": "79a46071c23ecc6803c4a94d39349767a66288a0379d8dcdf12e2b0fb23bb01a",
+      "panels/2023-06-11/BTCUSDT/global_eta10_h300/forecast_3600.npz": "dee503892ae63335a087464c1f7815c2efe0a5b1e7801c8814d7574162e199ab",
+      "panels/2023-06-11/BTCUSDT/global_eta10_h300/operational.json": "832d26b7f3500b04c30e548632a0c0ee75e3fe62bacced747b2db3710a022bb9",
+      "panels/2023-06-11/BTCUSDT/global_eta10_h300/registered.npz": "0a05b546108d476d6f852ec455f41cdbbb7f730e70848afb3e3ead1d9c4b16de",
+      "panels/2023-06-11/BTCUSDT/global_eta10_h300/trajectory.npz": "bba14082be323d0300595cd95790dd5dd0775767b708f2d1a293e2cc12217a0b",
+      "panels/2023-06-11/BTCUSDT/uniform_eight/forecast_3600.npz": "94d89b97a28beb9fb465d67ed3a3d92f8cdaea1141349a099cc664ef2d5d0ec7",
+      "panels/2023-06-11/BTCUSDT/uniform_eight/operational.json": "85d04e07c16e7732476f9f7005184f06112ef1ef1c61441c187bd3c3e89b5cc0",
+      "panels/2023-06-11/BTCUSDT/uniform_eight/registered.npz": "2e143306f7093551acac059bbacb74b97d31271286e631f1e09493db4f1ee103",
+      "panels/2023-06-11/BTCUSDT/uniform_eight/trajectory.npz": "7991eb4e3ff556606a626043eab2b9010852acec15c34f54beca6c89f1ac30d2",
+      "panels/2023-06-11/ETHUSDT/completed.json": "629edf7ef07f2e3a1b34ba2dbff933b3e17196c1125b712f348f42357756a0c8",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta03_h1800/forecast_3600.npz": "69f2c834e02c1521fc25da3549b5194270d6c6d6ac28f688bd4b56698fbcbffd",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta03_h1800/operational.json": "e7bdfe4798f2dc0dfc000d36e872f7b2bf1d624fc3f2a5cab521839622139242",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta03_h1800/registered.npz": "4588bad3f36d5cc3bc74226cc38857b0d920921463f7fbdb7b83d5b0ef31b948",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta03_h1800/trajectory.npz": "05b206fd090027957f4dce6918bd132b335fc55ac5ddac9a3faee7b9cb70830e",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta03_h300/forecast_3600.npz": "c6269bbcb176f3bfa45b69352536a3b0843d0d697afd722ee22ee3127d5bcfd9",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta03_h300/operational.json": "b943cb012d0c55db6cad65638915d283cca1ca98fa4fa3425a4ed10ee56397d0",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta03_h300/registered.npz": "5926c785227459fc4c4878170a59513dcca2a43c403cccd282ce078a00cf7a7a",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta03_h300/trajectory.npz": "5664f435d706d3286d739d1c6998b517838d6f05695102b84b47fd908a5bed4c",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta10_h1800/forecast_3600.npz": "0970bd19e869235354ae0c97b2b0b72c638845e306f653134334b439e474f7cf",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta10_h1800/operational.json": "18ba384bd070c265122bb01e94feabaa534052223a7f80d8d0fd3e5da237aaf3",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta10_h1800/registered.npz": "1274f04f391b7afad5586f22651d8f55e6ac0e0305e1de7b999b086867011823",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta10_h1800/trajectory.npz": "12f9b5ae206f0e96b83ccaa8b1a059a8eb07c0393a9a7066f05273a174704f56",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta10_h300/forecast_3600.npz": "8d756c496c6b9b0179136efdd29853393796370b28bd3ae5b4c4bee22c04bd2a",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta10_h300/operational.json": "e5acb983467f62d88bb42ed15d423281f28c7d4b98930eb6476b88e9c7cd6aea",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta10_h300/registered.npz": "c24e819487203ff2fb0c8bbea3bc3ebb9a17ac5d60207dc822cac3274f7590d8",
+      "panels/2023-06-11/ETHUSDT/confidence_context_eta10_h300/trajectory.npz": "2d52d88e295f2943bd1e523cd0f6544a30973d5e868b0680afd984d016de7473",
+      "panels/2023-06-11/ETHUSDT/fixed_reference_prior/forecast_3600.npz": "6976d336728fc7b760b039660c2f6b69bc2d816571514d4358024e765467137c",
+      "panels/2023-06-11/ETHUSDT/fixed_reference_prior/operational.json": "94a90786ecba07552ce8c58be4f9b72e0bc7af48a6f4c973968d2f8aa9d4560e",
+      "panels/2023-06-11/ETHUSDT/fixed_reference_prior/registered.npz": "7cb366c8c8532550b64a253298ae4a216e7ac89465017cb17f5a1e24a24081b5",
+      "panels/2023-06-11/ETHUSDT/fixed_reference_prior/trajectory.npz": "5622a9d9c2697a98514724f5d20a959c0f7393dfe859a3fbc01c7012a74fd3bb",
+      "panels/2023-06-11/ETHUSDT/frozen_reference/forecast_3600.npz": "35646258313e18cf4ff1c259a08cdda19b018bcb6078bd385e335a8289944f7f",
+      "panels/2023-06-11/ETHUSDT/frozen_reference/operational.json": "e8b5d16b24bdd60f4e598e7a9fcdee617a9b69562290a22de502164624939696",
+      "panels/2023-06-11/ETHUSDT/frozen_reference/registered.npz": "7aeaade58e407c6d3c798919098c6883e5682b5dff8866c84678d665ce5ffbb6",
+      "panels/2023-06-11/ETHUSDT/frozen_reference/trajectory.npz": "65941a0762860d38f63e3512d00c54df7e0f8d3d4970b9071d3fd691265dabcf",
+      "panels/2023-06-11/ETHUSDT/global_eta03_h1800/forecast_3600.npz": "c13d14772c930ab0b6a4e1dbcc856d6fad953213c0055c90b29005f5b1ec21ee",
+      "panels/2023-06-11/ETHUSDT/global_eta03_h1800/operational.json": "078a079c7e3a319d963935d45e75af8be36a716ba65fafd25718354ce4b0b36f",
+      "panels/2023-06-11/ETHUSDT/global_eta03_h1800/registered.npz": "0d65cf7f0e85833a177e63477af9340759281e7af2ffe64cb29ce0a04f119174",
+      "panels/2023-06-11/ETHUSDT/global_eta03_h1800/trajectory.npz": "9301a53378ef2a20c55298957dd9fa058c0fc4428be3ce69be9bd2cbdd777b06",
+      "panels/2023-06-11/ETHUSDT/global_eta03_h300/forecast_3600.npz": "5922dd234efe5ad23c62c168f04872ed6a117fc143c627caac28bae5e697d997",
+      "panels/2023-06-11/ETHUSDT/global_eta03_h300/operational.json": "35848063840661f7c51f5e22fd97ca89816d1e0d23e1eb94c5542049e1420833",
+      "panels/2023-06-11/ETHUSDT/global_eta03_h300/registered.npz": "c96b6adca4a8c5725af692d352eb843571cc823f4cbaea278d02abb9dd555daa",
+      "panels/2023-06-11/ETHUSDT/global_eta03_h300/trajectory.npz": "d535ab9a1a28f27add56d3da1001f2982f71388f195c582007e0cbef1d2c4eea",
+      "panels/2023-06-11/ETHUSDT/global_eta10_h1800/forecast_3600.npz": "e9208d2be7c00dfb46050860da767a4c8fd8a7efaae4652811e0be3cf56bd536",
+      "panels/2023-06-11/ETHUSDT/global_eta10_h1800/operational.json": "2b699c8ad8161f80db90baca052ff4f503fd336775074ecb6ce2332c9f968869",
+      "panels/2023-06-11/ETHUSDT/global_eta10_h1800/registered.npz": "36ca6125e19aa18f83b95fdf0c91ecac0d0254be3d150d798ffda9f284119e66",
+      "panels/2023-06-11/ETHUSDT/global_eta10_h1800/trajectory.npz": "6aa06c2cd721664154d96f9f3f328c5123ba4239c81f85ce60e269b45cd55b1d",
+      "panels/2023-06-11/ETHUSDT/global_eta10_h300/forecast_3600.npz": "c1bf5c285ec4e5ece8059c9108fea84a57473c1f8ebcfc35a35e80a9ad71ed5f",
+      "panels/2023-06-11/ETHUSDT/global_eta10_h300/operational.json": "91ec6fa2b21245dd243e4106b02a594a954ca475dad75f6a7eb98115cefa769f",
+      "panels/2023-06-11/ETHUSDT/global_eta10_h300/registered.npz": "503bff61ea92f509aebc0b2c17aefe257e5df389b287b64c8e4b23c627449ff0",
+      "panels/2023-06-11/ETHUSDT/global_eta10_h300/trajectory.npz": "1065a9888f236c722a02ff5fb7d305931a0bc605af6e26319c50fcf06189b6f2",
+      "panels/2023-06-11/ETHUSDT/uniform_eight/forecast_3600.npz": "45fd6cb57f9c1948fdf59ed5ac2aeaf0c04ba447ccca640d03f6100b9cf35f9f",
+      "panels/2023-06-11/ETHUSDT/uniform_eight/operational.json": "51fc53707c9d7241ede2b58e442f559168ef34d5c920e5aa0fcd96bdc70df84d",
+      "panels/2023-06-11/ETHUSDT/uniform_eight/registered.npz": "9fbfa5814d399c2bcf4faac1ab9cd9fff801ca6bf2fbddfdebbc1daad325d444",
+      "panels/2023-06-11/ETHUSDT/uniform_eight/trajectory.npz": "36f9b473c5573fe884c25f5b82026f48f353389b7581cbb0a93abd9b0112f585"
+    },
+    "assessment_rows_per_source": 42420,
+    "base_model_fits": 0,
+    "coefficient_adaptation_trajectories": 48,
+    "evidence_status": "development_only_on_exposed_dates",
+    "leaderboard": [
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5838364351098172,
+          "ETHUSDT": 0.5634567992056575
+        },
+        "case": "confidence_context_eta10_h300",
+        "means": {
+          "balanced_accuracy": 0.5736466171577373,
+          "log_loss": 0.7605549667966075,
+          "macro_f1": 0.4914348112999776,
+          "natural_accuracy": 0.6655822725129656
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5843159876124253,
+          "ETHUSDT": 0.5627784924315669
+        },
+        "case": "confidence_context_eta03_h1800",
+        "means": {
+          "balanced_accuracy": 0.5735472400219962,
+          "log_loss": 0.7605238619705265,
+          "macro_f1": 0.4916628552093634,
+          "natural_accuracy": 0.6654408297972655
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5829788928271697,
+          "ETHUSDT": 0.5639745263423716
+        },
+        "case": "uniform_eight",
+        "means": {
+          "balanced_accuracy": 0.5734767095847707,
+          "log_loss": 0.7602131100250721,
+          "macro_f1": 0.488642444766526,
+          "natural_accuracy": 0.6655586987270156
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5836490229836349,
+          "ETHUSDT": 0.5632618224902849
+        },
+        "case": "global_eta03_h1800",
+        "means": {
+          "balanced_accuracy": 0.5734554227369599,
+          "log_loss": 0.7604648062302436,
+          "macro_f1": 0.4903933005352364,
+          "natural_accuracy": 0.6655351249410656
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5845457221017969,
+          "ETHUSDT": 0.5623126560019426
+        },
+        "case": "fixed_reference_prior",
+        "means": {
+          "balanced_accuracy": 0.5734291890518698,
+          "log_loss": 0.7606683500776517,
+          "macro_f1": 0.4893562985957594,
+          "natural_accuracy": 0.6656765676567656
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5846373390545807,
+          "ETHUSDT": 0.5621784318840085
+        },
+        "case": "frozen_reference",
+        "means": {
+          "balanced_accuracy": 0.5734078854692947,
+          "log_loss": 0.7622057348545054,
+          "macro_f1": 0.4902420755020533,
+          "natural_accuracy": 0.6643328618576143
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5842195902135582,
+          "ETHUSDT": 0.5624421091265166
+        },
+        "case": "global_eta03_h300",
+        "means": {
+          "balanced_accuracy": 0.5733308496700374,
+          "log_loss": 0.7606023875432987,
+          "macro_f1": 0.4896217112238905,
+          "natural_accuracy": 0.6655822725129655
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5843648037512881,
+          "ETHUSDT": 0.5622876398881194
+        },
+        "case": "confidence_context_eta03_h300",
+        "means": {
+          "balanced_accuracy": 0.5733262218197037,
+          "log_loss": 0.760625284334853,
+          "macro_f1": 0.489893592045973,
+          "natural_accuracy": 0.6655351249410656
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5835215579502119,
+          "ETHUSDT": 0.5631020605510252
+        },
+        "case": "global_eta10_h300",
+        "means": {
+          "balanced_accuracy": 0.5733118092506185,
+          "log_loss": 0.7605448112924162,
+          "macro_f1": 0.49044551857147667,
+          "natural_accuracy": 0.665016501650165
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5829383670812666,
+          "ETHUSDT": 0.5629641324272213
+        },
+        "case": "confidence_context_eta10_h1800",
+        "means": {
+          "balanced_accuracy": 0.5729512497542439,
+          "log_loss": 0.7604134389492626,
+          "macro_f1": 0.4933268380330767,
+          "natural_accuracy": 0.6647807637906649
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.5808508845356802,
+          "ETHUSDT": 0.5627321249743341
+        },
+        "case": "global_eta10_h1800",
+        "means": {
+          "balanced_accuracy": 0.5717915047550072,
+          "log_loss": 0.7605645565021634,
+          "macro_f1": 0.48995113682226527,
+          "natural_accuracy": 0.6648279113625647
+        },
+        "policy": "forecast_3600"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.4881994452862042,
+          "ETHUSDT": 0.5147248193386408
+        },
+        "case": "fixed_reference_prior",
+        "means": {
+          "balanced_accuracy": 0.5014621323124225,
+          "log_loss": 0.7606683500776517,
+          "macro_f1": 0.4955754688427714,
+          "natural_accuracy": 0.6656765676567656
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.4877216300809512,
+          "ETHUSDT": 0.514699287432205
+        },
+        "case": "confidence_context_eta03_h300",
+        "means": {
+          "balanced_accuracy": 0.5012104587565781,
+          "log_loss": 0.760625284334853,
+          "macro_f1": 0.49541267299578834,
+          "natural_accuracy": 0.6655351249410656
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.4880297641950431,
+          "ETHUSDT": 0.513916190292047
+        },
+        "case": "global_eta03_h300",
+        "means": {
+          "balanced_accuracy": 0.5009729772435451,
+          "log_loss": 0.7606023875432987,
+          "macro_f1": 0.49540212679432966,
+          "natural_accuracy": 0.6655822725129655
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.4872859016621615,
+          "ETHUSDT": 0.5140459507714109
+        },
+        "case": "uniform_eight",
+        "means": {
+          "balanced_accuracy": 0.5006659262167862,
+          "log_loss": 0.7602131100250721,
+          "macro_f1": 0.4964925861702881,
+          "natural_accuracy": 0.6655586987270156
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.487874285024742,
+          "ETHUSDT": 0.5128023719335513
+        },
+        "case": "confidence_context_eta10_h300",
+        "means": {
+          "balanced_accuracy": 0.5003383284791466,
+          "log_loss": 0.7605549667966075,
+          "macro_f1": 0.4949432994355274,
+          "natural_accuracy": 0.6655822725129656
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.487297608027964,
+          "ETHUSDT": 0.5133566193444117
+        },
+        "case": "confidence_context_eta03_h1800",
+        "means": {
+          "balanced_accuracy": 0.5003271136861879,
+          "log_loss": 0.7605238619705265,
+          "macro_f1": 0.4946884249802437,
+          "natural_accuracy": 0.6654408297972655
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.48710556343449624,
+          "ETHUSDT": 0.5128145283975926
+        },
+        "case": "frozen_reference",
+        "means": {
+          "balanced_accuracy": 0.4999600459160443,
+          "log_loss": 0.7622057348545054,
+          "macro_f1": 0.49172241434420183,
+          "natural_accuracy": 0.6643328618576143
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.4863750574908328,
+          "ETHUSDT": 0.5122223798495141
+        },
+        "case": "global_eta03_h1800",
+        "means": {
+          "balanced_accuracy": 0.49929871867017345,
+          "log_loss": 0.7604648062302436,
+          "macro_f1": 0.4936982294184203,
+          "natural_accuracy": 0.6655351249410656
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.48599408673364053,
+          "ETHUSDT": 0.512255540191573
+        },
+        "case": "global_eta10_h300",
+        "means": {
+          "balanced_accuracy": 0.4991248134626068,
+          "log_loss": 0.7605448112924162,
+          "macro_f1": 0.4940194142121754,
+          "natural_accuracy": 0.665016501650165
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.48618001268157746,
+          "ETHUSDT": 0.5118186843731726
+        },
+        "case": "confidence_context_eta10_h1800",
+        "means": {
+          "balanced_accuracy": 0.4989993485273751,
+          "log_loss": 0.7604134389492626,
+          "macro_f1": 0.49375807484485795,
+          "natural_accuracy": 0.6647807637906649
+        },
+        "policy": "registered"
+      },
+      {
+        "balanced_accuracy_by_asset": {
+          "BTCUSDT": 0.48335993136559147,
+          "ETHUSDT": 0.5100855433123463
+        },
+        "case": "global_eta10_h1800",
+        "means": {
+          "balanced_accuracy": 0.49672273733896893,
+          "log_loss": 0.7605645565021634,
+          "macro_f1": 0.49176284561260836,
+          "natural_accuracy": 0.6648279113625647
+        },
+        "policy": "registered"
+      }
+    ],
+    "memory": {
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 192053248,
+      "maximum_sampled_simultaneous_sum_bytes": 192053248
+    },
+    "operations": [
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 1.0,
+        "mean_reference_weight": 1.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.019835042010527104,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "39d2098b45470e96ad17cd13e00a59e569429f500643c60474c08e307f4128c2"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.125,
+        "mean_reference_weight": 0.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.018419417028781027,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "7484fc97f42acdaf2c428892352488eaf9e3c2d65a752100a4cd3034c3dfbab6"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5,
+        "mean_reference_weight": 0.5,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.021640666003804654,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "d5da04fdbcd11caa73639108192c2de897824d0cc6aa430a0a5a88b2e07df99f"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6040957149511451,
+        "mean_reference_weight": 0.510396288977514,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.322992833040189,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "5c0879e5628c034bcf23493311fcf218fbad9a3c790d0ecad3c1295df055ae37"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6325010322351349,
+        "mean_reference_weight": 0.5393188447934236,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3201496659894474,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "64a87dc2d3f6d5ec6f2336f36d2786b55c5b12ea464cc8a4b12d5c383f92429b"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6593313346038294,
+        "mean_reference_weight": 0.4970820514738766,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3089349999791011,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "422da66e5aa2f416aca16a06332e89293319a5ee8bbca423b2715ca5a844bd6b"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7554724095838384,
+        "mean_reference_weight": 0.4447329538780586,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.35987995797768235,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "69699397344c4d0259e0ed9d1fb478068faa67172fc60ec7b3899baa2e7ff2fe"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6122345414477735,
+        "mean_reference_weight": 0.5088199667196376,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.45171908399788663,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "d47847ed208d1a48477238307c648e7bf89600b5ded7924beebd45de28d5680a"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7078050007678445,
+        "mean_reference_weight": 0.532474496049263,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41681500000413507,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "21efc9fed13aa8d3eccca22abe5f6a3bbfa99dca3f036153636864d9e95d6339"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7100524566482036,
+        "mean_reference_weight": 0.5087631749347234,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4148518330184743,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "15dbf8549295c0f1b5cf160e9964b63f0554679a5af6f6cab886e573823fd90f"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.8167122980510556,
+        "mean_reference_weight": 0.49070739932834573,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4153097500093281,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "67767b569636da844c53304bc4f8f57fc6e274677abe4edda187810a2aca1540"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 1.0,
+        "mean_reference_weight": 1.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.01906787499319762,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "7c180aa14215f6fa164139f7b006542a3481782bae2cdb106f48a99025e3d0f3"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.125,
+        "mean_reference_weight": 0.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.01888000004692003,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "11ef7fb474881ef36eb6eac3eb9858667557748b707fa0e2161c71967f4f8d92"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5,
+        "mean_reference_weight": 0.5,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.01853366702562198,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "0ebfa75a1a9d614aae527a6a15744bcf7c4c03dbc9a9a4a8b2cded38d380948e"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5480701374928553,
+        "mean_reference_weight": 0.4950341043880834,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3029141249717213,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "9a555f48d9009f2981458dc0731e129e7b9594e8429db89dd521d880ec02cab9"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5659443877920083,
+        "mean_reference_weight": 0.4826713448418061,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.2952022919780575,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "f9d98ffcf53e19c10ff1907caa5e1b00d05ec88011fde5981222edf47f6c95ca"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6425326637217769,
+        "mean_reference_weight": 0.46705641373174034,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.29554129199823365,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "fbb3ec5f53f33ddf93f14677488fd3c6272f661732e3c361da153e2dd6ee7537"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7257511669200412,
+        "mean_reference_weight": 0.3919553789933716,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.2964607080211863,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "365b8d6d6e85f266f97df433c0861b8c6a715c21b866c1ee28a33f059efa8ce1"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5575478467394879,
+        "mean_reference_weight": 0.49924673650252394,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41533316601999104,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "2c9825bee814f16de8aea2625b31fc1919d7e18ebbfcbcbebd051b403a17f644"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6330769067413318,
+        "mean_reference_weight": 0.49749761739238413,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4162794169969857,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "d98220a7a10680240a6571ef997788c4661f64b831f7e6439ffdfa79e4dfd5a8"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6711679261419442,
+        "mean_reference_weight": 0.4885154258178021,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41924004099564627,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "855308ae81d1432605de66e2ab63cf76342456cf1aad6ffe13a22cb0ddf701bd"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-03",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7950273951581203,
+        "mean_reference_weight": 0.4561545841830022,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41241812496446073,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "e501944c1257e670c2991c47f0f419f72d9986e6f30d5e57eb881962ef1dd399"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 1.0,
+        "mean_reference_weight": 1.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.019156042020767927,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "3be24178cb7ec3a9980d58cf05574ed80372f950276e1c9bcd2def4424bad711"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.125,
+        "mean_reference_weight": 0.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.019597916048951447,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "b196903650b7218cfffd0abd8c4741ba3bb1462df09e5423c6d1e733687b2658"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5,
+        "mean_reference_weight": 0.5,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.01953408302506432,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "b5a8d0cacd09f9a3fbf150d9df2302e6f29c0871e36c406775e32dd9d7beec99"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5592000853623206,
+        "mean_reference_weight": 0.5097608831582616,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3004270409583114,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "ea2f2af293993d6abc81dca39adea10d3f59240e241c54d6f8e2bd7867434dfc"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6098581017078586,
+        "mean_reference_weight": 0.5297248143634595,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.295900208002422,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "6db38c1090d060dcc637e049c35db6c27ff85c7a954b745d9b3d7f08e4d0b535"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6780650108616283,
+        "mean_reference_weight": 0.5186829389128594,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3008817919762805,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "f018bf1361184361f964cecc4c7aa80d2789d65a67b6f4f244ab41c1d5b0f392"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7463957642795284,
+        "mean_reference_weight": 0.5125508591499613,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.29611633298918605,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "79ec1a7a02e03cf91c2022b41f34c351e37ea2f50fdcee0d29d87a9103299cc9"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5541450927101512,
+        "mean_reference_weight": 0.5048128894678598,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.42080087499925867,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "d61805faf42fda8862caf2758246e93e7d2cac151298c0a815fd1d7aca4e7c8f"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.635323860481529,
+        "mean_reference_weight": 0.5170197747707399,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41451874998165295,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "626e037af7be2437af2441703baa8400faa0610a1955c4621e89008639063613"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6660681021401837,
+        "mean_reference_weight": 0.5084423478426444,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41240254102740437,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "ac80fbf5fd8d60e24fe2980c874f07bd28a45e849d5041d2c822e4cdef90a3f9"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.8153474175001839,
+        "mean_reference_weight": 0.5125891946161053,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41756604198599234,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "319d8beeb5a34bb031cc2eb644b452d2cc6d780908921ec2464261ccff7f4995"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 1.0,
+        "mean_reference_weight": 1.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.01768237497890368,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "6b8b3e3b829725c2a926acf20b2dfdb76e94a3e536e4e4c65891b1af2895737a"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.125,
+        "mean_reference_weight": 0.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.018422209017444402,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "46de3573a81587fa113eb71ae602ef5fd5ceb7987591d3069b9e1220476638c1"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5,
+        "mean_reference_weight": 0.5,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.018372791993897408,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "9483d6af920dc9a68db0636d084a332e2390c04f818f71b0b9c4323bcf490d2c"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5608783770721784,
+        "mean_reference_weight": 0.5089917590228591,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.30030037503456697,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "b85a1abe1c07fa3a3cffd4bca21f3349f3ca1e3ef744245b0b0a2bdfa02d89bf"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5993936131709449,
+        "mean_reference_weight": 0.53239642425717,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3003189580049366,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "ca6d151751034ac42aa05fe8618fe24b7c649426932bfd57f8730b8ca271e735"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6850723012725047,
+        "mean_reference_weight": 0.5189090894584766,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.2960977920447476,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "bbd5f8a3603224ae170ba3b6a511a709cdbfbe7918b6675a0552c83f31cd60da"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7712269408303911,
+        "mean_reference_weight": 0.5230604996067274,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.2993850000202656,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "0ff788a073030b2cdf24c81de32cb71512258856868d72d4539162db396cb377"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5544204362069047,
+        "mean_reference_weight": 0.5042842308249671,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41756358300335705,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "36b4c1d5494abc8ab5225bc1d2f552a6c32bf5ec03809033e89944e81928819f"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5955654908953709,
+        "mean_reference_weight": 0.5165214150376114,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4208199999993667,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "b7865815cdb122da87fb33198c0bed1f8625a9d5106eaa5a0a4b3f214b1bcb3b"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6687884481399793,
+        "mean_reference_weight": 0.5083183867277142,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4227274999720976,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "fbcc5f17d95998dc625d5280780e790759f11ac3870e417b61701ec26230df67"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-07",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7685492626289943,
+        "mean_reference_weight": 0.5130779816489843,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4185420830035582,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "200e2b43d624977b693c035edd7561941965a50bb935be3056b039e0c6868e33"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 1.0,
+        "mean_reference_weight": 1.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.017897958983667195,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "c1664ce94bf3e39beb515890fce4615bd17f380c203d93daf3c9d9cbcb28b42f"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.125,
+        "mean_reference_weight": 0.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.019044875050894916,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "7991eb4e3ff556606a626043eab2b9010852acec15c34f54beca6c89f1ac30d2"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5,
+        "mean_reference_weight": 0.5,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.01994229096453637,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "8ba896f7272230f9285770b6a74f91796b5e9d8738a494f633e0a584a64f3689"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5771330460134231,
+        "mean_reference_weight": 0.5163249926261992,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3047540000407025,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "b8e777b3f18b4d93189d28620ce9417229feb3ddf60550d0d5873c278f2fc4eb"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6214817854191939,
+        "mean_reference_weight": 0.5392049598778582,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.30630654096603394,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "19c6dd1bcb045687a0cd222e24708ae6d3490078663b9300b840ede0d2ed4cda"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.70867605445556,
+        "mean_reference_weight": 0.5272583252432023,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3043554170290008,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "bba14082be323d0300595cd95790dd5dd0775767b708f2d1a293e2cc12217a0b"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7730068911220895,
+        "mean_reference_weight": 0.4419111907489926,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.2984456670237705,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "79a46071c23ecc6803c4a94d39349767a66288a0379d8dcdf12e2b0fb23bb01a"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5756481501573808,
+        "mean_reference_weight": 0.5107714097027672,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.46108224999625236,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "e64faad2bf94816aad1c93892f078127edd844168cafa4859ea5c90e82d66a9b"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6648641681006586,
+        "mean_reference_weight": 0.5276092700537055,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4203951670206152,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "44d66a71c78b60bcfebdf935b85498a818a56af31c4d78479696c8216e9cc75e"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7143837224507299,
+        "mean_reference_weight": 0.5211187084350517,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.41070000000763685,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "037934d38f6fa91680c81f7423651752f52d538052f702a6fafa3392b796559b"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.8361551863616126,
+        "mean_reference_weight": 0.4816105758562236,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4117813329794444,
+        "symbol": "BTCUSDT",
+        "trajectory_sha256": "ee95dc6fcc7948ca681165462401e2ea9e5225d229f75864fba2d0ea199b0d39"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 1.0,
+        "mean_reference_weight": 1.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.01721287495456636,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "65941a0762860d38f63e3512d00c54df7e0f8d3d4970b9071d3fd691265dabcf"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.125,
+        "mean_reference_weight": 0.0,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.019844125024974346,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "36f9b473c5573fe884c25f5b82026f48f353389b7581cbb0a93abd9b0112f585"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5,
+        "mean_reference_weight": 0.5,
+        "released_loss_vector_updates": 0,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.018546082952525467,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "5622a9d9c2697a98514724f5d20a959c0f7393dfe859a3fbc01c7012a74fd3bb"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5484790569027778,
+        "mean_reference_weight": 0.5166591337414671,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.2943317500175908,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "d535ab9a1a28f27add56d3da1001f2982f71388f195c582007e0cbef1d2c4eea"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5994519716187214,
+        "mean_reference_weight": 0.5534371941832958,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3070908330264501,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "9301a53378ef2a20c55298957dd9fa058c0fc4428be3ce69be9bd2cbdd777b06"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6322692851493941,
+        "mean_reference_weight": 0.5395106613686019,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3167358330101706,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "1065a9888f236c722a02ff5fb7d305931a0bc605af6e26319c50fcf06189b6f2"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6780134775394228,
+        "mean_reference_weight": 0.5538975879860375,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.3076839579734951,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "6aa06c2cd721664154d96f9f3f328c5123ba4239c81f85ce60e269b45cd55b1d"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.5452806848469547,
+        "mean_reference_weight": 0.5097683987863673,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.417559124995023,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "5664f435d706d3286d739d1c6998b517838d6f05695102b84b47fd908a5bed4c"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6251422900019666,
+        "mean_reference_weight": 0.5312237897938196,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4114753340254538,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "05b206fd090027957f4dce6918bd132b335fc55ac5ddac9a3faee7b9cb70830e"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.6341363189920692,
+        "mean_reference_weight": 0.5239088359188693,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.414237332995981,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "2d52d88e295f2943bd1e523cd0f6544a30973d5e868b0680afd984d016de7473"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-11",
+        "future_forecasts_and_unreleased_labels_prefix_exact": true,
+        "maximum_expert_weight": 0.7460729373882087,
+        "mean_reference_weight": 0.5353845154719326,
+        "released_loss_vector_updates": 7064,
+        "repeat_saved_and_prefix_replay_exact": true,
+        "rows": 7070,
+        "seconds": 0.4168321659672074,
+        "symbol": "ETHUSDT",
+        "trajectory_sha256": "12f9b5ae206f0e96b83ccaa8b1a059a8eb07c0393a9a7066f05273a174704f56"
+      }
+    ],
+    "protocol_sha256": "17f7bb4f66f5f569e92ece2e6ea99ba6bf5f76481ce6f70d1ba333108f1db91f",
+    "records": [
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5193100107297535,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              120,
+              417,
+              21
+            ],
+            [
+              87,
+              5282,
+              372
+            ],
+            [
+              15,
+              430,
+              326
+            ]
+          ],
+          "log_loss": 0.505796837551318,
+          "macro_f1": 0.5450836421700876,
+          "natural_accuracy": 0.8231966053748232,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6446223478755361,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              396,
+              116,
+              46
+            ],
+            [
+              1436,
+              2888,
+              1417
+            ],
+            [
+              85,
+              130,
+              556
+            ]
+          ],
+          "log_loss": 0.505796837551318,
+          "macro_f1": 0.45646106988405943,
+          "natural_accuracy": 0.8231966053748232,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5182743140938446,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              142,
+              397,
+              19
+            ],
+            [
+              116,
+              5358,
+              267
+            ],
+            [
+              15,
+              473,
+              283
+            ]
+          ],
+          "log_loss": 0.503815117516875,
+          "macro_f1": 0.5531526235708228,
+          "natural_accuracy": 0.8224893917963225,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6451585505150653,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              403,
+              111,
+              44
+            ],
+            [
+              1523,
+              2855,
+              1363
+            ],
+            [
+              85,
+              134,
+              552
+            ]
+          ],
+          "log_loss": 0.503815117516875,
+          "macro_f1": 0.45466363363157686,
+          "natural_accuracy": 0.8224893917963225,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5198028922632483,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              133,
+              405,
+              20
+            ],
+            [
+              100,
+              5328,
+              313
+            ],
+            [
+              15,
+              453,
+              303
+            ]
+          ],
+          "log_loss": 0.5042322378262704,
+          "macro_f1": 0.5513878339770032,
+          "natural_accuracy": 0.8236209335219237,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6445397293382255,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              398,
+              113,
+              47
+            ],
+            [
+              1486,
+              2866,
+              1389
+            ],
+            [
+              87,
+              128,
+              556
+            ]
+          ],
+          "log_loss": 0.5042322378262704,
+          "macro_f1": 0.4550133412372343,
+          "natural_accuracy": 0.8236209335219237,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.518970370553861,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              133,
+              405,
+              20
+            ],
+            [
+              97,
+              5336,
+              308
+            ],
+            [
+              15,
+              456,
+              300
+            ]
+          ],
+          "log_loss": 0.5040207385906098,
+          "macro_f1": 0.5513625463082289,
+          "natural_accuracy": 0.823055162659123,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6446299474302966,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              398,
+              113,
+              47
+            ],
+            [
+              1474,
+              2875,
+              1392
+            ],
+            [
+              86,
+              130,
+              555
+            ]
+          ],
+          "log_loss": 0.5040207385906098,
+          "macro_f1": 0.4556264363447084,
+          "natural_accuracy": 0.823055162659123,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5170391289430335,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              129,
+              408,
+              21
+            ],
+            [
+              93,
+              5329,
+              319
+            ],
+            [
+              15,
+              454,
+              302
+            ]
+          ],
+          "log_loss": 0.5038960341847988,
+          "macro_f1": 0.5484053006636956,
+          "natural_accuracy": 0.8233380480905234,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.643427604745309,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              394,
+              117,
+              47
+            ],
+            [
+              1451,
+              2888,
+              1402
+            ],
+            [
+              86,
+              129,
+              556
+            ]
+          ],
+          "log_loss": 0.5038960341847988,
+          "macro_f1": 0.45599542650839675,
+          "natural_accuracy": 0.8233380480905234,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5142512543449765,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              129,
+              408,
+              21
+            ],
+            [
+              93,
+              5348,
+              300
+            ],
+            [
+              15,
+              463,
+              293
+            ]
+          ],
+          "log_loss": 0.5037870579278779,
+          "macro_f1": 0.5473157920994965,
+          "natural_accuracy": 0.8222065063649222,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6441641032259096,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              396,
+              116,
+              46
+            ],
+            [
+              1453,
+              2895,
+              1393
+            ],
+            [
+              86,
+              131,
+              554
+            ]
+          ],
+          "log_loss": 0.5037870579278779,
+          "macro_f1": 0.4567882198357484,
+          "natural_accuracy": 0.8222065063649222,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5126636871116205,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              122,
+              414,
+              22
+            ],
+            [
+              85,
+              5348,
+              308
+            ],
+            [
+              15,
+              457,
+              299
+            ]
+          ],
+          "log_loss": 0.5041728065360507,
+          "macro_f1": 0.5447592504114244,
+          "natural_accuracy": 0.8210749646393211,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6387540494259932,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              390,
+              122,
+              46
+            ],
+            [
+              1437,
+              2871,
+              1433
+            ],
+            [
+              86,
+              132,
+              553
+            ]
+          ],
+          "log_loss": 0.5041728065360507,
+          "macro_f1": 0.4526271980028805,
+          "natural_accuracy": 0.8210749646393211,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5195355859208823,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              134,
+              404,
+              20
+            ],
+            [
+              100,
+              5328,
+              313
+            ],
+            [
+              15,
+              455,
+              301
+            ]
+          ],
+          "log_loss": 0.5041059191691236,
+          "macro_f1": 0.5513080292719404,
+          "natural_accuracy": 0.8233380480905234,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6452777813346285,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              397,
+              114,
+              47
+            ],
+            [
+              1468,
+              2889,
+              1384
+            ],
+            [
+              86,
+              129,
+              556
+            ]
+          ],
+          "log_loss": 0.5041059191691236,
+          "macro_f1": 0.4569468198602807,
+          "natural_accuracy": 0.8233380480905234,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5177434712255419,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              131,
+              406,
+              21
+            ],
+            [
+              98,
+              5328,
+              315
+            ],
+            [
+              15,
+              455,
+              301
+            ]
+          ],
+          "log_loss": 0.503979521795713,
+          "macro_f1": 0.5491501679723955,
+          "natural_accuracy": 0.8231966053748232,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6441368484774674,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              394,
+              117,
+              47
+            ],
+            [
+              1429,
+              2930,
+              1382
+            ],
+            [
+              87,
+              132,
+              552
+            ]
+          ],
+          "log_loss": 0.503979521795713,
+          "macro_f1": 0.4591334451015055,
+          "natural_accuracy": 0.8231966053748232,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5187213703526213,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              132,
+              406,
+              20
+            ],
+            [
+              96,
+              5342,
+              303
+            ],
+            [
+              15,
+              456,
+              300
+            ]
+          ],
+          "log_loss": 0.5038914705400113,
+          "macro_f1": 0.5514789669753732,
+          "natural_accuracy": 0.8226308345120227,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6433728907851775,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              395,
+              117,
+              46
+            ],
+            [
+              1443,
+              2914,
+              1384
+            ],
+            [
+              87,
+              133,
+              551
+            ]
+          ],
+          "log_loss": 0.5038914705400113,
+          "macro_f1": 0.45768778092773627,
+          "natural_accuracy": 0.8226308345120227,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5172363177524995,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              130,
+              407,
+              21
+            ],
+            [
+              92,
+              5337,
+              312
+            ],
+            [
+              15,
+              456,
+              300
+            ]
+          ],
+          "log_loss": 0.5037026597202835,
+          "macro_f1": 0.5494298120591231,
+          "natural_accuracy": 0.8229137199434229,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6399614980238781,
+          "class_counts": [
+            558,
+            5741,
+            771
+          ],
+          "confusion_matrix": [
+            [
+              387,
+              125,
+              46
+            ],
+            [
+              1410,
+              2945,
+              1386
+            ],
+            [
+              85,
+              136,
+              550
+            ]
+          ],
+          "log_loss": 0.5037026597202835,
+          "macro_f1": 0.4583661505412224,
+          "natural_accuracy": 0.8229137199434229,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5226263075573848,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              203,
+              578,
+              55
+            ],
+            [
+              187,
+              4553,
+              595
+            ],
+            [
+              40,
+              435,
+              424
+            ]
+          ],
+          "log_loss": 0.6140879743220669,
+          "macro_f1": 0.5286112139493012,
+          "natural_accuracy": 0.7652050919377652,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.601853360326391,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              559,
+              177,
+              100
+            ],
+            [
+              1295,
+              2481,
+              1559
+            ],
+            [
+              122,
+              173,
+              604
+            ]
+          ],
+          "log_loss": 0.6140879743220669,
+          "macro_f1": 0.46241997269273133,
+          "natural_accuracy": 0.7652050919377652,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.527390001159735,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              238,
+              549,
+              49
+            ],
+            [
+              238,
+              4667,
+              430
+            ],
+            [
+              46,
+              473,
+              380
+            ]
+          ],
+          "log_loss": 0.6087135345057626,
+          "macro_f1": 0.5431743398911412,
+          "natural_accuracy": 0.7657708628005657,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6089901505919907,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              576,
+              156,
+              104
+            ],
+            [
+              1404,
+              2463,
+              1468
+            ],
+            [
+              118,
+              173,
+              608
+            ]
+          ],
+          "log_loss": 0.6087135345057626,
+          "macro_f1": 0.4645663930527159,
+          "natural_accuracy": 0.7657708628005657,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5262960222184826,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              220,
+              566,
+              50
+            ],
+            [
+              210,
+              4616,
+              509
+            ],
+            [
+              43,
+              451,
+              405
+            ]
+          ],
+          "log_loss": 0.6107320491335002,
+          "macro_f1": 0.5375461445796724,
+          "natural_accuracy": 0.766053748231966,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6048129718259366,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              568,
+              166,
+              102
+            ],
+            [
+              1346,
+              2465,
+              1524
+            ],
+            [
+              119,
+              175,
+              605
+            ]
+          ],
+          "log_loss": 0.6107320491335002,
+          "macro_f1": 0.4627049864973411,
+          "natural_accuracy": 0.766053748231966,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5251014539558753,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              219,
+              568,
+              49
+            ],
+            [
+              210,
+              4627,
+              498
+            ],
+            [
+              43,
+              455,
+              401
+            ]
+          ],
+          "log_loss": 0.6105857993845742,
+          "macro_f1": 0.5371671731354472,
+          "natural_accuracy": 0.7661951909476662,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6054336760761033,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              568,
+              167,
+              101
+            ],
+            [
+              1349,
+              2469,
+              1517
+            ],
+            [
+              119,
+              174,
+              606
+            ]
+          ],
+          "log_loss": 0.6105857993845742,
+          "macro_f1": 0.46329768739245925,
+          "natural_accuracy": 0.7661951909476662,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.522255213371224,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              216,
+              572,
+              48
+            ],
+            [
+              208,
+              4654,
+              473
+            ],
+            [
+              44,
+              463,
+              392
+            ]
+          ],
+          "log_loss": 0.6101671694944398,
+          "macro_f1": 0.536099682625832,
+          "natural_accuracy": 0.7663366336633664,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6070820096560701,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              569,
+              167,
+              100
+            ],
+            [
+              1349,
+              2489,
+              1497
+            ],
+            [
+              118,
+              175,
+              606
+            ]
+          ],
+          "log_loss": 0.6101671694944398,
+          "macro_f1": 0.4655186684554696,
+          "natural_accuracy": 0.7663366336633664,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5213344082418481,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              216,
+              572,
+              48
+            ],
+            [
+              211,
+              4663,
+              461
+            ],
+            [
+              44,
+              467,
+              388
+            ]
+          ],
+          "log_loss": 0.6102251769628874,
+          "macro_f1": 0.5358583952964717,
+          "natural_accuracy": 0.7646393210749647,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6069068697265639,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              569,
+              167,
+              100
+            ],
+            [
+              1351,
+              2504,
+              1480
+            ],
+            [
+              120,
+              176,
+              603
+            ]
+          ],
+          "log_loss": 0.6102251769628874,
+          "macro_f1": 0.4663560304103594,
+          "natural_accuracy": 0.7646393210749647,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5164220807190599,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              216,
+              575,
+              45
+            ],
+            [
+              204,
+              4709,
+              422
+            ],
+            [
+              40,
+              492,
+              367
+            ]
+          ],
+          "log_loss": 0.6093988523115879,
+          "macro_f1": 0.5348349328848164,
+          "natural_accuracy": 0.7652050919377652,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6071929343548439,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              570,
+              164,
+              102
+            ],
+            [
+              1368,
+              2520,
+              1447
+            ],
+            [
+              119,
+              180,
+              600
+            ]
+          ],
+          "log_loss": 0.6093988523115879,
+          "macro_f1": 0.4674881709518959,
+          "natural_accuracy": 0.7652050919377652,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5266709050675923,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              220,
+              566,
+              50
+            ],
+            [
+              210,
+              4622,
+              503
+            ],
+            [
+              43,
+              451,
+              405
+            ]
+          ],
+          "log_loss": 0.6106450774087379,
+          "macro_f1": 0.5382255030909775,
+          "natural_accuracy": 0.7657708628005657,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6055388962903311,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              567,
+              168,
+              101
+            ],
+            [
+              1337,
+              2483,
+              1515
+            ],
+            [
+              119,
+              175,
+              605
+            ]
+          ],
+          "log_loss": 0.6106450774087379,
+          "macro_f1": 0.4643221850743118,
+          "natural_accuracy": 0.7657708628005657,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5241806488264994,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              219,
+              568,
+              49
+            ],
+            [
+              210,
+              4636,
+              489
+            ],
+            [
+              43,
+              459,
+              397
+            ]
+          ],
+          "log_loss": 0.6104069584241381,
+          "macro_f1": 0.5369527463444583,
+          "natural_accuracy": 0.766053748231966,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6062853232464732,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              566,
+              170,
+              100
+            ],
+            [
+              1325,
+              2531,
+              1479
+            ],
+            [
+              119,
+              180,
+              600
+            ]
+          ],
+          "log_loss": 0.6104069584241381,
+          "macro_f1": 0.4679098917716524,
+          "natural_accuracy": 0.766053748231966,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5231373792595733,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              217,
+              570,
+              49
+            ],
+            [
+              210,
+              4638,
+              487
+            ],
+            [
+              43,
+              460,
+              396
+            ]
+          ],
+          "log_loss": 0.6103931389323644,
+          "macro_f1": 0.5359685765457937,
+          "natural_accuracy": 0.7659123055162659,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6071132096566699,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              567,
+              169,
+              100
+            ],
+            [
+              1332,
+              2526,
+              1477
+            ],
+            [
+              118,
+              179,
+              602
+            ]
+          ],
+          "log_loss": 0.6103931389323644,
+          "macro_f1": 0.468020510436378,
+          "natural_accuracy": 0.7659123055162659,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.5208468659380838,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              216,
+              574,
+              46
+            ],
+            [
+              209,
+              4673,
+              453
+            ],
+            [
+              42,
+              472,
+              385
+            ]
+          ],
+          "log_loss": 0.6096883447292517,
+          "macro_f1": 0.5362949375904845,
+          "natural_accuracy": 0.7652050919377652,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-03",
+        "metrics": {
+          "balanced_accuracy": 0.6072939735970704,
+          "class_counts": [
+            836,
+            5335,
+            899
+          ],
+          "confusion_matrix": [
+            [
+              565,
+              171,
+              100
+            ],
+            [
+              1321,
+              2601,
+              1413
+            ],
+            [
+              120,
+              187,
+              592
+            ]
+          ],
+          "log_loss": 0.6096883447292517,
+          "macro_f1": 0.4729829499168246,
+          "natural_accuracy": 0.7652050919377652,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.4219436307694044,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1900,
+              4,
+              1003
+            ],
+            [
+              752,
+              22,
+              644
+            ],
+            [
+              1098,
+              9,
+              1638
+            ]
+          ],
+          "log_loss": 0.957486693111005,
+          "macro_f1": 0.3814644856885094,
+          "natural_accuracy": 0.5239038189533239,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5247881895015238,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1274,
+              770,
+              863
+            ],
+            [
+              218,
+              894,
+              306
+            ],
+            [
+              676,
+              681,
+              1388
+            ]
+          ],
+          "log_loss": 0.957486693111005,
+          "macro_f1": 0.5002659260615222,
+          "natural_accuracy": 0.5239038189533239,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.42510225074079694,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1857,
+              7,
+              1043
+            ],
+            [
+              721,
+              28,
+              669
+            ],
+            [
+              1042,
+              10,
+              1693
+            ]
+          ],
+          "log_loss": 0.9563469832003278,
+          "macro_f1": 0.3859558691292422,
+          "natural_accuracy": 0.5271570014144271,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5263315423932032,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1270,
+              774,
+              863
+            ],
+            [
+              221,
+              902,
+              295
+            ],
+            [
+              678,
+              678,
+              1389
+            ]
+          ],
+          "log_loss": 0.9563469832003278,
+          "macro_f1": 0.5011993970850409,
+          "natural_accuracy": 0.5271570014144271,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.4247271190998159,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1880,
+              4,
+              1023
+            ],
+            [
+              736,
+              25,
+              657
+            ],
+            [
+              1063,
+              8,
+              1674
+            ]
+          ],
+          "log_loss": 0.9564736046818944,
+          "macro_f1": 0.38473823246286915,
+          "natural_accuracy": 0.5289957567185289,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5272837299678844,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1274,
+              768,
+              865
+            ],
+            [
+              222,
+              901,
+              295
+            ],
+            [
+              675,
+              675,
+              1395
+            ]
+          ],
+          "log_loss": 0.9564736046818944,
+          "macro_f1": 0.5023959924303835,
+          "natural_accuracy": 0.5289957567185289,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.42436282037486156,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1880,
+              4,
+              1023
+            ],
+            [
+              737,
+              25,
+              656
+            ],
+            [
+              1066,
+              8,
+              1671
+            ]
+          ],
+          "log_loss": 0.9565424152576437,
+          "macro_f1": 0.3844146705347959,
+          "natural_accuracy": 0.5294200848656294,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5275005529336791,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1279,
+              766,
+              862
+            ],
+            [
+              223,
+              900,
+              295
+            ],
+            [
+              674,
+              677,
+              1394
+            ]
+          ],
+          "log_loss": 0.9565424152576437,
+          "macro_f1": 0.5027590926234137,
+          "natural_accuracy": 0.5294200848656294,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.42377698309527156,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1878,
+              4,
+              1025
+            ],
+            [
+              734,
+              24,
+              660
+            ],
+            [
+              1065,
+              10,
+              1670
+            ]
+          ],
+          "log_loss": 0.9563938881393635,
+          "macro_f1": 0.38366063087892455,
+          "natural_accuracy": 0.5287128712871287,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5276287530009748,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1278,
+              767,
+              862
+            ],
+            [
+              224,
+              900,
+              294
+            ],
+            [
+              674,
+              675,
+              1396
+            ]
+          ],
+          "log_loss": 0.9563938881393635,
+          "macro_f1": 0.5028889521490472,
+          "natural_accuracy": 0.5287128712871287,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.42426845610245323,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1876,
+              4,
+              1027
+            ],
+            [
+              736,
+              25,
+              657
+            ],
+            [
+              1062,
+              9,
+              1674
+            ]
+          ],
+          "log_loss": 0.9567142622348099,
+          "macro_f1": 0.3843498147514978,
+          "natural_accuracy": 0.528005657708628,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5265457013402939,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1280,
+              766,
+              861
+            ],
+            [
+              225,
+              897,
+              296
+            ],
+            [
+              669,
+              685,
+              1391
+            ]
+          ],
+          "log_loss": 0.9567142622348099,
+          "macro_f1": 0.5019350582428942,
+          "natural_accuracy": 0.528005657708628,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.42270438839734065,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1875,
+              5,
+              1027
+            ],
+            [
+              736,
+              24,
+              658
+            ],
+            [
+              1070,
+              11,
+              1664
+            ]
+          ],
+          "log_loss": 0.9565179787256298,
+          "macro_f1": 0.3827498324077818,
+          "natural_accuracy": 0.5267326732673268,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5238749666470718,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1270,
+              776,
+              861
+            ],
+            [
+              232,
+              890,
+              296
+            ],
+            [
+              674,
+              679,
+              1392
+            ]
+          ],
+          "log_loss": 0.9565179787256298,
+          "macro_f1": 0.4995366972737238,
+          "natural_accuracy": 0.5267326732673268,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.424025590285817,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1876,
+              4,
+              1027
+            ],
+            [
+              736,
+              25,
+              657
+            ],
+            [
+              1065,
+              8,
+              1672
+            ]
+          ],
+          "log_loss": 0.9565131811022557,
+          "macro_f1": 0.38411249051461094,
+          "natural_accuracy": 0.5284299858557284,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5271430213677022,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1278,
+              765,
+              864
+            ],
+            [
+              223,
+              900,
+              295
+            ],
+            [
+              677,
+              676,
+              1392
+            ]
+          ],
+          "log_loss": 0.9565131811022557,
+          "macro_f1": 0.5023951279150537,
+          "natural_accuracy": 0.5284299858557284,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.42425594756956664,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1879,
+              4,
+              1024
+            ],
+            [
+              736,
+              24,
+              658
+            ],
+            [
+              1064,
+              8,
+              1673
+            ]
+          ],
+          "log_loss": 0.9564524690514274,
+          "macro_f1": 0.38404709399454867,
+          "natural_accuracy": 0.5274398868458274,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5281916247849282,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1288,
+              757,
+              862
+            ],
+            [
+              224,
+              897,
+              297
+            ],
+            [
+              681,
+              667,
+              1397
+            ]
+          ],
+          "log_loss": 0.9564524690514274,
+          "macro_f1": 0.503991946147007,
+          "natural_accuracy": 0.5274398868458274,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.4245045547601121,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1877,
+              4,
+              1026
+            ],
+            [
+              735,
+              25,
+              658
+            ],
+            [
+              1062,
+              8,
+              1675
+            ]
+          ],
+          "log_loss": 0.9566031210445,
+          "macro_f1": 0.38453824420325394,
+          "natural_accuracy": 0.5291371994342291,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5277329617875655,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1284,
+              759,
+              864
+            ],
+            [
+              226,
+              897,
+              295
+            ],
+            [
+              673,
+              675,
+              1397
+            ]
+          ],
+          "log_loss": 0.9566031210445,
+          "macro_f1": 0.5033722118304543,
+          "natural_accuracy": 0.5291371994342291,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.4229607885319318,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1873,
+              4,
+              1030
+            ],
+            [
+              734,
+              24,
+              660
+            ],
+            [
+              1068,
+              9,
+              1668
+            ]
+          ],
+          "log_loss": 0.9565551805303836,
+          "macro_f1": 0.38291134450654035,
+          "natural_accuracy": 0.5254596888260255,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.52855838841652,
+          "class_counts": [
+            2907,
+            1418,
+            2745
+          ],
+          "confusion_matrix": [
+            [
+              1298,
+              745,
+              864
+            ],
+            [
+              235,
+              888,
+              295
+            ],
+            [
+              689,
+              648,
+              1408
+            ]
+          ],
+          "log_loss": 0.9565551805303836,
+          "macro_f1": 0.505463931596353,
+          "natural_accuracy": 0.5254596888260255,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.46259020984912397,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1569,
+              39,
+              784
+            ],
+            [
+              1041,
+              142,
+              996
+            ],
+            [
+              788,
+              45,
+              1666
+            ]
+          ],
+          "log_loss": 0.9706583907126198,
+          "macro_f1": 0.40684240467486715,
+          "natural_accuracy": 0.5251768033946251,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5216782968821141,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1219,
+              567,
+              606
+            ],
+            [
+              493,
+              1195,
+              491
+            ],
+            [
+              608,
+              624,
+              1267
+            ]
+          ],
+          "log_loss": 0.9706583907126198,
+          "macro_f1": 0.5206762138294224,
+          "natural_accuracy": 0.5251768033946251,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.4624212662876559,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1546,
+              45,
+              801
+            ],
+            [
+              1012,
+              154,
+              1013
+            ],
+            [
+              769,
+              55,
+              1675
+            ]
+          ],
+          "log_loss": 0.9692832838266117,
+          "macro_f1": 0.4088996274069528,
+          "natural_accuracy": 0.5247524752475248,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5257218344347824,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1234,
+              557,
+              601
+            ],
+            [
+              496,
+              1213,
+              470
+            ],
+            [
+              618,
+              620,
+              1261
+            ]
+          ],
+          "log_loss": 0.9692832838266117,
+          "macro_f1": 0.524563269435399,
+          "natural_accuracy": 0.5247524752475248,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.46275759466387095,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1555,
+              42,
+              795
+            ],
+            [
+              1028,
+              148,
+              1003
+            ],
+            [
+              776,
+              48,
+              1675
+            ]
+          ],
+          "log_loss": 0.9695338853472536,
+          "macro_f1": 0.4080641630785788,
+          "natural_accuracy": 0.5248939179632249,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5229412772157498,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1219,
+              566,
+              607
+            ],
+            [
+              493,
+              1205,
+              481
+            ],
+            [
+              613,
+              621,
+              1265
+            ]
+          ],
+          "log_loss": 0.9695338853472536,
+          "macro_f1": 0.5218417736876004,
+          "natural_accuracy": 0.5248939179632249,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.46206510582865706,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1554,
+              42,
+              796
+            ],
+            [
+              1027,
+              147,
+              1005
+            ],
+            [
+              778,
+              49,
+              1672
+            ]
+          ],
+          "log_loss": 0.969566187237719,
+          "macro_f1": 0.4073375210034622,
+          "natural_accuracy": 0.5241867043847241,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.523372959387161,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1221,
+              564,
+              607
+            ],
+            [
+              494,
+              1206,
+              479
+            ],
+            [
+              616,
+              618,
+              1265
+            ]
+          ],
+          "log_loss": 0.969566187237719,
+          "macro_f1": 0.5222767894779082,
+          "natural_accuracy": 0.5241867043847241,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.46049394213356515,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1553,
+              41,
+              798
+            ],
+            [
+              1030,
+              142,
+              1007
+            ],
+            [
+              784,
+              48,
+              1667
+            ]
+          ],
+          "log_loss": 0.9695456833001764,
+          "macro_f1": 0.4051791671082041,
+          "natural_accuracy": 0.5246110325318246,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5229281993182198,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1224,
+              562,
+              606
+            ],
+            [
+              501,
+              1196,
+              482
+            ],
+            [
+              618,
+              611,
+              1270
+            ]
+          ],
+          "log_loss": 0.9695456833001764,
+          "macro_f1": 0.5219676946828397,
+          "natural_accuracy": 0.5246110325318246,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.46067247289970154,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1554,
+              41,
+              797
+            ],
+            [
+              1029,
+              144,
+              1006
+            ],
+            [
+              786,
+              48,
+              1665
+            ]
+          ],
+          "log_loss": 0.9696250557055492,
+          "macro_f1": 0.40565401286845887,
+          "natural_accuracy": 0.5244695898161245,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.523020176020789,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1223,
+              561,
+              608
+            ],
+            [
+              496,
+              1201,
+              482
+            ],
+            [
+              618,
+              615,
+              1266
+            ]
+          ],
+          "log_loss": 0.9696250557055492,
+          "macro_f1": 0.521991715430235,
+          "natural_accuracy": 0.5244695898161245,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.45910523037044876,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1551,
+              39,
+              802
+            ],
+            [
+              1030,
+              133,
+              1016
+            ],
+            [
+              785,
+              45,
+              1669
+            ]
+          ],
+          "log_loss": 0.9697411537050865,
+          "macro_f1": 0.40246052321537235,
+          "natural_accuracy": 0.5234794908062235,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5212469153840882,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1238,
+              541,
+              613
+            ],
+            [
+              511,
+              1174,
+              494
+            ],
+            [
+              628,
+              603,
+              1268
+            ]
+          ],
+          "log_loss": 0.9697411537050865,
+          "macro_f1": 0.5205413775913872,
+          "natural_accuracy": 0.5234794908062235,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.46260461929290564,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1555,
+              42,
+              795
+            ],
+            [
+              1027,
+              147,
+              1005
+            ],
+            [
+              776,
+              48,
+              1675
+            ]
+          ],
+          "log_loss": 0.9695422387635606,
+          "macro_f1": 0.40777387153526684,
+          "natural_accuracy": 0.5253182461103253,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5224883178150683,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1220,
+              565,
+              607
+            ],
+            [
+              495,
+              1202,
+              482
+            ],
+            [
+              616,
+              619,
+              1264
+            ]
+          ],
+          "log_loss": 0.9695422387635606,
+          "macro_f1": 0.5214195346178255,
+          "natural_accuracy": 0.5253182461103253,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.46152559236440854,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1553,
+              41,
+              798
+            ],
+            [
+              1024,
+              147,
+              1008
+            ],
+            [
+              781,
+              49,
+              1669
+            ]
+          ],
+          "log_loss": 0.9694878361507197,
+          "macro_f1": 0.40687241934873875,
+          "natural_accuracy": 0.5250353606789251,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.523019031547688,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1230,
+              556,
+              606
+            ],
+            [
+              503,
+              1192,
+              484
+            ],
+            [
+              619,
+              611,
+              1269
+            ]
+          ],
+          "log_loss": 0.9694878361507197,
+          "macro_f1": 0.5221095080564256,
+          "natural_accuracy": 0.5250353606789251,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.46151197039366626,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1554,
+              42,
+              796
+            ],
+            [
+              1028,
+              146,
+              1005
+            ],
+            [
+              782,
+              48,
+              1669
+            ]
+          ],
+          "log_loss": 0.9695472738108867,
+          "macro_f1": 0.40669730927437353,
+          "natural_accuracy": 0.5251768033946251,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5239581610027498,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1227,
+              557,
+              608
+            ],
+            [
+              499,
+              1200,
+              480
+            ],
+            [
+              617,
+              612,
+              1270
+            ]
+          ],
+          "log_loss": 0.9695472738108867,
+          "macro_f1": 0.5229764194836811,
+          "natural_accuracy": 0.5251768033946251,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.4604683867383939,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1552,
+              41,
+              799
+            ],
+            [
+              1024,
+              141,
+              1014
+            ],
+            [
+              782,
+              48,
+              1669
+            ]
+          ],
+          "log_loss": 0.969476582715366,
+          "macro_f1": 0.4049959200640014,
+          "natural_accuracy": 0.5241867043847241,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-07",
+        "metrics": {
+          "balanced_accuracy": 0.5222887541663707,
+          "class_counts": [
+            2392,
+            2179,
+            2499
+          ],
+          "confusion_matrix": [
+            [
+              1258,
+              517,
+              617
+            ],
+            [
+              519,
+              1153,
+              507
+            ],
+            [
+              633,
+              587,
+              1279
+            ]
+          ],
+          "log_loss": 0.969476582715366,
+          "macro_f1": 0.5218712906145363,
+          "natural_accuracy": 0.5241867043847241,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5200630488043306,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              420,
+              735,
+              169
+            ],
+            [
+              254,
+              4063,
+              270
+            ],
+            [
+              137,
+              608,
+              414
+            ]
+          ],
+          "log_loss": 0.7301882421959972,
+          "macro_f1": 0.5393808855043601,
+          "natural_accuracy": 0.6923620933521923,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5845014797866822,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              816,
+              234,
+              274
+            ],
+            [
+              1259,
+              2248,
+              1080
+            ],
+            [
+              215,
+              194,
+              750
+            ]
+          ],
+          "log_loss": 0.7301882421959972,
+          "macro_f1": 0.5101016041828403,
+          "natural_accuracy": 0.6923620933521923,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5184811401518431,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              398,
+              752,
+              174
+            ],
+            [
+              253,
+              4066,
+              268
+            ],
+            [
+              136,
+              596,
+              427
+            ]
+          ],
+          "log_loss": 0.7304086180275553,
+          "macro_f1": 0.5370985673730515,
+          "natural_accuracy": 0.6927864214992928,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5774465855732406,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              809,
+              229,
+              286
+            ],
+            [
+              1263,
+              2191,
+              1133
+            ],
+            [
+              216,
+              197,
+              746
+            ]
+          ],
+          "log_loss": 0.7304086180275553,
+          "macro_f1": 0.5016937513785901,
+          "natural_accuracy": 0.6927864214992928,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5200683244955485,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              412,
+              741,
+              171
+            ],
+            [
+              250,
+              4071,
+              266
+            ],
+            [
+              136,
+              604,
+              419
+            ]
+          ],
+          "log_loss": 0.729761899865701,
+          "macro_f1": 0.539383206301038,
+          "natural_accuracy": 0.6922206506364922,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5818137069992809,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              818,
+              235,
+              271
+            ],
+            [
+              1263,
+              2212,
+              1112
+            ],
+            [
+              217,
+              194,
+              748
+            ]
+          ],
+          "log_loss": 0.729761899865701,
+          "macro_f1": 0.5061531978002011,
+          "natural_accuracy": 0.6922206506364922,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.520756101656407,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              413,
+              740,
+              171
+            ],
+            [
+              246,
+              4077,
+              264
+            ],
+            [
+              135,
+              605,
+              419
+            ]
+          ],
+          "log_loss": 0.7296599549594873,
+          "macro_f1": 0.5403171484782371,
+          "natural_accuracy": 0.6923620933521923,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5805282702766991,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              814,
+              237,
+              273
+            ],
+            [
+              1261,
+              2224,
+              1102
+            ],
+            [
+              219,
+              196,
+              744
+            ]
+          ],
+          "log_loss": 0.7296599549594873,
+          "macro_f1": 0.5059776957233261,
+          "natural_accuracy": 0.6923620933521923,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5183090604341934,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              405,
+              746,
+              173
+            ],
+            [
+              249,
+              4075,
+              263
+            ],
+            [
+              133,
+              608,
+              418
+            ]
+          ],
+          "log_loss": 0.7297069153690808,
+          "macro_f1": 0.5375676783367354,
+          "natural_accuracy": 0.6925035360678925,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5798907112046207,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              810,
+              239,
+              275
+            ],
+            [
+              1252,
+              2237,
+              1098
+            ],
+            [
+              218,
+              199,
+              742
+            ]
+          ],
+          "log_loss": 0.7297069153690808,
+          "macro_f1": 0.5062841506397319,
+          "natural_accuracy": 0.6925035360678925,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5194625497534918,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              405,
+              745,
+              174
+            ],
+            [
+              244,
+              4079,
+              264
+            ],
+            [
+              133,
+              605,
+              421
+            ]
+          ],
+          "log_loss": 0.7296295308853178,
+          "macro_f1": 0.5387856621852496,
+          "natural_accuracy": 0.6927864214992928,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5798548692844321,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              811,
+              238,
+              275
+            ],
+            [
+              1254,
+              2237,
+              1096
+            ],
+            [
+              217,
+              201,
+              741
+            ]
+          ],
+          "log_loss": 0.7296295308853178,
+          "macro_f1": 0.5062924108413136,
+          "natural_accuracy": 0.6927864214992928,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5147117185878134,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              391,
+              756,
+              177
+            ],
+            [
+              248,
+              4074,
+              265
+            ],
+            [
+              133,
+              608,
+              418
+            ]
+          ],
+          "log_loss": 0.7305474592547123,
+          "macro_f1": 0.5333086841145934,
+          "natural_accuracy": 0.6932107496463932,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5799236375339757,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              802,
+              248,
+              274
+            ],
+            [
+              1228,
+              2281,
+              1078
+            ],
+            [
+              215,
+              206,
+              738
+            ]
+          ],
+          "log_loss": 0.7305474592547123,
+          "macro_f1": 0.5089243495525245,
+          "natural_accuracy": 0.6932107496463932,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5196037140361544,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              409,
+              743,
+              172
+            ],
+            [
+              248,
+              4075,
+              264
+            ],
+            [
+              135,
+              605,
+              419
+            ]
+          ],
+          "log_loss": 0.7296895457737002,
+          "macro_f1": 0.5389505507911073,
+          "natural_accuracy": 0.6925035360678925,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5806736085515337,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              814,
+              238,
+              272
+            ],
+            [
+              1260,
+              2226,
+              1101
+            ],
+            [
+              218,
+              197,
+              744
+            ]
+          ],
+          "log_loss": 0.7296895457737002,
+          "macro_f1": 0.5062240345821779,
+          "natural_accuracy": 0.6925035360678925,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5198934052887835,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              407,
+              746,
+              171
+            ],
+            [
+              245,
+              4078,
+              264
+            ],
+            [
+              133,
+              605,
+              421
+            ]
+          ],
+          "log_loss": 0.7296521929583233,
+          "macro_f1": 0.5393760139480399,
+          "natural_accuracy": 0.693069306930693,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5806194895748801,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              808,
+              241,
+              275
+            ],
+            [
+              1243,
+              2250,
+              1094
+            ],
+            [
+              216,
+              200,
+              743
+            ]
+          ],
+          "log_loss": 0.7296521929583233,
+          "macro_f1": 0.5075369924914392,
+          "natural_accuracy": 0.693069306930693,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5203969299614924,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              409,
+              744,
+              171
+            ],
+            [
+              245,
+              4078,
+              264
+            ],
+            [
+              133,
+              605,
+              421
+            ]
+          ],
+          "log_loss": 0.7296185840024282,
+          "macro_f1": 0.5399399466465398,
+          "natural_accuracy": 0.6926449787835927,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5804034527567086,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              812,
+              239,
+              273
+            ],
+            [
+              1247,
+              2249,
+              1091
+            ],
+            [
+              219,
+              201,
+              739
+            ]
+          ],
+          "log_loss": 0.7296185840024282,
+          "macro_f1": 0.5073845681265813,
+          "natural_accuracy": 0.6926449787835927,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5183429317603013,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              400,
+              751,
+              173
+            ],
+            [
+              249,
+              4073,
+              265
+            ],
+            [
+              132,
+              604,
+              423
+            ]
+          ],
+          "log_loss": 0.7299190750794708,
+          "macro_f1": 0.5374131057437346,
+          "natural_accuracy": 0.6925035360678925,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5802952148034012,
+          "class_counts": [
+            1324,
+            4587,
+            1159
+          ],
+          "confusion_matrix": [
+            [
+              800,
+              249,
+              275
+            ],
+            [
+              1211,
+              2297,
+              1079
+            ],
+            [
+              218,
+              204,
+              737
+            ]
+          ],
+          "log_loss": 0.7299190750794708,
+          "macro_f1": 0.5100012021311867,
+          "natural_accuracy": 0.6925035360678925,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "BTCUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5532270677862688,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              562,
+              622,
+              312
+            ],
+            [
+              497,
+              3037,
+              627
+            ],
+            [
+              150,
+              480,
+              783
+            ]
+          ],
+          "log_loss": 0.7950162712340257,
+          "macro_f1": 0.5489518540780852,
+          "natural_accuracy": 0.6561527581329561,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "frozen_reference",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5630036384435203,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              905,
+              247,
+              344
+            ],
+            [
+              1403,
+              1619,
+              1139
+            ],
+            [
+              247,
+              184,
+              982
+            ]
+          ],
+          "log_loss": 0.7950162712340257,
+          "macro_f1": 0.4915276663617438,
+          "natural_accuracy": 0.6561527581329561,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5523265848668418,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              575,
+              629,
+              292
+            ],
+            [
+              500,
+              3075,
+              586
+            ],
+            [
+              154,
+              505,
+              754
+            ]
+          ],
+          "log_loss": 0.7927111230733007,
+          "macro_f1": 0.5506744896505181,
+          "natural_accuracy": 0.6603960396039604,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "uniform_eight",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5572115940003416,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              899,
+              248,
+              349
+            ],
+            [
+              1414,
+              1584,
+              1163
+            ],
+            [
+              250,
+              188,
+              975
+            ]
+          ],
+          "log_loss": 0.7927111230733007,
+          "macro_f1": 0.4851682240158333,
+          "natural_accuracy": 0.6603960396039604,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5551208411335689,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              571,
+              625,
+              300
+            ],
+            [
+              496,
+              3068,
+              597
+            ],
+            [
+              153,
+              488,
+              772
+            ]
+          ],
+          "log_loss": 0.7932764236112902,
+          "macro_f1": 0.552333232657467,
+          "natural_accuracy": 0.6582743988684583,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "fixed_reference_prior",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5591837189641414,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              901,
+              252,
+              343
+            ],
+            [
+              1403,
+              1606,
+              1152
+            ],
+            [
+              252,
+              187,
+              974
+            ]
+          ],
+          "log_loss": 0.7932764236112902,
+          "macro_f1": 0.4880284999217963,
+          "natural_accuracy": 0.6582743988684583,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.554582011091609,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              570,
+              625,
+              301
+            ],
+            [
+              497,
+              3067,
+              597
+            ],
+            [
+              152,
+              490,
+              771
+            ]
+          ],
+          "log_loss": 0.7932392298297578,
+          "macro_f1": 0.5518137013058069,
+          "natural_accuracy": 0.6582743988684583,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5585196919162855,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              898,
+              254,
+              344
+            ],
+            [
+              1407,
+              1609,
+              1145
+            ],
+            [
+              251,
+              189,
+              973
+            ]
+          ],
+          "log_loss": 0.7932392298297578,
+          "macro_f1": 0.4877925657815272,
+          "natural_accuracy": 0.6582743988684583,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5539179840437531,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              567,
+              629,
+              300
+            ],
+            [
+              492,
+              3070,
+              599
+            ],
+            [
+              152,
+              491,
+              770
+            ]
+          ],
+          "log_loss": 0.7930791468936018,
+          "macro_f1": 0.5512769168971302,
+          "natural_accuracy": 0.6577086280056577,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta03_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5597752584965648,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              900,
+              252,
+              344
+            ],
+            [
+              1396,
+              1625,
+              1140
+            ],
+            [
+              248,
+              194,
+              971
+            ]
+          ],
+          "log_loss": 0.7930791468936018,
+          "macro_f1": 0.48970491077593353,
+          "natural_accuracy": 0.6577086280056577,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5547597394331696,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              569,
+              628,
+              299
+            ],
+            [
+              493,
+              3072,
+              596
+            ],
+            [
+              152,
+              490,
+              771
+            ]
+          ],
+          "log_loss": 0.7932877840380549,
+          "macro_f1": 0.5521528080718777,
+          "natural_accuracy": 0.657991513437058,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5593791359057224,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              900,
+              253,
+              343
+            ],
+            [
+              1400,
+              1623,
+              1138
+            ],
+            [
+              252,
+              191,
+              970
+            ]
+          ],
+          "log_loss": 0.7932877840380549,
+          "macro_f1": 0.48930967666830955,
+          "natural_accuracy": 0.657991513437058,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5547293188475304,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              572,
+              626,
+              298
+            ],
+            [
+              490,
+              3078,
+              593
+            ],
+            [
+              154,
+              493,
+              766
+            ]
+          ],
+          "log_loss": 0.793009088479913,
+          "macro_f1": 0.5524638506416614,
+          "natural_accuracy": 0.6592644978783593,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "global_eta10_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5597565251840702,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              897,
+              257,
+              342
+            ],
+            [
+              1386,
+              1639,
+              1136
+            ],
+            [
+              249,
+              195,
+              969
+            ]
+          ],
+          "log_loss": 0.793009088479913,
+          "macro_f1": 0.49058902756117934,
+          "natural_accuracy": 0.6592644978783593,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5548223379361175,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              570,
+              626,
+              300
+            ],
+            [
+              496,
+              3070,
+              595
+            ],
+            [
+              154,
+              488,
+              771
+            ]
+          ],
+          "log_loss": 0.7932557437917397,
+          "macro_f1": 0.5521055927708266,
+          "natural_accuracy": 0.6578500707213578,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5588357055589585,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              898,
+              254,
+              344
+            ],
+            [
+              1403,
+              1610,
+              1148
+            ],
+            [
+              250,
+              189,
+              974
+            ]
+          ],
+          "log_loss": 0.7932557437917397,
+          "macro_f1": 0.4880538502261884,
+          "natural_accuracy": 0.6578500707213578,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.554363616842327,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              569,
+              627,
+              300
+            ],
+            [
+              495,
+              3070,
+              596
+            ],
+            [
+              152,
+              491,
+              770
+            ]
+          ],
+          "log_loss": 0.7931641934428372,
+          "macro_f1": 0.551732108273281,
+          "natural_accuracy": 0.6578500707213578,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta03_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5590311225005394,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              897,
+              255,
+              344
+            ],
+            [
+              1393,
+              1627,
+              1141
+            ],
+            [
+              249,
+              194,
+              970
+            ]
+          ],
+          "log_loss": 0.7931641934428372,
+          "macro_f1": 0.48929534768815075,
+          "natural_accuracy": 0.6578500707213578,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5537577661474141,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              567,
+              628,
+              301
+            ],
+            [
+              498,
+              3068,
+              595
+            ],
+            [
+              153,
+              490,
+              770
+            ]
+          ],
+          "log_loss": 0.7932762124494543,
+          "macro_f1": 0.5510367529678307,
+          "natural_accuracy": 0.657991513437058,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h300",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5592990269575528,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              900,
+              252,
+              344
+            ],
+            [
+              1398,
+              1622,
+              1141
+            ],
+            [
+              251,
+              192,
+              970
+            ]
+          ],
+          "log_loss": 0.7932762124494543,
+          "macro_f1": 0.48916737699503465,
+          "natural_accuracy": 0.657991513437058,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.5541408004430401,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              568,
+              627,
+              301
+            ],
+            [
+              494,
+              3070,
+              597
+            ],
+            [
+              151,
+              492,
+              770
+            ]
+          ],
+          "log_loss": 0.7931387909208203,
+          "macro_f1": 0.5515033291052639,
+          "natural_accuracy": 0.6584158415841584,
+          "rows": 7070
+        },
+        "policy": "registered",
+        "symbol": "ETHUSDT"
+      },
+      {
+        "case": "confidence_context_eta10_h1800",
+        "date": "2023-06-11",
+        "metrics": {
+          "balanced_accuracy": 0.559309669518223,
+          "class_counts": [
+            1496,
+            4161,
+            1413
+          ],
+          "confusion_matrix": [
+            [
+              891,
+              261,
+              344
+            ],
+            [
+              1371,
+              1656,
+              1134
+            ],
+            [
+              249,
+              197,
+              967
+            ]
+          ],
+          "log_loss": 0.7931387909208203,
+          "macro_f1": 0.4912755033983372,
+          "natural_accuracy": 0.6584158415841584,
+          "rows": 7070
+        },
+        "policy": "forecast_3600",
+        "symbol": "ETHUSDT"
+      }
+    ],
+    "seconds": 27.291251415968873,
+    "substantial_gain_confirmed": false
+  },
+  "summary_sha256": "941d3d549cd4c11595cc6410f21e40e483588f760a85fe1d95e642f3aead39c3",
+  "targeted_mathematical_tests_passed": 3,
+  "total_trajectories_including_static_controls": 66
+}
