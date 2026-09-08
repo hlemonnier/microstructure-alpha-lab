@@ -1,0 +1,109 @@
+{
+  "artifacts": {
+    "data/research/boundary_temporal_attention_implementation_20260908/final_direct.log": "3d7574c7c7d8dbe5af013c3d9b7996a8c7568a49c37f659c6d314b935b98d552",
+    "data/research/boundary_temporal_attention_implementation_20260908/final_minimal.log": "01703969c16e21ed6b1a03308591a651e66b3b7c6d627e1fc793770d4080cea5",
+    "data/research/boundary_temporal_attention_implementation_20260908/initial_direct_runner_fixture_failure.log": "797490d1ef859777f0715fa52d09515e026bc10d3d18978f1c89330faee7655d",
+    "data/research/boundary_temporal_attention_implementation_20260908/intermediate_direct_pre_mask_fix.log": "f5aa11ea2f514eaa6e84d2f63b4dfd98fd48407d6c0166895447eb4f5902be61"
+  },
+  "causal_query_tolerance": {
+    "absolute": 3e-07,
+    "dtype": "float32",
+    "relative": 0
+  },
+  "current_catboost_assessment_scores_opened": false,
+  "definition_commit": "2ec602d",
+  "failed_checks_and_fixes": [
+    {
+      "failure": "Direct launcher does not provide monkeypatch fixture.",
+      "fix": "Use scoped unittest.mock.patch.dict in the tiny fit test. No production fitting logic changed for this compatibility fix.",
+      "stage": "initial full direct suite"
+    },
+    {
+      "failure": "Finite 1e25 values in excluded cells produced a finite loss but nonfinite parameter gradients before input projection was masked.",
+      "fix": "Clear excluded matrix cells before the stem, reject nonfinite output corrections, and add an all-branch exact-gradient regression. Final suite passes 671 cases.",
+      "stage": "extra synthetic stress probe after 670-case pass"
+    }
+  ],
+  "final_full_suite": {
+    "exit_code": 0,
+    "optional_modules_skipped": 0,
+    "optional_tests_skipped": 0,
+    "passed": 671
+  },
+  "final_minimal_suite": {
+    "exit_code": 0,
+    "optional_modules_skipped": 58,
+    "optional_tests_skipped": 6,
+    "passed": 488
+  },
+  "fresh_confirmation_market_content_opened": false,
+  "independent_weighted_gradient_tolerances": {
+    "absolute": 2e-12,
+    "architectures": 4,
+    "dtype": "float64",
+    "relative": 1e-10
+  },
+  "limitations": [
+    "No full-size CPU or MPS preflight has run.",
+    "No attention market family has run.",
+    "Controls differ in trainable capacity.",
+    "Synthetic learning accuracy does not establish market predictive gain.",
+    "Existing CatBoost, proper-score and twenty-date audit order is unchanged."
+  ],
+  "market_assessment_metrics_computed": false,
+  "market_model_fits": 0,
+  "mps_cases_run": 0,
+  "nominal_parameter_counts": {
+    "215": {
+      "age": 43459,
+      "content": 51779,
+      "instant": 42947,
+      "uniform": 42947
+    },
+    "221": {
+      "age": 43843,
+      "content": 52163,
+      "instant": 43331,
+      "uniform": 43331
+    },
+    "400": {
+      "age": 55299,
+      "content": 63619,
+      "instant": 54787,
+      "uniform": 54787
+    }
+  },
+  "production_runtime_measured": false,
+  "recorded_at_utc": "2026-09-08T20:54:49.866648+00:00",
+  "ruff": {
+    "files": [
+      "src/lob_forge/boundary_temporal_attention.py",
+      "tests/test_boundary_temporal_attention.py"
+    ],
+    "passed": true
+  },
+  "source_sha256": {
+    "docs/research/boundary_temporal_attention_definition_20260908.json": "c63d2e5b6dbf82a3a63be81ac7d3d395fc96d1492eb83da6a05845cce5ef6a1a",
+    "docs/research/boundary_temporal_attention_math_20260908.md": "8c2202123e21c27b875794b20b2fb86f57f04086881107a86c5d6ab77de12427",
+    "src/lob_forge/boundary_learned_memory.py": "320fcff11402bae858e13af61c63965a07d977974b0477c96a0af1eec4841067",
+    "src/lob_forge/boundary_pooled.py": "495ffebc0ef0c0fd889531c7403492d0790ff19ea34c9c08c3dc595c0b299367",
+    "src/lob_forge/boundary_temporal_attention.py": "9ab902609e369c0693374b4d986be56f2b8695df0d3039bd1330910050e5ea40",
+    "tests/test_boundary_temporal_attention.py": "e0bf53d37b6b4018a203ad9525dafd8385578dfb58fd6bfa03463cca3da5bad3"
+  },
+  "status": "implemented_and_small_correctness_tests_passed_before_full_size_preflight",
+  "synthetic_learning_check": {
+    "asserted_accuracy_strictly_above": 0.9,
+    "batch_rows": 32,
+    "exact_accuracy_logged": false,
+    "market_transfer_inference": false,
+    "new_examples": 256,
+    "optimizer_updates": 350,
+    "train_examples": 384
+  },
+  "targeted_tests": {
+    "observed_command": "PYTHONPATH=src OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 .venv/bin/python -m pytest tests/test_boundary_temporal_attention.py -q",
+    "passed": 8,
+    "seconds": 5.64,
+    "separate_targeted_log_preserved": false
+  }
+}
