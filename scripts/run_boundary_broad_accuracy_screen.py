@@ -26,6 +26,7 @@ from lob_forge.boundary_confirm_model import SYMBOLS, fit_confirm_neural
 from lob_forge.boundary_event_inputs import utc_ms
 from lob_forge.boundary_forecasts import classification_metrics
 from lob_forge.boundary_pooled import PooledForecaster
+from lob_forge.boundary_prior_equivalence import assert_decision_priors_equal
 from lob_forge.boundary_regime_coverage import calendar_stride_mask, history_cohorts
 from lob_forge.boundary_weighted_boost import fit_weighted_boost
 from benchmark_boundary_tabicl_feature_budget import memory_guard
@@ -240,7 +241,7 @@ def finish_day(day, protocol, output, identity):
                 save_predictions(folder / "predictions" / f"{symbol}_{name}_{policy}.npz", values["probabilities"], labels[symbol], clocks[symbol], values["train_priors"], pi)
                 if name in BASELINES:
                     with np.load(ROOT / protocol["prior_run"] / "priors" / day / f"{symbol}_{name}.npz", allow_pickle=False) as saved:
-                        np.testing.assert_array_equal(saved[policy], pi)
+                        assert_decision_priors_equal(saved[policy], pi, rows=len(clocks[symbol]))
     write_json(folder / "completed.json", {"identity": identity, "date": day, "model_procedures": 2,
         "all_original_rows_labels_and_retained_forecasts_exact": True,
         "artifact_hashes": {str(p.relative_to(folder)): sha256_file(p) for p in folder.rglob("*") if p.is_file()}})
