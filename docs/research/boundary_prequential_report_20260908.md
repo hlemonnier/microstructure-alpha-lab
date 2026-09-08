@@ -12,7 +12,7 @@ The complete study contains thirty trajectories on June 3, 7 and 11: eighteen fu
 | Combined frozen neural + matched HGB | 57.0984% | 0.760819 |
 | Combined faster full-network replay + matched HGB | 56.5905% | 0.762464 |
 
-The best full-network blend gains 0.1737 percentage points over its own frozen combined-feature blend, with positive asset averages but one slightly negative date. It remains 0.0353 points below the strongest control. The best adaptive source is the bias-only blend, itself 0.0130 points below that control. Faster replay adaptation degrades accuracy. These results support a limited calibration benefit under the tested settings, not an overall accuracy discovery.
+The best full-network blend gains 0.1737 percentage points over its own frozen combined-feature blend, with positive asset averages but one slightly negative date. It remains 0.0353 points below the strongest control. The best adaptive source is the bias-only blend, itself 0.0130 points below that control. Faster replay adaptation degrades accuracy. Some natural probability log losses improve under the tested settings; this is not an overall accuracy discovery.
 
 At each minute, the model uses only the preceding 30-minute window whose actual target quote has arrived, plus a separate 100ms observation allowance. The new parameters become available ten seconds later. The previous state supplies all earlier forecasts. Historical replay uses 6,144 unique balanced asset/class examples from the original past training cohort. The largest observed update takes 0.110829 seconds, within the fixed allowance; this is update timing, not end-to-end trading latency certification.
 
