@@ -1,0 +1,48 @@
+{
+  "evidence_status": "synthetic_operational_and_causality_checks_only",
+  "market_model_procedures": 0,
+  "metadata": {
+    "algorithm": "tabicl",
+    "checks": {
+      "BTCUSDT": {
+        "checkpoint_forecast_exact": true,
+        "later_query_max_error": 0.0,
+        "shorter_query_max_error": 0.0,
+        "single_query_max_error": 2.3487752132123063e-07,
+        "single_query_seconds": 0.019442457996774465
+      },
+      "ETHUSDT": {
+        "checkpoint_forecast_exact": true,
+        "later_query_max_error": 0.0,
+        "shorter_query_max_error": 0.0,
+        "single_query_max_error": 3.9089421208227115e-07,
+        "single_query_seconds": 0.018731582997133955
+      }
+    },
+    "fit_and_cache_seconds": 2.672514542005956,
+    "fit_and_serialization_seconds": 2.7463659170025494,
+    "fit_save_reload_ready_seconds": 3.0204690840037074,
+    "full_universe_query_seconds": 0.12655945899314247,
+    "model_procedures": 1,
+    "model_procedures_scope": "One synthetic context procedure; no market examples.",
+    "optimizer_training": false,
+    "population_priors": {
+      "BTCUSDT": [
+        0.1,
+        0.8,
+        0.1
+      ],
+      "ETHUSDT": [
+        0.2,
+        0.6,
+        0.2
+      ]
+    },
+    "posterior_contract": "sampled_context_to_full_context_pool_prior_correction",
+    "query_rows": 128
+  },
+  "protocol": "docs/research/boundary_tabicl_wrapper_preflight_20260908.json",
+  "protocol_sha256": "7523d4746d8128da1351e7e363c034dbbadc5b59ad4db59d3db0e3f54a624129",
+  "summary": "data/research/boundary_tabicl_20260908/synthetic_wrapper/summary.json",
+  "summary_sha256": "d62febd5560dbb8bb29ea803f42f146893ce3c7f18a04bdbe6e390035581ba5c"
+}
