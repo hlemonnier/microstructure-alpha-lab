@@ -1,0 +1,873 @@
+{
+  "acquisition_artifact_hash_count": 162,
+  "acquisition_seconds": 1123.6720497080241,
+  "acquisition_summary": "data/research/boundary_confirmation_round2_raw_20260908/summary.json",
+  "acquisition_summary_sha256": "e9f8367ef57fcc56d9320d5c7fc485b7450d9962b21fcae4069340027bc35b3e",
+  "active_model_study_provenance_check": {
+    "data_manifest": "data/research/boundary_regime_data_20260907/dataset_manifest.json",
+    "data_manifest_sha256": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+    "first_source_session": "2023-05-19",
+    "last_source_session": "2023-06-11",
+    "reserved_archive_paths_absent_from_frozen_input_hashes": true,
+    "reserved_dates_absent_from_active_manifest": true,
+    "scheduled_proper_and_broad_definitions_end_before_reserved_dates": true,
+    "scope": "Inspected the frozen CatBoost input paths and its complete source manifest, plus the scheduled proper-score and broad-audit date definitions. No market-content inspection was performed.",
+    "study_protocol": "docs/research/boundary_stochastic_boost_screen_20260908.json",
+    "study_protocol_sha256": "1ece130d6f36def969cafaa5012f0d9fd111656eca1a96a05c9d797edc641c16"
+  },
+  "actual_archive_bytes": 6101803204,
+  "all_acquisition_artifact_hashes_independently_rechecked": true,
+  "archive_objects": 80,
+  "archive_records": [
+    {
+      "actual_bytes": 138510529,
+      "actual_sha256": "4f0df89e886503a5b0017838f39bbac3c007db39c86499ce98cdc9035b676315",
+      "dataset": "bookTicker",
+      "date": "2023-06-13",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-13.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-13.zip",
+      "seconds": 43.840286542021204,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 16218046,
+      "actual_sha256": "a62e5e0323f44d1aa034fbe04f52a822a30948615cccc438f216660e55ddf549",
+      "dataset": "aggTrades",
+      "date": "2023-06-13",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-13.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-13.zip",
+      "seconds": 8.850669875042513,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 108870604,
+      "actual_sha256": "55636ef250827f2f9a3dc89b7602e28694bda13fefa2334d05342d381fd396b2",
+      "dataset": "bookTicker",
+      "date": "2023-06-13",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-13.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-13.zip",
+      "seconds": 38.87264083296759,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 11177827,
+      "actual_sha256": "7ffe8b5242a4845d3f22ea0167e0ae887b8a8dbafadee5b5d1b2960a5a58c2f9",
+      "dataset": "aggTrades",
+      "date": "2023-06-13",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-13.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-13.zip",
+      "seconds": 7.40235162503086,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 277254093,
+      "actual_sha256": "1ae66435cf131548a3b28a96666b10c8e51dab022b2be32bbcd621bdc1b0a41d",
+      "dataset": "bookTicker",
+      "date": "2023-06-14",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-14.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-14.zip",
+      "seconds": 149.98235691600712,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 16402788,
+      "actual_sha256": "73628c85d9d60ffd5dd0d5aa2c40b625ecfca68d302591d813ab3a8b7be1cfaf",
+      "dataset": "aggTrades",
+      "date": "2023-06-14",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-14.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-14.zip",
+      "seconds": 7.6627852079691365,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 234970558,
+      "actual_sha256": "3eec5c64cd960d6cdb4a41cffdb67cac9fe55f033b3d82c23521918e95730fde",
+      "dataset": "bookTicker",
+      "date": "2023-06-14",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-14.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-14.zip",
+      "seconds": 81.32079845899716,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 13553615,
+      "actual_sha256": "f0263bcd9424703247fc7b319a8244f1a8291b998b3f3f56de8245db8e1d814e",
+      "dataset": "aggTrades",
+      "date": "2023-06-14",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-14.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-14.zip",
+      "seconds": 8.082742083992343,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 240898598,
+      "actual_sha256": "4ae9647c2c35e0c1f1de363272311bb720bf4c2938143e8600ba76132197f721",
+      "dataset": "bookTicker",
+      "date": "2023-06-15",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-15.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-15.zip",
+      "seconds": 145.89571195899043,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 16291213,
+      "actual_sha256": "5b56d1ae725daa9f9f6079c970f4dcad97e375c90a556afbb9023e09e5418146",
+      "dataset": "aggTrades",
+      "date": "2023-06-15",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-15.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-15.zip",
+      "seconds": 14.974189958011266,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 210904152,
+      "actual_sha256": "856076d8ad5b352f97d42f401d1e7eb20ad7d117019d66884c7a4228801068a3",
+      "dataset": "bookTicker",
+      "date": "2023-06-15",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-15.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-15.zip",
+      "seconds": 95.19557937502395,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 10959767,
+      "actual_sha256": "224a40b8961d3fc63153d06399f5b4c5f7064766b81da5390ef1170d555f1bb0",
+      "dataset": "aggTrades",
+      "date": "2023-06-15",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-15.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-15.zip",
+      "seconds": 5.821769749978557,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 149924568,
+      "actual_sha256": "e6d893f5d25ecc6f8e053943d411ab5cae2c12e5861305d30197fe0495b639d9",
+      "dataset": "bookTicker",
+      "date": "2023-06-16",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-16.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-16.zip",
+      "seconds": 42.37214250001125,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 17628838,
+      "actual_sha256": "e3d5dc5d9ae2e4581568f4a2002a0d986f3a17dbf7f9bba7f925fd75721bf8ef",
+      "dataset": "aggTrades",
+      "date": "2023-06-16",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-16.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-16.zip",
+      "seconds": 7.5549783750320785,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 109787289,
+      "actual_sha256": "4f9aa9a8d718cbe7039c8435d85d3ac24b827947e8c00daeb88bd1a9a18e0e06",
+      "dataset": "bookTicker",
+      "date": "2023-06-16",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-16.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-16.zip",
+      "seconds": 48.607469625014346,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 10962027,
+      "actual_sha256": "98595dedd826b6d1b7830bb16a7756aa8740220d30af46bbe8ec649901e93d6d",
+      "dataset": "aggTrades",
+      "date": "2023-06-16",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-16.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-16.zip",
+      "seconds": 6.660160708997864,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 118973732,
+      "actual_sha256": "f77f9fd5ba40ddaff6b4659c9c574fcd2729e8199aea6535137d138dcb55bf08",
+      "dataset": "bookTicker",
+      "date": "2023-06-17",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-17.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-17.zip",
+      "seconds": 31.275214624998625,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 11498317,
+      "actual_sha256": "e49eee3d77c5b9b0191a96d1d9c221206fb074a9706c0feb4147002e0200e192",
+      "dataset": "aggTrades",
+      "date": "2023-06-17",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-17.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-17.zip",
+      "seconds": 8.0159863330191,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 90952529,
+      "actual_sha256": "3781eaf4ecdb463b26527611ddca89886f6a08ac7c937cfa2de901bdbb0c8805",
+      "dataset": "bookTicker",
+      "date": "2023-06-17",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-17.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-17.zip",
+      "seconds": 26.70747504197061,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 8151575,
+      "actual_sha256": "9d3f44e90b0bebfafffc716863046c4593676206453ca29309a57339c12b2a4e",
+      "dataset": "aggTrades",
+      "date": "2023-06-17",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-17.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-17.zip",
+      "seconds": 4.906892667000648,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 104248376,
+      "actual_sha256": "53871c000265bf9910ab4756892d5f4e70bd0e791841ff05d7a8eb5778d1cc56",
+      "dataset": "bookTicker",
+      "date": "2023-06-18",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-18.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-18.zip",
+      "seconds": 32.666547457978595,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 9669074,
+      "actual_sha256": "e64cc8fa764b306a1bbe617ff60fa72b62c9465d171bbaceceaee6906576d03d",
+      "dataset": "aggTrades",
+      "date": "2023-06-18",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-18.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-18.zip",
+      "seconds": 4.44264241703786,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 81070906,
+      "actual_sha256": "805e7fadc3e15ae8af57726d2debd45544b11bd6e44571a2235867db43b94978",
+      "dataset": "bookTicker",
+      "date": "2023-06-18",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-18.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-18.zip",
+      "seconds": 34.78599150001537,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 6792723,
+      "actual_sha256": "5f827dffcf5d48d3bb14152d782a0be182e1413b583f244aac62f883b18bd4e3",
+      "dataset": "aggTrades",
+      "date": "2023-06-18",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-18.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-18.zip",
+      "seconds": 4.023385957989376,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 120284800,
+      "actual_sha256": "9f23a7be38a4d1f599ca8131b57ef463a72a0e738f24a016bbfa6cff01a4e774",
+      "dataset": "bookTicker",
+      "date": "2023-06-19",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-19.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-19.zip",
+      "seconds": 25.66256141703343,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 14135865,
+      "actual_sha256": "13692318c9906a9591d0d84c06b96831237a0ec3f98bbfc65421062d0ea9107d",
+      "dataset": "aggTrades",
+      "date": "2023-06-19",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-19.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-19.zip",
+      "seconds": 10.77422891597962,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 87382205,
+      "actual_sha256": "0a61264003aa0f030f9db3cf186829f49cd1de6a9e8d9ed8fe913cf074901138",
+      "dataset": "bookTicker",
+      "date": "2023-06-19",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-19.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-19.zip",
+      "seconds": 21.005344124976546,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 9679484,
+      "actual_sha256": "0a3d0cd87c29562d4f3f7266af0c2b7aca67732ee125f9a004e5810ff3b8574b",
+      "dataset": "aggTrades",
+      "date": "2023-06-19",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-19.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-19.zip",
+      "seconds": 7.866587874945253,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 188866417,
+      "actual_sha256": "869ed58f93d38e02ebcb71f4cf5fe8be9f5e5bc99edc5c3a0e513de99a0ab05f",
+      "dataset": "bookTicker",
+      "date": "2023-06-20",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-20.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-20.zip",
+      "seconds": 64.18346966599347,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 25484361,
+      "actual_sha256": "68bd88bd87f4264b588101fde45add0377e56dcb1b29f40df8bade4b26d1aff4",
+      "dataset": "aggTrades",
+      "date": "2023-06-20",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-20.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-20.zip",
+      "seconds": 7.358259083004668,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 107790833,
+      "actual_sha256": "f762595f5c6672787ceb6607f2e1d93ba79a039ed57de446f547fdefc6cbb4a8",
+      "dataset": "bookTicker",
+      "date": "2023-06-20",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-20.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-20.zip",
+      "seconds": 33.13342287502019,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 12377324,
+      "actual_sha256": "e85ab556ccef17ab87a21fe1ddca347e57453842c3ce3469513ee7de6f406117",
+      "dataset": "aggTrades",
+      "date": "2023-06-20",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-20.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-20.zip",
+      "seconds": 5.855698874976952,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 224129542,
+      "actual_sha256": "869b2486ac4b08b7b7b78ea751e66515e6de223aaeb32c06ee0f1a07ba75b55e",
+      "dataset": "bookTicker",
+      "date": "2023-06-21",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-21.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-21.zip",
+      "seconds": 57.52186845801771,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 39075695,
+      "actual_sha256": "bf1ffc67ca9f14f5f0cd63363f080be9e7bb7b62220ded3deeabc4b3602777e2",
+      "dataset": "aggTrades",
+      "date": "2023-06-21",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-21.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-21.zip",
+      "seconds": 9.29680054198252,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 131453654,
+      "actual_sha256": "b07c12f6d9ee6f3fdffdb72580fc75091e4ba45f1fee42879931c7e09c06b53b",
+      "dataset": "bookTicker",
+      "date": "2023-06-21",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-21.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-21.zip",
+      "seconds": 51.355208082997706,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 18985396,
+      "actual_sha256": "675f550b143a01bf12759b7292177627ef7e40589be5f3264ea237eb2adfbaf7",
+      "dataset": "aggTrades",
+      "date": "2023-06-21",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-21.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-21.zip",
+      "seconds": 8.944634834013414,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 170223755,
+      "actual_sha256": "2a6c86e7058e2f0992661fac9ce253840fe6cb2525a596d9f8fec4f7073d9b05",
+      "dataset": "bookTicker",
+      "date": "2023-06-22",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-22.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-22.zip",
+      "seconds": 51.35618975001853,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 22494861,
+      "actual_sha256": "c450f433db627617567f1b21e3ec6a184f46a06d891d109cd559bd451a059904",
+      "dataset": "aggTrades",
+      "date": "2023-06-22",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-22.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-22.zip",
+      "seconds": 7.773142166028265,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 111354610,
+      "actual_sha256": "19a06252397c252cd077d25f8cb9f08f957fda3e13df161bd7e785b6ddd26634",
+      "dataset": "bookTicker",
+      "date": "2023-06-22",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-22.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-22.zip",
+      "seconds": 41.04913541703718,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 12902070,
+      "actual_sha256": "20511dacbbf3bcba862dd637986a3ffdff6dd7514ae42d1b558223de09a13e21",
+      "dataset": "aggTrades",
+      "date": "2023-06-22",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-22.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-22.zip",
+      "seconds": 4.754105207975954,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 179616160,
+      "actual_sha256": "c1930f5d2db57b5110eb85d6ae2f290fc1140fe68dc5531695fb900efc964d00",
+      "dataset": "bookTicker",
+      "date": "2023-06-23",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-23.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-23.zip",
+      "seconds": 60.36846150003839,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 27481598,
+      "actual_sha256": "5fbb1447081955752f5433a93e827d6a71e08247df80cb6a059d18425fc2fdd8",
+      "dataset": "aggTrades",
+      "date": "2023-06-23",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-23.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-23.zip",
+      "seconds": 11.769496666034684,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 113584412,
+      "actual_sha256": "e0e3423074482340298042fff1861059e1a60608002f05f2bd7f53d984ac4fd9",
+      "dataset": "bookTicker",
+      "date": "2023-06-23",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-23.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-23.zip",
+      "seconds": 39.0937447079923,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 13653043,
+      "actual_sha256": "59b2e2d8cd709c9ad81f350c2b73cdc802cf6365a5cdf0d3f8929be09932d2fc",
+      "dataset": "aggTrades",
+      "date": "2023-06-23",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-23.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-23.zip",
+      "seconds": 7.357703124987893,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 133824194,
+      "actual_sha256": "56590ca7a21beb92e98d914ec847511bd56eabe28f2c10c75c224611b5635ec9",
+      "dataset": "bookTicker",
+      "date": "2023-06-24",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-24.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-24.zip",
+      "seconds": 30.35712349996902,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 13575169,
+      "actual_sha256": "d95577cbab2c32c1f4c0382a72086a1e50736cc4b3cba9c740de4635d79aa083",
+      "dataset": "aggTrades",
+      "date": "2023-06-24",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-24.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-24.zip",
+      "seconds": 10.135629458003677,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 90180945,
+      "actual_sha256": "e1ffc629d8ec5715a2a39da936a8ca5d3f481c0d0f591d7c0c10d4fb132393eb",
+      "dataset": "bookTicker",
+      "date": "2023-06-24",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-24.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-24.zip",
+      "seconds": 36.718574750004336,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 8301402,
+      "actual_sha256": "4aae56f1c79fcbfc32c05faca6b0a16e95ea48fa0961ad425fa25aa3eb0b7c6a",
+      "dataset": "aggTrades",
+      "date": "2023-06-24",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-24.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-24.zip",
+      "seconds": 6.938927042006981,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 136700851,
+      "actual_sha256": "31818dd7f45ef6c5938661ee127f2685249ab9c62b6f20b48ffaf67224cb9bec",
+      "dataset": "bookTicker",
+      "date": "2023-06-25",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-25.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-25.zip",
+      "seconds": 43.108221207978204,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 13843680,
+      "actual_sha256": "ab15c06d282095effc571a4e696d1c5e9df351e3a233129b880f7e204a1b6279",
+      "dataset": "aggTrades",
+      "date": "2023-06-25",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-25.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-25.zip",
+      "seconds": 6.999723749991972,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 104792286,
+      "actual_sha256": "ed178ed31df9ba566d73375b1ad84726611f7dad52e06cd6cb609e42f92bc692",
+      "dataset": "bookTicker",
+      "date": "2023-06-25",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-25.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-25.zip",
+      "seconds": 37.277682665968314,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 11799689,
+      "actual_sha256": "7f5f0c814675f11ff605f2a325248694a22cb459540b71144485a7ed43d04939",
+      "dataset": "aggTrades",
+      "date": "2023-06-25",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-25.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-25.zip",
+      "seconds": 7.755329333012924,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 158186613,
+      "actual_sha256": "44bc6d4ef063be80bd769caf4a2c216743be68d46ba294c2f54748b734f47f7c",
+      "dataset": "bookTicker",
+      "date": "2023-06-26",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-26.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-26.zip",
+      "seconds": 50.62981524999486,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 17752661,
+      "actual_sha256": "1677a65a40ccda17709b1d4c38182d8170d063732a9d1577cfee187f46ab2e8f",
+      "dataset": "aggTrades",
+      "date": "2023-06-26",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-26.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-26.zip",
+      "seconds": 6.698391958954744,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 108262220,
+      "actual_sha256": "5fcc657abafd9a04283849d29fed1f351665dcade92841068df697c9de632fc2",
+      "dataset": "bookTicker",
+      "date": "2023-06-26",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-26.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-26.zip",
+      "seconds": 30.811089957947843,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 13246650,
+      "actual_sha256": "2a407a6ea08a8fb1bd73864d2ab1a014bdfc1406711a1ab98d77cdf2206b6c29",
+      "dataset": "aggTrades",
+      "date": "2023-06-26",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-26.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-26.zip",
+      "seconds": 9.508335207996424,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 153487075,
+      "actual_sha256": "d7f871dfdd86ef1b6fcbea4c4461f213259994dee9d95aa21a7444831ec6ca00",
+      "dataset": "bookTicker",
+      "date": "2023-06-27",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-27.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-27.zip",
+      "seconds": 39.03062512498582,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 17070637,
+      "actual_sha256": "cc974f95f7ce218d967dc81d497372d12806a82ea25f0942ffc706925c510566",
+      "dataset": "aggTrades",
+      "date": "2023-06-27",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-27.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-27.zip",
+      "seconds": 8.04000354197342,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 101683212,
+      "actual_sha256": "6c8e3d9239f65acf5f3c4cb1756eb412e9ecedc51d2e6752a90943a3beb8ec62",
+      "dataset": "bookTicker",
+      "date": "2023-06-27",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-27.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-27.zip",
+      "seconds": 37.725322083046194,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 11335885,
+      "actual_sha256": "2d1fc907d65b349a25ee1f60e5eb1c7ae258ceb09bae623d5f00a54aff89748a",
+      "dataset": "aggTrades",
+      "date": "2023-06-27",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-27.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-27.zip",
+      "seconds": 13.888052915979642,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 156554230,
+      "actual_sha256": "eb6beae7bd600fa63d781b00bde7aea1c1b70fb192c6e6b2115c5e490082a7b2",
+      "dataset": "bookTicker",
+      "date": "2023-06-28",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-28.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-28.zip",
+      "seconds": 37.38131316698855,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 15766545,
+      "actual_sha256": "deb1abcdc0166a9943e48194e8ab887685645682f9d5e89504910e370857c431",
+      "dataset": "aggTrades",
+      "date": "2023-06-28",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-28.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-28.zip",
+      "seconds": 11.26104554196354,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 105109977,
+      "actual_sha256": "2e599b0129bfea8b6f06375757bbd7874b26392a73efaa55db29d11b05ef3019",
+      "dataset": "bookTicker",
+      "date": "2023-06-28",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-28.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-28.zip",
+      "seconds": 33.12453904200811,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 10890818,
+      "actual_sha256": "26f49fd0b4ced60911befb24cdfcf876aa17ccd6ceb18d582a278920e0acd007",
+      "dataset": "aggTrades",
+      "date": "2023-06-28",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-28.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-28.zip",
+      "seconds": 9.136641625023913,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 150790055,
+      "actual_sha256": "a0f81624d4ae53db8f428e8baf3a61ab806b32c8d5a3f577a5e38b7c145d6b67",
+      "dataset": "bookTicker",
+      "date": "2023-06-29",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-29.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-29.zip",
+      "seconds": 47.742375709000044,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 14014718,
+      "actual_sha256": "fb3a8f373092c9b3783702e079a6a6811fa43d74725d9d09d08b44ceb1b55b8f",
+      "dataset": "aggTrades",
+      "date": "2023-06-29",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-29.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-29.zip",
+      "seconds": 6.20444508298533,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 101758593,
+      "actual_sha256": "e2fd3002e09db2a4908288f8ef6864328bb52728746a7a70115b2bbcb92cbf41",
+      "dataset": "bookTicker",
+      "date": "2023-06-29",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-29.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-29.zip",
+      "seconds": 43.764454957970884,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 8588166,
+      "actual_sha256": "6a7f21ab4304d38fddecc33a4e0328943347e9d190f17e8cc7e69f29df81b155",
+      "dataset": "aggTrades",
+      "date": "2023-06-29",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-29.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-29.zip",
+      "seconds": 4.2614012499689125,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 203940166,
+      "actual_sha256": "51ed6a47e9a7a5bf8bffcdde6c00a427098e1c60429d3bc53c0d96ad84bf22a8",
+      "dataset": "bookTicker",
+      "date": "2023-06-30",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-30.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-06-30.zip",
+      "seconds": 71.46399399999063,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 25806509,
+      "actual_sha256": "3cc6f8112203c8d11134c53b9c03030f39a5b230837458310165b9cd83e982af",
+      "dataset": "aggTrades",
+      "date": "2023-06-30",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-30.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-30.zip",
+      "seconds": 7.124483083025552,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 133489713,
+      "actual_sha256": "59b9c513447f1314039243dab6ecaf0cc1b45ec3086ff19bb19d20757f29413a",
+      "dataset": "bookTicker",
+      "date": "2023-06-30",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-30.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-06-30.zip",
+      "seconds": 45.35031933296705,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 19372952,
+      "actual_sha256": "24ef0980756d6e03a78943f15acab1c7692f414d789e6c6d7c04817c3450b07b",
+      "dataset": "aggTrades",
+      "date": "2023-06-30",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-30.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-06-30.zip",
+      "seconds": 17.215773041010834,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 110500412,
+      "actual_sha256": "e0f79f3d03459dd28333133c47dd370ba832e7ade58f47a0b83738efc43b90e8",
+      "dataset": "bookTicker",
+      "date": "2023-07-01",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-07-01.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-07-01.zip",
+      "seconds": 33.217404957977124,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 6577921,
+      "actual_sha256": "73523f8ac758592149218a20f26cfe81336e27b03a8d1a5f6125691fa358fad0",
+      "dataset": "aggTrades",
+      "date": "2023-07-01",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-07-01.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-07-01.zip",
+      "seconds": 6.401019000040833,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 80637386,
+      "actual_sha256": "d958af732b0df726eabeb2f122d19f53f226569c93200b4590bc6a3179ebb222",
+      "dataset": "bookTicker",
+      "date": "2023-07-01",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-07-01.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-07-01.zip",
+      "seconds": 29.087190540973097,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 6908616,
+      "actual_sha256": "b988eae3dcc0c45d22c2a7588a1f623b61b2810829021e69df29cd9dce9390df",
+      "dataset": "aggTrades",
+      "date": "2023-07-01",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-07-01.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-07-01.zip",
+      "seconds": 3.2332373750396073,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 110809182,
+      "actual_sha256": "449bde5b529da719437c8f4f7feab80c370c9a2daa7dc7b8558ac86cc809f44a",
+      "dataset": "bookTicker",
+      "date": "2023-07-02",
+      "key": "data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-07-02.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/BTCUSDT/BTCUSDT-bookTicker-2023-07-02.zip",
+      "seconds": 34.30279133300064,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 8282033,
+      "actual_sha256": "301250c4b2062d59f97ad90d8652598bba2b3d655c82aab496c5f084b151e6a5",
+      "dataset": "aggTrades",
+      "date": "2023-07-02",
+      "key": "data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-07-02.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-07-02.zip",
+      "seconds": 7.859275334049016,
+      "symbol": "BTCUSDT"
+    },
+    {
+      "actual_bytes": 82305632,
+      "actual_sha256": "4714a0d91cf38d6747a8262a450ed86aac25de16187fa3a3d2864d33b824f98a",
+      "dataset": "bookTicker",
+      "date": "2023-07-02",
+      "key": "data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-07-02.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/bookTicker/ETHUSDT/ETHUSDT-bookTicker-2023-07-02.zip",
+      "seconds": 29.76474049995886,
+      "symbol": "ETHUSDT"
+    },
+    {
+      "actual_bytes": 9028582,
+      "actual_sha256": "3bde7f5bad14ca4030095aad6e4b2513953b0e7e4dec1d09c47481145f2bf72d",
+      "dataset": "aggTrades",
+      "date": "2023-07-02",
+      "key": "data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-07-02.zip",
+      "local_path": "data/research/boundary_confirmation_round2_raw_20260908/raw/data/futures/um/daily/aggTrades/ETHUSDT/ETHUSDT-aggTrades-2023-07-02.zip",
+      "seconds": 5.475157125038095,
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "confirmation_algorithms_frozen": false,
+  "datasets": [
+    "bookTicker",
+    "aggTrades"
+  ],
+  "distinct_dates": 20,
+  "evidence_status": "opaque_sources_reserved_not_independent_confirmation",
+  "features_labels_models_or_assessment_scores_created": false,
+  "frozen_official_hash_and_byte_count_match_for_every_archive": true,
+  "independent_confirmation_run": false,
+  "limits": "This verifies source identity and acquisition readiness only. The model/evaluation procedure is still to be selected using exposed development data and frozen separately before raw content use. No performance or trading discovery follows from acquisition.",
+  "market_contents_parsed_by_this_workflow": false,
+  "metadata_evidence": "docs/research/boundary_confirmation_round2_metadata_evidence_20260908.json",
+  "metadata_evidence_sha256": "99ab9ba1dce4610ccde07ad1542888295355de8aff06db243eab5468c80bcf44",
+  "metadata_summary": "data/research/boundary_confirmation_round2_metadata_20260908/summary.json",
+  "metadata_summary_sha256": "51b207948a9e79f3e9fcf45a56300df6847b3c8ed3375afea050bd9267fd344d",
+  "paired_asset_sessions": 40,
+  "partial_transfer_files_remaining": 0,
+  "protocol": "docs/research/boundary_confirmation_round2_acquisition_20260908.json",
+  "protocol_sha256": "fcc86556a4084c9ddceca8319b0a79104c5e00c4dfcc108064479342dd0b101b",
+  "recorded_at_utc": "2026-09-08T19:42:35.184274+00:00",
+  "reserved_dates": [
+    "2023-06-13",
+    "2023-06-14",
+    "2023-06-15",
+    "2023-06-16",
+    "2023-06-17",
+    "2023-06-18",
+    "2023-06-19",
+    "2023-06-20",
+    "2023-06-21",
+    "2023-06-22",
+    "2023-06-23",
+    "2023-06-24",
+    "2023-06-25",
+    "2023-06-26",
+    "2023-06-27",
+    "2023-06-28",
+    "2023-06-29",
+    "2023-06-30",
+    "2023-07-01",
+    "2023-07-02"
+  ],
+  "statistical_round_spent_by_acquisition": false,
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "transfer_failures": 0,
+  "zip_member_or_header_inspection_performed": false
+}

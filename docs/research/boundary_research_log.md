@@ -84,6 +84,8 @@ The subsequent [delayed expert-combination study](boundary_expert_feedback_repor
 
 The [broader-cache replay](boundary_broad_accuracy_replay_evidence_20260908.json) verifies the future audit's preparation function against the original three-date inputs: all 515,922 normalized training rows, 42,420 validation rows, labels, clocks and priors are exact. Both original neural and tree checkpoints reproduce every saved query forecast from the new cache. No model or normalizer is fitted and no new assessment score is computed. The twenty-date retraining and its stricter parameter-reproduction checks remain pending.
 
+The [fresh-date reservation](boundary_confirmation_round2_reservation_20260908.md) is complete: all eighty official archives for June 13 through July 2 are local and match their prospectively frozen SHA256 hashes and byte lengths, totaling 6,101,803,204 bytes. Every archive remains opaque to the research workflow; no new market record, feature, label, model or assessment score was opened or created. These are the twenty chronological successors to the exposed data. A separate model/evaluation protocol must still be frozen before content use, so acquisition alone neither spends a statistical round nor establishes independent predictive or economic gain.
+
 ## Reproduction and validation
 
 The branch preserves each research family in a separate commit. Legacy protocols pin source hashes and must be replayed at their matching commit. Re-running legacy scripts against corrected label code is intentionally rejected by provenance checks.
