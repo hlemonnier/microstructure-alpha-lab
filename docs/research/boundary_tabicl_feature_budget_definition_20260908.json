@@ -1,0 +1,54 @@
+{
+  "backend_preflight": "After the current learned-memory family completes, benchmark the unchanged two-member transformer on synthetic 3072x97 and 12288x97 contexts, sequentially on two-thread CPU and available MPS. Freeze exact repetitions, query dimensions, tolerances, source hashes and resource ceilings in a separate protocol first. Require finite normalized forecasts, same-backend checkpoint equality, future/prefix/row independence and CPU/MPS agreement. Select one common feasible backend by a fixed measured fit-plus-projected-full-query timing rule. No market fitting if neither common backend passes. No prepaid compute or unregistered context resizing.",
+  "contexts": "The 3072 context is exactly the original uniformly sampled 512 rows per asset/class. For the 12288 context, retain all those rows and uniformly sample 1536 additional rows without replacement from each remaining asset/class cell, using seed 20260909. The resulting 2048 rows per cell remain a uniform class-conditional sample. Require every registered cell count; do not silently reduce context size.",
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "decision_policies": [
+    "registered",
+    "forecast_3600"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "fading_memory_and_original_tabicl_scores_inspected": true,
+  "feature_budget": 96,
+  "fixed_blends": "For each of three transformer sources, average 50/50 with the original observations_neural, deep500_hgb, and selected96_full_hgb (nine blends). Add selected96_full_hgb with selected96_full_neural, selected96_full_hgb with observations_neural, selected96_full_neural with deep500_hgb, and selected96_full_hgb with deep500_hgb (four blends). Retain all 163 learned-memory-family sources. No blend search.",
+  "forecast_sources": 184,
+  "hypothesis": "The prior TabICLv2 experiment exceeded its reported pretraining feature range and used only 3072 context rows. Test a 96-feature budget with a random subset control, a historically supervised selector, and a nested fourfold context expansion. This targets representation and context limitations observed in the completed development study, not a general foundation-model guarantee.",
+  "implementation_status": "prospective_definition_before_implementation",
+  "learned_memory_assessment_scores_inspected": false,
+  "model_cases": [
+    "random96_c3072_tabicl",
+    "random96_c3072_hgb",
+    "selected96_c3072_tabicl",
+    "selected96_c3072_hgb",
+    "selected96_c12288_tabicl",
+    "selected96_c12288_hgb",
+    "selected96_full_hgb",
+    "selected96_full_neural"
+  ],
+  "model_fits": 24,
+  "official_source_commit": "0dbff3ec8fc68c123c87af77b0ea8b25cd2d23f3",
+  "partition": "Same four historical days d-5 through d-2, previous complete noon for neural epoch selection, and all 7070 original assessment rows per asset/date. No same-day context or outcomes; verify actual release clocks before every partition.",
+  "post_fit_panels": 2208,
+  "posterior": "Undo context case-control sampling using its corresponding full historical per-asset prior. The model prior identity is an ideal posterior correction, not proof of calibration. Original class labels, natural-probability semantics and both decision policies remain exact.",
+  "primary_policy": "forecast_3600",
+  "primary_sources": [
+    {
+      "scope": "The pinned official README reports pretraining on 2-100 columns and 300-48000 context rows, warning that many more columns can degrade performance. The current 220/399-feature experiment exceeds that range.",
+      "url": "https://github.com/soda-inria/tabicl"
+    },
+    {
+      "scope": "Primary pretrained-model paper; its benchmark results motivate a controlled local test, not an expected market gain.",
+      "url": "https://arxiv.org/abs/2602.11139"
+    }
+  ],
+  "random_subset": "Draw 96 nonconstant historical columns uniformly without replacement, seed 20260908. Preserve their original relative column order. Eligibility uses historical features only.",
+  "readouts": "Use the exact corrected two-member pretrained TabICLv2 settings, row-local power fallback and pretrained checkpoint, changing only selected columns, nested context size and a prospectively benchmarked execution backend. Sampled HGB uses the same rows and columns as its transformer, original seven-leaf 200-iteration settings, training-only clipping and explicit prior recovery. Full selected-feature HGB and the original 12-epoch 64-by-64 neural fitting procedure use all historical rows, with the unchanged previous-noon epoch rule.",
+  "registered_at_utc": "2026-09-08T06:09:48.013580+00:00",
+  "representation": "The exact original 220 observation-context columns, with feature selection restricted to the original historical stride-four cohort. Append the original TabICL 0/1 asset indicator, producing at most 97 transformer inputs.",
+  "selection_information_boundary": "The supervised selector consumes all historical labels, even when the downstream context is smaller. Both the transformer and its corresponding sampled HGB share this selector. The random subset has no label-based selection. A selected-versus-original comparison is not a claim of equal total labeled information; the random subset control and separate full-data readouts expose this difference.",
+  "supervised_selector": "On the full original historical stride-four pool, form 32 pooled quantile bins per nonconstant column, using unique internal quantile boundaries and right-side insertion. For each asset, assign every class prior exactly 1/3 by normalizing each feature-bin/class count by three times its asset/class count; compute mutual information between binned feature and class, then average the two asset values. Rank descending, ties by original column order. Greedily accept a column if its absolute Pearson correlation of pooled quantile-bin codes with every accepted column is below .95. Stop at 96; if fewer survive, fill by the original relevance ranking. No assessment or validation outcome enters the selector. This is a specified heuristic, not a reproduction of mRMR.",
+  "validation": "Unit-test feature selection against explicit balanced contingency tables, duplicate-feature rejection, constant columns, unique nested sampling, state persistence and unchanged query schema. Verify all original labels, clocks, priors and retained forecasts. Preserve failures; run all three dates before revealing assessment scores. No independent confirmation claim from these exposed dates."
+}
