@@ -1,0 +1,458 @@
+{
+  "all_checkpoint_and_repeated_forecasts_exact": true,
+  "all_eight_cases_passed": true,
+  "all_parameters_and_last_optimizer_gradients_finite": true,
+  "assessment_metrics_computed": false,
+  "eight_case_total_seconds": 40.49201762495795,
+  "evidence_status": "synthetic_runtime_only",
+  "input_hash_count": 156,
+  "limits": {
+    "memory_sample_seconds": 0.25,
+    "rss_plus_driver_bytes": 12884901888,
+    "worker_rss_bytes": 10737418240,
+    "worker_seconds": 600
+  },
+  "market_model_fits": 0,
+  "maximum_full_procedure_seconds": 5.657351166999433,
+  "maximum_query_errors": {
+    "full_query_prefix": 0.0,
+    "future_prefix": 0.0,
+    "shorter_prefix": 6.939724989107887e-08,
+    "single_query": 2.4965602057891445e-07
+  },
+  "maximum_sampled_worker_rss_bytes": 1344487424,
+  "memory_scope": "Sampled process RSS does not measure every instantaneous allocation peak.",
+  "normalization_scope": "Synthetic already-normalized inputs; no raw transformer fit or transformer timing. Actual QT persistence is covered in targeted tests and required original market-control reproduction.",
+  "protocol": "docs/research/boundary_proper_score_preflight_20260908.json",
+  "protocol_sha256": "1eddfd9247e4f076e28ad5471781c82fb7d82d45b2aa03a6c5d46f77150e4b29",
+  "records": [
+    {
+      "backend": "cpu",
+      "checkpoint_and_repeated_forecasts_exact": true,
+      "checkpoint_seconds": 0.007476583996322006,
+      "complete_training_epochs": 12,
+      "dimensions": 221,
+      "fit_seconds": 5.271102958009578,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 855572480,
+        "maximum_sampled_simultaneous_sum_bytes": 855572480
+      },
+      "normalization_scope": "Synthetic normalized inputs; no raw-feature transform or transform timing is included.",
+      "optimizer_steps": 2028,
+      "query_7070_seconds": {
+        "0": [
+          0.002308082999661565,
+          0.0018247499829158187,
+          0.0016148340073414147
+        ],
+        "1": [
+          0.0023535420186817646,
+          0.002470542036462575,
+          0.0026234170072712004
+        ]
+      },
+      "query_max_absolute_errors": {
+        "0": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 4.3191601406533664e-08,
+          "single_query": 6.867851376490819e-08
+        },
+        "1": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 3.0910473070022704e-08,
+          "single_query": 1.3603085058377928e-07
+        }
+      },
+      "returncode": 0,
+      "seconds": 5.657351166999433,
+      "selected_epoch": 1,
+      "selected_parameters_and_last_optimizer_gradients_finite": true,
+      "status": "passed",
+      "training_priors_exact": true,
+      "training_rows": 172800,
+      "validation_rows_per_asset": 7070,
+      "variant": "log"
+    },
+    {
+      "backend": "cpu",
+      "checkpoint_and_repeated_forecasts_exact": true,
+      "checkpoint_seconds": 0.006038583989720792,
+      "complete_training_epochs": 12,
+      "dimensions": 400,
+      "fit_seconds": 4.886864541040268,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1021902848,
+        "maximum_sampled_simultaneous_sum_bytes": 1021902848
+      },
+      "normalization_scope": "Synthetic normalized inputs; no raw-feature transform or transform timing is included.",
+      "optimizer_steps": 2028,
+      "query_7070_seconds": {
+        "0": [
+          0.002722957986406982,
+          0.0023588750045746565,
+          0.002138333977200091
+        ],
+        "1": [
+          0.0024695409811101854,
+          0.002834999992046505,
+          0.003051250008866191
+        ]
+      },
+      "query_max_absolute_errors": {
+        "0": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 9.330593207790283e-09,
+          "single_query": 6.139779690217395e-08
+        },
+        "1": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 2.3920123021214934e-08,
+          "single_query": 1.2229493190352159e-07
+        }
+      },
+      "returncode": 0,
+      "seconds": 5.5611238749697804,
+      "selected_epoch": 2,
+      "selected_parameters_and_last_optimizer_gradients_finite": true,
+      "status": "passed",
+      "training_priors_exact": true,
+      "training_rows": 172800,
+      "validation_rows_per_asset": 7070,
+      "variant": "log"
+    },
+    {
+      "backend": "cpu",
+      "checkpoint_and_repeated_forecasts_exact": true,
+      "checkpoint_seconds": 0.003654250002000481,
+      "complete_training_epochs": 12,
+      "dimensions": 221,
+      "fit_seconds": 4.210702708980534,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 916242432,
+        "maximum_sampled_simultaneous_sum_bytes": 916242432
+      },
+      "normalization_scope": "Synthetic normalized inputs; no raw-feature transform or transform timing is included.",
+      "optimizer_steps": 2028,
+      "query_7070_seconds": {
+        "0": [
+          0.0016721670399419963,
+          0.0020310410181991756,
+          0.0022718749823980033
+        ],
+        "1": [
+          0.0016489169793203473,
+          0.0026588329928927124,
+          0.002091041998937726
+        ]
+      },
+      "query_max_absolute_errors": {
+        "0": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 4.652373053470882e-08,
+          "single_query": 5.640395883688143e-08
+        },
+        "1": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 6.939724989107887e-08,
+          "single_query": 6.98612873661908e-08
+        }
+      },
+      "returncode": 0,
+      "seconds": 4.5367579580051824,
+      "selected_epoch": 3,
+      "selected_parameters_and_last_optimizer_gradients_finite": true,
+      "status": "passed",
+      "training_priors_exact": true,
+      "training_rows": 172800,
+      "validation_rows_per_asset": 7070,
+      "variant": "brier"
+    },
+    {
+      "backend": "cpu",
+      "checkpoint_and_repeated_forecasts_exact": true,
+      "checkpoint_seconds": 0.004453041008673608,
+      "complete_training_epochs": 12,
+      "dimensions": 400,
+      "fit_seconds": 4.841837082989514,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1342406656,
+        "maximum_sampled_simultaneous_sum_bytes": 1342406656
+      },
+      "normalization_scope": "Synthetic normalized inputs; no raw-feature transform or transform timing is included.",
+      "optimizer_steps": 2028,
+      "query_7070_seconds": {
+        "0": [
+          0.002314334036782384,
+          0.0024984169867821038,
+          0.0023756250157020986
+        ],
+        "1": [
+          0.0023892499739304185,
+          0.0025979579659178853,
+          0.002908291993662715
+        ]
+      },
+      "query_max_absolute_errors": {
+        "0": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 2.9145836966115723e-08,
+          "single_query": 1.6528464757969985e-07
+        },
+        "1": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 2.7414377878898222e-08,
+          "single_query": 9.18719692544201e-08
+        }
+      },
+      "returncode": 0,
+      "seconds": 5.441352833004203,
+      "selected_epoch": 1,
+      "selected_parameters_and_last_optimizer_gradients_finite": true,
+      "status": "passed",
+      "training_priors_exact": true,
+      "training_rows": 172800,
+      "validation_rows_per_asset": 7070,
+      "variant": "brier"
+    },
+    {
+      "backend": "cpu",
+      "checkpoint_and_repeated_forecasts_exact": true,
+      "checkpoint_seconds": 0.00430629204493016,
+      "complete_training_epochs": 12,
+      "dimensions": 221,
+      "fit_seconds": 4.1362465000129305,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 915472384,
+        "maximum_sampled_simultaneous_sum_bytes": 915472384
+      },
+      "normalization_scope": "Synthetic normalized inputs; no raw-feature transform or transform timing is included.",
+      "optimizer_steps": 2028,
+      "query_7070_seconds": {
+        "0": [
+          0.002088791981805116,
+          0.0018707920098677278,
+          0.001621957984752953
+        ],
+        "1": [
+          0.0016974579775705934,
+          0.0025052090059034526,
+          0.0019462499767541885
+        ]
+      },
+      "query_max_absolute_errors": {
+        "0": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 3.669881132317698e-08,
+          "single_query": 6.814970132662523e-08
+        },
+        "1": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 0.0,
+          "single_query": 1.1904497609904752e-07
+        }
+      },
+      "returncode": 0,
+      "seconds": 4.460631249996368,
+      "selected_epoch": 3,
+      "selected_parameters_and_last_optimizer_gradients_finite": true,
+      "status": "passed",
+      "training_priors_exact": true,
+      "training_rows": 172800,
+      "validation_rows_per_asset": 7070,
+      "variant": "spherical2"
+    },
+    {
+      "backend": "cpu",
+      "checkpoint_and_repeated_forecasts_exact": true,
+      "checkpoint_seconds": 0.004768959013745189,
+      "complete_training_epochs": 12,
+      "dimensions": 400,
+      "fit_seconds": 4.614399041980505,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1343111168,
+        "maximum_sampled_simultaneous_sum_bytes": 1343111168
+      },
+      "normalization_scope": "Synthetic normalized inputs; no raw-feature transform or transform timing is included.",
+      "optimizer_steps": 2028,
+      "query_7070_seconds": {
+        "0": [
+          0.0023622909793630242,
+          0.0021331659518182278,
+          0.0029874580213800073
+        ],
+        "1": [
+          0.0026060829986818135,
+          0.002511666971258819,
+          0.002359542006161064
+        ]
+      },
+      "query_max_absolute_errors": {
+        "0": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 1.888305634079046e-08,
+          "single_query": 9.843934478670491e-08
+        },
+        "1": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 8.030073314624353e-09,
+          "single_query": 8.895169742451081e-08
+        }
+      },
+      "returncode": 0,
+      "seconds": 5.163034334022086,
+      "selected_epoch": 3,
+      "selected_parameters_and_last_optimizer_gradients_finite": true,
+      "status": "passed",
+      "training_priors_exact": true,
+      "training_rows": 172800,
+      "validation_rows_per_asset": 7070,
+      "variant": "spherical2"
+    },
+    {
+      "backend": "cpu",
+      "checkpoint_and_repeated_forecasts_exact": true,
+      "checkpoint_seconds": 0.0036527090123854578,
+      "complete_training_epochs": 12,
+      "dimensions": 221,
+      "fit_seconds": 4.136046207975596,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 917028864,
+        "maximum_sampled_simultaneous_sum_bytes": 917028864
+      },
+      "normalization_scope": "Synthetic normalized inputs; no raw-feature transform or transform timing is included.",
+      "optimizer_steps": 2028,
+      "query_7070_seconds": {
+        "0": [
+          0.002287625044118613,
+          0.0016017500311136246,
+          0.002079874975606799
+        ],
+        "1": [
+          0.0017607090412639081,
+          0.0022165420232340693,
+          0.002272500016260892
+        ]
+      },
+      "query_max_absolute_errors": {
+        "0": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 1.6717552120404378e-08,
+          "single_query": 1.3032196755080605e-07
+        },
+        "1": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 5.1068509199225787e-08,
+          "single_query": 2.1855605192300231e-07
+        }
+      },
+      "returncode": 0,
+      "seconds": 4.463212999980897,
+      "selected_epoch": 3,
+      "selected_parameters_and_last_optimizer_gradients_finite": true,
+      "status": "passed",
+      "training_priors_exact": true,
+      "training_rows": 172800,
+      "validation_rows_per_asset": 7070,
+      "variant": "spherical4"
+    },
+    {
+      "backend": "cpu",
+      "checkpoint_and_repeated_forecasts_exact": true,
+      "checkpoint_seconds": 0.004370499984361231,
+      "complete_training_epochs": 12,
+      "dimensions": 400,
+      "fit_seconds": 4.654080334003083,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1344487424,
+        "maximum_sampled_simultaneous_sum_bytes": 1344487424
+      },
+      "normalization_scope": "Synthetic normalized inputs; no raw-feature transform or transform timing is included.",
+      "optimizer_steps": 2028,
+      "query_7070_seconds": {
+        "0": [
+          0.002398959011770785,
+          0.0023567909956909716,
+          0.002770334016531706
+        ],
+        "1": [
+          0.002599624975118786,
+          0.002546040981542319,
+          0.002936834003776312
+        ]
+      },
+      "query_max_absolute_errors": {
+        "0": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 2.865216836012152e-08,
+          "single_query": 2.4965602057891445e-07
+        },
+        "1": {
+          "full_query_prefix": 0.0,
+          "future_prefix": 0.0,
+          "shorter_prefix": 1.4579373708301091e-08,
+          "single_query": 9.834606876091279e-08
+        }
+      },
+      "returncode": 0,
+      "seconds": 5.208553207980003,
+      "selected_epoch": 4,
+      "selected_parameters_and_last_optimizer_gradients_finite": true,
+      "status": "passed",
+      "training_priors_exact": true,
+      "training_rows": 172800,
+      "validation_rows_per_asset": 7070,
+      "variant": "spherical4"
+    }
+  ],
+  "selected_backend": "cpu",
+  "summary": "data/research/boundary_proper_score_preflight_20260908/summary.json",
+  "summary_sha256": "a57bf3a2e380c498f8a634548fb1d3102dc89df8a6a16be218988de287e92bab",
+  "timing_scope": "All twelve epochs and full validation query sizes measured directly; no partial-epoch extrapolation."
+}
