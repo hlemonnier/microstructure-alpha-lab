@@ -1,0 +1,4080 @@
+{
+  "all_24_workers_succeeded": true,
+  "all_three_dates_completed_before_score_inspection": true,
+  "assessment_rows_per_source": 42420,
+  "best_new": {
+    "asset_dates": 6,
+    "balanced_accuracy_by_asset": {
+      "BTCUSDT": 0.5848798350181287,
+      "ETHUSDT": 0.560040932841713
+    },
+    "means": {
+      "balanced_accuracy": 0.5724603839299208,
+      "log_loss": 0.7611487218159877,
+      "macro_f1": 0.48958577149287735,
+      "natural_accuracy": 0.6644743045733145
+    },
+    "model": "observations_attention_uniform_deep500_hgb",
+    "policy": "forecast_3600"
+  },
+  "comparisons": [
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.06737396002188811,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.002141629006622847,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.11033038256571537,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.001377756512329853,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.3552549276199968,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0008868049330359451,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.1952636149434972,
+          "date": "2023-06-07",
+          "log_loss_difference": 0.00016388620839302703,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.2151321785337279,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0010629855984836123,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.33565571517943926,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.001036788389027432,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.024249596354793585,
+        "ETHUSDT": -0.21374990422955062
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.08885217129380174,
+        "2023-06-07": 0.07999565633824979,
+        "2023-06-11": -0.2753939468565836
+      },
+      "candidate": "observations_attention_uniform_deep500_hgb",
+      "control": "combined_instant_hgb_old_neural",
+      "mean_balanced_accuracy_difference_pp": -0.09475015393738406,
+      "natural_log_loss_ratio": 0.9986132182031936
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.05757174901397377,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00023626199531612269,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.6363153155936052,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.002317078877372647,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.06077769901583485,
+          "date": "2023-06-07",
+          "log_loss_difference": -3.2328665309222515e-06,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.4232500270070716,
+          "date": "2023-06-07",
+          "log_loss_difference": 0.0012750031101261827,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.19467052446363597,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0004933274049145897,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.034805433417306464,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0007032703955439645,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.1043399908311482,
+        "ETHUSDT": -0.3415866363944568
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.2893717832898157,
+        "2023-06-07": -0.18123616399561837,
+        "2023-06-11": 0.11473797894047122
+      },
+      "candidate": "observations_attention_uniform_deep500_hgb",
+      "control": "confidence_context_eta10_h300",
+      "mean_balanced_accuracy_difference_pp": -0.11862332278165244,
+      "natural_log_loss_ratio": 1.0007806865319426
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.13597757416008438,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0011647812764702392,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.051958453428835316,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0008619199509066755,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.03226699860212623,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0005631000430760258,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.2534704072223892,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00026929196469982486,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.07081009131223448,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0010454774689083735,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.4513678709997415,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0006314169481324017,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.058173555623397544,
+        "ETHUSDT": -0.25226557721698867
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.04200956036562453,
+        "2023-06-07": -0.14286870291225773,
+        "2023-06-11": -0.19027888984375352
+      },
+      "candidate": "observations_attention_uniform",
+      "control": "observations_attention_instant",
+      "mean_balanced_accuracy_difference_pp": -0.09704601079679742,
+      "natural_log_loss_ratio": 0.9997446539286721
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.025815327180267467,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00045735024122195433,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.031240237425800288,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00031941864955953303,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.12541427472692046,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0002508660439507482,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.07061108059562837,
+          "date": "2023-06-07",
+          "log_loss_difference": -5.918830448747858e-05,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.09548606625573441,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0003508588973787363,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.22911597344058565,
+          "date": "2023-06-11",
+          "log_loss_difference": 6.102957551490373e-05,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": -0.018581178550484505,
+        "ETHUSDT": -0.04242155180638566
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.0027124551227664107,
+        "2023-06-07": -0.027401597065646044,
+        "2023-06-11": -0.06681495359242562
+      },
+      "candidate": "observations_attention_uniform_matched_hgb",
+      "control": "observations_attention_instant_matched_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.030501365178425832,
+      "natural_log_loss_ratio": 0.999852502135644
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.0490400847718675,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0004366073988258945,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.03362436080831532,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00030704403405856784,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.09532133597494052,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0002488909226039393,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.16773064416159,
+          "date": "2023-06-07",
+          "log_loss_difference": -6.734693672560965e-05,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.03807941488045419,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.00036151657305560914,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.10219294655231526,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.00013242173481209374,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.03542733528878461,
+        "ETHUSDT": -0.010637778933653141
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.04133222279009141,
+        "2023-06-07": -0.03620465409332474,
+        "2023-06-11": 0.032056765835930534
+      },
+      "candidate": "observations_attention_uniform_deep500_hgb",
+      "control": "observations_attention_instant_deep500_hgb",
+      "mean_balanced_accuracy_difference_pp": 0.012394778177560184,
+      "natural_log_loss_ratio": 0.9998760906067623
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.13597757416008438,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.001164504299071778,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.051958453428835316,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0008617294338750803,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.04441028943393821,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0005630962053879696,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.2534704072223892,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00026738608165199906,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.07081009131223448,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0010454174631674418,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.4513678709997415,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0006312556195812169,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.05412579201279355,
+        "ETHUSDT": -0.25226557721698867
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.04200956036562453,
+        "2023-06-07": -0.14894034832816372,
+        "2023-06-11": -0.19027888984375352
+      },
+      "candidate": "observations_attention_age",
+      "control": "observations_attention_instant",
+      "mean_balanced_accuracy_difference_pp": -0.09906989260209942,
+      "natural_log_loss_ratio": 0.9997451195827591
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.025815327180267467,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00045720924748104963,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.031240237425800288,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00031934058341087646,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.12541427472692046,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0002511692684912248,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.07061108059562837,
+          "date": "2023-06-07",
+          "log_loss_difference": -5.837706270417353e-05,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.09548606625573441,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0003508429329007745,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.22911597344058565,
+          "date": "2023-06-11",
+          "log_loss_difference": 6.098471798199334e-05,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": -0.018581178550484505,
+        "ETHUSDT": -0.04242155180638566
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.0027124551227664107,
+        "2023-06-07": -0.027401597065646044,
+        "2023-06-11": -0.06681495359242562
+      },
+      "candidate": "observations_attention_age_matched_hgb",
+      "control": "observations_attention_instant_matched_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.030501365178425832,
+      "natural_log_loss_ratio": 0.9998526477366896
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.0490400847718675,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0004364690912592728,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.03362436080831532,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00030696777693506316,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.08385476104086909,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.000248993075762427,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.16773064416159,
+          "date": "2023-06-07",
+          "log_loss_difference": -6.637029739842149e-05,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.03807941488045419,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0003615048259515419,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.10219294655231526,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.00013236762402801805,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.031605143644094134,
+        "ETHUSDT": -0.010637778933653141
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.04133222279009141,
+        "2023-06-07": -0.04193794156036046,
+        "2023-06-11": 0.032056765835930534
+      },
+      "candidate": "observations_attention_age_deep500_hgb",
+      "control": "observations_attention_instant_deep500_hgb",
+      "mean_balanced_accuracy_difference_pp": 0.010483682355211243,
+      "natural_log_loss_ratio": 0.9998763146247844
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.13017138476218992,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0011620207274330996,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.04571040594366638,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0008399058508132828,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.11179132406365921,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0005982238704098641,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.23757619890442117,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00023878313366954007,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.07081009131223448,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0010574874885597163,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.4513678709997415,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0006495346662742651,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.10425760004602787,
+        "ETHUSDT": -0.24488482528260969
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.04223048940926177,
+        "2023-06-07": -0.06289243742038098,
+        "2023-06-11": -0.19027888984375352
+      },
+      "candidate": "observations_attention_content",
+      "control": "observations_attention_instant",
+      "mean_balanced_accuracy_difference_pp": -0.07031361261828906,
+      "natural_log_loss_ratio": 0.9997555156275976
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.02000913778237301,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00046182204560385465,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.031240237425800288,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00031541088124698025,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.07626697400873184,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0002746885532486365,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.028039534675949884,
+          "date": "2023-06-07",
+          "log_loss_difference": -4.210967158879697e-05,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.09548606625573441,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.0003557083601094524,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.23712686825753115,
+          "date": "2023-06-11",
+          "log_loss_difference": 6.629001456504025e-05,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": -0.0002633485117901439,
+        "ETHUSDT": -0.05928236538526033
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.005615549821713639,
+        "2023-06-07": -0.024113719666390976,
+        "2023-06-11": -0.07082040100089837
+      },
+      "candidate": "observations_attention_content_matched_hgb",
+      "control": "observations_attention_instant_matched_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.029772856948517834,
+      "natural_log_loss_ratio": 0.9998531363261575
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.0490400847718675,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0004411833776698515,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.03362436080831532,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.00030353412432104765,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0614957485636447,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00027334322629823937,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.2063844534899162,
+          "date": "2023-06-07",
+          "log_loss_difference": -4.690573211796334e-05,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.03807941488045419,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.00036597120981773923,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.10219294655231526,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.00013794094015195935,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.024152139485019337,
+        "ETHUSDT": -0.023522382043095202
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.04133222279009141,
+        "2023-06-07": -0.07244435246313574,
+        "2023-06-11": 0.032056765835930534
+      },
+      "candidate": "observations_attention_content_deep500_hgb",
+      "control": "observations_attention_instant_deep500_hgb",
+      "mean_balanced_accuracy_difference_pp": 0.0003148787209528159,
+      "natural_log_loss_ratio": 0.999877162685281
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.005806189397894457,
+          "date": "2023-06-03",
+          "log_loss_difference": 2.4835716386784057e-06,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.006248047485168939,
+          "date": "2023-06-03",
+          "log_loss_difference": 2.1823583061797436e-05,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.15620161349759742,
+          "date": "2023-06-07",
+          "log_loss_difference": -3.512766502189457e-05,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.01589420831796806,
+          "date": "2023-06-07",
+          "log_loss_difference": 2.8602947982458993e-05,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-11",
+          "log_loss_difference": 1.207002539227453e-05,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-11",
+          "log_loss_difference": 1.827904669304825e-05,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.050131808033234325,
+        "ETHUSDT": 0.007380751934379
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.0002209290436372413,
+        "2023-06-07": 0.08604791090778274,
+        "2023-06-11": 0.0
+      },
+      "candidate": "observations_attention_content",
+      "control": "observations_attention_age",
+      "mean_balanced_accuracy_difference_pp": 0.028756279983810362,
+      "natural_log_loss_ratio": 1.0000103986952622
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-03",
+          "log_loss_difference": 2.7697739846122005e-07,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-03",
+          "log_loss_difference": 1.905170315952276e-07,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.012143290831811981,
+          "date": "2023-06-07",
+          "log_loss_difference": 3.837688056229638e-09,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-07",
+          "log_loss_difference": 1.905883047825796e-06,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-11",
+          "log_loss_difference": -6.000574093167899e-08,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-11",
+          "log_loss_difference": -1.6132855118478062e-07,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": -0.004047763610603994,
+        "ETHUSDT": 0.0
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.0,
+        "2023-06-07": -0.006071645415905991,
+        "2023-06-11": 0.0
+      },
+      "candidate": "observations_attention_age",
+      "control": "observations_attention_uniform",
+      "mean_balanced_accuracy_difference_pp": -0.002023881805301997,
+      "natural_log_loss_ratio": 1.0000004657730204
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.021549495059225432,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.001466582727785437,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.05368287576106301,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0019766230382990413,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.15427404431118674,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0011529034601062138,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.0834431855024298,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0011113788562255866,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.03626737946321734,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.002312980190494529,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.5637002245030609,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0015526075146166107,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": -0.046518719969064946,
+        "ETHUSDT": 0.17797997158723136
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.01606669035091879,
+        "2023-06-07": -0.11885861490680827,
+        "2023-06-11": 0.2999838019831391
+      },
+      "candidate": "observations_attention_instant",
+      "control": "observations_neural",
+      "mean_balanced_accuracy_difference_pp": 0.06573062580909061,
+      "natural_log_loss_ratio": 0.9979365540967032
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.11442807910085895,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0026313640042556763,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.001724422332227693,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.002838542989205717,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.18654104291331297,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0017160035031822396,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.336913592724819,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0013806708209254115,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.10707747077545182,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0012675027215861556,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.11233235350331938,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.000921190566484209,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.011654835654332599,
+        "ETHUSDT": -0.07428560562975732
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.05807625071654332,
+        "2023-06-07": -0.261727317819066,
+        "2023-06-11": 0.1097049121393856
+      },
+      "candidate": "observations_attention_uniform",
+      "control": "observations_neural",
+      "mean_balanced_accuracy_difference_pp": -0.03131538498770681,
+      "natural_log_loss_ratio": 0.9976817349181801
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.11442807910085895,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.002631087026857215,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.001724422332227693,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0028383524721741216,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.19868433374512495,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0017159996654941834,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.336913592724819,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0013787649378775857,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.10707747077545182,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0012675627273270873,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.11233235350331938,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0009213518950353938,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.007607072043728606,
+        "ETHUSDT": -0.07428560562975732
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.05807625071654332,
+        "2023-06-07": -0.267798963234972,
+        "2023-06-11": 0.1097049121393856
+      },
+      "candidate": "observations_attention_age",
+      "control": "observations_neural",
+      "mean_balanced_accuracy_difference_pp": -0.033339266793008804,
+      "natural_log_loss_ratio": 0.9976821996114151
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.10862188970296449,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0026286034552185367,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.007972469817396632,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.002816528889112324,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.04248272024752753,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.001751127330516078,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.32101938440685096,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0013501619898951267,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.10707747077545182,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0012554927019348128,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.11233235350331938,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0009030728483423456,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.05773888007696293,
+        "ETHUSDT": -0.06690485369537831
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.05829717976018056,
+        "2023-06-07": -0.18175105232718924,
+        "2023-06-11": 0.1097049121393856
+      },
+      "candidate": "observations_attention_content",
+      "control": "observations_neural",
+      "mean_balanced_accuracy_difference_pp": -0.004582986809198442,
+      "natural_log_loss_ratio": 0.9976925742045775
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.1158348267308762,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.012581831750852202,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.8879586195703393,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.01846804582911621,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.08256631242455903,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0005916821249783988,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.14850401045024553,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0004300838208429747,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.007156743837155588,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00047436655799382166,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.04136330360640095,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0010643992766935506,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.01347508604782425,
+        "ETHUSDT": -0.2326971018378976
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.38606189641973154,
+        "2023-06-07": 0.03296884901284325,
+        "2023-06-11": 0.024260023721778268
+      },
+      "candidate": "combined_attention_uniform",
+      "control": "combined_attention_instant",
+      "mean_balanced_accuracy_difference_pp": -0.10961100789503853,
+      "natural_log_loss_ratio": 1.006180035106844
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.020859461965005988,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.0062287636762848875,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.37841289900459874,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.007788322602594988,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.09274070041989102,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0002517182724850464,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.013856592718353156,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.000310930147068067,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.09661645380223405,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00019545247173768932,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.03161917974716655,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00045305908940307393,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.008245071782449672,
+        "ETHUSDT": -0.12021677065859511
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.17877671851979637,
+        "2023-06-07": -0.05329864656912209,
+        "2023-06-11": 0.0641178167747003
+      },
+      "candidate": "combined_attention_uniform_matched_hgb",
+      "control": "combined_attention_instant_matched_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.05598584943806717,
+      "natural_log_loss_ratio": 1.0028077545196832
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.05996243047345917,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.006059218963633151,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.671335254129668,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.007376613099999041,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.22621432106301187,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0002192948675255879,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.17918919197070782,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0002535630336585326,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.025373293043517986,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00017588977728300037,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.017772834156049022,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00048531334214507726,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": -0.046959532515344904,
+        "ETHUSDT": -0.15812440933430372
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.3056864118281044,
+        "2023-06-07": -0.023512564546152026,
+        "2023-06-11": 0.021573063599783504
+      },
+      "candidate": "combined_attention_uniform_deep500_hgb",
+      "control": "combined_attention_instant_deep500_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.10254197092481876,
+      "natural_log_loss_ratio": 1.002697751348776
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.17557198324222867,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.0126992838982804,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.8754625246000125,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.018571972144559523,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.08256631242455903,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.000588989603677148,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.16380154754677134,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00042520553580260856,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.007156743837155588,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0004727196650441412,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.04136330360640095,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0010703867327835903,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.03338747155160841,
+        "ETHUSDT": -0.22343255781561341
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.3499452706788919,
+        "2023-06-07": 0.040617617561106156,
+        "2023-06-11": 0.024260023721778268
+      },
+      "candidate": "combined_attention_age",
+      "control": "combined_attention_instant",
+      "mean_balanced_accuracy_difference_pp": -0.0950225431319951,
+      "natural_log_loss_ratio": 1.0062287582224467
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.003440893771311515,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.006287380453982805,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.3721648515194409,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.007826481814036113,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.08059740958806794,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00025120459077754287,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.013856592718353156,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0003090012645288187,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.09661645380223405,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0001945628943037514,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.03161917974716655,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00045601911753645474,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.006486645995159209,
+        "ETHUSDT": -0.1181340881635425
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.1843619788740647,
+        "2023-06-07": -0.047227001153210546,
+        "2023-06-11": 0.0641178167747003
+      },
+      "candidate": "combined_attention_age_matched_hgb",
+      "control": "combined_attention_instant_matched_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.055823721084191646,
+      "natural_log_loss_ratio": 1.0028290546597936
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.048350051677659156,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.006117517839553166,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.6775833016148258,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.007412734180204716,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.2140710302311999,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00021880790909700742,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.18055138904493617,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0002515295180077759,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.025373293043517986,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00017496691714213863,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.00976193933910352,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0004882462138373622,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": -0.04678256183667425,
+        "ETHUSDT": -0.16242332441026205
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.31461662496858334,
+        "2023-06-07": -0.016759820593131858,
+        "2023-06-11": 0.017567616191310753
+      },
+      "candidate": "combined_attention_age_deep500_hgb",
+      "control": "combined_attention_instant_deep500_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.1046029431234663,
+      "natural_log_loss_ratio": 1.0027185693809169
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.39154027637418043,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.0030795512263431246,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.2865058616550731,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.00615164839788962,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.03920545758804295,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0010445078244688544,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.005401728267273587,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.001193080595399576,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0218992709292265,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0005082971470543596,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.02039049319935149,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0009394143537181376,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.124744696571788,
+        "ETHUSDT": -0.08690454672948267
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.052517207359553675,
+        "2023-06-07": -0.01690186466038468,
+        "2023-06-11": 0.021144882064288995
+      },
+      "candidate": "combined_attention_content",
+      "control": "combined_attention_instant",
+      "mean_balanced_accuracy_difference_pp": 0.018920074921158214,
+      "natural_log_loss_ratio": 1.0012030411336397
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.2262414983888128,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.001936860200926871,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.34866050966414486,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.0027115033212110617,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.017594613341453957,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0005154319006903663,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.07709571672754878,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0007746125411490778,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.15444453442348127,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00020747180648850172,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.009337539818476959,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00039262367243853014,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.13276021538458269,
+        "ETHUSDT": -0.13880622885773888
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.06120950563766603,
+        "2023-06-07": -0.02975055169304741,
+        "2023-06-11": 0.08189103712097912
+      },
+      "candidate": "combined_attention_content_matched_hgb",
+      "control": "combined_attention_instant_matched_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.0030230067365799584,
+      "natural_log_loss_ratio": 1.0006047524093704
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.13325209931586146,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.0018659694964254792,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.16367938411904204,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.002512144164938168,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.11286440819018306,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00047096081246367216,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.19448672906723363,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0007215050379871801,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.04340442304233694,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0001890148239297451,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.016906219634915676,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.00042547292275896265,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": -0.09650697684946048,
+        "ETHUSDT": 0.015904521527702425
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.14846574171745175,
+        "2023-06-07": 0.040811160438525285,
+        "2023-06-11": -0.01324910170371063
+      },
+      "candidate": "combined_attention_content_deep500_hgb",
+      "control": "combined_attention_instant_deep500_hgb",
+      "mean_balanced_accuracy_difference_pp": -0.04030122766087718,
+      "natural_log_loss_ratio": 1.0005638497503266
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.21596829313195176,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.009619732671937276,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.5889566629449394,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.012420323746669903,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.04336085483651608,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.00045551822079170634,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.15839981927949776,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0007678750595969674,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.014742527092070912,
+          "date": "2023-06-11",
+          "log_loss_difference": -3.5577482010218375e-05,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.020972810407049458,
+          "date": "2023-06-11",
+          "log_loss_difference": 0.00013097237906545267,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.09135722502017958,
+        "ETHUSDT": 0.13652801108613075
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.4024624780384456,
+        "2023-06-07": -0.057519482221490836,
+        "2023-06-11": -0.003115141657489273
+      },
+      "candidate": "combined_attention_content",
+      "control": "combined_attention_age",
+      "mean_balanced_accuracy_difference_pp": 0.11394261805315331,
+      "natural_log_loss_ratio": 0.9950053931099274
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.059737156511352474,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.00011745214742819865,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.012496094970326777,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.00010392631544331454,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-07",
+          "log_loss_difference": 2.69252130125075e-06,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.015297537096525815,
+          "date": "2023-06-07",
+          "log_loss_difference": 4.878285040366137e-06,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-11",
+          "log_loss_difference": 1.6468929496804563e-06,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.0,
+          "date": "2023-06-11",
+          "log_loss_difference": -5.9874560900397e-06,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.019912385503784158,
+        "ETHUSDT": 0.009264544022284197
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.036116625740839625,
+        "2023-06-07": 0.0076487685482629075,
+        "2023-06-11": 0.0
+      },
+      "candidate": "combined_attention_age",
+      "control": "combined_attention_uniform",
+      "mean_balanced_accuracy_difference_pp": 0.01458846476304343,
+      "natural_log_loss_ratio": 1.0000484238544822
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.2233402256396011,
+          "date": "2023-06-03",
+          "log_loss_difference": -0.0014092883663068823,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.1553810874591055,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.0005105183497456922,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.29062209023134056,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.002816681257217568,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.22249619640464235,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0010413469997462288,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.3565194529632665,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0031412040801737096,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.263295272892361,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.004113150095037654,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.14126710585166866,
+        "ETHUSDT": 0.21372418558536962
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.033979569090247796,
+        "2023-06-07": 0.25655914331799146,
+        "2023-06-11": 0.30990736292781373
+      },
+      "candidate": "combined_attention_instant",
+      "control": "combined_neural",
+      "mean_balanced_accuracy_difference_pp": 0.17749564571851728,
+      "natural_log_loss_ratio": 0.997401258650763
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.1075053989087249,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.01117254338454532,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.7325775321112338,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.0189785641788619,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.20805577780678153,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.003408363382195967,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.3710002068548879,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0014714308205892035,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.36367619680042207,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.003615570638167531,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.30465857649876193,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.005177549371731205,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.1547421918994929,
+        "ETHUSDT": -0.018972916252527987
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.42004146550997934,
+        "2023-06-07": 0.2895279923308347,
+        "2023-06-11": 0.334167386649592
+      },
+      "candidate": "combined_attention_uniform",
+      "control": "combined_neural",
+      "mean_balanced_accuracy_difference_pp": 0.06788463782347876,
+      "natural_log_loss_ratio": 1.003565233444835
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": -0.04776824239737243,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.011289995531973518,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.720081437140907,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.019082490494305215,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.20805577780678153,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.003405670860894716,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.3862977439514137,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0014665525355488374,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.36367619680042207,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.0036139237452178508,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.30465857649876193,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.005183536827821245,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.17465457740327706,
+        "ETHUSDT": -0.00970837223024379
+      },
+      "by_date_pp": {
+        "2023-06-03": -0.3839248397691397,
+        "2023-06-07": 0.2971767608790976,
+        "2023-06-11": 0.334167386649592
+      },
+      "candidate": "combined_attention_age",
+      "control": "combined_neural",
+      "mean_balanced_accuracy_difference_pp": 0.08247310258652218,
+      "natural_log_loss_ratio": 1.0036138299416626
+    },
+    {
+      "asset_date_rows": [
+        {
+          "balanced_accuracy_difference_pp": 0.16820005073457933,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.0016702628600362424,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": -0.13112477419596757,
+          "date": "2023-06-03",
+          "log_loss_difference": 0.006662166747635312,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.2514166326432976,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.0038611890816864225,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.22789792467191594,
+          "date": "2023-06-07",
+          "log_loss_difference": -0.002234427595145805,
+          "symbol": "ETHUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.378418723892493,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.003649501227228069,
+          "symbol": "BTCUSDT"
+        },
+        {
+          "balanced_accuracy_difference_pp": 0.2836857660917125,
+          "date": "2023-06-11",
+          "log_loss_difference": -0.005052564448755792,
+          "symbol": "ETHUSDT"
+        }
+      ],
+      "by_asset_pp": {
+        "BTCUSDT": 0.2660118024234566,
+        "ETHUSDT": 0.12681963885588696
+      },
+      "by_date_pp": {
+        "2023-06-03": 0.01853763826930588,
+        "2023-06-07": 0.23965727865760678,
+        "2023-06-11": 0.33105224499210273
+      },
+      "candidate": "combined_attention_content",
+      "control": "combined_neural",
+      "mean_balanced_accuracy_difference_pp": 0.1964157206396755,
+      "natural_log_loss_ratio": 0.998601173391664
+    }
+  ],
+  "completed_marker_sha256": {
+    "2023-06-03": "46bd63f83f8a6cde004f26fdab9c0a9b912335878708cce45a31934a052acfa9",
+    "2023-06-07": "dd4fd6c31e85f256fdbada3f4bad0d4b52e25b6aa31d0b92ca7731701b070ae3",
+    "2023-06-11": "2336bc052972b281c00d739fd709bbabe99d6a8d31050cbf5225e6c759cdd069"
+  },
+  "dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "evidence_status": "development_only_on_exposed_dates",
+  "forecast_sources": 280,
+  "input_hash_count": 1119,
+  "limitations": [
+    "These repeatedly exposed three dates do not establish independent accuracy or statistical discovery.",
+    "The mechanism comparison changes a bounded temporal residual adapter around a frozen original model; it is not a full Transformer/TLOB reproduction.",
+    "All new branches share the historical training-prior registered rule. Retained legacy registered rules remain method-specific; primary comparisons use the common forecast-prior rule.",
+    "CPU passed the fixed preflight. The runtime reported MPS unavailable; no cross-backend arithmetic agreement is established.",
+    "Accuracy on the other seventeen development dates and the reserved twenty successor dates remains unmeasured for the new attention cases.",
+    "No economic, latency or live execution improvement follows from this predictive development screen."
+  ],
+  "new_primary_leaderboard": [
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5848798350181287,
+        "ETHUSDT": 0.560040932841713
+      },
+      "means": {
+        "balanced_accuracy": 0.5724603839299208,
+        "log_loss": 0.7611487218159877,
+        "macro_f1": 0.48958577149287735,
+        "natural_accuracy": 0.6644743045733145
+      },
+      "model": "observations_attention_uniform_deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5848416131016817,
+        "ETHUSDT": 0.560040932841713
+      },
+      "means": {
+        "balanced_accuracy": 0.5724412729716973,
+        "log_loss": 0.7611488923481494,
+        "macro_f1": 0.4895638588716586,
+        "natural_accuracy": 0.6644507307873645
+      },
+      "model": "observations_attention_age_deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.584767083060091,
+        "ETHUSDT": 0.5599120868106185
+      },
+      "means": {
+        "balanced_accuracy": 0.5723395849353548,
+        "log_loss": 0.7611495379283059,
+        "macro_f1": 0.4894301078340977,
+        "natural_accuracy": 0.6642621404997643
+      },
+      "model": "observations_attention_content_deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5845255616652408,
+        "ETHUSDT": 0.5601473106310495
+      },
+      "means": {
+        "balanced_accuracy": 0.5723364361481452,
+        "log_loss": 0.7612430469800454,
+        "macro_f1": 0.4900641781472981,
+        "natural_accuracy": 0.6646157472890146
+      },
+      "model": "observations_attention_instant_deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5839552352931835,
+        "ETHUSDT": 0.559313199270473
+      },
+      "means": {
+        "balanced_accuracy": 0.5716342172818282,
+        "log_loss": 0.7626491963950551,
+        "macro_f1": 0.4900236683634634,
+        "natural_accuracy": 0.6652758132956152
+      },
+      "model": "observations_attention_instant_matched_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5839526018080655,
+        "ETHUSDT": 0.5587203756166204
+      },
+      "means": {
+        "balanced_accuracy": 0.571336488712343,
+        "log_loss": 0.7625371909322195,
+        "macro_f1": 0.48939929883910144,
+        "natural_accuracy": 0.6648986327204148
+      },
+      "model": "observations_attention_content_matched_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5837694235076786,
+        "ETHUSDT": 0.5588889837524091
+      },
+      "means": {
+        "balanced_accuracy": 0.5713292036300439,
+        "log_loss": 0.762536707267334,
+        "macro_f1": 0.48940469640540224,
+        "natural_accuracy": 0.6648986327204148
+      },
+      "model": "observations_attention_uniform_matched_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5837694235076786,
+        "ETHUSDT": 0.5588889837524091
+      },
+      "means": {
+        "balanced_accuracy": 0.5713292036300439,
+        "log_loss": 0.7625368183098544,
+        "macro_f1": 0.48940469640540224,
+        "natural_accuracy": 0.6648986327204148
+      },
+      "model": "observations_attention_age_matched_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5791835345797942,
+        "ETHUSDT": 0.56204208670982
+      },
+      "means": {
+        "balanced_accuracy": 0.5706128106448071,
+        "log_loss": 0.7600015378611449,
+        "macro_f1": 0.48801115248528304,
+        "natural_accuracy": 0.6633663366336634
+      },
+      "model": "combined_attention_instant_deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5792963257981963,
+        "ETHUSDT": 0.5618197196790452
+      },
+      "means": {
+        "balanced_accuracy": 0.5705580227386208,
+        "log_loss": 0.7601522977651477,
+        "macro_f1": 0.48810138879019527,
+        "natural_accuracy": 0.6634606317774634
+      },
+      "model": "combined_attention_instant_matched_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5806239279520423,
+        "ETHUSDT": 0.5604316573904677
+      },
+      "means": {
+        "balanced_accuracy": 0.570527792671255,
+        "log_loss": 0.7606120016987096,
+        "macro_f1": 0.48742085011653585,
+        "natural_accuracy": 0.6643328618576143
+      },
+      "model": "combined_attention_content_matched_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5782184648112996,
+        "ETHUSDT": 0.562201131925097
+      },
+      "means": {
+        "balanced_accuracy": 0.5702097983681983,
+        "log_loss": 0.7604300645385157,
+        "macro_f1": 0.4869740410598451,
+        "natural_accuracy": 0.6644507307873645
+      },
+      "model": "combined_attention_content_deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5793611922581481,
+        "ETHUSDT": 0.5606383787974097
+      },
+      "means": {
+        "balanced_accuracy": 0.5699997855277789,
+        "log_loss": 0.762302810165293,
+        "macro_f1": 0.4855774359314628,
+        "natural_accuracy": 0.6639556812824139
+      },
+      "model": "combined_attention_age_matched_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.579378776516021,
+        "ETHUSDT": 0.5606175519724591
+      },
+      "means": {
+        "balanced_accuracy": 0.5699981642442401,
+        "log_loss": 0.7622866188148453,
+        "macro_f1": 0.4855851917993185,
+        "natural_accuracy": 0.663979255068364
+      },
+      "model": "combined_attention_uniform_matched_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5787139392546408,
+        "ETHUSDT": 0.560460842616477
+      },
+      "means": {
+        "balanced_accuracy": 0.5695873909355589,
+        "log_loss": 0.7620518330349816,
+        "macro_f1": 0.48513808018878346,
+        "natural_accuracy": 0.6645214521452146
+      },
+      "model": "combined_attention_uniform_deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5787157089614275,
+        "ETHUSDT": 0.5604178534657174
+      },
+      "means": {
+        "balanced_accuracy": 0.5695667812135724,
+        "log_loss": 0.7620676547714239,
+        "macro_f1": 0.4850895950685763,
+        "natural_accuracy": 0.6645214521452145
+      },
+      "model": "combined_attention_age_deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5728745192952831,
+        "ETHUSDT": 0.5556270885788263
+      },
+      "means": {
+        "balanced_accuracy": 0.5642508039370547,
+        "log_loss": 0.7692410361536485,
+        "macro_f1": 0.47992029694252997,
+        "natural_accuracy": 0.6573314474304573
+      },
+      "model": "combined_attention_content",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5716270723295652,
+        "ETHUSDT": 0.556496134046121
+      },
+      "means": {
+        "balanced_accuracy": 0.5640616031878432,
+        "log_loss": 0.768316719536383,
+        "macro_f1": 0.4810075734973487,
+        "natural_accuracy": 0.6573550212164073
+      },
+      "model": "combined_attention_instant",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5758875643554578,
+        "ETHUSDT": 0.5516435954923365
+      },
+      "means": {
+        "balanced_accuracy": 0.5637655799238972,
+        "log_loss": 0.7716317518709958,
+        "macro_f1": 0.4835978959354866,
+        "natural_accuracy": 0.6572135785007073
+      },
+      "model": "observations_attention_instant",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5719609470450813,
+        "ETHUSDT": 0.5542618084679649
+      },
+      "means": {
+        "balanced_accuracy": 0.5631113777565232,
+        "log_loss": 0.7731023786206386,
+        "macro_f1": 0.4771544747181011,
+        "natural_accuracy": 0.6566949552098067
+      },
+      "model": "combined_attention_age",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5769301403559183,
+        "ETHUSDT": 0.5491947472395103
+      },
+      "means": {
+        "balanced_accuracy": 0.5630624437977143,
+        "log_loss": 0.7714430999664138,
+        "macro_f1": 0.4818665716437365,
+        "natural_accuracy": 0.6573078736445074
+      },
+      "model": "observations_attention_content",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5717618231900435,
+        "ETHUSDT": 0.554169163027742
+      },
+      "means": {
+        "balanced_accuracy": 0.5629654931088928,
+        "log_loss": 0.773064943836293,
+        "macro_f1": 0.4770588100338089,
+        "natural_accuracy": 0.6566713814238566
+      },
+      "model": "combined_attention_uniform",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5764692999116919,
+        "ETHUSDT": 0.5491209397201665
+      },
+      "means": {
+        "balanced_accuracy": 0.5627951198159292,
+        "log_loss": 0.7714347187346436,
+        "macro_f1": 0.4816337636254753,
+        "natural_accuracy": 0.6572135785007073
+      },
+      "model": "observations_attention_uniform",
+      "policy": "forecast_3600"
+    },
+    {
+      "asset_dates": 6,
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5764288222755859,
+        "ETHUSDT": 0.5491209397201665
+      },
+      "means": {
+        "balanced_accuracy": 0.5627748809978762,
+        "log_loss": 0.7714350780481226,
+        "macro_f1": 0.4816127289583209,
+        "natural_accuracy": 0.6572371522866572
+      },
+      "model": "observations_attention_age",
+      "policy": "forecast_3600"
+    }
+  ],
+  "operational_summary": {
+    "all_3072_retained_metrics_exact": true,
+    "all_checkpoint_forecasts_exact": true,
+    "all_original_parameters_and_priors_exact": true,
+    "assessment_labels_decoded_by_workers": false,
+    "maximum_fit_save_reload_seconds": 86.64966349996394,
+    "maximum_query_probability_errors": {
+      "future_prefix": 0.0,
+      "query_partition": 4.307083123489264e-08,
+      "shorter_prefix": 0.0
+    },
+    "maximum_sampled_rss_bytes": 1956937728,
+    "maximum_supervised_process_seconds": 100.4225850829971,
+    "maximum_worker_phase_seconds": 88.0386922909529,
+    "optimizer_steps": 24336,
+    "sum_supervised_process_seconds": 1350.9986851681024,
+    "sum_worker_phase_seconds": 1116.944210914895
+  },
+  "post_fit_panels": 3360,
+  "primary_policy": "forecast_3600",
+  "protocol": "docs/research/boundary_temporal_attention_screen_20260908.json",
+  "protocol_sha256": "e5aea285da9643b20020284106f038ed31ad7c75a3c113246e2dd07f1883c33c",
+  "separate_expert_best": {
+    "balanced_accuracy_by_asset": {
+      "BTCUSDT": 0.5838364351098172,
+      "ETHUSDT": 0.5634567992056575
+    },
+    "case": "confidence_context_eta10_h300",
+    "means": {
+      "balanced_accuracy": 0.5736466171577373,
+      "log_loss": 0.7605549667966075,
+      "macro_f1": 0.4914348112999776,
+      "natural_accuracy": 0.6655822725129656
+    },
+    "policy": "forecast_3600"
+  },
+  "strongest_retained": {
+    "asset_dates": 6,
+    "balanced_accuracy_by_asset": {
+      "BTCUSDT": 0.5846373390545807,
+      "ETHUSDT": 0.5621784318840085
+    },
+    "means": {
+      "balanced_accuracy": 0.5734078854692947,
+      "log_loss": 0.7622057348545054,
+      "macro_f1": 0.4902420755020533,
+      "natural_accuracy": 0.6643328618576143
+    },
+    "model": "combined_instant_hgb_old_neural",
+    "policy": "forecast_3600"
+  },
+  "substantial_gain_confirmed": false,
+  "summary": "results/boundary_temporal_attention_screen_20260908/summary.json",
+  "summary_sha256": "37074823e91c6dc89627fe53673fb1e9a9c0790fdc85e5f9046cc4f6a5481214",
+  "supervision_records": [
+    {
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_age",
+      "returncode": 0,
+      "seconds": 55.891610542021226
+    },
+    {
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_content",
+      "returncode": 0,
+      "seconds": 95.01067387498915
+    },
+    {
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_instant",
+      "returncode": 0,
+      "seconds": 42.82323945796816
+    },
+    {
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_uniform",
+      "returncode": 0,
+      "seconds": 63.1622315000277
+    },
+    {
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_age",
+      "returncode": 0,
+      "seconds": 56.345903959008865
+    },
+    {
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_content",
+      "returncode": 0,
+      "seconds": 100.4225850829971
+    },
+    {
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_instant",
+      "returncode": 0,
+      "seconds": 28.92618075001519
+    },
+    {
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_uniform",
+      "returncode": 0,
+      "seconds": 61.1224835839821
+    },
+    {
+      "date": "2023-06-07",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_age",
+      "returncode": 0,
+      "seconds": 54.36959316703724
+    },
+    {
+      "date": "2023-06-07",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_content",
+      "returncode": 0,
+      "seconds": 89.36671479104552
+    },
+    {
+      "date": "2023-06-07",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_instant",
+      "returncode": 0,
+      "seconds": 22.43174374999944
+    },
+    {
+      "date": "2023-06-07",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_uniform",
+      "returncode": 0,
+      "seconds": 50.27027541701682
+    },
+    {
+      "date": "2023-06-07",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_age",
+      "returncode": 0,
+      "seconds": 52.91080116695957
+    },
+    {
+      "date": "2023-06-07",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_content",
+      "returncode": 0,
+      "seconds": 87.20332974998746
+    },
+    {
+      "date": "2023-06-07",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_instant",
+      "returncode": 0,
+      "seconds": 19.81931429100223
+    },
+    {
+      "date": "2023-06-07",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_uniform",
+      "returncode": 0,
+      "seconds": 44.86419379198924
+    },
+    {
+      "date": "2023-06-11",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_age",
+      "returncode": 0,
+      "seconds": 52.777382375032175
+    },
+    {
+      "date": "2023-06-11",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_content",
+      "returncode": 0,
+      "seconds": 91.25715100002708
+    },
+    {
+      "date": "2023-06-11",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_instant",
+      "returncode": 0,
+      "seconds": 26.5162866669707
+    },
+    {
+      "date": "2023-06-11",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "combined_attention_uniform",
+      "returncode": 0,
+      "seconds": 55.204759249987546
+    },
+    {
+      "date": "2023-06-11",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_age",
+      "returncode": 0,
+      "seconds": 49.95515562500805
+    },
+    {
+      "date": "2023-06-11",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_content",
+      "returncode": 0,
+      "seconds": 86.62061883299612
+    },
+    {
+      "date": "2023-06-11",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_instant",
+      "returncode": 0,
+      "seconds": 19.178537459054496
+    },
+    {
+      "date": "2023-06-11",
+      "failure": null,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "model": "observations_attention_uniform",
+      "returncode": 0,
+      "seconds": 44.547919082979206
+    }
+  ],
+  "trainable_model_fits": 24,
+  "worker_records": [
+    {
+      "architecture": "age",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 6,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 4.307083123489264e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 2.1047290466036372e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-03",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 45.46739445900312,
+      "historical_training_dates": [
+        "2023-05-29",
+        "2023-05-30",
+        "2023-05-31",
+        "2023-06-01"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1800945664,
+        "maximum_sampled_simultaneous_sum_bytes": 1800945664
+      },
+      "model": "combined_attention_age",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 46.48232187499525,
+      "trainable_parameters": 54083,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "content",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 3,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.4664385594720386e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 8.506629178839376e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-03",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 83.33732691599289,
+      "historical_training_dates": [
+        "2023-05-29",
+        "2023-05-30",
+        "2023-05-31",
+        "2023-06-01"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1726578688,
+        "maximum_sampled_simultaneous_sum_bytes": 1726578688
+      },
+      "model": "combined_attention_content",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 84.98487383301836,
+      "trainable_parameters": 62403,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "instant",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 2,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 8.493267755760314e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 3.6591339402924916e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-03",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 30.213942250004038,
+      "historical_training_dates": [
+        "2023-05-29",
+        "2023-05-30",
+        "2023-05-31",
+        "2023-06-01"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1692155904,
+        "maximum_sampled_simultaneous_sum_bytes": 1692155904
+      },
+      "model": "combined_attention_instant",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 30.829464166017715,
+      "trainable_parameters": 53571,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "uniform",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 6,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 2.7363344590192185e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 2.3450549946346655e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-03",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 49.525544165982865,
+      "historical_training_dates": [
+        "2023-05-29",
+        "2023-05-30",
+        "2023-05-31",
+        "2023-06-01"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1538867200,
+        "maximum_sampled_simultaneous_sum_bytes": 1538867200
+      },
+      "model": "combined_attention_uniform",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 50.84473849995993,
+      "trainable_parameters": 53571,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "age",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 1,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 2.8005599506109036e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.3737064818997169e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-03",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 45.21725216699997,
+      "historical_training_dates": [
+        "2023-05-29",
+        "2023-05-30",
+        "2023-05-31",
+        "2023-06-01"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1229586432,
+        "maximum_sampled_simultaneous_sum_bytes": 1229586432
+      },
+      "model": "observations_attention_age",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 46.28058125003008,
+      "trainable_parameters": 43459,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "content",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 1,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 2.6749216730515e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 2.292778300549969e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-03",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 86.64966349996394,
+      "historical_training_dates": [
+        "2023-05-29",
+        "2023-05-30",
+        "2023-05-31",
+        "2023-06-01"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1166196736,
+        "maximum_sampled_simultaneous_sum_bytes": 1166196736
+      },
+      "model": "observations_attention_content",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 88.0386922909529,
+      "trainable_parameters": 51779,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "instant",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 1,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 3.7701704536097225e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.7925977924271308e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-03",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 16.89051237498643,
+      "historical_training_dates": [
+        "2023-05-29",
+        "2023-05-30",
+        "2023-05-31",
+        "2023-06-01"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1074741248,
+        "maximum_sampled_simultaneous_sum_bytes": 1074741248
+      },
+      "model": "observations_attention_instant",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 17.394941583974287,
+      "trainable_parameters": 42947,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "uniform",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 1,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 3.764332567879336e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.813503403003125e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50138,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-03",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 48.27680987503845,
+      "historical_training_dates": [
+        "2023-05-29",
+        "2023-05-30",
+        "2023-05-31",
+        "2023-06-01"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1185939456,
+        "maximum_sampled_simultaneous_sum_bytes": 1185939456
+      },
+      "model": "observations_attention_uniform",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 49.33294187503634,
+      "trainable_parameters": 42947,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "age",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 5,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 9.101248144016694e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 7.832272358454517e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-07",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 44.108101708989125,
+      "historical_training_dates": [
+        "2023-06-02",
+        "2023-06-03",
+        "2023-06-04",
+        "2023-06-05"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1789837312,
+        "maximum_sampled_simultaneous_sum_bytes": 1789837312
+      },
+      "model": "combined_attention_age",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 45.23538999998709,
+      "trainable_parameters": 54083,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "content",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 6,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.0523161564357508e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 8.942601215089496e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-07",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 78.68541545799235,
+      "historical_training_dates": [
+        "2023-06-02",
+        "2023-06-03",
+        "2023-06-04",
+        "2023-06-05"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1956937728,
+        "maximum_sampled_simultaneous_sum_bytes": 1956937728
+      },
+      "model": "combined_attention_content",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 80.45404370798497,
+      "trainable_parameters": 62403,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "instant",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 3,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.2398054582973828e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 8.040849819312967e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-07",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 12.627672000031453,
+      "historical_training_dates": [
+        "2023-06-02",
+        "2023-06-03",
+        "2023-06-04",
+        "2023-06-05"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1810825216,
+        "maximum_sampled_simultaneous_sum_bytes": 1810825216
+      },
+      "model": "combined_attention_instant",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 13.265117041999474,
+      "trainable_parameters": 53571,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "uniform",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 5,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.4953657700988998e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 8.81838188582229e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-07",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 40.189970000006724,
+      "historical_training_dates": [
+        "2023-06-02",
+        "2023-06-03",
+        "2023-06-04",
+        "2023-06-05"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1844707328,
+        "maximum_sampled_simultaneous_sum_bytes": 1844707328
+      },
+      "model": "combined_attention_uniform",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 41.3339009580086,
+      "trainable_parameters": 53571,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "age",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 5,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.179321895694585e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 7.849142058535818e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-07",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 42.83915029099444,
+      "historical_training_dates": [
+        "2023-06-02",
+        "2023-06-03",
+        "2023-06-04",
+        "2023-06-05"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1136476160,
+        "maximum_sampled_simultaneous_sum_bytes": 1136476160
+      },
+      "model": "observations_attention_age",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 43.716171958018094,
+      "trainable_parameters": 43459,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "content",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 5,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 8.551860219974117e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.0281388906907551e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-07",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 76.790805290977,
+      "historical_training_dates": [
+        "2023-06-02",
+        "2023-06-03",
+        "2023-06-04",
+        "2023-06-05"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1302183936,
+        "maximum_sampled_simultaneous_sum_bytes": 1302183936
+      },
+      "model": "observations_attention_content",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 78.12335170799633,
+      "trainable_parameters": 51779,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "instant",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 6,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 5.161122584862454e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.0458174104499562e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-07",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 10.365811124967877,
+      "historical_training_dates": [
+        "2023-06-02",
+        "2023-06-03",
+        "2023-06-04",
+        "2023-06-05"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1258471424,
+        "maximum_sampled_simultaneous_sum_bytes": 1258471424
+      },
+      "model": "observations_attention_instant",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 10.749203499988653,
+      "trainable_parameters": 42947,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "uniform",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 5,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 6.901095972455806e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 7.898177778464799e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50145,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-07",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 34.97235020902008,
+      "historical_training_dates": [
+        "2023-06-02",
+        "2023-06-03",
+        "2023-06-04",
+        "2023-06-05"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1335787520,
+        "maximum_sampled_simultaneous_sum_bytes": 1335787520
+      },
+      "model": "observations_attention_uniform",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 35.82581820897758,
+      "trainable_parameters": 42947,
+      "training_rows": 171994
+    },
+    {
+      "architecture": "age",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 4,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.555329698366137e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.1397947252689278e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-11",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 42.48433941596886,
+      "historical_training_dates": [
+        "2023-06-06",
+        "2023-06-07",
+        "2023-06-08",
+        "2023-06-09"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1937948672,
+        "maximum_sampled_simultaneous_sum_bytes": 1937948672
+      },
+      "model": "combined_attention_age",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 43.5864698329824,
+      "trainable_parameters": 54083,
+      "training_rows": 171934
+    },
+    {
+      "architecture": "content",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 4,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 2.424215783669581e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 8.043247623490402e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-11",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 80.47568620799575,
+      "historical_training_dates": [
+        "2023-06-06",
+        "2023-06-07",
+        "2023-06-08",
+        "2023-06-09"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1878523904,
+        "maximum_sampled_simultaneous_sum_bytes": 1878523904
+      },
+      "model": "combined_attention_content",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 82.2205773749738,
+      "trainable_parameters": 62403,
+      "training_rows": 171934
+    },
+    {
+      "architecture": "instant",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 5,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.0769805991461823e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.119980819197508e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-11",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 16.475462750007864,
+      "historical_training_dates": [
+        "2023-06-06",
+        "2023-06-07",
+        "2023-06-08",
+        "2023-06-09"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1456029696,
+        "maximum_sampled_simultaneous_sum_bytes": 1456029696
+      },
+      "model": "combined_attention_instant",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 17.45637229201384,
+      "trainable_parameters": 53571,
+      "training_rows": 171934
+    },
+    {
+      "architecture": "uniform",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 4,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.72357635941367e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.7046876021886703e-08,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-11",
+      "dimensions": 381,
+      "fit_save_reload_ready_seconds": 44.89359316701302,
+      "historical_training_dates": [
+        "2023-06-06",
+        "2023-06-07",
+        "2023-06-08",
+        "2023-06-09"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1746485248,
+        "maximum_sampled_simultaneous_sum_bytes": 1746485248
+      },
+      "model": "combined_attention_uniform",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "combined",
+      "seconds": 46.00328591698781,
+      "trainable_parameters": 53571,
+      "training_rows": 171934
+    },
+    {
+      "architecture": "age",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 1,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 3.281509897146151e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 2.0575493531183042e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-11",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 40.35927129199263,
+      "historical_training_dates": [
+        "2023-06-06",
+        "2023-06-07",
+        "2023-06-08",
+        "2023-06-09"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1293598720,
+        "maximum_sampled_simultaneous_sum_bytes": 1293598720
+      },
+      "model": "observations_attention_age",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 41.19793333299458,
+      "trainable_parameters": 43459,
+      "training_rows": 171934
+    },
+    {
+      "architecture": "content",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 1,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 3.1987869020255744e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 1.834028762193185e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-11",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 76.42424537497573,
+      "historical_training_dates": [
+        "2023-06-06",
+        "2023-06-07",
+        "2023-06-08",
+        "2023-06-09"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1304576000,
+        "maximum_sampled_simultaneous_sum_bytes": 1304576000
+      },
+      "model": "observations_attention_content",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 77.69953695801087,
+      "trainable_parameters": 51779,
+      "training_rows": 171934
+    },
+    {
+      "architecture": "instant",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 3,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 9.414792445650022e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 3.7026143262508526e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-11",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 9.870766833948437,
+      "historical_training_dates": [
+        "2023-06-06",
+        "2023-06-07",
+        "2023-06-08",
+        "2023-06-09"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1186578432,
+        "maximum_sampled_simultaneous_sum_bytes": 1186578432
+      },
+      "model": "observations_attention_instant",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 10.231804249982815,
+      "trainable_parameters": 42947,
+      "training_rows": 171934
+    },
+    {
+      "architecture": "uniform",
+      "assessment_labels_opened": false,
+      "backend": "cpu",
+      "best_epoch": 1,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 3.1581349757558996e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_forecasts_exact": true,
+          "errors": {
+            "future_prefix": 0.0,
+            "query_partition": 4.125129238197189e-09,
+            "shorter_prefix": 0.0
+          },
+          "inference": {
+            "chunk_rows": 512,
+            "coverage_segments": 2,
+            "observed_rows": 50143,
+            "query_calls": 14,
+            "query_rows": 7070
+          },
+          "original_priors_exact": true
+        }
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "date": "2023-06-11",
+      "dimensions": 215,
+      "fit_save_reload_ready_seconds": 34.805325207998976,
+      "historical_training_dates": [
+        "2023-06-06",
+        "2023-06-07",
+        "2023-06-08",
+        "2023-06-09"
+      ],
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 1343389696,
+        "maximum_sampled_simultaneous_sum_bytes": 1343389696
+      },
+      "model": "observations_attention_uniform",
+      "optimizer_steps": 1014,
+      "original_parameters_and_saved_state_exact": true,
+      "representation": "observations",
+      "seconds": 35.65667850000318,
+      "trainable_parameters": 42947,
+      "training_rows": 171934
+    }
+  ]
+}
