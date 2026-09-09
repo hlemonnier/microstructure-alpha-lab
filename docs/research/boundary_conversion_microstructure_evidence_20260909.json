@@ -1,0 +1,259 @@
+{
+  "all_input_hashes_verified": true,
+  "bounce": {
+    "protocol_sha256": "c4c97aa387a14dc1d0c1b4a77ddf84bf0a8d7aeb7dd7e647e6c57aa4e818d2d3",
+    "records": [
+      {
+        "adjacent_opposite_side_pairs_within_one_second": 4317,
+        "available_adjacent_query_pairs": 85859,
+        "available_decision_rows": 85894,
+        "corrected_rate_range": [
+          0.99945,
+          0.99975
+        ],
+        "corrected_to_raw_increment_variance_ratio": 0.0005748026896394344,
+        "date": "2023-05-29",
+        "median_buyer_minus_seller_price_usdt_per_tusd": 9.999999999998899e-05,
+        "one_observed_spacing_separation_fraction": 0.9997683576557794,
+        "raw_rate_range": [
+          0.9994,
+          0.9998
+        ],
+        "sampled_corrected_increment_variance": 3.493978705756585e-13,
+        "sampled_raw_increment_variance": 6.078570557747926e-10,
+        "source_trades": 62132,
+        "zero_price_separation_fraction": 0.0002316423442205235
+      },
+      {
+        "adjacent_opposite_side_pairs_within_one_second": 2940,
+        "available_adjacent_query_pairs": 85838,
+        "available_decision_rows": 85873,
+        "corrected_rate_range": [
+          0.99945,
+          0.99955
+        ],
+        "corrected_to_raw_increment_variance_ratio": 0.00036423238721317724,
+        "date": "2023-05-30",
+        "median_buyer_minus_seller_price_usdt_per_tusd": 9.999999999998899e-05,
+        "one_observed_spacing_separation_fraction": 1.0,
+        "raw_rate_range": [
+          0.9994,
+          0.9996
+        ],
+        "sampled_corrected_increment_variance": 2.3299704093752874e-13,
+        "sampled_raw_increment_variance": 6.39693363679822e-10,
+        "source_trades": 50024,
+        "zero_price_separation_fraction": 0.0
+      },
+      {
+        "adjacent_opposite_side_pairs_within_one_second": 4685,
+        "available_adjacent_query_pairs": 86258,
+        "available_decision_rows": 86270,
+        "corrected_rate_range": [
+          0.99925,
+          0.99955
+        ],
+        "corrected_to_raw_increment_variance_ratio": 0.0014113201228206401,
+        "date": "2023-05-31",
+        "median_buyer_minus_seller_price_usdt_per_tusd": 9.999999999998899e-05,
+        "one_observed_spacing_separation_fraction": 0.9991462113127001,
+        "raw_rate_range": [
+          0.9992,
+          0.9996
+        ],
+        "sampled_corrected_increment_variance": 1.043380139450303e-12,
+        "sampled_raw_increment_variance": 7.392937453233653e-10,
+        "source_trades": 65646,
+        "zero_price_separation_fraction": 0.0008537886872998933
+      },
+      {
+        "adjacent_opposite_side_pairs_within_one_second": 4194,
+        "available_adjacent_query_pairs": 86278,
+        "available_decision_rows": 86290,
+        "corrected_rate_range": [
+          0.99945,
+          0.99965
+        ],
+        "corrected_to_raw_increment_variance_ratio": 0.0010589481115422937,
+        "date": "2023-06-01",
+        "median_buyer_minus_seller_price_usdt_per_tusd": 9.999999999998899e-05,
+        "one_observed_spacing_separation_fraction": 0.9990462565569862,
+        "raw_rate_range": [
+          0.9994,
+          0.9997
+        ],
+        "sampled_corrected_increment_variance": 6.954264122949857e-13,
+        "sampled_raw_increment_variance": 6.56714342010714e-10,
+        "source_trades": 56861,
+        "zero_price_separation_fraction": 0.0009537434430138292
+      }
+    ],
+    "summary": "data/research/boundary_conversion_bounce_20260909/summary.json",
+    "summary_sha256": "1f6965178e641b5e7954a5c4a1fb88e2e533ef62bbd7705920709499b0fb7734"
+  },
+  "independent_confirmation_data_opened": false,
+  "model_fits": 0,
+  "predictive_metrics_computed": false,
+  "resolution": {
+    "protocol_sha256": "fc4d5518c6d4e3bbfe3f99388415bb4a2fb9d86a04558de7973f2086aa8b9097",
+    "records": [
+      {
+        "adjacent_available_query_pairs": 85859,
+        "conversion_available_rows": 85894,
+        "conversion_trade_rows": 62132,
+        "date": "2023-05-29",
+        "decision_rows": 86399,
+        "distinct_traded_prices": [
+          "0.9994",
+          "0.9995",
+          "0.9996",
+          "0.9997",
+          "0.9998"
+        ],
+        "known_current_mid_barrier_bps": {
+          "maximum": 1.0227689529666069,
+          "median": 0.03586819871699454,
+          "minimum": 0.03516366046672727,
+          "p05": 0.03550154902143947,
+          "p95": 0.03621869572854812
+        },
+        "minimum_observed_spacing_usdt_per_tusd": "0.0001",
+        "observed_spacing_bps": {
+          "maximum": 1.0006003602161297,
+          "median": 1.0004001600640258,
+          "minimum": 1.0002000400080016,
+          "p05": 1.0002000400080016,
+          "p95": 1.0005002501250624
+        },
+        "sampled_nonzero_rate_change_fraction": 0.060785706798355446,
+        "sampled_rate_changes": 5219,
+        "sampled_rate_increment_lag_one_correlation": -0.15235726706727676,
+        "spacing_to_known_current_mid_barrier_ratio": {
+          "maximum": 28.446984095228565,
+          "median": 27.8922068827531,
+          "minimum": 0.9780313404367366,
+          "p05": 27.62418652028095,
+          "p95": 28.175202560768223
+        }
+      },
+      {
+        "adjacent_available_query_pairs": 85838,
+        "conversion_available_rows": 85873,
+        "conversion_trade_rows": 50024,
+        "date": "2023-05-30",
+        "decision_rows": 86396,
+        "distinct_traded_prices": [
+          "0.9994",
+          "0.9995",
+          "0.9996"
+        ],
+        "known_current_mid_barrier_bps": {
+          "maximum": 1.7160187642136027,
+          "median": 0.036020135255607884,
+          "minimum": 0.035680071074701586,
+          "p05": 0.035771968012706205,
+          "p95": 0.036147735796199065
+        },
+        "minimum_observed_spacing_usdt_per_tusd": "0.0001",
+        "observed_spacing_bps": {
+          "maximum": 1.0006003602161297,
+          "median": 1.0005002501250624,
+          "minimum": 1.0004001600640258,
+          "p05": 1.0004001600640258,
+          "p95": 1.0006003602161297
+        },
+        "sampled_nonzero_rate_change_fraction": 0.06396933758941262,
+        "sampled_rate_changes": 5491,
+        "sampled_rate_increment_lag_one_correlation": -0.1438849074042324,
+        "spacing_to_known_current_mid_barrier_ratio": {
+          "maximum": 28.040570285142568,
+          "median": 27.776638319159574,
+          "minimum": 0.5830940669664958,
+          "p05": 27.67732092837135,
+          "p95": 27.9680340170085
+        }
+      },
+      {
+        "adjacent_available_query_pairs": 86258,
+        "conversion_available_rows": 86270,
+        "conversion_trade_rows": 65646,
+        "date": "2023-05-31",
+        "decision_rows": 86392,
+        "distinct_traded_prices": [
+          "0.9992",
+          "0.9993",
+          "0.9994",
+          "0.9995",
+          "0.9996"
+        ],
+        "known_current_mid_barrier_bps": {
+          "maximum": 2.0337157085297966,
+          "median": 0.03689458295285795,
+          "minimum": 0.035940647614529364,
+          "p05": 0.036076142305950944,
+          "p95": 0.03713930768616542
+        },
+        "minimum_observed_spacing_usdt_per_tusd": "0.0001",
+        "observed_spacing_bps": {
+          "maximum": 1.00080064051241,
+          "median": 1.0005002501250624,
+          "minimum": 1.0004001600640258,
+          "p05": 1.0004001600640258,
+          "p95": 1.0007004903432404
+        },
+        "sampled_nonzero_rate_change_fraction": 0.07389459528391569,
+        "sampled_rate_changes": 6374,
+        "sampled_rate_increment_lag_one_correlation": -0.16418378759580304,
+        "spacing_to_known_current_mid_barrier_ratio": {
+          "maximum": 27.84035421252752,
+          "median": 27.120528343724935,
+          "minimum": 0.491956789205478,
+          "p05": 26.938125250100043,
+          "p95": 27.73399039423654
+        }
+      },
+      {
+        "adjacent_available_query_pairs": 86278,
+        "conversion_available_rows": 86290,
+        "conversion_trade_rows": 56861,
+        "date": "2023-06-01",
+        "decision_rows": 86397,
+        "distinct_traded_prices": [
+          "0.9994",
+          "0.9995",
+          "0.9996",
+          "0.9997"
+        ],
+        "known_current_mid_barrier_bps": {
+          "maximum": 1.4367896521291037,
+          "median": 0.03721588001600283,
+          "minimum": 0.0365810608873468,
+          "p05": 0.036882608190520805,
+          "p95": 0.03736117986606017
+        },
+        "minimum_observed_spacing_usdt_per_tusd": "0.0001",
+        "observed_spacing_bps": {
+          "maximum": 1.0006003602161297,
+          "median": 1.0004001600640258,
+          "minimum": 1.000300090027008,
+          "p05": 1.000300090027008,
+          "p95": 1.0005002501250624
+        },
+        "sampled_nonzero_rate_change_fraction": 0.06567143420107095,
+        "sampled_rate_changes": 5666,
+        "sampled_rate_increment_lag_one_correlation": -0.14226458458451116,
+        "spacing_to_known_current_mid_barrier_ratio": {
+          "maximum": 27.35022511255627,
+          "median": 26.88290316126451,
+          "minimum": 0.6962746137415348,
+          "p05": 26.777160864345745,
+          "p95": 27.124299719887958
+        }
+      }
+    ],
+    "summary": "data/research/boundary_conversion_resolution_20260909/summary.json",
+    "summary_sha256": "9d204c6aee1ac9ab91d338e5cc0a7a260a194ac73414776e312251d05faeb747"
+  },
+  "status": "training_only_source_resolution_and_fixed_side_adjustment_diagnostics",
+  "substantial_gain_confirmed": false
+}

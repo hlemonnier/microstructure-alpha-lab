@@ -1,0 +1,51 @@
+{
+  "adjacent_opposite_maximum_gap_ms": 1000,
+  "delay_ms": 100,
+  "descriptive_float_match_tolerance": 1e-12,
+  "fixed_half_spacing_usdt_per_tusd": 5e-05,
+  "input_hashes": {
+    "data/research/boundary_conversion_resolution_20260909/summary.json": "9d204c6aee1ac9ab91d338e5cc0a7a260a194ac73414776e312251d05faeb747",
+    "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-29.parquet": "b226666e2c7c3722c0a9af07e3a28d068907f8c75e5dd16eefb5091824b4164d",
+    "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-30.parquet": "56d7702855962dfce09409f221498a954c12dc3d98aeece7408aaeafaab81c1a",
+    "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-31.parquet": "bf865b351c61df5b73253341f47b095ad7d04b8d84d3813ba6d14cee7e526c76",
+    "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-01.parquet": "400e64f694f5e02c7bfb9254e2fb849feb14e140c965d95ac20fa7e16879d6a4",
+    "data/research/boundary_quote_currency_trade_raw_20260909/TUSDUSDT/2023-05-29/TUSDUSDT-aggTrades-2023-05-29.zip": "b456f3649e177068637c4efd24f92da1366bf32756537e58fc6f35fdc86592b8",
+    "data/research/boundary_quote_currency_trade_raw_20260909/TUSDUSDT/2023-05-30/TUSDUSDT-aggTrades-2023-05-30.zip": "f51a5060337dae180f4702c830889cabaee224ed8624a7d5d154bea3003c81ae",
+    "data/research/boundary_quote_currency_trade_raw_20260909/TUSDUSDT/2023-05-31/TUSDUSDT-aggTrades-2023-05-31.zip": "0233bb594048e74b8db45f6a2c046942dce9eba87eaffd03ee0bfdd9faa45982",
+    "data/research/boundary_quote_currency_trade_raw_20260909/TUSDUSDT/2023-06-01/TUSDUSDT-aggTrades-2023-06-01.zip": "575815fb5fb3c9e933d60ccd06b2b5ca2e959021ad9298ea484c0558a56265bf",
+    "docs/research/boundary_confirmation_20260907_exact_labels_revision.json": "e3a40a656ab7b53748acd2c446dba900e485a4ff6c6e1f56bb33b586ce24517e",
+    "docs/research/boundary_conversion_resolution_20260909.json": "fc4d5518c6d4e3bbfe3f99388415bb4a2fb9d86a04558de7973f2086aa8b9097",
+    "scripts/audit_boundary_conversion_bounce.py": "b77f50580fdb8912d32d223aa3a5b901e64842fd8f2d982296c45a033a981514",
+    "scripts/audit_boundary_conversion_resolution.py": "82a027fb5b9cb1e7805d644b3be96627e3350715c2135ae343281554f8b3bdcb",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454",
+    "src/lob_forge/boundary_spot_data.py": "677ecdba899cde8a2aef86514f0beb4e1802b283427aee7aa9efc6bdf6840562",
+    "src/lob_forge/label_math.py": "6b596d58e5a1b6d65a4829facc1a0f9e1308cd91b312f3410e7852d6b600b7d0"
+  },
+  "maximum_age_ms": 60000,
+  "purpose": "Use the fixed half-spacing from the completed training-only resolution audit to diagnose bid-ask bounce without targets or predictive metrics. This does not alter the active frozen quote-currency model screen.",
+  "registered_at_utc": "2026-09-09T13:38:06.335361+00:00",
+  "sources": [
+    {
+      "canonical": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-29.parquet",
+      "conversion_archive": "data/research/boundary_quote_currency_trade_raw_20260909/TUSDUSDT/2023-05-29/TUSDUSDT-aggTrades-2023-05-29.zip",
+      "date": "2023-05-29"
+    },
+    {
+      "canonical": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-30.parquet",
+      "conversion_archive": "data/research/boundary_quote_currency_trade_raw_20260909/TUSDUSDT/2023-05-30/TUSDUSDT-aggTrades-2023-05-30.zip",
+      "date": "2023-05-30"
+    },
+    {
+      "canonical": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-05-31.parquet",
+      "conversion_archive": "data/research/boundary_quote_currency_trade_raw_20260909/TUSDUSDT/2023-05-31/TUSDUSDT-aggTrades-2023-05-31.zip",
+      "date": "2023-05-31"
+    },
+    {
+      "canonical": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-01.parquet",
+      "conversion_archive": "data/research/boundary_quote_currency_trade_raw_20260909/TUSDUSDT/2023-06-01/TUSDUSDT-aggTrades-2023-06-01.zip",
+      "date": "2023-06-01"
+    }
+  ],
+  "study": "boundary_conversion_bounce_20260909",
+  "workers": 1
+}
