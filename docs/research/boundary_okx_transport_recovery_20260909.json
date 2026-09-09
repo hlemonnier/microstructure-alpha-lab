@@ -1,0 +1,32 @@
+{
+  "concurrent_network_workers": 1,
+  "files": [
+    {
+      "failure_record": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10/record.json",
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10.tar.gz",
+      "partial_sha256": "e393e41481778eabb564f6f0b93d77f663b3271ed7ba9a48614d26ec51961a2f",
+      "partial_source": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10.tar.gz.part"
+    },
+    {
+      "failure_record": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11/record.json",
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11.tar.gz",
+      "partial_sha256": "099c2aa7bdd4449a46adf568050c4eedeb571f891320887368307b8bceab4744",
+      "partial_source": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11.tar.gz.part"
+    }
+  ],
+  "frozen_sources_modified": false,
+  "gzip_tar_or_market_content_opened": false,
+  "input_hashes": {
+    "data/research/boundary_okx_development_inventory_20260909/summary.json": "25462e83a1ce78662b980763c4bde975d66dbaf7f4bc650dae3a80575a965efe",
+    "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10.tar.gz.part": "e393e41481778eabb564f6f0b93d77f663b3271ed7ba9a48614d26ec51961a2f",
+    "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10/record.json": "948546c9e60e3af040bc205b98406ce591962e6bebe6a605d3163e9505570f59",
+    "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11.tar.gz.part": "099c2aa7bdd4449a46adf568050c4eedeb571f891320887368307b8bceab4744",
+    "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11/record.json": "57ef197a370c7430edbb57957ec6d3eda881d1d52eb031ecceddb8e23ea8dd9c",
+    "docs/research/boundary_okx_development_acquisition_20260909.json": "83a27ff07ecc85412b7f7252133d8c0a9d27401c8744210480cbb72f886ff023",
+    "scripts/recover_boundary_okx_archives.py": "de1cb737311f6e190f3fc714fcc4d11cee3a4922236c7da192f75a6540a84d4f"
+  },
+  "internal_retries": 0,
+  "purpose": "Resume the exact preserved prefixes of two timed-out public development archives in new files; verify complete bodies against original provider MD5 and byte lengths.",
+  "request_seconds": 1800,
+  "study": "boundary_okx_transport_recovery_20260909"
+}
