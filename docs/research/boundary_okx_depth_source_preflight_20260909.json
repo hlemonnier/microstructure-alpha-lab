@@ -1,0 +1,57 @@
+{
+  "assessment_metrics_computed": false,
+  "date": "2023-06-01",
+  "download_seconds": 300,
+  "downloader": "data/research/boundary_okx_depth_source_preflight_20260909/download_source.py",
+  "downloader_sha256": "818527867510ac1df556a38ff8962aa7030dd1d76fff3e8d169321ee209de88e",
+  "expected_archive_bytes": 370766491,
+  "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+  "independent_confirmation_data_opened": false,
+  "levels": 400,
+  "limitations": [
+    "Source-published timestamps are not observed local arrival times. Future experiments need explicit delay assumptions and sensitivity controls.",
+    "Order counts may offer information absent from quantity-only feeds, but that hypothesis has no empirical accuracy evidence yet.",
+    "The first-member sample does not establish complete-day coverage, depth reconstruction or historical contract units.",
+    "Official HTTP MD5 checks transport integrity; the locally computed SHA256 freezes these bytes but is not a provider-published SHA256.",
+    "The public object was last modified in 2026; preserve this acquired version and do not infer that it is identical to an original 2023 export."
+  ],
+  "market_model_fits": 0,
+  "maximum_archive_bytes": 419430400,
+  "maximum_line_bytes": 1048576,
+  "maximum_prefix_bytes": 8388608,
+  "maximum_prefix_lines": 1000,
+  "no_paid_service_or_account_required": true,
+  "observed_page": "https://www.okx.com/en-eu/historical-data",
+  "observed_public_request": {
+    "dateQuery": {
+      "begin": "1685656799999",
+      "dateAggrType": "daily",
+      "end": "1685656799999"
+    },
+    "instQueryParam": {
+      "instFamilyList": [
+        "BTC-USDT"
+      ]
+    },
+    "instType": "SWAP",
+    "module": "4"
+  },
+  "observed_ui_schema": {
+    "action": "snapshot or update",
+    "asks_and_bids": "price, quantity, order count",
+    "instId": "trading-pair identifier",
+    "ts": "Unix milliseconds when the update was pushed"
+  },
+  "official_content_md5_base64": "D4INinqmr6KM26PhCzX8Ow==",
+  "official_etag": "0F820D8A7AA6AFA28CDBA3E10B35FC3B",
+  "official_head_last_modified": "Mon, 24 Aug 2026 19:03:57 GMT",
+  "official_page": "https://www.okx.com/historical-data",
+  "official_ui_size_label": "353.59 MB",
+  "output": "data/research/boundary_okx_depth_source_preflight_20260909",
+  "public_metadata_endpoint": "https://www.okx.com/priapi/v5/broker/public/trade-data/download-link",
+  "purpose": "Verify a genuinely new public source of cross-venue depth and order-count observations. This is a source feasibility check, not a model experiment or a forecast-gain claim.",
+  "registered_at_utc": "2026-09-09T09:36:53.621661+00:00",
+  "symbol": "BTC-USDT-SWAP",
+  "transport_retries": 0,
+  "url": "https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20230601/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz"
+}
