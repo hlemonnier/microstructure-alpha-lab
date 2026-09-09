@@ -1,0 +1,49 @@
+{
+  "assessment_labels_decoded": false,
+  "data_contract": "docs/research/boundary_okx_depth_preparation_contract_20260909.md",
+  "delays_ms": [
+    100,
+    500
+  ],
+  "expected_sessions": 1,
+  "fresh_confirmation_data_opened": false,
+  "input_hashes": {
+    "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-01.parquet": "400e64f694f5e02c7bfb9254e2fb849feb14e140c965d95ac20fa7e16879d6a4",
+    "data/research/boundary_okx_depth_source_preflight_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b",
+    "data/research/boundary_okx_full_source_audit_20260909/summary.json": "9363687ecd2d7286ae661b0b7042eb4f1e51ea47f2e7d347858196dda77600f8",
+    "data/research/boundary_regime_data_20260907/dataset_manifest.json": "a58c28f698ca90ac1cedf73ef0f0f822490ec77ef174298163f76b8846226517",
+    "docs/research/boundary_okx_depth_preparation_contract_20260909.md": "232ac7caf9c71e2a618138ae07332aee4b5a22c3239dc334000e88c85bdb6988",
+    "docs/research/boundary_okx_full_source_audit_20260909.json": "9178b08113be7cb92cfbbf3c3b7c62bbbca171afb68b2706c7f2d7b7bedc84fd",
+    "docs/research/boundary_okx_full_source_evidence_20260909.json": "97e6c0abcb67b9e056ef1133f5ae939b1e1ddb2358ffd3d7df2b7c2ccca51b9a",
+    "pyproject.toml": "6158628030e3425782fd58044d4ff41dcf4a34739865cab413086223bde16db2",
+    "scripts/prepare_boundary_okx_depth.py": "5d1f44e6ee63a01230f6f3e295f659c1471f75cc387ba130b9ea17b328e57005",
+    "src/lob_forge/boundary_okx_depth.py": "ae399f8ca7e90e3402a1b8f41960fca531638d91a1632c7275e1509b68f80f50",
+    "src/lob_forge/boundary_okx_source.py": "5e03f3a79c3746f98b451901fbac9ae0d3ae145f67a83d3276c13226c822ccc0",
+    "tests/test_boundary_okx_depth.py": "733b7f700f98d9ca4cf39601047f044ccd00d019c4b7a604c7430e7ba8fd135e",
+    "tests/test_boundary_okx_source.py": "1b6e861649e5bcd77d58a8f58c7b6ca6792edeb9face6d3cc226e7d4029256cf"
+  },
+  "market_model_fits": 0,
+  "maximum_array_bytes": 1073741824,
+  "maximum_decision_rows": 90000,
+  "maximum_line_bytes": 1048576,
+  "maximum_member_bytes": 17179869184,
+  "maximum_publisher_gap_ms": 1000,
+  "per_file_wall_seconds": 1800,
+  "purpose": "One already decoded full-day source tests reconstruction, coverage and bounded runtime before separate full-development preparation.",
+  "query_cadence_ms": 100,
+  "sources": [
+    {
+      "archive": "data/research/boundary_okx_depth_source_preflight_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+      "archive_sha256": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b",
+      "date": "2023-06-01",
+      "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-01.parquet",
+      "features_sha256": "400e64f694f5e02c7bfb9254e2fb849feb14e140c965d95ac20fa7e16879d6a4",
+      "instrument": "BTC-USDT-SWAP",
+      "symbol": "BTCUSDT"
+    }
+  ],
+  "stored_depth": 100,
+  "study": "boundary_okx_depth_preparation_preflight_20260909",
+  "visible_capacity": 400,
+  "workers": 1
+}

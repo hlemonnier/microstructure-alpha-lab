@@ -1,0 +1,76 @@
+{
+  "actions": {
+    "snapshot": 1439,
+    "update": 7201245
+  },
+  "all_original_decimal_prices_quantities_and_counts_valid": true,
+  "archive_sha256": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b",
+  "assessment_metrics_computed": false,
+  "complete_gzip_crc_and_size_trailer_verified": true,
+  "duplicate_publisher_timestamps": 0,
+  "first_timestamp_ms": 1685577600002,
+  "full_400_level_snapshots": 1439,
+  "independent_confirmation_data_opened": false,
+  "input_hashes_verified": true,
+  "last_timestamp_ms": 1685663999997,
+  "limitations": [
+    "A publisher-clock gap is not proof of dropped messages or of a quiet market; sequence IDs and local arrival clocks are absent.",
+    "This inventory does not certify reconstructed top-depth coverage or infer individual cancellations/executions.",
+    "Absolute contract units, cross-venue availability delays and economic comparability still require a separate feature contract.",
+    "Source integrity and order-count variation do not establish any predictive gain."
+  ],
+  "market_model_fits": 0,
+  "maximum_publisher_gap_ms": 243075,
+  "maximum_record_bytes": 18844,
+  "members": [
+    {
+      "name": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.data",
+      "size": 2805365863
+    }
+  ],
+  "messages": 7202684,
+  "multi_order_entries": 60592207,
+  "positive_order_count_entries": 81954063,
+  "protocol": "docs/research/boundary_okx_full_source_audit_20260909.json",
+  "protocol_sha256": "9178b08113be7cb92cfbbf3c3b7c62bbbca171afb68b2706c7f2d7b7bedc84fd",
+  "published_level_entries": 94785752,
+  "publisher_gaps_above_1000ms": {
+    "243075": 1,
+    "71750": 1,
+    "72440": 1,
+    "73150": 1,
+    "86308": 1
+  },
+  "seconds": 204.02193229203112,
+  "source_records_by_utc_hour": {
+    "0": 329142,
+    "1": 302114,
+    "10": 294224,
+    "11": 288799,
+    "12": 308744,
+    "13": 310720,
+    "14": 323835,
+    "15": 306314,
+    "16": 314737,
+    "17": 330664,
+    "18": 300160,
+    "19": 311364,
+    "2": 295393,
+    "20": 291839,
+    "21": 290086,
+    "22": 278933,
+    "23": 292942,
+    "3": 320761,
+    "4": 291044,
+    "5": 287418,
+    "6": 252283,
+    "7": 287387,
+    "8": 288174,
+    "9": 305607
+  },
+  "summary": "data/research/boundary_okx_full_source_audit_20260909/summary.json",
+  "summary_sha256": "9363687ecd2d7286ae661b0b7042eb4f1e51ea47f2e7d347858196dda77600f8",
+  "tar_tail_bytes": 0,
+  "uncompressed_member_bytes_verified": 2805365863,
+  "zero_quantity_count_entries": 12831689
+}
