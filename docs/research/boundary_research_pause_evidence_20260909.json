@@ -1,0 +1,1046 @@
+{
+  "assessment_metrics_evaluated": false,
+  "assessment_prediction_panels_exist": false,
+  "assessment_summary_exists": false,
+  "attempt_directory": "results/boundary_midpoint_conversion_screen_20260909",
+  "branch": "main",
+  "code_commit_before_pause": "f88ef67ecebdbd982492c7e29e60f27209eb5742",
+  "completed_evidence_hashes": {
+    "docs/research/boundary_broad_accuracy_evidence_20260909.json": "ba0e1957eb951b04f8836032d6d1d8e236edba5f70fbf7f8b5068efd39a501ee",
+    "docs/research/boundary_broad_accuracy_report_20260909.md": "00c370dabaa9d36cfff9fef3c310595f12bfe59be804c65ef4d81b6e5ad85c02",
+    "docs/research/boundary_confirmation_round2_reservation_20260908.md": "c02c8b47b233ee0929fb39317105c551e1d49ea2173d57029639607069c59917",
+    "docs/research/boundary_conversion_microstructure_evidence_20260909.json": "58063c29879c0646a8e2993963118305923934b8fc3019a6b1ad1e895e95f5f6",
+    "docs/research/boundary_conversion_microstructure_report_20260909.md": "ffda053afb2635a74db74e923e0e26f58a88366bc765a80a4e49f893eea13f64",
+    "docs/research/boundary_midpoint_conversion_features_evidence_20260909.json": "aa7161df28f159619aa846845dab58b5363dd97d8f17a6f05bacb5e35800096e",
+    "docs/research/boundary_okx_counted_evidence_20260909.json": "7871e376018f0d16a415ca0c69727f93be3a1f2a8bb874a240ba322c28beb4c6",
+    "docs/research/boundary_okx_counted_report_20260909.md": "3f959d0a0b703bc1b9ba6675468589e9abcbbb6877a9e8c868417fdf37a6d40f",
+    "docs/research/boundary_quote_currency_broad_inventory_evidence_20260909.json": "ee63483aa40d2f0820b6f36f80fb32fa8f3879fbeff15027e3e7698d1974f85f",
+    "docs/research/boundary_quote_currency_evidence_20260909.json": "6a0c647f6053d6824c100204d3c0c22af30cdfbd66eb0cc1e768a4b61249c708",
+    "docs/research/boundary_quote_currency_report_20260909.md": "7cb5e93359da248a11a38702059dafe429dfb1c4f427adb861e6d2f3bb087a5b"
+  },
+  "completed_fits": 8,
+  "completed_folds": 0,
+  "completed_workers": [
+    {
+      "assessment_labels_decoded": false,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 0.0,
+            "shorter_prefix": 0.0
+          },
+          "training_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 0.0,
+            "shorter_prefix": 0.0
+          },
+          "training_priors_exact": true
+        }
+      },
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed",
+      "model": "observations_btc100_midpoint_side_hgb",
+      "returncode": 0,
+      "seconds": 56.50106987502659,
+      "worker_path": "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_hgb/worker.json",
+      "worker_sha256": "856a3408cde3a03c7cb5f1df20d48b454f18f52f746574c8c69116e0357c0c3a"
+    },
+    {
+      "assessment_labels_decoded": false,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 1.120505947471706e-07,
+            "shorter_prefix": 1.630272994379567e-08
+          },
+          "training_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 1.0598147537344005e-07,
+            "shorter_prefix": 2.6015953280555948e-08
+          },
+          "training_priors_exact": true
+        }
+      },
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed",
+      "model": "observations_btc100_midpoint_side_neural",
+      "returncode": 0,
+      "seconds": 27.005602375022136,
+      "worker_path": "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_neural/worker.json",
+      "worker_sha256": "5bc59c624455aa67e459d75d64f3a3ad243aa0d976b7d2e9cd4de6e08cde5459"
+    },
+    {
+      "assessment_labels_decoded": false,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 0.0,
+            "shorter_prefix": 0.0
+          },
+          "training_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 0.0,
+            "shorter_prefix": 0.0
+          },
+          "training_priors_exact": true
+        }
+      },
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed",
+      "model": "observations_btc100_raw_side_hgb",
+      "returncode": 0,
+      "seconds": 55.160294832952786,
+      "worker_path": "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_hgb/worker.json",
+      "worker_sha256": "2e1b43b1be8d17c0857630cf159a599b30df484fc51aaf5ad851a623afcb59b9"
+    },
+    {
+      "assessment_labels_decoded": false,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 1.308193673943414e-07,
+            "shorter_prefix": 2.0239554587853092e-08
+          },
+          "training_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 1.2203106969366218e-07,
+            "shorter_prefix": 1.3905261886382192e-08
+          },
+          "training_priors_exact": true
+        }
+      },
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed",
+      "model": "observations_btc100_raw_side_neural",
+      "returncode": 0,
+      "seconds": 27.79145216703182,
+      "worker_path": "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_neural/worker.json",
+      "worker_sha256": "e9a2e95b27db7c1bf9b305aed9d17c5af0736f892107bf1b174e8b484b4c4612"
+    },
+    {
+      "assessment_labels_decoded": false,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 0.0,
+            "shorter_prefix": 0.0
+          },
+          "training_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 0.0,
+            "shorter_prefix": 0.0
+          },
+          "training_priors_exact": true
+        }
+      },
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed",
+      "model": "observations_fx100_midpoint_side_hgb",
+      "returncode": 0,
+      "seconds": 45.74057329201605,
+      "worker_path": "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_hgb/worker.json",
+      "worker_sha256": "dbb3747364e5cbf2bed9979f5cffcd99e8017dd549b84d3f1f00e6d2377e636d"
+    },
+    {
+      "assessment_labels_decoded": false,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 1.660645579937281e-07,
+            "shorter_prefix": 1.7243666522448464e-08
+          },
+          "training_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 1.2154232692518363e-07,
+            "shorter_prefix": 2.787696706807452e-08
+          },
+          "training_priors_exact": true
+        }
+      },
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed",
+      "model": "observations_fx100_midpoint_side_neural",
+      "returncode": 0,
+      "seconds": 21.63580995798111,
+      "worker_path": "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_neural/worker.json",
+      "worker_sha256": "e902eca8dba137e8a53c4d826512ccf3034f4e3c7b8ce27bc202529f5ccd4aec"
+    },
+    {
+      "assessment_labels_decoded": false,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 0.0,
+            "shorter_prefix": 0.0
+          },
+          "training_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 0.0,
+            "shorter_prefix": 0.0
+          },
+          "training_priors_exact": true
+        }
+      },
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed",
+      "model": "observations_fx100_raw_side_hgb",
+      "returncode": 0,
+      "seconds": 51.41170837497339,
+      "worker_path": "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_hgb/worker.json",
+      "worker_sha256": "c166ec0597a511a4447d8b43afbb2c6edb3d4486f6354701b2bbde4960f4475c"
+    },
+    {
+      "assessment_labels_decoded": false,
+      "checks": {
+        "BTCUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 8.91970186600588e-08,
+            "shorter_prefix": 9.258080947704972e-09
+          },
+          "training_priors_exact": true
+        },
+        "ETHUSDT": {
+          "checkpoint_probabilities_exact": true,
+          "errors": {
+            "full_query_prefix": 0.0,
+            "future_prefix": 0.0,
+            "individual_query": 7.818054781338901e-08,
+            "shorter_prefix": 3.5636569806207774e-08
+          },
+          "training_priors_exact": true
+        }
+      },
+      "date": "2023-06-03",
+      "failure": null,
+      "log_sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed",
+      "model": "observations_fx100_raw_side_neural",
+      "returncode": 0,
+      "seconds": 24.41096304100938,
+      "worker_path": "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_neural/worker.json",
+      "worker_sha256": "6c5e4fe537ff7188b7cd6aa8005062923fd1ef27f8f3ca4f43b8559e2d295750"
+    }
+  ],
+  "frozen_inputs_reverified": 2158,
+  "interrupted_fits": 1,
+  "interruption_confirmed_before_utc": "2026-09-09T14:17:25Z",
+  "large_data_and_checkpoints": "Preserved locally under existing Git ignore rules; not uploaded to GitHub.",
+  "local_artifact_bytes": 2321441829,
+  "local_artifact_count": 173,
+  "local_artifacts": {
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/combined_fx100_raw_side_hgb.log": {
+      "bytes": 2491,
+      "sha256": "3de3af72e70383e1836354beb77859e30f2f6fa435fee41d8e0aac4687a9eede"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_btc100_midpoint_side_hgb.log": {
+      "bytes": 691,
+      "sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_btc100_midpoint_side_hgb.supervision.json": {
+      "bytes": 233,
+      "sha256": "a69d4a7d35963a5b333a8048290125eb55ae5055af946a4c8ee5f05188656a9a"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_btc100_midpoint_side_neural.log": {
+      "bytes": 691,
+      "sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_btc100_midpoint_side_neural.supervision.json": {
+      "bytes": 237,
+      "sha256": "bdeab05c602a8307ee0ed50b878195049552f3668dea690ce6e2555ec6f091e1"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_btc100_raw_side_hgb.log": {
+      "bytes": 691,
+      "sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_btc100_raw_side_hgb.supervision.json": {
+      "bytes": 229,
+      "sha256": "ab4e61656682cf3a6a3148eb68d3fa4794f89a4fe8b8df2397808b9c53371f09"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_btc100_raw_side_neural.log": {
+      "bytes": 691,
+      "sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_btc100_raw_side_neural.supervision.json": {
+      "bytes": 231,
+      "sha256": "874b30f94b9d9c9d053a09ead4694e9e70de5f95659c1d6588c740ccb4f6591a"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_fx100_midpoint_side_hgb.log": {
+      "bytes": 691,
+      "sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_fx100_midpoint_side_hgb.supervision.json": {
+      "bytes": 232,
+      "sha256": "97542c1fbbcb6f54c98f28a5066cb74901e7c3a1576f87cca04be5cc6b6d293b"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_fx100_midpoint_side_neural.log": {
+      "bytes": 691,
+      "sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_fx100_midpoint_side_neural.supervision.json": {
+      "bytes": 235,
+      "sha256": "eb1b88ee2119b0f391d524e96c58e58bbcc053449ef579754622a1a3a7d8989c"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_fx100_raw_side_hgb.log": {
+      "bytes": 691,
+      "sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_fx100_raw_side_hgb.supervision.json": {
+      "bytes": 227,
+      "sha256": "25f435c7d7baa75cbb347529923b06b5cf2d9ed7247116aee6e8d65596bd0b04"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_fx100_raw_side_neural.log": {
+      "bytes": 691,
+      "sha256": "a75ed675cc9c5ed6bb8431bfed04365d72e9c22281e713fd1a9d4196a13f7aed"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/observations_fx100_raw_side_neural.supervision.json": {
+      "bytes": 230,
+      "sha256": "7a5a28384b637a1ad8bdff133199899b19147487aa4f43a818b56d113635fdf6"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-29/BTCUSDT.labels.npy": {
+      "bytes": 172320,
+      "sha256": "6b8c4c3e64e2f29fd88bc0948936477359e6072d9a4c30358ef1b7bad4c358ae"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-29/BTCUSDT.parquet": {
+      "bytes": 83384974,
+      "sha256": "3b38ed2a2b3ae3e2f1f98cb4afdad4ccf50b7afa88a8aa9f6d3ac3ed105bc84e"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-29/BTCUSDT.times.npy": {
+      "bytes": 172320,
+      "sha256": "4cfd032fcb25a86e796d482f95ac0e8fd3bc1abc13bede9f2c024a9f9c666d8f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-29/ETHUSDT.labels.npy": {
+      "bytes": 172320,
+      "sha256": "0c51a37bc85d2b8f29a3ec7da3dd0e2cf6cc3d05bcf6f5db9af688336ba9ce1c"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-29/ETHUSDT.parquet": {
+      "bytes": 82797215,
+      "sha256": "8a0a5c5d710a854c354fa9a48d8c9ca7fec7d68ff0daf56c79fe13841ca3b096"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-29/ETHUSDT.times.npy": {
+      "bytes": 172320,
+      "sha256": "4cfd032fcb25a86e796d482f95ac0e8fd3bc1abc13bede9f2c024a9f9c666d8f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-30/BTCUSDT.labels.npy": {
+      "bytes": 172048,
+      "sha256": "21aeb2f2e912ff3f030c2ea85baf1efd8a52acc94ea64bdc9974a0b923e0abd4"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-30/BTCUSDT.parquet": {
+      "bytes": 82717593,
+      "sha256": "cc030fe226a26e75fc682c7fe13350fd5c9d41980ba17c1376036c564d9da77f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-30/BTCUSDT.times.npy": {
+      "bytes": 172048,
+      "sha256": "3cb44b2b7ff0ce493616fc90aef9edbb44122e0e1640fc70f73a3e6bf4a40854"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-30/ETHUSDT.labels.npy": {
+      "bytes": 172048,
+      "sha256": "d58109de6a3322dfd7ea87edaba8a43e7dd3123e49d8a9606fdc87c69f8e15db"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-30/ETHUSDT.parquet": {
+      "bytes": 82250932,
+      "sha256": "dfe0d36841b2477074c7b083f8ffb0d24100c8018c3c945fd6168f997cc5edd7"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-30/ETHUSDT.times.npy": {
+      "bytes": 172048,
+      "sha256": "3cb44b2b7ff0ce493616fc90aef9edbb44122e0e1640fc70f73a3e6bf4a40854"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-31/BTCUSDT.labels.npy": {
+      "bytes": 171816,
+      "sha256": "3a225d6558a3b57ccddb6740f86ea2830ddf6eba78ac60eac70527d098e862cb"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-31/BTCUSDT.parquet": {
+      "bytes": 83047188,
+      "sha256": "9716ab0abe1b4997b4b8a874fcc01f77aa7c403e373f73153a4fcaf798b6f1c2"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-31/BTCUSDT.times.npy": {
+      "bytes": 171816,
+      "sha256": "24417ee179fe1a8d20cc09656d53165d71e40dd46c4137b3a27a46d191e6839f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-31/ETHUSDT.labels.npy": {
+      "bytes": 171816,
+      "sha256": "113768ede3018640935ed93ea7db5cf0dca9840acc3932e46b2f732c595faa0c"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-31/ETHUSDT.parquet": {
+      "bytes": 82476257,
+      "sha256": "27adefec74d94e0ddf11bc030ed8672f4b53aa936a9e5970edd22b66df27d678"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-05-31/ETHUSDT.times.npy": {
+      "bytes": 171816,
+      "sha256": "24417ee179fe1a8d20cc09656d53165d71e40dd46c4137b3a27a46d191e6839f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-01/BTCUSDT.labels.npy": {
+      "bytes": 172304,
+      "sha256": "518f812704f3278589476cba3319845134cd59690cb2c294fa0e45c9cdffd985"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-01/BTCUSDT.parquet": {
+      "bytes": 82970955,
+      "sha256": "ffaf5f7fb5b5ce0b8f266521e202ab3270261e7c88b8c71994fafbd0148c5f7d"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-01/BTCUSDT.times.npy": {
+      "bytes": 172304,
+      "sha256": "52458f9111391f2c3bc757ef621eb50d4771b4a6fb80b03198daeb244feba0e9"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-01/ETHUSDT.labels.npy": {
+      "bytes": 172304,
+      "sha256": "0f27715fd959161f202e723a04707e9c76b90496b5a149b8668e01f3aa76de88"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-01/ETHUSDT.parquet": {
+      "bytes": 82492019,
+      "sha256": "fb069a9477b98f78adc3377dc297272bcfcf78c57ca7c978ac113615eae3ea52"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-01/ETHUSDT.times.npy": {
+      "bytes": 172304,
+      "sha256": "52458f9111391f2c3bc757ef621eb50d4771b4a6fb80b03198daeb244feba0e9"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-02/BTCUSDT.labels.npy": {
+      "bytes": 56688,
+      "sha256": "8c13098c60403b75f44d45221101003961faf35d3851dafa40887763dabf2f9d"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-02/BTCUSDT.parquet": {
+      "bytes": 27457320,
+      "sha256": "5bc1b6b5039f63c3317eeb3b82a8250f62b3db85586b1fd98acea862e0b129ea"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-02/BTCUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "ccbc8a5ab000aa99e609686d73c8f108ec26d8846732ad2c7c467ebbf752a14b"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-02/ETHUSDT.labels.npy": {
+      "bytes": 56688,
+      "sha256": "f5d7ba79d0d333abe1a9af41c060dafac630c6b10ca91037fcf44f198bd767cf"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-02/ETHUSDT.parquet": {
+      "bytes": 27151198,
+      "sha256": "ec0c7544e86b531bc178d1e2dc6c9053e17bdf53eb631bd48eb37ab0524f96a4"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-02/ETHUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "ccbc8a5ab000aa99e609686d73c8f108ec26d8846732ad2c7c467ebbf752a14b"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-03/BTCUSDT.parquet": {
+      "bytes": 25109165,
+      "sha256": "10f63dafa95f7b3598ed5dbeea56b48b53f62b029258f9094ad16a59685b955d"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-03/BTCUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "c942c8629bc5989d8e8c18506f29633c589026c8a1a664cfcc02a21ced863933"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-03/ETHUSDT.parquet": {
+      "bytes": 24803211,
+      "sha256": "8c2b0abd98171fc9065ca30117d3cbce166ee7271199679427c8f77cd3c5d84c"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/matrices/2023-06-03/ETHUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "c942c8629bc5989d8e8c18506f29633c589026c8a1a664cfcc02a21ced863933"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/metadata.json": {
+      "bytes": 25376,
+      "sha256": "89c4c6ac70054d7e98f9c072444768c8bc816f85a877c6532de751e33f3a0115"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/prepared.json": {
+      "bytes": 380158,
+      "sha256": "c7faa455b6363c26279ad318ded4853808ce3bcea29e2a704fcb9cdf8ee986e8"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/sealed_assessment_BTCUSDT.npz": {
+      "bytes": 19266,
+      "sha256": "b6af656a4d78e1ab95ef6eb154bf4c4f7a0ccd1ddcb6d350e7362d846dfd410e"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/prepared/sealed_assessment_ETHUSDT.npz": {
+      "bytes": 19438,
+      "sha256": "90e8a9f41fe7a865d1d44f86abbe966d886188b37ed70f4b060a048d7b95b802"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_hgb/BTCUSDT_probabilities.npz": {
+      "bytes": 159937,
+      "sha256": "948293d460344fb8e7b4d878caacf193ecdab4ab6408516f03414707cdddb782"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_hgb/ETHUSDT_probabilities.npz": {
+      "bytes": 160024,
+      "sha256": "af41249ce3352e189dd3e1a5de705680103fc06999d1b8cff4eaaba7092e5505"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_hgb/model.joblib": {
+      "bytes": 1117310,
+      "sha256": "edac23669d19baa6d2c14be0f54093a09ab3726abd14721055826b83b43afee9"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_hgb/worker.json": {
+      "bytes": 13512,
+      "sha256": "856a3408cde3a03c7cb5f1df20d48b454f18f52f746574c8c69116e0357c0c3a"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_neural/BTCUSDT_probabilities.npz": {
+      "bytes": 160659,
+      "sha256": "aab635b0a36333dbd29c55add9f77de8e4cf8a575b05aa8a0eeda77e38ff9dfe"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_neural/ETHUSDT_probabilities.npz": {
+      "bytes": 160706,
+      "sha256": "876992b26aede7d439a9443e2bb2ee868db55ac718110315c6ea502b5dcd01ef"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_neural/model/model.pt": {
+      "bytes": 107133,
+      "sha256": "357b7b9d6ba9382937ea803d1791a6339c8bae4464b0867477cf425059f3f562"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_neural/model/normalizer.joblib": {
+      "bytes": 2359879,
+      "sha256": "06302890c865957a14eba5f224b8048c2deea1b6313d91189c0fc9a355786e31"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_neural/training_history.json": {
+      "bytes": 16793,
+      "sha256": "315895d401db6125cde4edb87dadbb8b85e63d529babecb9c82184f0d650f2ef"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_midpoint_side_neural/worker.json": {
+      "bytes": 13596,
+      "sha256": "5bc59c624455aa67e459d75d64f3a3ad243aa0d976b7d2e9cd4de6e08cde5459"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_hgb/BTCUSDT_probabilities.npz": {
+      "bytes": 159883,
+      "sha256": "dca64b76f993feb6479ed440e5c4b9361d06e223ae3cc6803519d2862bee3104"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_hgb/ETHUSDT_probabilities.npz": {
+      "bytes": 160029,
+      "sha256": "a4348ce676219bfc9f5aa4f8b72a108a6d87227911560958397b7820cfdd18cf"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_hgb/model.joblib": {
+      "bytes": 1116606,
+      "sha256": "53960820ed1bdc0f4e4344dbdc35f48b077253c0f68c2ec30a9d265338c266f8"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_hgb/worker.json": {
+      "bytes": 12791,
+      "sha256": "2e1b43b1be8d17c0857630cf159a599b30df484fc51aaf5ad851a623afcb59b9"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_neural/BTCUSDT_probabilities.npz": {
+      "bytes": 160647,
+      "sha256": "f9c592c4811235ec461470dfb2b390b54a7ef16b42c09dfc67f8f5f88d804c36"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_neural/ETHUSDT_probabilities.npz": {
+      "bytes": 160700,
+      "sha256": "9033cd7da05b887852ec7bd3794fb0177ddb38a79647be7b917480e741e60443"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_neural/model/model.pt": {
+      "bytes": 106365,
+      "sha256": "6345016a589534ec10fdf76e2e45e92ab76a2c46a096c4fe47670ccc7deecc41"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_neural/model/normalizer.joblib": {
+      "bytes": 2359879,
+      "sha256": "66b8bfcf0276de0c008107a7cb186547186c6262c588df5d37dfec1b0ba33312"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_neural/training_history.json": {
+      "bytes": 16796,
+      "sha256": "0b99c70694a2b4bcc121fb7eaf7bb34e2fe22326660f85db34d344a17ddcff56"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_btc100_raw_side_neural/worker.json": {
+      "bytes": 12875,
+      "sha256": "e9a2e95b27db7c1bf9b305aed9d17c5af0736f892107bf1b174e8b484b4c4612"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_hgb/BTCUSDT_probabilities.npz": {
+      "bytes": 159922,
+      "sha256": "641907f7868b767a65941127dc6c288b8c1f4cc16e968c6b171a7f12b699e34a"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_hgb/ETHUSDT_probabilities.npz": {
+      "bytes": 160093,
+      "sha256": "6b88de7470584b0aefa4dd8fbddd874aa24cc0c33c6658d48cb706877d11aa78"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_hgb/model.joblib": {
+      "bytes": 987550,
+      "sha256": "efc7628a8de82a7dd38c417e3503695785e398f2e12b938cbba6617aa19e89f4"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_hgb/worker.json": {
+      "bytes": 8741,
+      "sha256": "dbb3747364e5cbf2bed9979f5cffcd99e8017dd549b84d3f1f00e6d2377e636d"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_neural/BTCUSDT_probabilities.npz": {
+      "bytes": 160637,
+      "sha256": "cee5b98ab7650805de61552bc496221721ec2f70b4c9ff773075c48eeacce7bb"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_neural/ETHUSDT_probabilities.npz": {
+      "bytes": 160721,
+      "sha256": "a0387e5c75f6ae10e46b88d8455a2e91a6a02da4773512f92ef7cee5b57c790a"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_neural/model/model.pt": {
+      "bytes": 84989,
+      "sha256": "303323899b6ac21cd3be2dc04b444432eaacb900594fe73417d71e7aee207a85"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_neural/model/normalizer.joblib": {
+      "bytes": 1810999,
+      "sha256": "f54034c251c186369556c3222bbf97bdd42c495c598fa3f62f65c56032780869"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_neural/training_history.json": {
+      "bytes": 16802,
+      "sha256": "e97df7ee84be60cd737b11c927be320ec5a4f32dab94b6f234e0c43807dc2511"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_midpoint_side_neural/worker.json": {
+      "bytes": 8826,
+      "sha256": "e902eca8dba137e8a53c4d826512ccf3034f4e3c7b8ce27bc202529f5ccd4aec"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_hgb/BTCUSDT_probabilities.npz": {
+      "bytes": 159921,
+      "sha256": "5134d1b5f8bd6c107430a93efb42c49e8c57ca917d4226d6109c7bd02243ecd6"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_hgb/ETHUSDT_probabilities.npz": {
+      "bytes": 160070,
+      "sha256": "bf9fd96a352bc17622ece97f36bd2435337c63d1bf0da945ff940764c05b1a08"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_hgb/model.joblib": {
+      "bytes": 987518,
+      "sha256": "afe294e2269b9454ae966f1ba6ac49fb9a59658cdc1debe37f9c28c6250218de"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_hgb/worker.json": {
+      "bytes": 8695,
+      "sha256": "c166ec0597a511a4447d8b43afbb2c6edb3d4486f6354701b2bbde4960f4475c"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_neural/BTCUSDT_probabilities.npz": {
+      "bytes": 160708,
+      "sha256": "6966f208bef548df42464db01570a4fe63d5f9998905e3c381823617b390c3d1"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_neural/ETHUSDT_probabilities.npz": {
+      "bytes": 160705,
+      "sha256": "a8dc1189d3390eb41aae64538404ed8d25491f5ad0fd63eee669fc2754b52862"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_neural/model/model.pt": {
+      "bytes": 84925,
+      "sha256": "b1a8333a29e105fc6e0c203768b082789d70ce7b6e11373fa107e2bf7b5a3ef8"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_neural/model/normalizer.joblib": {
+      "bytes": 1810999,
+      "sha256": "9e149e1345afdb3b76ea211806122d1a80bcb99d25c2af1d91f110529eee00c6"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_neural/training_history.json": {
+      "bytes": 16798,
+      "sha256": "79aa05be40ee26603569b11804bfdbea5058858055b98569aa75df95dba889c6"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-03/workers/observations_fx100_raw_side_neural/worker.json": {
+      "bytes": 8777,
+      "sha256": "6c5e4fe537ff7188b7cd6aa8005062923fd1ef27f8f3ca4f43b8559e2d295750"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-02/BTCUSDT.labels.npy": {
+      "bytes": 172056,
+      "sha256": "e5575280f5dee134883e18b5514d5a2b482c0e43803cdc7eb0afefa6d4759953"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-02/BTCUSDT.parquet": {
+      "bytes": 83063409,
+      "sha256": "973f5d71e0d3afb23262edf20969e9539fba480a0f607ca26be7ad378462acaa"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-02/BTCUSDT.times.npy": {
+      "bytes": 172056,
+      "sha256": "1609347fccfa22f41a10871c24939491a1cac61c2c1aed847f7d50c4ac82b1b3"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-02/ETHUSDT.labels.npy": {
+      "bytes": 172056,
+      "sha256": "5fa5ae34dbafe643b0b60691d1d5281048e2263dd59c9403e95fc22225d0d1c3"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-02/ETHUSDT.parquet": {
+      "bytes": 82606448,
+      "sha256": "7a1f5669b191718ba30617fb5c67da862bcbe1db11124217d3975e8b9dad581b"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-02/ETHUSDT.times.npy": {
+      "bytes": 172056,
+      "sha256": "1609347fccfa22f41a10871c24939491a1cac61c2c1aed847f7d50c4ac82b1b3"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-03/BTCUSDT.labels.npy": {
+      "bytes": 172064,
+      "sha256": "dd0561a270fc7d8ace16b402ba6e0cc3e947b95c405533879e6f606a4703e98c"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-03/BTCUSDT.parquet": {
+      "bytes": 79854216,
+      "sha256": "1ba63c726223031fc41b0a29b2ac1a63232c91965914e16cf4d1b3369ff041a0"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-03/BTCUSDT.times.npy": {
+      "bytes": 172064,
+      "sha256": "e5fb7ccc24d200e31ee65487873911c1196d28f3612f0a63d96c455d272d5557"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-03/ETHUSDT.labels.npy": {
+      "bytes": 172064,
+      "sha256": "b0727f2d73871a79b5ea7935e7bdf4f84d3ba8d85943c9c81f281709f97e7c0b"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-03/ETHUSDT.parquet": {
+      "bytes": 79505886,
+      "sha256": "3c8c766eba3ae5591973aa86084784f3942cbd1893120f6cde4b8b0f41120111"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-03/ETHUSDT.times.npy": {
+      "bytes": 172064,
+      "sha256": "e5fb7ccc24d200e31ee65487873911c1196d28f3612f0a63d96c455d272d5557"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-04/BTCUSDT.labels.npy": {
+      "bytes": 172312,
+      "sha256": "2002ecfb7b7d759d15254e850af6c358da019c36bb345f3e7fff382a68e442c0"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-04/BTCUSDT.parquet": {
+      "bytes": 80205403,
+      "sha256": "02a5de15b4612cf8f5d59a63032ff2879c58630dd4b973f3f80381e0248a1e43"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-04/BTCUSDT.times.npy": {
+      "bytes": 172312,
+      "sha256": "a5fd196ee360dbb1305e5099100216bf5e6b277fac45495d27b8bd2439bb287e"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-04/ETHUSDT.labels.npy": {
+      "bytes": 172312,
+      "sha256": "1c1d00774ef94163d0fe41fa2e7b3de20eff1b0de692b3d7321e4b763a68ed69"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-04/ETHUSDT.parquet": {
+      "bytes": 79861856,
+      "sha256": "47325e749d8e31cf5643594e602426ce40a3be87f47e07faf7380d359c2c500a"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-04/ETHUSDT.times.npy": {
+      "bytes": 172312,
+      "sha256": "a5fd196ee360dbb1305e5099100216bf5e6b277fac45495d27b8bd2439bb287e"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-05/BTCUSDT.labels.npy": {
+      "bytes": 172056,
+      "sha256": "cd5f0f896e01b8db71bf5858ff531f7e75b11d39e6b34c21033fce895193fb15"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-05/BTCUSDT.parquet": {
+      "bytes": 84276046,
+      "sha256": "4d567b4d71bbc5c5fdaa425a86e666e57dbfd9713ae716ba2036d6f11628e25f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-05/BTCUSDT.times.npy": {
+      "bytes": 172056,
+      "sha256": "5e71b0f51a3292ce97dedc920d466614ce59321d95c23075283e411b2acfb821"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-05/ETHUSDT.labels.npy": {
+      "bytes": 172056,
+      "sha256": "74d534a6e6a36a791ac943af02baa955b64416ae1d28d18f7b74cdb292c70ef3"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-05/ETHUSDT.parquet": {
+      "bytes": 83765114,
+      "sha256": "f91e296cbb242ebd5952f0ac94408307142cc34347cd33f0610c36ad6b97b027"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-05/ETHUSDT.times.npy": {
+      "bytes": 172056,
+      "sha256": "5e71b0f51a3292ce97dedc920d466614ce59321d95c23075283e411b2acfb821"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-06/BTCUSDT.labels.npy": {
+      "bytes": 56688,
+      "sha256": "02131592138c5f834eca5988670f583bb88b6e06ff1dea36e19761eaae4358d0"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-06/BTCUSDT.parquet": {
+      "bytes": 28119514,
+      "sha256": "70a8a786f323aca7dc5be4996c207968413553206bb2530e1d92cd174ea3e4cb"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-06/BTCUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "8b47d5974ae974e99ce3064f264e908270f7fe7c721f0b7e00df20d6bf3a2964"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-06/ETHUSDT.labels.npy": {
+      "bytes": 56688,
+      "sha256": "7c29821d44620f2dedb553b3749c4de2a36b2063150a78b5626d15085ceef200"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-06/ETHUSDT.parquet": {
+      "bytes": 27889167,
+      "sha256": "2d8e1bee8563027f379368681d64f5104194fb5a4a8d55f884fedb79cbf11cbe"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-06/ETHUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "8b47d5974ae974e99ce3064f264e908270f7fe7c721f0b7e00df20d6bf3a2964"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-07/BTCUSDT.parquet": {
+      "bytes": 27097443,
+      "sha256": "712bc0de40ae567f9c33897f181ff4317111f1af67c25a0fbdbee6cb2daa833b"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-07/BTCUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "17bf9856f06d3698dcaaad8ed7380a5d4de24632616a92b1bdc4956c6331ab91"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-07/ETHUSDT.parquet": {
+      "bytes": 26742665,
+      "sha256": "d260b44d289f7e0411e799d64526bcc5ec3a47993552d1ce94b0fb5de375f9d9"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/matrices/2023-06-07/ETHUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "17bf9856f06d3698dcaaad8ed7380a5d4de24632616a92b1bdc4956c6331ab91"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/metadata.json": {
+      "bytes": 25376,
+      "sha256": "6c7ffd5565ba7a4eb875e9031609307e1f0cf71f06037f78c12d951490fe2903"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/prepared.json": {
+      "bytes": 380158,
+      "sha256": "d986ee396e618e4a02387e292e5da8490d40ec762638285c798a2830a4e4d135"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/sealed_assessment_BTCUSDT.npz": {
+      "bytes": 20327,
+      "sha256": "b1edd83934b4fa320707a3ea7ca3453f6777f1d41586e4b0611207cb92bb9d8e"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-07/prepared/sealed_assessment_ETHUSDT.npz": {
+      "bytes": 20222,
+      "sha256": "7198cc4ef03d4afb995622c093b980fe99851554adc5dac025b190b7a099b673"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-06/BTCUSDT.labels.npy": {
+      "bytes": 172056,
+      "sha256": "97bc79b30b4244bc3663d558f1a8c5e4f17bb03da519f914a5e242fb018cac30"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-06/BTCUSDT.parquet": {
+      "bytes": 84193136,
+      "sha256": "86610d2442a030d8552dea6b95de8de65b8af4fe0f2590d5d046cbcea1ad4d68"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-06/BTCUSDT.times.npy": {
+      "bytes": 172056,
+      "sha256": "e844e53e258571a93510ebe0fcbd63c60d9af33df5c0a610ad4c4ca1f0e0e5b2"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-06/ETHUSDT.labels.npy": {
+      "bytes": 172056,
+      "sha256": "194486e897d45780324ad72538cecba35778d597fbd190cfe9f1a2fcd4624728"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-06/ETHUSDT.parquet": {
+      "bytes": 83642053,
+      "sha256": "5bfa63542d71faf2cbeb4176a3d2793b88fe812c86cc5c379ffbf4c0a264b13d"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-06/ETHUSDT.times.npy": {
+      "bytes": 172056,
+      "sha256": "e844e53e258571a93510ebe0fcbd63c60d9af33df5c0a610ad4c4ca1f0e0e5b2"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-07/BTCUSDT.labels.npy": {
+      "bytes": 172072,
+      "sha256": "fa79c0be72d0360a745a347e19585752e40d876a69d39866b59a45f9d2338b0d"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-07/BTCUSDT.parquet": {
+      "bytes": 84538154,
+      "sha256": "c73084cbbe3eb2a100a81621a12388566ed932f024283b2ad476cecf3eb9f429"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-07/BTCUSDT.times.npy": {
+      "bytes": 172072,
+      "sha256": "c35d618bdaa29d3c2de6f53fbe1248cd783d0c23e24382a5b945694f3fdbd449"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-07/ETHUSDT.labels.npy": {
+      "bytes": 172072,
+      "sha256": "3b550db6ce0affd501a199d6e1abcd7bc5794c004c8c3dcb948fc21f5f325d2e"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-07/ETHUSDT.parquet": {
+      "bytes": 83890959,
+      "sha256": "5914eb95b96ba1741d13cbf7f69f7e3289aea8ea32e44e2528fcfe37f1abf5d5"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-07/ETHUSDT.times.npy": {
+      "bytes": 172072,
+      "sha256": "c35d618bdaa29d3c2de6f53fbe1248cd783d0c23e24382a5b945694f3fdbd449"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-08/BTCUSDT.labels.npy": {
+      "bytes": 172064,
+      "sha256": "c8542d13f731cf2ae2c1dfca2035c3abf10c260b12ef680015014ee329afb821"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-08/BTCUSDT.parquet": {
+      "bytes": 82144630,
+      "sha256": "ed517c1572093201c9dc13f80e33b296664415521a6b29a5cb5e7811b7d09a98"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-08/BTCUSDT.times.npy": {
+      "bytes": 172064,
+      "sha256": "6d95ce5b5a304846eb93d585710f76ecf25abeb1297894258f7d2621de643b6f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-08/ETHUSDT.labels.npy": {
+      "bytes": 172064,
+      "sha256": "293b5e4ce221ec19fa5804e9cb371f1b0b3f767b624695703f7376b08ea08e7d"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-08/ETHUSDT.parquet": {
+      "bytes": 81497729,
+      "sha256": "21e3996d503358426cba86b1c6f141723b42a6e7a75864468a796c38155ef895"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-08/ETHUSDT.times.npy": {
+      "bytes": 172064,
+      "sha256": "6d95ce5b5a304846eb93d585710f76ecf25abeb1297894258f7d2621de643b6f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-09/BTCUSDT.labels.npy": {
+      "bytes": 172056,
+      "sha256": "0be90ad60ee4ca66114c2677d20e03d6722dd4e019034a5a23ae48e80349bb48"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-09/BTCUSDT.parquet": {
+      "bytes": 81556544,
+      "sha256": "54b69b49127f72155028c7831a558a0a61aaca259dadbfff7e80e7313c426832"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-09/BTCUSDT.times.npy": {
+      "bytes": 172056,
+      "sha256": "8f86f348115148da4d6250c6f6faf0c7291e91cf29c074f619998fd8aad6a957"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-09/ETHUSDT.labels.npy": {
+      "bytes": 172056,
+      "sha256": "fa1841355dc8c944fdf5372bb93db3a0129340f1b698ed332d8c08dd20f0da29"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-09/ETHUSDT.parquet": {
+      "bytes": 81063386,
+      "sha256": "e73d47af0572cd667c3aadaf0a0098ecfa898a1935241c4ffa4d30ace909ffee"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-09/ETHUSDT.times.npy": {
+      "bytes": 172056,
+      "sha256": "8f86f348115148da4d6250c6f6faf0c7291e91cf29c074f619998fd8aad6a957"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-10/BTCUSDT.labels.npy": {
+      "bytes": 56688,
+      "sha256": "7abb81fa2f12cd984d1514b2477a7e90dd946602d9a38b631d041479ab29fac3"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-10/BTCUSDT.parquet": {
+      "bytes": 26510065,
+      "sha256": "6d0c70480db25dd69a79f28fdc5531817d5bb4931bf9bb53cba9884f20a42a48"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-10/BTCUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "890caece3e868753904796695031cf8d8b14d74e26e182cbf6a2c3ab64123411"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-10/ETHUSDT.labels.npy": {
+      "bytes": 56688,
+      "sha256": "d6748d640cd90378dd1a50777590b559b89a13a1f176aafbb58ab447fc8be219"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-10/ETHUSDT.parquet": {
+      "bytes": 26394031,
+      "sha256": "743cbe2e14125e87b427a6b6f03af1b1372139c2e5682fcd2939a91dd904f283"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-10/ETHUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "890caece3e868753904796695031cf8d8b14d74e26e182cbf6a2c3ab64123411"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-11/BTCUSDT.parquet": {
+      "bytes": 24990864,
+      "sha256": "5c9c82ceaf5385e1f0a2e824a63785be3907afdb9951cfdb04e243643e9ed57f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-11/BTCUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "848a93d7d8c630c7f78da32b458a16a324fc7134faad3d13a082695eb832ae4f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-11/ETHUSDT.parquet": {
+      "bytes": 24749153,
+      "sha256": "f53a51636b2169a146138a7511af88310ff78625decaf59ff9100d4057dd39aa"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/matrices/2023-06-11/ETHUSDT.times.npy": {
+      "bytes": 56688,
+      "sha256": "848a93d7d8c630c7f78da32b458a16a324fc7134faad3d13a082695eb832ae4f"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/metadata.json": {
+      "bytes": 25376,
+      "sha256": "b3697ab174329dd928579c40f795f5af7c2448d858956e920363c6dbf1f2db08"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/prepared.json": {
+      "bytes": 380158,
+      "sha256": "a16ccc1873d962cbf06983675de9acb66569d98001c0732b80cb7e874f2174b6"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/sealed_assessment_BTCUSDT.npz": {
+      "bytes": 19687,
+      "sha256": "42f2dae09f00d2c66a78f372cf04320297b2011c6809d3770b171c7877be2644"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/dates/2023-06-11/prepared/sealed_assessment_ETHUSDT.npz": {
+      "bytes": 19826,
+      "sha256": "bf937e78bba0282280ad8d261792e9083fa1c1e40be5528433b64d0ef06696c1"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/frozen_screen.json": {
+      "bytes": 344765,
+      "sha256": "eb0a634d00bf0d5e12f874db000378a7cfb60f57e8da19c37e3ccfe4328d977d"
+    },
+    "results/boundary_midpoint_conversion_screen_20260909/progress.json": {
+      "bytes": 129,
+      "sha256": "91d0983e52f24056284941743344f461c881a393ffa2e5ab99dd01577ccc2736"
+    }
+  },
+  "no_confirmation_date_consumed": true,
+  "parent_log": {
+    "path": "docs/research/boundary_midpoint_conversion_pause_20260909.log.txt",
+    "sha256": "ac922c9b10a1b0cb102de338584a886254ee7336135146c6476c5a2f5c8f368e"
+  },
+  "planned_fits": 48,
+  "prepared_dates": [
+    "2023-06-03",
+    "2023-06-07",
+    "2023-06-11"
+  ],
+  "previous_test_runs": {
+    "/tmp/pinely-midpoint-screen-base-tests.log": {
+      "last_line": "passed 492 direct test cases; skipped 6 optional-dependency tests; skipped 70 optional test modules",
+      "sha256": "c26bb542839bc2345b7bc7c9c34045fe86eb79eccae6e1b765d97e1981616423",
+      "status": "previously_completed_before_pause; not rerun for this documentation snapshot"
+    },
+    "/tmp/pinely-midpoint-screen-full-tests.log": {
+      "last_line": "passed 722 direct test cases; skipped 0 optional-dependency tests; skipped 0 optional test modules",
+      "sha256": "8dd6718a612710d9e516e33906c34e325bc330a09a6b3532f4015796326335dc",
+      "status": "previously_completed_before_pause; not rerun for this documentation snapshot"
+    }
+  },
+  "process_stop": {
+    "exit_code": 130,
+    "matching_automations": [],
+    "method": "SIGINT via session stdin",
+    "process_inventory_verified_no_matching_parent_or_worker": true,
+    "tool_session": 20058
+  },
+  "protocol_path": "docs/research/boundary_midpoint_conversion_screen_20260909.json",
+  "protocol_sha256": "4bd811dbc1a62c445723aab77078bc3963b06a202970934c371ff3994f99446f",
+  "research_complete": false,
+  "research_priority": "predictive_accuracy_first",
+  "resume_contract": [
+    "Wait for a new user instruction before any research, model fit, download or assessment.",
+    "Verify the protocol, all pinned input hashes, this snapshot and preserved artifacts before proceeding.",
+    "Preserve the interrupted attempt without overwriting or deleting it.",
+    "The existing runner refuses an existing output directory and has no implicit resume.",
+    "Freeze an explicit continuation that verifies and reuses completed workers or freezes a fresh attempt in a new directory; record all reused, interrupted and repeated fits.",
+    "Keep the model family, data partitions, target, seeds and criteria unchanged unless explicitly registering a new research family.",
+    "Do not reveal assessment metrics until all 48 fixed procedures are complete and verified.",
+    "Use the frozen assessor after completion; no performance or mechanism claim from this partial attempt.",
+    "Keep June 13-July 2 confirmation data unopened for market analysis until independent confirmation is justified and frozen."
+  ],
+  "resume_requires_new_user_instruction": true,
+  "snapshot_utc": "2026-09-09T14:20:52.129448+00:00",
+  "stale_progress_at_interrupt": {
+    "assessment_metrics_sealed": true,
+    "date": "2023-06-03",
+    "model": "combined_fx100_raw_side_hgb",
+    "stage": "training"
+  },
+  "status": "paused_by_user",
+  "substantial_gain_confirmed": false,
+  "unstarted_fits": 39,
+  "user_instruction": "put everything on pause and commit and push current findings; continue later"
+}

@@ -1,0 +1,35 @@
+/Users/runner/work/crossbow/crossbow/arrow/cpp/src/arrow/util/cpu_info.cc:239: IOError: sysctlbyname failed for 'hw.l1dcachesize'. Detail: [errno 1] Operation not permitted
+/Users/runner/work/crossbow/crossbow/arrow/cpp/src/arrow/util/cpu_info.cc:239: IOError: sysctlbyname failed for 'hw.l2cachesize'. Detail: [errno 1] Operation not permitted
+/Users/runner/work/crossbow/crossbow/arrow/cpp/src/arrow/util/cpu_info.cc:239: IOError: sysctlbyname failed for 'hw.l3cachesize'. Detail: [errno 1] Operation not permitted
+/Users/runner/work/crossbow/crossbow/arrow/cpp/src/arrow/util/cpu_info.cc:239: IOError: sysctlbyname failed for 'hw.optional.neon'. Detail: [errno 1] Operation not permitted
+midpoint_inputs_verified=2023-06-03
+midpoint_inputs_verified=2023-06-07
+midpoint_inputs_verified=2023-06-11
+midpoint_fit=2023-06-03/observations_fx100_raw_side_hgb seconds=51.4
+midpoint_fit=2023-06-03/observations_fx100_raw_side_neural seconds=24.4
+midpoint_fit=2023-06-03/observations_fx100_midpoint_side_hgb seconds=45.7
+midpoint_fit=2023-06-03/observations_fx100_midpoint_side_neural seconds=21.6
+midpoint_fit=2023-06-03/observations_btc100_raw_side_hgb seconds=55.2
+midpoint_fit=2023-06-03/observations_btc100_raw_side_neural seconds=27.8
+midpoint_fit=2023-06-03/observations_btc100_midpoint_side_hgb seconds=56.5
+midpoint_fit=2023-06-03/observations_btc100_midpoint_side_neural seconds=27.0
+Traceback (most recent call last):
+  File "/Users/lemonnierhugo/Desktop/Me/Coding Project/Pinely/scripts/run_boundary_midpoint_conversion_screen.py", line 349, in <module>
+    run(args.protocol.resolve(), args.output.resolve(), args.prepare_only)
+  File "/Users/lemonnierhugo/Desktop/Me/Coding Project/Pinely/scripts/run_boundary_midpoint_conversion_screen.py", line 315, in run
+    process = subprocess.run([sys.executable, str(Path(__file__).resolve()), "--protocol", str(protocol_path),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 2141, in _communicate
+    self.wait(timeout=self._remaining_time(endtime))
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 2047, in _wait
+    time.sleep(delay)
+KeyboardInterrupt
