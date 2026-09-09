@@ -1,0 +1,804 @@
+{
+  "all_sixteen_attempts_preserved": true,
+  "feasible_backend_summed_median_block_seconds": {
+    "cpu": 0.37833483298891224
+  },
+  "market_assessment_metrics_computed": false,
+  "market_model_fits": 0,
+  "maximum_selected_backend_projected_seconds": 112.39475109387422,
+  "maximum_selected_backend_sampled_rss_bytes": 571359232,
+  "protocol": "docs/research/boundary_temporal_attention_preflight_20260908.json",
+  "protocol_sha256": "6900508da8cdcf3c1a68dbf2938e59db7163a55fa15461667413fb0a9d3cfe17",
+  "records": [
+    {
+      "architecture": "instant",
+      "arithmetic_probe": {
+        "supervised_rows": 1017,
+        "weighted_mean_loss": 1.1442722082138062
+      },
+      "backend": "cpu",
+      "backend_agreement": {
+        "fixed_weight_gradient_absolute_error": 0.0,
+        "fixed_weight_gradient_relative_l2_error": 0.0,
+        "fixed_weight_probability_absolute_error": 0.0,
+        "independent_warmup_probability_absolute_error": 0.0
+      },
+      "causal_delta_max_absolute_errors": {
+        "chunking": 2.3283064365386963e-10,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 0.0
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "dependencies": {
+        "numpy": "2.0.2",
+        "scikit-learn": "1.5.2",
+        "torch": "2.8.0"
+      },
+      "deterministic_algorithms": true,
+      "dimensions": 221,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "machine": "arm64",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "median_block_seconds": 0.009312583017162979,
+      "median_query_seconds": 0.015007333015091717,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 351961088,
+        "maximum_sampled_simultaneous_sum_bytes": 351961088
+      },
+      "mps_fallback_environment": "0",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "projected_six_epoch_updates_and_validation_seconds": 9.623047175584361,
+      "projection_scope": "Block-time extrapolation only: 169 updates/day-grid times six epochs plus two validation queries/epoch. Excludes actual full-grid allocation, normalization, preparation, cache paging, checkpointing, assessment and replay. Neither measured full market runtime nor a memory guarantee.",
+      "python": "3.12.14",
+      "query_7070_seconds": [
+        0.01727537502301857,
+        0.015007333015091717,
+        0.012925125018227845
+      ],
+      "query_record": {
+        "chunk_rows": 512,
+        "coverage_segments": 2,
+        "observed_rows": 7190,
+        "query_calls": 15,
+        "query_rows": 7070
+      },
+      "returncode": 0,
+      "same_backend_checkpoint_replay_exact": true,
+      "seconds": 1.4292955420096405,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.011227999988477677,
+        0.011472499987576157,
+        0.008128084009513259,
+        0.009942333039361984,
+        0.008825875003822148,
+        0.00944633298786357,
+        0.009178833046462387,
+        0.008401208964642137
+      ],
+      "torch_threads": 2,
+      "trainable_parameters": 43331,
+      "warmup_update_seconds": [
+        0.09096100000897422,
+        0.010730292007792741,
+        0.008844958967529237
+      ],
+      "warmup_updates": 3,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "instant",
+      "backend": "mps",
+      "dimensions": 221,
+      "failure": "Worker exited 1; preserve complete log and partial artifacts",
+      "log_sha256": "f8f56b38fb627afb1a0c7ff2894dd64397538e05738bca80bf076e6de98dbd3b",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "instant",
+      "arithmetic_probe": {
+        "supervised_rows": 1017,
+        "weighted_mean_loss": 1.1584664583206177
+      },
+      "backend": "cpu",
+      "backend_agreement": {
+        "fixed_weight_gradient_absolute_error": 0.0,
+        "fixed_weight_gradient_relative_l2_error": 0.0,
+        "fixed_weight_probability_absolute_error": 0.0,
+        "independent_warmup_probability_absolute_error": 0.0
+      },
+      "causal_delta_max_absolute_errors": {
+        "chunking": 3.4924596548080444e-10,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 0.0
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "dependencies": {
+        "numpy": "2.0.2",
+        "scikit-learn": "1.5.2",
+        "torch": "2.8.0"
+      },
+      "deterministic_algorithms": true,
+      "dimensions": 400,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "machine": "arm64",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "median_block_seconds": 0.010203895508311689,
+      "median_query_seconds": 0.017270834010560066,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 407617536,
+        "maximum_sampled_simultaneous_sum_bytes": 407617536
+      },
+      "mps_fallback_environment": "0",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "projected_six_epoch_updates_and_validation_seconds": 10.554000053554773,
+      "projection_scope": "Block-time extrapolation only: 169 updates/day-grid times six epochs plus two validation queries/epoch. Excludes actual full-grid allocation, normalization, preparation, cache paging, checkpointing, assessment and replay. Neither measured full market runtime nor a memory guarantee.",
+      "python": "3.12.14",
+      "query_7070_seconds": [
+        0.01742575003299862,
+        0.01657662499928847,
+        0.017270834010560066
+      ],
+      "query_record": {
+        "chunk_rows": 512,
+        "coverage_segments": 2,
+        "observed_rows": 7190,
+        "query_calls": 15,
+        "query_rows": 7070
+      },
+      "returncode": 0,
+      "same_backend_checkpoint_replay_exact": true,
+      "seconds": 1.0708457089494914,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.012763749982696027,
+        0.010177457996178418,
+        0.010104041954036802,
+        0.009865499974694103,
+        0.009031667024828494,
+        0.01023033302044496,
+        0.010512250009924173,
+        0.010276540997438133
+      ],
+      "torch_threads": 2,
+      "trainable_parameters": 54787,
+      "warmup_update_seconds": [
+        0.019852500001434237,
+        0.009971250023227185,
+        0.010476665978785604
+      ],
+      "warmup_updates": 3,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "instant",
+      "backend": "mps",
+      "dimensions": 400,
+      "failure": "Worker exited 1; preserve complete log and partial artifacts",
+      "log_sha256": "f8f56b38fb627afb1a0c7ff2894dd64397538e05738bca80bf076e6de98dbd3b",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "uniform",
+      "arithmetic_probe": {
+        "supervised_rows": 1017,
+        "weighted_mean_loss": 1.1442872285842896
+      },
+      "backend": "cpu",
+      "backend_agreement": {
+        "fixed_weight_gradient_absolute_error": 0.0,
+        "fixed_weight_gradient_relative_l2_error": 0.0,
+        "fixed_weight_probability_absolute_error": 0.0,
+        "independent_warmup_probability_absolute_error": 0.0
+      },
+      "causal_delta_max_absolute_errors": {
+        "chunking": 2.3283064365386963e-10,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 0.0
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "dependencies": {
+        "numpy": "2.0.2",
+        "scikit-learn": "1.5.2",
+        "torch": "2.8.0"
+      },
+      "deterministic_algorithms": true,
+      "dimensions": 221,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "machine": "arm64",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "median_block_seconds": 0.03469652094645426,
+      "median_query_seconds": 0.09500441700220108,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 508805120,
+        "maximum_sampled_simultaneous_sum_bytes": 508805120
+      },
+      "mps_fallback_environment": "0",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "projected_six_epoch_updates_and_validation_seconds": 36.32232524373103,
+      "projection_scope": "Block-time extrapolation only: 169 updates/day-grid times six epochs plus two validation queries/epoch. Excludes actual full-grid allocation, normalization, preparation, cache paging, checkpointing, assessment and replay. Neither measured full market runtime nor a memory guarantee.",
+      "python": "3.12.14",
+      "query_7070_seconds": [
+        0.08691162505419925,
+        0.10249283397570252,
+        0.09500441700220108
+      ],
+      "query_record": {
+        "chunk_rows": 512,
+        "coverage_segments": 2,
+        "observed_rows": 7190,
+        "query_calls": 15,
+        "query_rows": 7070
+      },
+      "returncode": 0,
+      "same_backend_checkpoint_replay_exact": true,
+      "seconds": 1.9748564999899827,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.03807087504537776,
+        0.031147249974310398,
+        0.06100683403201401,
+        0.03140400000847876,
+        0.032581833947915584,
+        0.03681120794499293,
+        0.04037787503330037,
+        0.0322568750125356
+      ],
+      "torch_threads": 2,
+      "trainable_parameters": 43331,
+      "warmup_update_seconds": [
+        0.07527483400190249,
+        0.031735625001601875,
+        0.03268074995139614
+      ],
+      "warmup_updates": 3,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "uniform",
+      "backend": "mps",
+      "dimensions": 221,
+      "failure": "Worker exited 1; preserve complete log and partial artifacts",
+      "log_sha256": "f8f56b38fb627afb1a0c7ff2894dd64397538e05738bca80bf076e6de98dbd3b",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "uniform",
+      "arithmetic_probe": {
+        "supervised_rows": 1017,
+        "weighted_mean_loss": 1.1584768295288086
+      },
+      "backend": "cpu",
+      "backend_agreement": {
+        "fixed_weight_gradient_absolute_error": 0.0,
+        "fixed_weight_gradient_relative_l2_error": 0.0,
+        "fixed_weight_probability_absolute_error": 0.0,
+        "independent_warmup_probability_absolute_error": 0.0
+      },
+      "causal_delta_max_absolute_errors": {
+        "chunking": 4.656612873077393e-10,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 0.0
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "dependencies": {
+        "numpy": "2.0.2",
+        "scikit-learn": "1.5.2",
+        "torch": "2.8.0"
+      },
+      "deterministic_algorithms": true,
+      "dimensions": 400,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "machine": "arm64",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "median_block_seconds": 0.033836125512607396,
+      "median_query_seconds": 0.10704224999062717,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 512475136,
+        "maximum_sampled_simultaneous_sum_bytes": 512475136
+      },
+      "mps_fallback_environment": "0",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "projected_six_epoch_updates_and_validation_seconds": 35.594338269671425,
+      "projection_scope": "Block-time extrapolation only: 169 updates/day-grid times six epochs plus two validation queries/epoch. Excludes actual full-grid allocation, normalization, preparation, cache paging, checkpointing, assessment and replay. Neither measured full market runtime nor a memory guarantee.",
+      "python": "3.12.14",
+      "query_7070_seconds": [
+        0.10704224999062717,
+        0.09843554097460583,
+        0.11458779196254909
+      ],
+      "query_record": {
+        "chunk_rows": 512,
+        "coverage_segments": 2,
+        "observed_rows": 7190,
+        "query_calls": 15,
+        "query_rows": 7070
+      },
+      "returncode": 0,
+      "same_backend_checkpoint_replay_exact": true,
+      "seconds": 2.185407540993765,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.0401598330354318,
+        0.033509209053590894,
+        0.0341630419716239,
+        0.03337304195156321,
+        0.03463033301522955,
+        0.0348150419886224,
+        0.03346429095836356,
+        0.03224416699958965
+      ],
+      "torch_threads": 2,
+      "trainable_parameters": 54787,
+      "warmup_update_seconds": [
+        0.07544654200319201,
+        0.04208120796829462,
+        0.03591749997576699
+      ],
+      "warmup_updates": 3,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "uniform",
+      "backend": "mps",
+      "dimensions": 400,
+      "failure": "Worker exited 1; preserve complete log and partial artifacts",
+      "log_sha256": "f8f56b38fb627afb1a0c7ff2894dd64397538e05738bca80bf076e6de98dbd3b",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "age",
+      "arithmetic_probe": {
+        "supervised_rows": 1017,
+        "weighted_mean_loss": 1.1442872285842896
+      },
+      "backend": "cpu",
+      "backend_agreement": {
+        "fixed_weight_gradient_absolute_error": 0.0,
+        "fixed_weight_gradient_relative_l2_error": 0.0,
+        "fixed_weight_probability_absolute_error": 0.0,
+        "independent_warmup_probability_absolute_error": 0.0
+      },
+      "causal_delta_max_absolute_errors": {
+        "chunking": 3.4924596548080444e-10,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 0.0
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "dependencies": {
+        "numpy": "2.0.2",
+        "scikit-learn": "1.5.2",
+        "torch": "2.8.0"
+      },
+      "deterministic_algorithms": true,
+      "dimensions": 221,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "machine": "arm64",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "median_block_seconds": 0.0362078745092731,
+      "median_query_seconds": 0.09068641602061689,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 509132800,
+        "maximum_sampled_simultaneous_sum_bytes": 509132800
+      },
+      "mps_fallback_environment": "0",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "projected_six_epoch_updates_and_validation_seconds": 37.80302174465032,
+      "projection_scope": "Block-time extrapolation only: 169 updates/day-grid times six epochs plus two validation queries/epoch. Excludes actual full-grid allocation, normalization, preparation, cache paging, checkpointing, assessment and replay. Neither measured full market runtime nor a memory guarantee.",
+      "python": "3.12.14",
+      "query_7070_seconds": [
+        0.09068641602061689,
+        0.08887425001012161,
+        0.09782866603927687
+      ],
+      "query_record": {
+        "chunk_rows": 512,
+        "coverage_segments": 2,
+        "observed_rows": 7190,
+        "query_calls": 15,
+        "query_rows": 7070
+      },
+      "returncode": 0,
+      "same_backend_checkpoint_replay_exact": true,
+      "seconds": 2.0517722500371747,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.05380316695664078,
+        0.035630416008643806,
+        0.036941541999112815,
+        0.035608041973318905,
+        0.03689429198857397,
+        0.03603429096983746,
+        0.03532304096734151,
+        0.03638145804870874
+      ],
+      "torch_threads": 2,
+      "trainable_parameters": 43843,
+      "warmup_update_seconds": [
+        0.06260583299444988,
+        0.04106762498850003,
+        0.04116116696968675
+      ],
+      "warmup_updates": 3,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "age",
+      "backend": "mps",
+      "dimensions": 221,
+      "failure": "Worker exited 1; preserve complete log and partial artifacts",
+      "log_sha256": "f8f56b38fb627afb1a0c7ff2894dd64397538e05738bca80bf076e6de98dbd3b",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "age",
+      "arithmetic_probe": {
+        "supervised_rows": 1017,
+        "weighted_mean_loss": 1.1584768295288086
+      },
+      "backend": "cpu",
+      "backend_agreement": {
+        "fixed_weight_gradient_absolute_error": 0.0,
+        "fixed_weight_gradient_relative_l2_error": 0.0,
+        "fixed_weight_probability_absolute_error": 0.0,
+        "independent_warmup_probability_absolute_error": 0.0
+      },
+      "causal_delta_max_absolute_errors": {
+        "chunking": 4.656612873077393e-10,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 0.0
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "dependencies": {
+        "numpy": "2.0.2",
+        "scikit-learn": "1.5.2",
+        "torch": "2.8.0"
+      },
+      "deterministic_algorithms": true,
+      "dimensions": 400,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "machine": "arm64",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "median_block_seconds": 0.04580631299177185,
+      "median_query_seconds": 0.11742666701320559,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 489750528,
+        "maximum_sampled_simultaneous_sum_bytes": 489750528
+      },
+      "mps_fallback_environment": "0",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "projected_six_epoch_updates_and_validation_seconds": 47.85672137781512,
+      "projection_scope": "Block-time extrapolation only: 169 updates/day-grid times six epochs plus two validation queries/epoch. Excludes actual full-grid allocation, normalization, preparation, cache paging, checkpointing, assessment and replay. Neither measured full market runtime nor a memory guarantee.",
+      "python": "3.12.14",
+      "query_7070_seconds": [
+        0.09786458301823586,
+        0.11742666701320559,
+        0.15071466704830527
+      ],
+      "query_record": {
+        "chunk_rows": 512,
+        "coverage_segments": 2,
+        "observed_rows": 7190,
+        "query_calls": 15,
+        "query_rows": 7070
+      },
+      "returncode": 0,
+      "same_backend_checkpoint_replay_exact": true,
+      "seconds": 3.0149357499904,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.06664870795793831,
+        0.0482757089775987,
+        0.06569133303128183,
+        0.049959541007410735,
+        0.043336917005945,
+        0.04106016701553017,
+        0.03954554197844118,
+        0.04042774997651577
+      ],
+      "torch_threads": 2,
+      "trainable_parameters": 55299,
+      "warmup_update_seconds": [
+        0.13353558297967538,
+        0.04083683300996199,
+        0.07711591600673273
+      ],
+      "warmup_updates": 3,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "age",
+      "backend": "mps",
+      "dimensions": 400,
+      "failure": "Worker exited 1; preserve complete log and partial artifacts",
+      "log_sha256": "f8f56b38fb627afb1a0c7ff2894dd64397538e05738bca80bf076e6de98dbd3b",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "content",
+      "arithmetic_probe": {
+        "supervised_rows": 1017,
+        "weighted_mean_loss": 1.144287347793579
+      },
+      "backend": "cpu",
+      "backend_agreement": {
+        "fixed_weight_gradient_absolute_error": 0.0,
+        "fixed_weight_gradient_relative_l2_error": 0.0,
+        "fixed_weight_probability_absolute_error": 0.0,
+        "independent_warmup_probability_absolute_error": 0.0
+      },
+      "causal_delta_max_absolute_errors": {
+        "chunking": 2.3283064365386963e-10,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 0.0
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "dependencies": {
+        "numpy": "2.0.2",
+        "scikit-learn": "1.5.2",
+        "torch": "2.8.0"
+      },
+      "deterministic_algorithms": true,
+      "dimensions": 221,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "machine": "arm64",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "median_block_seconds": 0.09972447899053805,
+      "median_query_seconds": 0.2153227079543285,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 564428800,
+        "maximum_sampled_simultaneous_sum_bytes": 564428800
+      },
+      "mps_fallback_environment": "0",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "projected_six_epoch_updates_and_validation_seconds": 103.70449419185752,
+      "projection_scope": "Block-time extrapolation only: 169 updates/day-grid times six epochs plus two validation queries/epoch. Excludes actual full-grid allocation, normalization, preparation, cache paging, checkpointing, assessment and replay. Neither measured full market runtime nor a memory guarantee.",
+      "python": "3.12.14",
+      "query_7070_seconds": [
+        0.2153227079543285,
+        0.24758775002555922,
+        0.20888141600880772
+      ],
+      "query_record": {
+        "chunk_rows": 512,
+        "coverage_segments": 2,
+        "observed_rows": 7190,
+        "query_calls": 15,
+        "query_rows": 7070
+      },
+      "returncode": 0,
+      "same_backend_checkpoint_replay_exact": true,
+      "seconds": 4.8021692910115235,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.2188198750372976,
+        0.10546120797516778,
+        0.06975550000788644,
+        0.07115441700443625,
+        0.09398775000590831,
+        0.07903766696108505,
+        0.150762457982637,
+        0.11675645801005885
+      ],
+      "torch_threads": 2,
+      "trainable_parameters": 52163,
+      "warmup_update_seconds": [
+        0.12813895801082253,
+        0.08268966700416058,
+        0.10199741600081325
+      ],
+      "warmup_updates": 3,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "content",
+      "backend": "mps",
+      "dimensions": 221,
+      "failure": "Worker exited 1; preserve complete log and partial artifacts",
+      "log_sha256": "f8f56b38fb627afb1a0c7ff2894dd64397538e05738bca80bf076e6de98dbd3b",
+      "returncode": 1,
+      "status": "failed"
+    },
+    {
+      "architecture": "content",
+      "arithmetic_probe": {
+        "supervised_rows": 1017,
+        "weighted_mean_loss": 1.1584769487380981
+      },
+      "backend": "cpu",
+      "backend_agreement": {
+        "fixed_weight_gradient_absolute_error": 0.0,
+        "fixed_weight_gradient_relative_l2_error": 0.0,
+        "fixed_weight_probability_absolute_error": 0.0,
+        "independent_warmup_probability_absolute_error": 0.0
+      },
+      "causal_delta_max_absolute_errors": {
+        "chunking": 2.3283064365386963e-10,
+        "future_prefix": 0.0,
+        "gap_reset": 0.0,
+        "shorter_prefix": 0.0
+      },
+      "config": {
+        "epochs": 6,
+        "gradient_norm_limit": 5.0,
+        "heads": 4,
+        "history_observations": 128,
+        "learning_rate": 0.0003,
+        "optimization_seconds": 512,
+        "seed": 20260908,
+        "weight_decay": 0.01,
+        "width": 64
+      },
+      "dependencies": {
+        "numpy": "2.0.2",
+        "scikit-learn": "1.5.2",
+        "torch": "2.8.0"
+      },
+      "deterministic_algorithms": true,
+      "dimensions": 400,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "machine": "arm64",
+      "market_assessment_metrics_computed": false,
+      "market_model_fits": 0,
+      "median_block_seconds": 0.10854704151279293,
+      "median_query_seconds": 0.19400424999184906,
+      "memory": {
+        "maximum_sampled_gpu_driver_bytes": 0,
+        "maximum_sampled_rss_bytes": 571359232,
+        "maximum_sampled_simultaneous_sum_bytes": 571359232
+      },
+      "mps_fallback_environment": "0",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "projected_six_epoch_updates_and_validation_seconds": 112.39475109387422,
+      "projection_scope": "Block-time extrapolation only: 169 updates/day-grid times six epochs plus two validation queries/epoch. Excludes actual full-grid allocation, normalization, preparation, cache paging, checkpointing, assessment and replay. Neither measured full market runtime nor a memory guarantee.",
+      "python": "3.12.14",
+      "query_7070_seconds": [
+        0.188598082982935,
+        0.19400424999184906,
+        0.28496575000463054
+      ],
+      "query_record": {
+        "chunk_rows": 512,
+        "coverage_segments": 2,
+        "observed_rows": 7190,
+        "query_calls": 15,
+        "query_rows": 7070
+      },
+      "returncode": 0,
+      "same_backend_checkpoint_replay_exact": true,
+      "seconds": 4.765779624984134,
+      "status": "passed",
+      "timed_block_seconds": [
+        0.14996091701323166,
+        0.07983720896299928,
+        0.11244387499755248,
+        0.08276529202703387,
+        0.15354533301433548,
+        0.10465020802803338,
+        0.17489587498130277,
+        0.0839568329975009
+      ],
+      "torch_threads": 2,
+      "trainable_parameters": 63619,
+      "warmup_update_seconds": [
+        0.1112086670473218,
+        0.10806816699914634,
+        0.07484941696748137
+      ],
+      "warmup_updates": 3,
+      "zero_correction_exact": true
+    },
+    {
+      "architecture": "content",
+      "backend": "mps",
+      "dimensions": 400,
+      "failure": "Worker exited 1; preserve complete log and partial artifacts",
+      "log_sha256": "f8f56b38fb627afb1a0c7ff2894dd64397538e05738bca80bf076e6de98dbd3b",
+      "returncode": 1,
+      "status": "failed"
+    }
+  ],
+  "scope": "Fixed-weight arithmetic and independently warmed forecast checks plus measured synthetic blocks. The extrapolation excludes real historical-grid materialization, paging and other market operations; it is not a measured full market fit or memory guarantee.",
+  "selected_backend": "cpu",
+  "selected_backend_eight_cases_passed": true,
+  "status": "synthetic_runtime_only",
+  "summary": "data/research/boundary_temporal_attention_preflight_20260908/summary.json",
+  "summary_sha256": "55d50858e72d664c08d46cfd426b3e9babee54c05670925b7fb6534b6973a206"
+}
