@@ -1,0 +1,111 @@
+{
+  "all_input_hashes_verified": true,
+  "assessment_labels_decoded": false,
+  "independent_confirmation_data_opened": false,
+  "market_model_fits": 0,
+  "noon_available_by_depth_and_delay": {
+    "1": [
+      7070,
+      7070
+    ],
+    "100": [
+      7070,
+      7070
+    ],
+    "25": [
+      7070,
+      7070
+    ]
+  },
+  "noon_decision_rows": 7070,
+  "protocol": "docs/research/boundary_okx_depth_preparation_preflight_20260909.json",
+  "protocol_sha256": "b0102105e05f869f41008c80277fbf5d763b6c15c22b560ea77b83546111609e",
+  "source_complete_depth_available_fractions": {
+    "1": [
+      0.9854740326631711,
+      0.985508756091068
+    ],
+    "100": [
+      0.9836915633644687,
+      0.9837725846962279
+    ],
+    "25": [
+      0.985335138951584,
+      0.9853698623794808
+    ]
+  },
+  "source_record": {
+    "archive": "data/research/boundary_okx_depth_source_preflight_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+    "archive_audit": {
+      "complete_gzip_crc_and_size_trailer_verified": true,
+      "maximum_line_bytes": 18844,
+      "member": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.data",
+      "member_bytes": 2805365863,
+      "trailing_tar_bytes": 0
+    },
+    "archive_sha256": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b",
+    "assessment_labels_decoded": false,
+    "book_checks": {
+      "decimal_price_ordering": true,
+      "empty_known_side_resets": 23,
+      "equal_timestamp_messages": 0,
+      "first_publisher_time": 1685577600002,
+      "last_publisher_time": 1685663999997,
+      "levels_removed_at_visible_frontier": 0,
+      "maximum_gap_ms": 243075,
+      "messages": 7202684,
+      "outside_known_range_updates": 5211583,
+      "publisher_gaps": 5,
+      "semantics": "okx_counted_absolute_depth_known_range_strict_cutoff_v1",
+      "snapshots": 1439,
+      "source_arrival_times_available": false,
+      "source_sequence_ids_available": false,
+      "strict_publisher_cutoff_checks": true,
+      "updates_ignored_until_snapshot": 70202
+    },
+    "complete_rows_by_depth_and_delay": {
+      "1": [
+        85142,
+        85145
+      ],
+      "100": [
+        84988,
+        84995
+      ],
+      "25": [
+        85130,
+        85133
+      ]
+    },
+    "date": "2023-06-01",
+    "decision_rows": 86397,
+    "features_path": "data/research/boundary_event_clock_20260907/BTCUSDT/2023-06-01.parquet",
+    "features_sha256": "400e64f694f5e02c7bfb9254e2fb849feb14e140c965d95ac20fa7e16879d6a4",
+    "instrument": "BTC-USDT-SWAP",
+    "market_model_fits": 0,
+    "observation_bytes": 107729160,
+    "observation_path": "data/research/boundary_okx_depth_preparation_preflight_20260909/BTCUSDT/2023-06-01/observations.npz",
+    "observation_sha256": "a84e965e18239e4fa33b54208643603f4229a2e6cd61f238c6aa56ba2c77b69d",
+    "original_read_columns": [
+      "decision_time"
+    ],
+    "protocol_sha256": "b0102105e05f869f41008c80277fbf5d763b6c15c22b560ea77b83546111609e",
+    "save_reload_exact": true,
+    "seconds": 250.16039066697704,
+    "symbol": "BTCUSDT",
+    "uncompressed_array_bytes": 834940624
+  },
+  "summary": "data/research/boundary_okx_depth_preparation_preflight_20260909/summary.json",
+  "summary_sha256": "e9cc009a909e7775a0ff51f587769bdefb09e70f425513fcc72b22f47a389eb5",
+  "supervision": [
+    {
+      "date": "2023-06-01",
+      "record": "data/research/boundary_okx_depth_preparation_preflight_20260909/BTCUSDT/2023-06-01/record.json",
+      "record_sha256": "e66b5cbee623a4c50a207b9275b162e485f33fc49eb0c0ea6c108352318425cb",
+      "seconds": 250.90681333298562,
+      "status": "complete",
+      "symbol": "BTCUSDT",
+      "worker_log_sha256": "d4df9bfaab061e4b6b05af338d3a37847d97ea60125c7eb85bf51f5354988056"
+    }
+  ]
+}
