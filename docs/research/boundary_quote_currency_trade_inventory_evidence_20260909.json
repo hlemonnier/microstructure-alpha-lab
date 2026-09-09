@@ -1,0 +1,30 @@
+{
+  "all_metadata_hashes_reverified": true,
+  "archive_bodies_downloaded": 0,
+  "by_symbol": {
+    "BTCTUSD": {
+      "expected_bytes": 436244166,
+      "files": 14,
+      "maximum_single_archive_bytes": 43281984
+    },
+    "ETHBTC": {
+      "expected_bytes": 6646327,
+      "files": 14,
+      "maximum_single_archive_bytes": 1221590
+    },
+    "TUSDUSDT": {
+      "expected_bytes": 13463249,
+      "files": 14,
+      "maximum_single_archive_bytes": 1747839
+    }
+  },
+  "file_count": 42,
+  "independent_confirmation_data_opened": false,
+  "inventory": "data/research/boundary_quote_currency_trade_inventory_20260909/summary.json",
+  "inventory_sha256": "4b21727858aa4644d0ab4fe6c280498152c43251d6c4c4155703f560eba3c224",
+  "market_content_decoded": false,
+  "new_model_fits": 0,
+  "protocol_sha256": "a0d466d7a45de122bc927c182a53834a1b884f74f37760ce5888f4e9590ac57c",
+  "status": "public_headers_and_official_checksums_only",
+  "total_expected_bytes": 456353742
+}
