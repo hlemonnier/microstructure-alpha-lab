@@ -1,0 +1,58 @@
+{
+  "acquisition_protocol": "docs/research/boundary_okx_depth_source_preflight_20260909.json",
+  "actions": {
+    "snapshot": 1,
+    "update": 999
+  },
+  "archive_bytes": 370766491,
+  "archive_sha256": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b",
+  "artifact_hashes": {
+    "data/research/boundary_okx_depth_source_preflight_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b",
+    "data/research/boundary_okx_depth_source_preflight_20260909/download_source.py": "818527867510ac1df556a38ff8962aa7030dd1d76fff3e8d169321ee209de88e",
+    "data/research/boundary_okx_depth_source_preflight_20260909/explicit_transport_retry.json": "bbb01df7d96803314e76d64aaf9b8307a7abdf5262650f37a496eb0e0831c51b",
+    "data/research/boundary_okx_depth_source_preflight_20260909/initial_dns_failure.log": "65339ec4f094b10f4fe0c30b6dadbaa5043675cd8823c6e56bf87dfc2a928054",
+    "data/research/boundary_okx_depth_source_preflight_20260909/metadata_request_20230529_20230611.json": "35f494c47b1f9067a85a1f956c3e62d04a5aa17881360aa0abd50bc058d5da1c",
+    "data/research/boundary_okx_depth_source_preflight_20260909/metadata_response_20230529_20230611.json": "a8c176016a899804c2524f42baff7ddd87014bb196f8bf80c87f3a5c45c1e1b0",
+    "data/research/boundary_okx_depth_source_preflight_20260909/response_headers.initial_dns_failure.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/research/boundary_okx_depth_source_preflight_20260909/response_headers.txt": "c6c79f3bb95a06daf23a0409ba2bde8b952991fc6cf1324afc0d445d41f757be",
+    "data/research/boundary_okx_depth_source_preflight_20260909/sample_prefix.txt": "3c7ea968509bd7c23e0044ff12208c34a43b851595c44e33bc02657835b213a2",
+    "data/research/boundary_okx_depth_source_preflight_20260909/summary.json": "60e0bd819e1a13cd7d047f9b8aec714117d05b76d902d339468efb3f132392bc"
+  },
+  "assessment_metrics_computed": false,
+  "evidence_status": "bounded_source_sample_only",
+  "explicit_transport_retry": "Unchanged frozen downloader with narrowly approved network access; completed in 14.7056 seconds. No source/checksum/budget/model change.",
+  "first_snapshot_levels": {
+    "asks": 400,
+    "bids": 400
+  },
+  "first_timestamp_ms": 1685577600002,
+  "followup": "Run the separately frozen complete-day source inventory. Query at most seven days per public metadata request if extending the development-source inventory.",
+  "fourteen_day_metadata_request": {
+    "provider_code": "50076",
+    "provider_message": "The time interval between the start date and end date cannot exceed 7 days",
+    "request": "data/research/boundary_okx_depth_source_preflight_20260909/metadata_request_20230529_20230611.json",
+    "response": "data/research/boundary_okx_depth_source_preflight_20260909/metadata_response_20230529_20230611.json"
+  },
+  "full_uncompressed_archive_or_gzip_crc_verified": false,
+  "independent_confirmation_data_opened": false,
+  "initial_transport_failure": "Sandboxed child curl could not resolve the public host. Zero archive bytes received; empty headers and failure log preserved.",
+  "last_timestamp_ms": 1685577611252,
+  "market_model_fits": 0,
+  "new_information_hypothesis": "Price-level order counts may distinguish many small orders from fewer large orders at the same total quantity. A later same-venue same-clock same-depth model comparison with versus without counts is required to isolate that contribution.",
+  "official_http_content_md5_verified": true,
+  "publisher_gap_counts_ms": {
+    "10": 907,
+    "20": 71,
+    "30": 13,
+    "40": 5,
+    "50": 2,
+    "70": 1
+  },
+  "recorded_at_utc": "2026-09-09T09:46:26.734494+00:00",
+  "sample_json_records": 1000,
+  "sample_level_entries": 17849,
+  "sample_positive_order_count_entries": 14481,
+  "sample_zero_quantity_count_disagreements": 0,
+  "summary": "data/research/boundary_okx_depth_source_preflight_20260909/summary.json",
+  "summary_sha256": "60e0bd819e1a13cd7d047f9b8aec714117d05b76d902d339468efb3f132392bc"
+}

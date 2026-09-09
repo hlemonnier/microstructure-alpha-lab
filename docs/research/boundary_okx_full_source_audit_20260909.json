@@ -1,0 +1,43 @@
+{
+  "archive": "data/research/boundary_okx_depth_source_preflight_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+  "assessment_metrics_computed": false,
+  "date": "2023-06-01",
+  "end_ms": 1685664000000,
+  "evidence_status": "source_integrity_and_coverage_only",
+  "expected_member": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.data",
+  "expected_member_bytes": 2805365863,
+  "independent_confirmation_data_opened": false,
+  "input_hashes": {
+    "data/research/boundary_okx_depth_source_preflight_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b",
+    "data/research/boundary_okx_depth_source_preflight_20260909/sample_prefix.txt": "3c7ea968509bd7c23e0044ff12208c34a43b851595c44e33bc02657835b213a2",
+    "data/research/boundary_okx_depth_source_preflight_20260909/summary.json": "60e0bd819e1a13cd7d047f9b8aec714117d05b76d902d339468efb3f132392bc",
+    "docs/research/boundary_okx_depth_source_preflight_20260909.json": "92092407b90c428b7cff498325d6073777d3ffdc333792151e55efe1b55a932c",
+    "scripts/audit_boundary_okx_archive.py": "f5b670aad02794dce8bb0a47d6bbb6d45a7c31f92529cc33940d55a764083edb",
+    "src/lob_forge/boundary_okx_source.py": "5e03f3a79c3746f98b451901fbac9ae0d3ae145f67a83d3276c13226c822ccc0",
+    "tests/test_boundary_okx_source.py": "1b6e861649e5bcd77d58a8f58c7b6ca6792edeb9face6d3cc226e7d4029256cf"
+  },
+  "instrument": "BTC-USDT-SWAP",
+  "interpretation": "These are source records and absolute level revisions, not individually identified economic order arrivals, cancellations or executions. No capture/receipt timestamps or sequence IDs may be invented; continuous book-depth certification remains separate.",
+  "market_model_fits": 0,
+  "maximum_line_bytes": 1048576,
+  "maximum_seconds": 1800,
+  "maximum_tar_tail_bytes": 16777216,
+  "outputs": [
+    "full archive gzip CRC/size verification",
+    "exact member inventory",
+    "published record and level-entry counts",
+    "per-hour record coverage",
+    "publisher timestamp ordering and gap histogram",
+    "snapshot sizes",
+    "count/quantity consistency"
+  ],
+  "parser_validation": {
+    "original_prefix_records_exactly_parsed": 1000,
+    "source_snapshot_ask_levels": 400,
+    "source_snapshot_bid_levels": 400,
+    "targeted_tests_passed": 4
+  },
+  "purpose": "Inspect every published record of the single already acquired exposed-date archive. Preserve quantities and order counts exactly and assess the timestamp/record contract before any book feature or forecast experiment.",
+  "registered_at_utc": "2026-09-09T09:46:26.732837+00:00",
+  "start_ms": 1685577600000
+}
