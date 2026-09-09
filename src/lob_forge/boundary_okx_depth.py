@@ -101,10 +101,14 @@ class CountedDepthState:
             self.asks.reset(message.asks)
             self.bids.reset(message.bids)
             self.initialized = True
+            if not self.stats["snapshots"]:
+                self.stats["first_snapshot_time"] = now
             self.stats["snapshots"] += 1
         elif message.action == "update":
             if not self.initialized:
                 self.stats["updates_ignored_until_snapshot"] += 1
+                if not self.stats["snapshots"]:
+                    self.stats["initial_updates_ignored"] += 1
                 return
             for side, changes in ((self.asks, message.asks), (self.bids, message.bids)):
                 outside, trimmed = side.apply(changes)
@@ -174,8 +178,6 @@ def sample_counted_depth(messages, decision_times, instrument, *, depth=100,
             raise ValueError("Publisher clocks cannot regress, including after the last query")
         if first is None:
             first = now
-            if message.action != "snapshot":
-                raise ValueError("The first source message must be a full snapshot")
         while cursor < len(order) and query[order[cursor]] <= now:
             emit(order[cursor])
             cursor += 1

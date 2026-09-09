@@ -88,6 +88,20 @@ def test_strict_cutoffs_exclude_all_equal_time_messages_and_coarsen_queries():
     assert values["depth"][:, 0, 0, 1].tolist() == [0, 12, 12, 36]
 
 
+def test_initial_incremental_prefix_stays_unavailable_until_its_first_snapshot():
+    messages = [_message(100, action="update"),
+        _message(150, action="update", asks=[["101", "36", "9"]], bids=[]), _message(200)]
+    values, audit = _sample(messages, [200, 300, 400], delays_ms=(100,), cadence_ms=100)
+    assert values["publisher_times"][:, 0].tolist() == [-1, -1, 200]
+    assert values["known_depths"][:, 0, 0].tolist() == [0, 0, 3]
+    assert values["order_counts"][:, 0, 0, 0].tolist() == [0, 0, 3]
+    assert audit["initial_updates_ignored"] == 2 and audit["first_snapshot_time"] == 200
+    prefix, _ = _sample(messages[:2], [200, 300], delays_ms=(100,), cadence_ms=100)
+    for key in values:
+        if key != "delays_ms":
+            np.testing.assert_array_equal(values[key][:2], prefix[key])
+
+
 def test_future_prefix_query_partition_and_missing_masks_are_exact():
     messages = [_message(), _message(150, action="update", asks=[["101", "24", "4"]], bids=[]),
                 _message(1400), _message(1410, action="update", asks=[["101", "48", "6"]], bids=[])]

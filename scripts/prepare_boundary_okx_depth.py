@@ -63,8 +63,9 @@ def worker(protocol_path, output, index):
         depth=protocol["stored_depth"], delays_ms=tuple(protocol["delays_ms"]), capacity=protocol["visible_capacity"],
         maximum_gap_ms=protocol["maximum_publisher_gap_ms"], cadence_ms=protocol["query_cadence_ms"])
     if (checks["first_publisher_time"] > start_ms + 300000
-        or checks["last_publisher_time"] < start_ms + 86400000 - 300000):
-        raise ValueError("The registered full-day source extent is incomplete")
+        or checks["last_publisher_time"] < start_ms + 86400000 - 300000
+        or checks.get("snapshots", 0) == 0):
+        raise ValueError("The registered full-day source extent or snapshot initialization is incomplete")
     if sum(v.nbytes for v in values.values()) > protocol["maximum_array_bytes"]:
         raise ValueError("Prepared arrays exceeded their registered byte budget")
     destination = folder / "observations.npz"
