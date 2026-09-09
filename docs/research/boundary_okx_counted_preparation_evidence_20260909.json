@@ -1,0 +1,578 @@
+{
+  "all_pinned_inputs_verified": true,
+  "assessment_labels_decoded": false,
+  "decision_rows": 2419034,
+  "feature_manifest": "data/research/boundary_okx_counted_features_20260909/feature_manifest.json",
+  "feature_manifest_sha256": "fc55267769f1e6c6fd84c22cad1ce39c8a110d2db78be2e49a99344cfea531a5",
+  "feature_protocol_sha256": "966b18c1962ea8f46516e93f7fd60eb461c57268bffd245dd433f09127d4822f",
+  "independent_confirmation_data_opened": false,
+  "market_model_fits": 0,
+  "scope": "Publisher-time reconstruction with strict delayed sampling. Missing source arrival clocks and sequence identifiers prevent certification of actual live feed availability or packet-loss completeness.",
+  "sessions": [
+    {
+      "available_rows": {
+        "top100_100": 84988,
+        "top100_500": 84995,
+        "top25_100": 85130
+      },
+      "date": "2023-06-01",
+      "decision_rows": 86397,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 5,
+      "source_observation_sha256": "a84e965e18239e4fa33b54208643603f4229a2e6cd61f238c6aa56ba2c77b69d",
+      "source_record": "data/research/boundary_okx_depth_preparation_preflight_20260909/BTCUSDT/2023-06-01/record.json",
+      "source_record_sha256": "e66b5cbee623a4c50a207b9275b162e485f33fc49eb0c0ea6c108352318425cb",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86187,
+        "top100_500": 86183,
+        "top25_100": 86194
+      },
+      "date": "2023-05-29",
+      "decision_rows": 86398,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "9a4c5b6650f9095c9270feb069a393319d65a751dd54c6a68f56ca3ca4832380",
+      "source_record": "data/research/boundary_okx_depth_development_part_a_20260909/ETHUSDT/2023-05-29/record.json",
+      "source_record_sha256": "368468e98f615363faf49ca86089c3905f280a2731fc3f456cdcaf0e82b864e3",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86322,
+        "top100_500": 86319,
+        "top25_100": 86346
+      },
+      "date": "2023-05-30",
+      "decision_rows": 86391,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 1,
+      "source_observation_sha256": "5fa5733bcec2ba622f0b4fe1dc512686c1a78b7a72d2d9eb69e6fef4079ef636",
+      "source_record": "data/research/boundary_okx_depth_development_part_a_20260909/ETHUSDT/2023-05-30/record.json",
+      "source_record_sha256": "abe324080653667afbd36abce5203a7726228e7fc63b70ff9750f071349daa21",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85738,
+        "top100_500": 85730,
+        "top25_100": 85849
+      },
+      "date": "2023-05-29",
+      "decision_rows": 86399,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 5195,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "35b9e57594b62921529acd035cf4ef2abb9c1e3e7915930bb3b8779ba8f66e5d",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-05-29/record.json",
+      "source_record_sha256": "45b28c1b1885f72e95a2b046d62e705d5994c44caf264b90271fe7602987db2c",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85911,
+        "top100_500": 85913,
+        "top25_100": 86041
+      },
+      "date": "2023-05-30",
+      "decision_rows": 86396,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 4717,
+      "publisher_gaps": 1,
+      "source_observation_sha256": "e4bb11917a07af3725f7a6d8c71bd95d38144e3be7c3c551bf2cf68a08053e1b",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-05-30/record.json",
+      "source_record_sha256": "76e3c3e18d4bf46ed499cefd64f4312a8168dfae5d8a8de9a0e696d59f98c8d6",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85773,
+        "top100_500": 85785,
+        "top25_100": 85924
+      },
+      "date": "2023-05-31",
+      "decision_rows": 86392,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 4753,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "aa1c8a4dbf5a503c62790921c3bf4d597286a4cbc7d9b673045565738d4961f6",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-05-31/record.json",
+      "source_record_sha256": "b1891a3abf191043748fa5477f25df19e655a1f6a87b7c14e9fada751775d733",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85981,
+        "top100_500": 85988,
+        "top25_100": 86009
+      },
+      "date": "2023-05-31",
+      "decision_rows": 86388,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "3279a5fbce1e1bf4b9e05651e8d5a2ae12b939b1606f8e38f52ad0492462537a",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-05-31/record.json",
+      "source_record_sha256": "900e5927d0f4c231648ad224481127eb66857c4d085d198c9beda1ddf95ebae0",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85387,
+        "top100_500": 85392,
+        "top25_100": 85426
+      },
+      "date": "2023-06-01",
+      "decision_rows": 86396,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 5,
+      "source_observation_sha256": "48e609fb20685f19459ec80c07909bad8d440ca2216da6c1d19474a9378e5d1f",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-01/record.json",
+      "source_record_sha256": "4994da134bdbbbc553237fd019b26b9265f934d578e026bdcb76daf0108fc777",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85712,
+        "top100_500": 85710,
+        "top25_100": 85790
+      },
+      "date": "2023-06-02",
+      "decision_rows": 86393,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 1,
+      "source_observation_sha256": "87ae116963ab5399f19842133c7ffe86a840297f57b41ab6c8afca54864bf5ae",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-02/record.json",
+      "source_record_sha256": "f013a582253bc24e106d7f90536f5f86622aa0228fc538f2f93c0b2eaf01b173",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85932,
+        "top100_500": 85934,
+        "top25_100": 85964
+      },
+      "date": "2023-06-02",
+      "decision_rows": 86394,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 1,
+      "source_observation_sha256": "2855d696daca872cf4c33a3351491167716a19f6724c6dcd44e4849ec361157a",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-02/record.json",
+      "source_record_sha256": "3892b15ed995434e0261adc0e0e3a3627a9a1741d790f714839da89323790393",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86196,
+        "top100_500": 86196,
+        "top25_100": 86211
+      },
+      "date": "2023-06-03",
+      "decision_rows": 86394,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 5191,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "bea688d2bccbe87eaa595983880ce91cdbc265fbf6e0045450ea17e4867276e3",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-03/record.json",
+      "source_record_sha256": "648a2b3495eade32141cac8fc05dec0d0d2ab150f8dead2b339c5681c2a7fb77",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86286,
+        "top100_500": 86285,
+        "top25_100": 86291
+      },
+      "date": "2023-06-03",
+      "decision_rows": 86390,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "fa075aa675a3c0588b9f5ec6edd2d5457a59861ebeb676eb85efbb55738c5c87",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-03/record.json",
+      "source_record_sha256": "e483d767fdb9a72c3ba00421a820af74ec8b2881c957a9233c8f83c93314ddca",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86198,
+        "top100_500": 86207,
+        "top25_100": 86230
+      },
+      "date": "2023-06-04",
+      "decision_rows": 86398,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "7ce0f27e3e9f7eca20160306a0ea9c1dc744029da601cb519994465cefb14ebf",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-04/record.json",
+      "source_record_sha256": "0e71d2fa4cd2a2348eefe515c8061146adfdbb2107b53cf6302d675858d4c406",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86254,
+        "top100_500": 86253,
+        "top25_100": 86262
+      },
+      "date": "2023-06-04",
+      "decision_rows": 86397,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "f73a9012e61c60830c086866af2789abf9161d5a9684f34c5fb8ab277a23d9a4",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-04/record.json",
+      "source_record_sha256": "cfca9e12294a21084d81c41accfbed4ffdd4e7b04a900c6ff0d09da83db392be",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 84611,
+        "top100_500": 84656,
+        "top25_100": 84903
+      },
+      "date": "2023-06-05",
+      "decision_rows": 86395,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 2,
+      "source_observation_sha256": "5016fb42b859d9fbb38771d9e2501f05d6467e05b9895542057d293b88d9c16f",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-05/record.json",
+      "source_record_sha256": "797076a421413244c81e10cad921688c05da1d5b8dda0baca189b1e72431d5af",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85666,
+        "top100_500": 85681,
+        "top25_100": 85761
+      },
+      "date": "2023-06-05",
+      "decision_rows": 86393,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "4d6451f3b5f62277feb20ea1cc0bdce2703f1eb2a2bc5cdc897e5e35f651ab15",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-05/record.json",
+      "source_record_sha256": "8d13e86be81435babc1e1d02308d45ef415a143894e836d7640f89d402c30ce3",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 84127,
+        "top100_500": 84150,
+        "top25_100": 84486
+      },
+      "date": "2023-06-06",
+      "decision_rows": 86395,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 5,
+      "source_observation_sha256": "9b9ea70461a17de918c0d3f7b13e31d8b18057ec11d685f14fe74b23afb140c7",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-06/record.json",
+      "source_record_sha256": "dd02beea4555771dbe3c8416342bcf19f395bb11f7c1970ac7f895e943eb8f78",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85572,
+        "top100_500": 85576,
+        "top25_100": 85636
+      },
+      "date": "2023-06-06",
+      "decision_rows": 86396,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 5,
+      "source_observation_sha256": "382e7c33a16d0d54752e0ba095a98f3affc0c52a8eb58ca4c721ba5f5d70e083",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-06/record.json",
+      "source_record_sha256": "b4859f2f5414bccbfc61aa39d34b501596569c9268f3851c72fb5d3b0d77644a",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 84561,
+        "top100_500": 84572,
+        "top25_100": 85057
+      },
+      "date": "2023-06-07",
+      "decision_rows": 86396,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 5517,
+      "publisher_gaps": 3,
+      "source_observation_sha256": "2ebf17710ec0836141815c7d7195ac653c29828af829a435e6c1ba846e3bc023",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-07/record.json",
+      "source_record_sha256": "5a9509bffce613557a64be70e3b5460bab204e2c1a46dc5e1ef77a318fe34e09",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85972,
+        "top100_500": 85978,
+        "top25_100": 86048
+      },
+      "date": "2023-06-07",
+      "decision_rows": 86397,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 3,
+      "source_observation_sha256": "e2d65e256eec8f6dc7d1b60ba86bc4ad2ab3e2eaf8c06533b928b1e8b11e80c6",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-07/record.json",
+      "source_record_sha256": "dc31bffa479990a00cb975105af2f78b5231129e756d587e71678f97d255c321",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85804,
+        "top100_500": 85817,
+        "top25_100": 85964
+      },
+      "date": "2023-06-08",
+      "decision_rows": 86394,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 1,
+      "source_observation_sha256": "9f62e27596fe8361d0744a2d3214e8ce624ac6dbb2c880026017f1a82474c183",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-08/record.json",
+      "source_record_sha256": "7a9c5b5862dc729493e69d25607900d9d9bde5f110b33bf64a21e41a6ddcd482",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86307,
+        "top100_500": 86308,
+        "top25_100": 86324
+      },
+      "date": "2023-06-08",
+      "decision_rows": 86393,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "948da5e0a9a2fb9b28305ff0704282fb4b0e9ace1052990b9eaeaf05451b462e",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-08/record.json",
+      "source_record_sha256": "238ed1ab956591f1ac52bf23dd80abf85b8129a47a712d070ed813f00ce658e1",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85964,
+        "top100_500": 85965,
+        "top25_100": 86058
+      },
+      "date": "2023-06-09",
+      "decision_rows": 86388,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 3,
+      "source_observation_sha256": "d51019ba96ffbafcae3771b0c033d244e05e78cc041a302e303b63802b49bb8b",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-09/record.json",
+      "source_record_sha256": "b236b45c6e62a572d6aa9d3ca770110f460389884aefc086e646ea6c4e9eb4b9",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86061,
+        "top100_500": 86061,
+        "top25_100": 86072
+      },
+      "date": "2023-06-09",
+      "decision_rows": 86390,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 4,
+      "source_observation_sha256": "4e0374475e1a117278bfbd5b9584eb647edddfe000f389a765564c27f5eb59d6",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-09/record.json",
+      "source_record_sha256": "6ff2e7e78f5715f71a5cb0edc4febd1aba1ce418064b3eda17ba3734ecd8cd28",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 84186,
+        "top100_500": 84226,
+        "top25_100": 84554
+      },
+      "date": "2023-06-10",
+      "decision_rows": 86393,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 4815,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "607de77e49a56e7adcd56fb197c32ca6345a3d6b1668d61e2ba875b22ea63b81",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-10/record.json",
+      "source_record_sha256": "103c9e3acd3a719ef0f81bd68cc1196f28b316ef8b6a68469c27c89ed5fa5636",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85147,
+        "top100_500": 85158,
+        "top25_100": 85345
+      },
+      "date": "2023-06-10",
+      "decision_rows": 86394,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "2a1799b0df95fc3a6b6f6aaf6a8b9ddaa5f7b46bf0194d283d5b8900a0a809a9",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-10/record.json",
+      "source_record_sha256": "4734efc4d729bab520949fed0eff7762077208213e35a1b779bec28a61e343b0",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 85952,
+        "top100_500": 85961,
+        "top25_100": 86038
+      },
+      "date": "2023-06-11",
+      "decision_rows": 86395,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "dd4588db6c15b281675db254064ca5d87de54992aac2742bd8073b0f780649ce",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/BTCUSDT/2023-06-11/record.json",
+      "source_record_sha256": "8480cc71e5e1b57e07708065d0a786bf588f5902cf53e6d5ad2309261d9960cd",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "available_rows": {
+        "top100_100": 86298,
+        "top100_500": 86303,
+        "top25_100": 86312
+      },
+      "date": "2023-06-11",
+      "decision_rows": 86392,
+      "feature_columns": {
+        "top100_100": 246,
+        "top100_500": 246,
+        "top25_100": 174
+      },
+      "initial_updates_ignored": 0,
+      "publisher_gaps": 0,
+      "source_observation_sha256": "a02a4337c44d2589de2065d7c403c318cf840893d92f5f8ea79ba73a4e9becd9",
+      "source_record": "data/research/boundary_okx_depth_development_initial_delta_revision_20260909/ETHUSDT/2023-06-11/record.json",
+      "source_record_sha256": "f7fd0e6bf73fe01a94d0f87759b88b6b685264b3b1dcc5497f11086248391f81",
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "shape_feature_groups": 84,
+  "source_count": 28,
+  "source_messages": 189484366,
+  "source_observation_bytes": 2695009674,
+  "status": "complete_exposed_development_source_and_feature_preparation"
+}
