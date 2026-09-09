@@ -1,0 +1,52 @@
+{
+  "archive_handling": "Verify pinned provider Content-MD5 and exact bytes; compute local SHA256. Keep new archives compressed and unopened for model analysis. Preserve every successful and failed record; no implicit experiment retry. Reuse the already decoded exposed June 1 sample by its exact hash.",
+  "assessment_metrics_computed": false,
+  "dates": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11"
+  ],
+  "evidence_status": "public_development_data_acquisition_only",
+  "expected_files": 28,
+  "expected_new_download_bytes": 8361666139,
+  "expected_total_archive_bytes": 8732432630,
+  "independent_confirmation_data_opened": false,
+  "input_hashes": {
+    "data/research/boundary_okx_development_inventory_20260909/summary.json": "25462e83a1ce78662b980763c4bde975d66dbaf7f4bc650dae3a80575a965efe",
+    "data/research/boundary_okx_full_source_audit_20260909/summary.json": "9363687ecd2d7286ae661b0b7042eb4f1e51ea47f2e7d347858196dda77600f8",
+    "docs/research/boundary_okx_depth_source_evidence_20260909.json": "180f9e1b6eca5ce818574b6dfc966833e3ac4266ac6d1ebb49f91136e947f586",
+    "docs/research/boundary_okx_full_source_audit_20260909.json": "9178b08113be7cb92cfbbf3c3b7c62bbbca171afb68b2706c7f2d7b7bedc84fd",
+    "scripts/download_boundary_okx_archives.py": "753f948a4d04375ad35b67628cfde8a1c93e432c2e6500ff84b1bd2e767bdeed"
+  },
+  "inventory": "data/research/boundary_okx_development_inventory_20260909/summary.json",
+  "market_model_fits": 0,
+  "maximum_single_archive_bytes": 2147483648,
+  "maximum_total_archive_bytes": 12884901888,
+  "per_file_process_seconds": 920,
+  "per_request_seconds": 300,
+  "registered_at_utc": "2026-09-09T09:55:35.633673+00:00",
+  "reuse": {
+    "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz": {
+      "path": "data/research/boundary_okx_depth_source_preflight_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+      "sha256": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b"
+    }
+  },
+  "scope": "Only the fourteen already exposed development dates needed by the existing June 3/7/11 historical partitions. No subscription, account, payment, fresh confirmation date, model fit or forecast score.",
+  "symbols": [
+    "BTC-USDT-SWAP",
+    "ETH-USDT-SWAP"
+  ],
+  "transport_retries": 2,
+  "workers": 2
+}
