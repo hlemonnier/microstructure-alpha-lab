@@ -1,0 +1,2851 @@
+{
+  "all_saved_checkpoint_and_prior_checks_passed": true,
+  "assessment_labels_decoded_by_training_workers": false,
+  "assessment_rows_per_source": 42420,
+  "both_minus_btc_pairs": [
+    {
+      "balanced_accuracy_gain_pp": -0.07995904362764576,
+      "candidate": "observations_both100_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.09081271424850416,
+        "ETHUSDT": -0.06910537300678736
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.166271141434865,
+        "2023-06-07": -0.09922298159829035,
+        "2023-06-11": 0.025616992150218065
+      },
+      "log_loss_ratio": 1.0000283111015575,
+      "reference": "observations_btc100_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.45343315134350565,
+      "candidate": "observations_both100_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.3640955688039238,
+        "ETHUSDT": -0.5427707338830875
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.5170898840743232,
+        "2023-06-07": -0.9824088797324881,
+        "2023-06-11": 0.13919930977629447
+      },
+      "log_loss_ratio": 1.0123504319241825,
+      "reference": "observations_btc100_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.008737142137410503,
+      "candidate": "combined_both100_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.022652649822796356,
+        "ETHUSDT": 0.04012693409761736
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.007978130873997902,
+        "2023-06-07": 0.07530092306713976,
+        "2023-06-11": -0.04111136578091035
+      },
+      "log_loss_ratio": 1.000346725368387,
+      "reference": "combined_btc100_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.03013885350424128,
+      "candidate": "combined_both100_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.01820744761693212,
+        "ETHUSDT": 0.04207025939155044
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.032537310696623134,
+        "2023-06-07": 0.41135935569377446,
+        "2023-06-11": -0.2884054844844275
+      },
+      "log_loss_ratio": 1.0062001504900782,
+      "reference": "combined_btc100_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.09620919055449706,
+      "candidate": "observations_both100_blend",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.2738268041340623,
+        "ETHUSDT": 0.08140842302506816
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.3029167996538684,
+        "2023-06-07": -0.025508791111789053,
+        "2023-06-11": 0.03979801910216629
+      },
+      "log_loss_ratio": 1.0034880539885631,
+      "reference": "observations_btc100_blend"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.05609609836433882,
+      "candidate": "observations_both100_hgb_old_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.00781287412447614,
+        "ETHUSDT": 0.12000507085315378
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.1129453271581371,
+        "2023-06-07": 0.08852812548708622,
+        "2023-06-11": -0.033185157552206856
+      },
+      "log_loss_ratio": 0.9997104065232832,
+      "reference": "observations_btc100_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.1742471930912796,
+      "candidate": "observations_both100_neural_deep_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.22695705176137096,
+        "ETHUSDT": -0.12153733442118823
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.1854254080940143,
+        "2023-06-07": -0.6052799204641357,
+        "2023-06-11": 0.2679637492843112
+      },
+      "log_loss_ratio": 1.0031426125686118,
+      "reference": "observations_btc100_neural_deep_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.17818152635088827,
+      "candidate": "combined_both100_blend",
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.02474006896116358,
+        "ETHUSDT": -0.38110312166294014
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.11006261218882152,
+        "2023-06-07": -0.11810747747009187,
+        "2023-06-11": -0.5264997137713945
+      },
+      "log_loss_ratio": 1.002275987792885,
+      "reference": "combined_btc100_blend"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.10322864534839844,
+      "candidate": "combined_both100_hgb_old_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.11186642463013596,
+        "ETHUSDT": 0.09459086606666094
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.06424292529744746,
+        "2023-06-07": 0.15114587962978265,
+        "2023-06-11": 0.09429713111796523
+      },
+      "log_loss_ratio": 1.0000341812838052,
+      "reference": "combined_btc100_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.01481359593975736,
+      "candidate": "combined_both100_neural_deep_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.01313236303403705,
+        "ETHUSDT": -0.04275955491355177
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.17180577416899268,
+        "2023-06-07": -0.10460287198398865,
+        "2023-06-11": -0.1116436900042761
+      },
+      "log_loss_ratio": 1.0023922175935192,
+      "reference": "combined_btc100_neural_deep_hgb"
+    }
+  ],
+  "candidate_vs_additional_controls": {
+    "combined_both100_blend": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.3953686942275751,
+        "candidate": "combined_both100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8223923837222591,
+          "ETHUSDT": 0.031654995267108944
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.22559842946203168,
+          "2023-06-07": -0.19100398678731367,
+          "2023-06-11": -0.7695036664333799
+        },
+        "log_loss_ratio": 1.0014201529322748,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.40890627295432913,
+        "candidate": "combined_both100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.3916047154162494,
+          "ETHUSDT": -0.42620783049240885
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.43079969475616764,
+          "2023-06-07": -0.4562741191878772,
+          "2023-06-11": -0.33964500491894256
+        },
+        "log_loss_ratio": 1.0031760140214312,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_both100_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.2805796925022974,
+        "candidate": "combined_both100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8351907265078432,
+          "ETHUSDT": 0.2740313415032484
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.37988189879867296,
+          "2023-06-07": -0.18620113727490506,
+          "2023-06-11": -0.27565604143331424
+        },
+        "log_loss_ratio": 1.004666176286266,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.29411727122905146,
+        "candidate": "combined_both100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.4044030582018336,
+          "ETHUSDT": -0.18383148425626938
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.5850831640928089,
+          "2023-06-07": -0.4514712696754686,
+          "2023-06-11": 0.15420262008112307
+        },
+        "log_loss_ratio": 1.0064277288587475,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_both100_hgb_old_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.1234788222713427,
+        "candidate": "combined_both100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8254479095507102,
+          "ETHUSDT": 0.5784902650080248
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": 0.032891027754694546,
+          "2023-06-07": -0.129246869711519,
+          "2023-06-11": -0.27408062485720364
+        },
+        "log_loss_ratio": 0.9997591269214945,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.13701640099809675,
+        "candidate": "combined_both100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.3946602412447005,
+          "ETHUSDT": 0.12062743924850701
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.1723102375394414,
+          "2023-06-07": -0.3945170021120825,
+          "2023-06-11": 0.15577803665723366
+        },
+        "log_loss_ratio": 1.0015120756157567,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_both100_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.956567718765422,
+        "candidate": "combined_both100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.7187154100972861,
+          "ETHUSDT": -0.194420027433558
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.7660287706429514,
+          "2023-06-07": -0.46435835291618877,
+          "2023-06-11": -1.639316032737126
+        },
+        "log_loss_ratio": 1.0101535969389124,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.970105297492176,
+        "candidate": "combined_both100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.2879277417912764,
+          "ETHUSDT": -0.6522828531930758
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.9712300359370873,
+          "2023-06-07": -0.7296284853167523,
+          "2023-06-11": -1.2094573712226886
+        },
+        "log_loss_ratio": 1.0119247709958183,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_both100_neural_deep_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.2083051621676768,
+        "candidate": "combined_both100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8457306364229478,
+          "ETHUSDT": 0.42912031208759416
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": 0.06406687103995834,
+          "2023-06-07": 0.05647405272394268,
+          "2023-06-11": -0.7454564102669314
+        },
+        "log_loss_ratio": 0.9983052329913629,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.22184274089443087,
+        "candidate": "combined_both100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.4149429681169381,
+          "ETHUSDT": -0.028742513671923636
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.14113439425417762,
+          "2023-06-07": -0.20879607967662084,
+          "2023-06-11": -0.31559774875249413
+        },
+        "log_loss_ratio": 1.000055632470121,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_btc100_blend": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.2171871678766868,
+        "candidate": "combined_btc100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8471324526834226,
+          "ETHUSDT": 0.4127581169300491
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3356610416508532,
+          "2023-06-07": -0.0728965093172218,
+          "2023-06-11": -0.24300395266198538
+        },
+        "log_loss_ratio": 0.9991461085858249,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.23072474660344086,
+        "candidate": "combined_btc100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.416344784377413,
+          "ETHUSDT": -0.04510470882946871
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.5408623069449892,
+          "2023-06-07": -0.3381666417177853,
+          "2023-06-11": 0.18685470885245192
+        },
+        "log_loss_ratio": 1.0008979824314939,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_btc100_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.2893168346397079,
+        "candidate": "combined_btc100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8125380766850469,
+          "ETHUSDT": 0.23390440740563104
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.37190376792467505,
+          "2023-06-07": -0.2615020603420448,
+          "2023-06-11": -0.2345446756524039
+        },
+        "log_loss_ratio": 1.004317953773766,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.30285441336646196,
+        "candidate": "combined_btc100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.38175040837903723,
+          "ETHUSDT": -0.22395841835388675
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.577105033218811,
+          "2023-06-07": -0.5267721927426083,
+          "2023-06-11": 0.1953139858620334
+        },
+        "log_loss_ratio": 1.0060788957829807,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_btc100_hgb_old_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.22670746761974114,
+        "candidate": "combined_btc100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.9373143341808462,
+          "ETHUSDT": 0.48389939894136386
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.031351897542752916,
+          "2023-06-07": -0.28039274934130165,
+          "2023-06-11": -0.36837775597516886
+        },
+        "log_loss_ratio": 0.9997249550390792,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.2402450463464952,
+        "candidate": "combined_btc100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.5065266658748365,
+          "ETHUSDT": 0.026036573181846084
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.23655316283688888,
+          "2023-06-07": -0.5456628817418652,
+          "2023-06-11": 0.06148090553926844
+        },
+        "log_loss_ratio": 1.0014778438173526,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_btc100_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.9867065722696634,
+        "candidate": "combined_btc100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.7369228577142184,
+          "ETHUSDT": -0.23649028682510842
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.7334914599463283,
+          "2023-06-07": -0.8757177086099632,
+          "2023-06-11": -1.3509105482526984
+        },
+        "log_loss_ratio": 1.0039290855272767,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -1.0002441509964173,
+        "candidate": "combined_btc100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.3061351894082085,
+          "ETHUSDT": -0.6943531125846262
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.9386927252404642,
+          "2023-06-07": -1.1409878410105267,
+          "2023-06-11": -0.9210518867382611
+        },
+        "log_loss_ratio": 1.0056893457061717,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_btc100_neural_deep_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.19349156622791944,
+        "candidate": "combined_btc100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8588629994569849,
+          "ETHUSDT": 0.4718798670011459
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.10773890312903434,
+          "2023-06-07": 0.16107692470793133,
+          "2023-06-11": -0.6338127202626553
+        },
+        "log_loss_ratio": 0.9959227690215232,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.2070291449546735,
+        "candidate": "combined_btc100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.4280753311509751,
+          "ETHUSDT": 0.014017041241628133
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3129401684231703,
+          "2023-06-07": -0.10419320769263218,
+          "2023-06-11": -0.20395405874821804
+        },
+        "log_loss_ratio": 0.997668991156967,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_fx100_blend": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.14392517014694128,
+        "candidate": "combined_fx100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.750271542922217,
+          "ETHUSDT": 0.46242120262833436
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.10903755714190555,
+          "2023-06-07": 0.09594125708753398,
+          "2023-06-11": -0.4186792103864523
+        },
+        "log_loss_ratio": 0.9967625339908796,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.15746274887369535,
+        "candidate": "combined_fx100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.31948387461620725,
+          "ETHUSDT": 0.004558376868816587
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3142388224360415,
+          "2023-06-07": -0.16932887531302954,
+          "2023-06-11": 0.011179451127985018
+        },
+        "log_loss_ratio": 0.9985102285458961,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_fx100_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.10018184751648396,
+        "candidate": "combined_fx100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.7395346896403754,
+          "ETHUSDT": 0.5391709946074075
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.13105525639257598,
+          "2023-06-07": 0.14893030472373225,
+          "2023-06-11": -0.31842059088060815
+        },
+        "log_loss_ratio": 1.0002611713015974,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.11371942624323801,
+        "candidate": "combined_fx100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.3087470213343657,
+          "ETHUSDT": 0.08130816884788968
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.33625652168671194,
+          "2023-06-07": -0.11633982767683126,
+          "2023-06-11": 0.11143807063382916
+        },
+        "log_loss_ratio": 1.0020150002659334,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_fx100_hgb_old_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.22997718930193867,
+        "candidate": "combined_fx100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.82135598297568,
+          "ETHUSDT": 0.3614016043718027
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.10003463321258677,
+          "2023-06-07": -0.15685403232734152,
+          "2023-06-11": -0.4330429023658877
+        },
+        "log_loss_ratio": 0.998616030886503,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.24351476802869274,
+        "candidate": "combined_fx100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.39056831466967035,
+          "ETHUSDT": -0.09646122138771511
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3052358985067227,
+          "2023-06-07": -0.42212416472790504,
+          "2023-06-11": -0.003184240851450415
+        },
+        "log_loss_ratio": 1.000366975309288,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_fx100_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.9591081982764167,
+        "candidate": "combined_fx100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.3870928927717758,
+          "ETHUSDT": -0.5311235037810577
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.7255219697156312,
+          "2023-06-07": -0.9635545163234338,
+          "2023-06-11": -1.1882481087901853
+        },
+        "log_loss_ratio": 1.0048834786948817,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.9726457770031708,
+        "candidate": "combined_fx100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.9563052244657663,
+          "ETHUSDT": -0.9889863295405754
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.9307232350097672,
+          "2023-06-07": -1.2288246487239973,
+          "2023-06-11": -0.758389447275748
+        },
+        "log_loss_ratio": 1.0066454122791122,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "combined_fx100_neural_deep_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.2410335058057711,
+        "candidate": "combined_fx100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8463118247997873,
+          "ETHUSDT": 0.36424481318824514
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.1771817634094175,
+          "2023-06-07": 0.1034809033076789,
+          "2023-06-11": -0.6493996573155747
+        },
+        "log_loss_ratio": 0.9964604720347732,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.25457108453252514,
+        "candidate": "combined_fx100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.41552415649377766,
+          "ETHUSDT": -0.09361801257127267
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.38238302870355345,
+          "2023-06-07": -0.16178922909288462,
+          "2023-06-11": -0.2195409958011374
+        },
+        "log_loss_ratio": 0.9982076369631053,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_both100_blend": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.5215972570474033,
+        "candidate": "observations_both100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.1450708972130335,
+          "ETHUSDT": 0.10187638311822678
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.5750412149869821,
+          "2023-06-07": -0.4659825274042573,
+          "2023-06-11": -0.5237680287509705
+        },
+        "log_loss_ratio": 1.0052122913297892,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.5351348357741573,
+        "candidate": "observations_both100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.7142832289070237,
+          "ETHUSDT": -0.35598644264129103
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.7802424802811181,
+          "2023-06-07": -0.7312526598048208,
+          "2023-06-11": -0.0939093672365332
+        },
+        "log_loss_ratio": 1.0069748014445694,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_both100_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.4476293367843165,
+        "candidate": "observations_both100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.069484950235955,
+          "ETHUSDT": 0.17422627666732193
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.6797083629303369,
+          "2023-06-07": -0.03279387143625967,
+          "2023-06-11": -0.6303857759863529
+        },
+        "log_loss_ratio": 1.005685780221038,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.46116691551107053,
+        "candidate": "observations_both100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.6386972819299452,
+          "ETHUSDT": -0.2836365490921959
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.8849096282244728,
+          "2023-06-07": -0.2980640038368232,
+          "2023-06-11": -0.20052711447191562
+        },
+        "log_loss_ratio": 1.007449120537525,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_both100_hgb_old_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.18597853940609532,
+        "candidate": "observations_both100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.3508988202008771,
+          "ETHUSDT": -0.02105825861131357
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.20459211599749838,
+          "2023-06-07": -0.07405164345444804,
+          "2023-06-11": -0.27929185876633955
+        },
+        "log_loss_ratio": 1.001900837588791,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.1995161181328494,
+        "candidate": "observations_both100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": 0.0798888481051326,
+          "ETHUSDT": -0.47892108437083136
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.40979338129163434,
+          "2023-06-07": -0.33932177585501155,
+          "2023-06-11": 0.15056680274809775
+        },
+        "log_loss_ratio": 1.0036575414965008,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_both100_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -1.4010298626175721,
+        "candidate": "observations_both100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.996034833669998,
+          "ETHUSDT": -0.8060248915651455
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.8818235325265211,
+          "2023-06-07": -2.058090924043249,
+          "2023-06-11": -1.2631751312829453
+        },
+        "log_loss_ratio": 1.0204937726110541,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -1.4145674413443257,
+        "candidate": "observations_both100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.5652471653639886,
+          "ETHUSDT": -1.2638877173246632
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -1.087024797820657,
+          "2023-06-07": -2.3233610564438125,
+          "2023-06-11": -0.833316469768508
+        },
+        "log_loss_ratio": 1.0222830768324715,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_both100_neural_deep_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.4153886927159474,
+        "candidate": "observations_both100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.0204760266967372,
+          "ETHUSDT": 0.18969864126484234
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.2484947819549721,
+          "2023-06-07": -0.5975262953266058,
+          "2023-06-11": -0.40014500086626437
+        },
+        "log_loss_ratio": 1.0003641273618782,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.4289262714427015,
+        "candidate": "observations_both100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.5896883583907275,
+          "ETHUSDT": -0.26816418449467544
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.45369604724910806,
+          "2023-06-07": -0.8627964277271694,
+          "2023-06-11": 0.029713660648172935
+        },
+        "log_loss_ratio": 1.002118136846388,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_btc100_blend": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.4253880664929062,
+        "candidate": "observations_btc100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.8712440930789711,
+          "ETHUSDT": 0.020467960093158617
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.2721244153331137,
+          "2023-06-07": -0.4404737362924682,
+          "2023-06-11": -0.5635660478531368
+        },
+        "log_loss_ratio": 1.0017182440133423,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.4389256452196603,
+        "candidate": "observations_btc100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.44045642477296143,
+          "ETHUSDT": -0.43739486566635916
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.47732568062724967,
+          "2023-06-07": -0.7057438686930317,
+          "2023-06-11": -0.1337073863386995
+        },
+        "log_loss_ratio": 1.0034746277667657,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_btc100_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.3676702931566707,
+        "candidate": "observations_btc100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.9786722359874508,
+          "ETHUSDT": 0.24333164967410928
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.5134372214954719,
+          "2023-06-07": 0.06642911016203068,
+          "2023-06-11": -0.656002768136571
+        },
+        "log_loss_ratio": 1.005657308954832,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.3812078718834248,
+        "candidate": "observations_btc100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.5478845676814411,
+          "ETHUSDT": -0.2145311760854085
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.7186384867896078,
+          "2023-06-07": -0.19884102223853284,
+          "2023-06-11": -0.2261441066221337
+        },
+        "log_loss_ratio": 1.0074205993506256,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_btc100_hgb_old_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.24207463777043414,
+        "candidate": "observations_btc100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.3430859460764009,
+          "ETHUSDT": -0.14106332946446734
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3175374431556355,
+          "2023-06-07": -0.16257976894153425,
+          "2023-06-11": -0.2461067012141327
+        },
+        "log_loss_ratio": 1.002191065583808,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.2556122164971882,
+        "candidate": "observations_btc100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": 0.08770172222960874,
+          "ETHUSDT": -0.5989261552239852
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.5227387084497714,
+          "2023-06-07": -0.42784990134209777,
+          "2023-06-11": 0.1837519603003046
+        },
+        "log_loss_ratio": 1.0039482783688776,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_btc100_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.9475967112740662,
+        "candidate": "observations_btc100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.6319392648660742,
+          "ETHUSDT": -0.26325415768205795
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3647336484521979,
+          "2023-06-07": -1.0756820443107606,
+          "2023-06-11": -1.4023744410592398
+        },
+        "log_loss_ratio": 1.00804399388796,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.9611342900008202,
+        "candidate": "observations_btc100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.2011515965600645,
+          "ETHUSDT": -0.7211169834415757
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.5699349137463339,
+          "2023-06-07": -1.3409521767113242,
+          "2023-06-11": -0.9725157795448025
+        },
+        "log_loss_ratio": 1.0098114690279827,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_btc100_neural_deep_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.24114149962466783,
+        "candidate": "observations_btc100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.7935189749353663,
+          "ETHUSDT": 0.31123597568603056
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.06306937386095779,
+          "2023-06-07": 0.007753625137529863,
+          "2023-06-11": -0.6681087501505756
+        },
+        "log_loss_ratio": 0.9972302191414048,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.2546790783514219,
+        "candidate": "observations_btc100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.36273130662935654,
+          "ETHUSDT": -0.14662685007348722
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.26827063915509375,
+          "2023-06-07": -0.25751650726303366,
+          "2023-06-11": -0.23825008863613828
+        },
+        "log_loss_ratio": 0.9989787337220173,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_fx100_blend": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.32585498972999377,
+        "candidate": "observations_fx100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.9741605080282915,
+          "ETHUSDT": 0.322450528568304
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.14608492781638116,
+          "2023-06-07": -0.3570639935833009,
+          "2023-06-11": -0.4744160477902992
+        },
+        "log_loss_ratio": 0.9980877162817334,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.3393925684567478,
+        "candidate": "observations_fx100_blend",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.5433728397222818,
+          "ETHUSDT": -0.1354122971912138
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3512861931105171,
+          "2023-06-07": -0.6223341259838644,
+          "2023-06-11": -0.04455738627586192
+        },
+        "log_loss_ratio": 0.9998377343729937,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_fx100_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.44625922921034217,
+        "candidate": "observations_fx100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.0504175967472773,
+          "ETHUSDT": 0.157899138326593
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.5414931283525215,
+          "2023-06-07": -0.2447375824675968,
+          "2023-06-11": -0.5525469768109081
+        },
+        "log_loss_ratio": 1.0016718030147371,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.4597968079370962,
+        "candidate": "observations_fx100_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.6196299284412676,
+          "ETHUSDT": -0.2999636874329248
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.7466943936466575,
+          "2023-06-07": -0.5100077148681603,
+          "2023-06-11": -0.12268831529647084
+        },
+        "log_loss_ratio": 1.0034281053398588,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_fx100_hgb_old_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.016950084587291636,
+        "candidate": "observations_fx100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.24191852014893897,
+          "ETHUSDT": 0.2080183509743557
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.17508724797611896,
+          "2023-06-07": 0.26499904282721864,
+          "2023-06-11": -0.1407620486129746
+        },
+        "log_loss_ratio": 1.001190981506231,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.030487663314045694,
+        "candidate": "observations_fx100_hgb_old_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": 0.1888691481570707,
+          "ETHUSDT": -0.2498444747851621
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3802885132702549,
+          "2023-06-07": -0.0002710895733448737,
+          "2023-06-11": 0.2890966129014627
+        },
+        "log_loss_ratio": 1.0029464407728472,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_fx100_neural": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.8914916833782575,
+        "candidate": "observations_fx100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.4876803743568108,
+          "ETHUSDT": -0.29530299239970415
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.19056289269504534,
+          "2023-06-07": -1.2153126462173591,
+          "2023-06-11": -1.268599511222368
+        },
+        "log_loss_ratio": 1.0058228906103581,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.9050292621050117,
+        "candidate": "observations_fx100_neural",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -1.056892706050801,
+          "ETHUSDT": -0.7531658181592219
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.3957641579891813,
+          "2023-06-07": -1.4805827786179226,
+          "2023-06-11": -0.8387408497079307
+        },
+        "log_loss_ratio": 1.0075864713322302,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    },
+    "observations_fx100_neural_deep_hgb": {
+      "counted::observations_q100_100_hgb_old_neural": {
+        "balanced_accuracy_gain_pp": -0.18883018356688117,
+        "candidate": "observations_fx100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.7451692366044113,
+          "ETHUSDT": 0.3675088694706489
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.1275782773025591,
+          "2023-06-07": -0.11264773968163722,
+          "2023-06-11": -0.32626453371644715
+        },
+        "log_loss_ratio": 0.9966975010595064,
+        "reference": "counted::observations_q100_100_hgb_old_neural"
+      },
+      "expert::confidence_context_eta10_h300": {
+        "balanced_accuracy_gain_pp": -0.2023677622936352,
+        "candidate": "observations_fx100_neural_deep_hgb",
+        "gain_pp_by_asset": {
+          "BTCUSDT": -0.3143815682984015,
+          "ETHUSDT": -0.09035395628886889
+        },
+        "gain_pp_by_date": {
+          "2023-06-03": -0.33277954259669507,
+          "2023-06-07": -0.37791787208220073,
+          "2023-06-11": 0.10359412779799015
+        },
+        "log_loss_ratio": 0.9984450815876648,
+        "reference": "expert::confidence_context_eta10_h300"
+      }
+    }
+  },
+  "candidate_vs_complete_control": [
+    {
+      "balanced_accuracy_gain_pp": -0.006614494469769916,
+      "candidate": "observations_fx100_hgb_old_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.1087787536807161,
+        "ETHUSDT": -0.12200774262025593
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.17976890127424094,
+        "2023-06-07": 0.2609607307605233,
+        "2023-06-11": -0.10103531289559209
+      },
+      "log_loss_ratio": 1.000774281902216,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.08984625739896224,
+      "candidate": "combined_fx100_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.38883741581072034,
+        "ETHUSDT": 0.20914490101279584
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.13573690969069796,
+        "2023-06-07": 0.1448919926570369,
+        "2023-06-11": -0.27869385516322565
+      },
+      "log_loss_ratio": 0.9998448586882277,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.11314323215382098,
+      "candidate": "combined_both100_hgb_old_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.47475063572105514,
+        "ETHUSDT": 0.24846417141341318
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.028209374456572567,
+        "2023-06-07": -0.13328518177821436,
+        "2023-06-11": -0.23435388913982114
+      },
+      "log_loss_ratio": 0.9993430232609603,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.13358958002941956,
+      "candidate": "combined_fx100_blend",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.3995742690925619,
+        "ETHUSDT": 0.13239510903372276
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.11371921044002753,
+        "2023-06-07": 0.09190294502083862,
+        "2023-06-11": -0.3789524746690698
+      },
+      "log_loss_ratio": 0.9963476775240483,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.1756429492885736,
+      "candidate": "observations_both100_hgb_old_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.000201546371222013,
+        "ETHUSDT": -0.3510843522059252
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.20927376929562036,
+        "2023-06-07": -0.0780899555211434,
+        "2023-06-11": -0.23956512304895705
+      },
+      "log_loss_ratio": 1.0014838425398969,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.17849459344935945,
+      "candidate": "observations_fx100_neural_deep_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.39447196277475616,
+        "ETHUSDT": 0.03748277587603729
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.13225993060068109,
+        "2023-06-07": -0.11668605174833258,
+        "2023-06-11": -0.28653779799906465
+      },
+      "log_loss_ratio": 0.9962826716596356,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.18315597611039772,
+      "candidate": "combined_btc100_neural_deep_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.5081657256273298,
+        "ETHUSDT": 0.1418537734065343
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.11242055642715632,
+        "2023-06-07": 0.15703861264123598,
+        "2023-06-11": -0.5940859845452728
+      },
+      "log_loss_ratio": 0.9955082620681581,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.19796957205015508,
+      "candidate": "combined_both100_neural_deep_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.4950333625932927,
+        "ETHUSDT": 0.09909421849298254
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.05938521774183636,
+        "2023-06-07": 0.05243574065724732,
+        "2023-06-11": -0.7057296745495489
+      },
+      "log_loss_ratio": 0.9978897344471712,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.20685157775916507,
+      "candidate": "combined_btc100_blend",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.4964351788537676,
+        "ETHUSDT": 0.08273202333543746
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.3403426949489752,
+        "2023-06-07": -0.07693482138391716,
+        "2023-06-11": -0.20327721694460288
+      },
+      "log_loss_ratio": 0.9987302600659206,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.21637187750221942,
+      "candidate": "combined_btc100_hgb_old_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.5866170603511911,
+        "ETHUSDT": 0.15387330534675225
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.036033550840874895,
+        "2023-06-07": -0.284431061407997,
+        "2023-06-11": -0.32865102025778636
+      },
+      "log_loss_ratio": 0.9993088656010161,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.21964159918441695,
+      "candidate": "combined_fx100_hgb_old_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.470658709146025,
+        "ETHUSDT": 0.031375510777191064
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.10471628651070874,
+        "2023-06-07": -0.16089234439403688,
+        "2023-06-11": -0.3933161666485052
+      },
+      "log_loss_ratio": 0.9982004029870113,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.23069791568824938,
+      "candidate": "combined_fx100_neural_deep_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.49561455097013224,
+        "ETHUSDT": 0.034218719593633505
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.18186341670753947,
+        "2023-06-07": 0.09944259124098354,
+        "2023-06-11": -0.6096729215981922
+      },
+      "log_loss_ratio": 0.9960457412873099,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.2308059095071461,
+      "candidate": "observations_btc100_neural_deep_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.4428217011057112,
+        "ETHUSDT": -0.018790117908581056
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.06775102715907977,
+        "2023-06-07": 0.003715313070834503,
+        "2023-06-11": -0.6283820144331931
+      },
+      "log_loss_ratio": 0.9968151680221838,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.23173904765291242,
+      "candidate": "observations_btc100_hgb_old_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.007611327753254127,
+        "ETHUSDT": -0.47108942305907897
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.32221909645375746,
+        "2023-06-07": -0.1666180810082296,
+        "2023-06-11": -0.2063799654967502
+      },
+      "log_loss_ratio": 1.0017739497408866,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.2702441023847757,
+      "candidate": "combined_both100_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.48449345267818816,
+        "ETHUSDT": -0.05599475209136321
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.38456355209679494,
+        "2023-06-07": -0.19023944934160042,
+        "2023-06-11": -0.23592930571593174
+      },
+      "log_loss_ratio": 1.0042480302925856,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.2789812445221862,
+      "candidate": "combined_btc100_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.4618408028553918,
+        "ETHUSDT": -0.09612168618898058
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.37658542122279703,
+        "2023-06-07": -0.2655403724087402,
+        "2023-06-11": -0.1948179399350214
+      },
+      "log_loss_ratio": 1.0038999527116579,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.31551939961247205,
+      "candidate": "observations_fx100_blend",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.6234632341986365,
+        "ETHUSDT": -0.007575565026307629
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.15076658111450314,
+        "2023-06-07": -0.36110230564999624,
+        "2023-06-11": -0.4346893120729167
+      },
+      "log_loss_ratio": 0.9976723082688475,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.357334703039149,
+      "candidate": "observations_btc100_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.6279749621577957,
+        "ETHUSDT": -0.08669444392050234
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.5181188747935939,
+        "2023-06-07": 0.06239079809533532,
+        "2023-06-11": -0.6162760324191885
+      },
+      "log_loss_ratio": 1.0052387504478568,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.38503310411005337,
+      "candidate": "combined_both100_blend",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.47169510989260405,
+        "ETHUSDT": -0.2983710983275027
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.23028008276015366,
+        "2023-06-07": -0.19504229885400903,
+        "2023-06-11": -0.7297769307159974
+      },
+      "log_loss_ratio": 1.0010033579462156,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.4050531025984257,
+      "candidate": "observations_both100_neural_deep_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.6697787528670821,
+        "ETHUSDT": -0.1403274523297693
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.2531764352530941,
+        "2023-06-07": -0.6015646073933012,
+        "2023-06-11": -0.36041826514888187
+      },
+      "log_loss_ratio": 0.9999477718977933,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.4150524763753845,
+      "candidate": "observations_btc100_blend",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.520546819249316,
+        "ETHUSDT": -0.309558133501453
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.2768060686312357,
+        "2023-06-07": -0.4445120483591636,
+        "2023-06-11": -0.5238393121357543
+      },
+      "log_loss_ratio": 1.0013013249606086,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.43592363909282045,
+      "candidate": "observations_fx100_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.6997203229176222,
+        "ETHUSDT": -0.1721269552680186
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.5461747816506435,
+        "2023-06-07": -0.24877589453429216,
+        "2023-06-11": -0.5128202410935256
+      },
+      "log_loss_ratio": 1.0012549032909288,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.43729374666679477,
+      "candidate": "observations_both100_hgb",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.7187876764062998,
+        "ETHUSDT": -0.1557998169272897
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.6843900162284589,
+        "2023-06-07": -0.03683218350295503,
+        "2023-06-11": -0.5906590402689704
+      },
+      "log_loss_ratio": 1.0052672098642101,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.5112616669298816,
+      "candidate": "observations_both100_blend",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.7943736233833784,
+        "ETHUSDT": -0.22814971047638485
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.5797228682851041,
+        "2023-06-07": -0.47002083947095263,
+        "2023-06-11": -0.484041293033588
+      },
+      "log_loss_ratio": 1.004793918040891,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.8811560932607359,
+      "candidate": "observations_fx100_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -1.1369831005271558,
+        "ETHUSDT": -0.6253290859943158
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.19524454599316732,
+        "2023-06-07": -1.2193509582840545,
+        "2023-06-11": -1.2288727755049855
+      },
+      "log_loss_ratio": 1.0054042631876499,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.9372611211565444,
+      "candidate": "observations_btc100_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -1.2812419910364192,
+        "ETHUSDT": -0.5932802512766696
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.3694153017503199,
+        "2023-06-07": -1.079720356377456,
+        "2023-06-11": -1.3626477053418573
+      },
+      "log_loss_ratio": 1.0076244420333766,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.9462321286479002,
+      "candidate": "combined_both100_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -1.3680181362676311,
+        "ETHUSDT": -0.5244461210281696
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.7707104239410734,
+        "2023-06-07": -0.4683966649828841,
+        "2023-06-11": -1.5995892970197434
+      },
+      "log_loss_ratio": 1.0097331670592848,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.9487726081588951,
+      "candidate": "combined_fx100_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -1.0363956189421208,
+        "ETHUSDT": -0.8611495973756692
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.7302036230137532,
+        "2023-06-07": -0.9675928283901292,
+        "2023-06-11": -1.1485213730728028
+      },
+      "log_loss_ratio": 1.0044652422590885,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.9763709821521416,
+      "candidate": "combined_btc100_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -1.3862255838845632,
+        "ETHUSDT": -0.5665163804197201
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.7381731132444502,
+        "2023-06-07": -0.8797560206766586,
+        "2023-06-11": -1.311183812535316
+      },
+      "log_loss_ratio": 1.0035112463136542,
+      "reference": "combined_instant_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -1.39069427250005,
+      "candidate": "observations_both100_neural",
+      "gain_pp_by_asset": {
+        "BTCUSDT": -1.6453375598403432,
+        "ETHUSDT": -1.136050985159757
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.8865051858246431,
+        "2023-06-07": -2.062129236109944,
+        "2023-06-11": -1.2234483955655628
+      },
+      "log_loss_ratio": 1.0200690391098521,
+      "reference": "combined_instant_hgb_old_neural"
+    }
+  ],
+  "development_expansion_candidates": [],
+  "independent_confirmation_rounds_consumed": 0,
+  "input_columns_by_model_and_date": {
+    "combined_both100_hgb": [
+      555,
+      555,
+      555
+    ],
+    "combined_both100_neural": [
+      555,
+      555,
+      555
+    ],
+    "combined_btc100_hgb": [
+      480,
+      480,
+      480
+    ],
+    "combined_btc100_neural": [
+      480,
+      480,
+      480
+    ],
+    "combined_fx100_hgb": [
+      405,
+      405,
+      405
+    ],
+    "combined_fx100_neural": [
+      405,
+      405,
+      405
+    ],
+    "observations_both100_hgb": [
+      376,
+      376,
+      376
+    ],
+    "observations_both100_neural": [
+      376,
+      376,
+      376
+    ],
+    "observations_btc100_hgb": [
+      301,
+      301,
+      301
+    ],
+    "observations_btc100_neural": [
+      301,
+      301,
+      301
+    ],
+    "observations_fx100_hgb": [
+      226,
+      226,
+      226
+    ],
+    "observations_fx100_neural": [
+      226,
+      226,
+      226
+    ]
+  },
+  "input_hashes_verified": 1888,
+  "maximum_query_errors": {
+    "full_query_prefix": 0.0,
+    "future_prefix": 0.0,
+    "individual_query": 2.4277900945168795e-07,
+    "shorter_prefix": 5.0475069957034435e-08
+  },
+  "native_minus_fx_pairs": [
+    {
+      "balanced_accuracy_gain_pp": 0.07858893605367141,
+      "candidate": "observations_btc100_hgb",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.07174536075982656,
+        "ETHUSDT": 0.08543251134751628
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.028055906857049617,
+        "2023-06-07": 0.3111666926296275,
+        "2023-06-11": -0.10345579132566285
+      },
+      "log_loss_ratio": 1.003978854079849,
+      "reference": "observations_fx100_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.056105027895808623,
+      "candidate": "observations_btc100_neural",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.14425889050926344,
+        "ETHUSDT": 0.03204883471764619
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.17417075575715257,
+        "2023-06-07": 0.13963060190659848,
+        "2023-06-11": -0.13377492983687178
+      },
+      "log_loss_ratio": 1.0022082449090555,
+      "reference": "observations_fx100_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.0013701075739743402,
+      "candidate": "observations_both100_hgb",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.019067353488677607,
+        "ETHUSDT": 0.016327138340728926
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.13821523457781537,
+        "2023-06-07": 0.21194371103133713,
+        "2023-06-11": -0.07783879917544478
+      },
+      "log_loss_ratio": 1.0040072778271485,
+      "reference": "observations_fx100_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.5095381792393142,
+      "candidate": "observations_both100_neural",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.5083544593131872,
+        "ETHUSDT": -0.5107218991654413
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.6912606398314758,
+        "2023-06-07": -0.8427782778258897,
+        "2023-06-11": 0.0054243799394226855
+      },
+      "log_loss_ratio": 1.0145859496116592,
+      "reference": "observations_fx100_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.18913498712322396,
+      "candidate": "combined_btc100_hgb",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.0730033870446715,
+        "ETHUSDT": -0.3052665872017764
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.24084851153209907,
+        "2023-06-07": -0.41043236506577707,
+        "2023-06-11": 0.08387591522820426
+      },
+      "log_loss_ratio": 1.0040557232336529,
+      "reference": "combined_fx100_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.027598373993246533,
+      "candidate": "combined_btc100_neural",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.3498299649424423,
+        "ETHUSDT": 0.2946332169559492
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.00796949023069704,
+        "2023-06-07": 0.08783680771347058,
+        "2023-06-11": -0.16266243946251313
+      },
+      "log_loss_ratio": 0.9990502449409909,
+      "reference": "combined_fx100_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.18039784498581346,
+      "candidate": "combined_both100_hgb",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.09565603686746786,
+        "ETHUSDT": -0.26513965310415905
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.24882664240609698,
+        "2023-06-07": -0.3351314419986373,
+        "2023-06-11": 0.04276454944729391
+      },
+      "log_loss_ratio": 1.0044038548241723,
+      "reference": "combined_fx100_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.0025404795109947496,
+      "candidate": "combined_both100_neural",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.3316225173255101,
+        "ETHUSDT": 0.33670347634749964
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.040506800927320175,
+        "2023-06-07": 0.49919616340724504,
+        "2023-06-11": -0.4510679239469406
+      },
+      "log_loss_ratio": 1.0052445068067746,
+      "reference": "combined_fx100_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.0995330767629125,
+      "candidate": "observations_btc100_blend",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.1029164149493204,
+        "ETHUSDT": -0.3019825684751454
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.12603948751673255,
+        "2023-06-07": -0.08340974270916734,
+        "2023-06-11": -0.08915000006283758
+      },
+      "log_loss_ratio": 1.0036374836323343,
+      "reference": "observations_fx100_blend"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.2251245531831425,
+      "candidate": "observations_btc100_hgb_old_neural",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.10116742592746197,
+        "ETHUSDT": -0.34908168043882304
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.14245019517951651,
+        "2023-06-07": -0.4275788117687529,
+        "2023-06-11": -0.1053446526011581
+      },
+      "log_loss_ratio": 1.0009988944128048,
+      "reference": "observations_fx100_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.05231131605778668,
+      "candidate": "observations_btc100_neural_deep_hgb",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.04834973833095502,
+        "ETHUSDT": -0.05627289378461834
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.06450890344160132,
+        "2023-06-07": 0.12040136481916708,
+        "2023-06-11": -0.34184421643412843
+      },
+      "log_loss_ratio": 1.0005344832121401,
+      "reference": "observations_fx100_neural_deep_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.19574226731740954,
+      "candidate": "observations_both100_blend",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.17091038918474188,
+        "ETHUSDT": -0.22057414545007722
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.42895628717060097,
+        "2023-06-07": -0.1089185338209564,
+        "2023-06-11": -0.04935198096067128
+      },
+      "log_loss_ratio": 1.0071382253601895,
+      "reference": "observations_fx100_blend"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.1690284548188037,
+      "candidate": "observations_both100_hgb_old_neural",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.10898030005193811,
+        "ETHUSDT": -0.22907660958566925
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.029504868021379416,
+        "2023-06-07": -0.3390506862816667,
+        "2023-06-11": -0.13852981015336496
+      },
+      "log_loss_ratio": 1.000709011662782,
+      "reference": "observations_fx100_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.22655850914906628,
+      "candidate": "observations_both100_neural_deep_hgb",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.275306790092326,
+        "ETHUSDT": -0.17781022820580658
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.12091650465241299,
+        "2023-06-07": -0.4848785556449686,
+        "2023-06-11": -0.07388046714981722
+      },
+      "log_loss_ratio": 1.0036787754544123,
+      "reference": "observations_fx100_neural_deep_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.07326199772974551,
+      "candidate": "combined_btc100_blend",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.09686090976120572,
+        "ETHUSDT": -0.04966308569828529
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.22662348450894765,
+        "2023-06-07": -0.16883776640475578,
+        "2023-06-11": 0.1756752577244669
+      },
+      "log_loss_ratio": 1.002391316400509,
+      "reference": "combined_fx100_blend"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.003269721682197524,
+      "candidate": "combined_btc100_hgb_old_neural",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.11595835120516614,
+        "ETHUSDT": 0.12249779456956118
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.06868273566983385,
+        "2023-06-07": -0.12353871701396013,
+        "2023-06-11": 0.06466514639071885
+      },
+      "log_loss_ratio": 1.0011104609962969,
+      "reference": "combined_fx100_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.047541939577851654,
+      "candidate": "combined_btc100_neural_deep_hgb",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.012551174657197498,
+        "ETHUSDT": 0.1076350538129008
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.06944286028038316,
+        "2023-06-07": 0.05759602140025244,
+        "2023-06-11": 0.015586937052919358
+      },
+      "log_loss_ratio": 0.9994603870114869,
+      "reference": "combined_fx100_neural_deep_hgb"
+    },
+    {
+      "balanced_accuracy_gain_pp": -0.2514435240806338,
+      "candidate": "combined_both100_blend",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.07212084080004215,
+        "ETHUSDT": -0.43076620736122545
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": -0.11656087232012613,
+        "2023-06-07": -0.28694524387484766,
+        "2023-06-11": -0.3508244560469276
+      },
+      "log_loss_ratio": 1.0046727468003305,
+      "reference": "combined_fx100_blend"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.10649836703059597,
+      "candidate": "combined_both100_hgb_old_neural",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": -0.004091926575030176,
+        "ETHUSDT": 0.21708866063622212
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.1329256609672813,
+        "2023-06-07": 0.027607162615822523,
+        "2023-06-11": 0.15896227750868408
+      },
+      "log_loss_ratio": 1.0011446802370845,
+      "reference": "combined_fx100_hgb_old_neural"
+    },
+    {
+      "balanced_accuracy_gain_pp": 0.03272834363809429,
+      "candidate": "combined_both100_neural_deep_hgb",
+      "development_expansion_gate_passes": false,
+      "gain_pp_by_asset": {
+        "BTCUSDT": 0.0005811883768395513,
+        "ETHUSDT": 0.06487549889934903
+      },
+      "gain_pp_by_date": {
+        "2023-06-03": 0.24124863444937583,
+        "2023-06-07": -0.047006850583736215,
+        "2023-06-11": -0.09605675295135674
+      },
+      "log_loss_ratio": 1.0018513137333211,
+      "reference": "combined_fx100_neural_deep_hgb"
+    }
+  ],
+  "primary_leaderboard": [
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5846373390545807,
+        "ETHUSDT": 0.5621784318840085
+      },
+      "means": {
+        "balanced_accuracy": 0.5734078854692947,
+        "log_loss": 0.7622057348545054,
+        "macro_f1": 0.4902420755020533,
+        "natural_accuracy": 0.6643328618576143
+      },
+      "model": "combined_instant_hgb_old_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5857251265913878,
+        "ETHUSDT": 0.560958354457806
+      },
+      "means": {
+        "balanced_accuracy": 0.5733417405245969,
+        "log_loss": 0.7627958969607684,
+        "macro_f1": 0.4908584372591816,
+        "natural_accuracy": 0.6645214521452146
+      },
+      "model": "observations_fx100_hgb_old_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5807489648964735,
+        "ETHUSDT": 0.5642698808941364
+      },
+      "means": {
+        "balanced_accuracy": 0.5725094228953049,
+        "log_loss": 0.7620874852569597,
+        "macro_f1": 0.49352250418634164,
+        "natural_accuracy": 0.6654172560113155
+      },
+      "model": "combined_fx100_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5798898326973702,
+        "ETHUSDT": 0.5646630735981426
+      },
+      "means": {
+        "balanced_accuracy": 0.5722764531477563,
+        "log_loss": 0.7617049834163433,
+        "macro_f1": 0.4901296143623611,
+        "natural_accuracy": 0.6629184347006128
+      },
+      "model": "combined_both100_hgb_old_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.580641596363655,
+        "ETHUSDT": 0.5635023829743457
+      },
+      "means": {
+        "balanced_accuracy": 0.5720719896690004,
+        "log_loss": 0.759421913717797,
+        "macro_f1": 0.48693489511858773,
+        "natural_accuracy": 0.6651815181518151
+      },
+      "model": "combined_fx100_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5846353235908684,
+        "ETHUSDT": 0.5586675883619492
+      },
+      "means": {
+        "balanced_accuracy": 0.5716514559764089,
+        "log_loss": 0.7633367281480359,
+        "macro_f1": 0.4899377978373623,
+        "natural_accuracy": 0.6639321074964639
+      },
+      "model": "observations_both100_hgb_old_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5806926194268333,
+        "ETHUSDT": 0.5625532596427688
+      },
+      "means": {
+        "balanced_accuracy": 0.571622939534801,
+        "log_loss": 0.7593723658751425,
+        "macro_f1": 0.489174022833512,
+        "natural_accuracy": 0.6647336162187648
+      },
+      "model": "observations_fx100_neural_deep_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5795556817983073,
+        "ETHUSDT": 0.5635969696180738
+      },
+      "means": {
+        "balanced_accuracy": 0.5715763257081906,
+        "log_loss": 0.758782106443392,
+        "macro_f1": 0.4902611597455644,
+        "natural_accuracy": 0.6657001414427156
+      },
+      "model": "combined_btc100_neural_deep_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5796870054286477,
+        "ETHUSDT": 0.5631693740689383
+      },
+      "means": {
+        "balanced_accuracy": 0.5714281897487931,
+        "log_loss": 0.7605972783480733,
+        "macro_f1": 0.4862201045828887,
+        "natural_accuracy": 0.6643800094295144
+      },
+      "model": "combined_both100_neural_deep_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.583919837023945,
+        "ETHUSDT": 0.5589213669332976
+      },
+      "means": {
+        "balanced_accuracy": 0.5714206019786213,
+        "log_loss": 0.7631135070742353,
+        "macro_f1": 0.48902995324311965,
+        "natural_accuracy": 0.6649222065063649
+      },
+      "model": "observations_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.579672987266043,
+        "ETHUSDT": 0.5630057521173629
+      },
+      "means": {
+        "balanced_accuracy": 0.571339369691703,
+        "log_loss": 0.7612379317949762,
+        "macro_f1": 0.4914442451328747,
+        "natural_accuracy": 0.6647571900047148
+      },
+      "model": "combined_btc100_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5787711684510688,
+        "ETHUSDT": 0.563717164937476
+      },
+      "means": {
+        "balanced_accuracy": 0.5712441666942724,
+        "log_loss": 0.7616789482520446,
+        "macro_f1": 0.48924785004492133,
+        "natural_accuracy": 0.6628477133427628
+      },
+      "model": "combined_btc100_hgb_old_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5799307519631204,
+        "ETHUSDT": 0.5624921869917804
+      },
+      "means": {
+        "balanced_accuracy": 0.5712114694774505,
+        "log_loss": 0.7608340716907783,
+        "macro_f1": 0.48838635426296456,
+        "natural_accuracy": 0.6628241395568129
+      },
+      "model": "combined_fx100_hgb_old_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5796811935448795,
+        "ETHUSDT": 0.5625206190799448
+      },
+      "means": {
+        "balanced_accuracy": 0.5711009063124122,
+        "log_loss": 0.7591917761865946,
+        "macro_f1": 0.48574763407172733,
+        "natural_accuracy": 0.6645921735030647
+      },
+      "model": "combined_fx100_neural_deep_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5802091220435236,
+        "ETHUSDT": 0.5619905307049226
+      },
+      "means": {
+        "balanced_accuracy": 0.5710998263742232,
+        "log_loss": 0.7597782376564659,
+        "macro_f1": 0.48799984342515096,
+        "natural_accuracy": 0.6646157472890146
+      },
+      "model": "observations_btc100_neural_deep_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5847134523321132,
+        "ETHUSDT": 0.5574675376534177
+      },
+      "means": {
+        "balanced_accuracy": 0.5710904949927655,
+        "log_loss": 0.7635578495203529,
+        "macro_f1": 0.4895261876456016,
+        "natural_accuracy": 0.6634842055634135
+      },
+      "model": "observations_btc100_hgb_old_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5797924045277988,
+        "ETHUSDT": 0.5616184843630948
+      },
+      "means": {
+        "balanced_accuracy": 0.5707054444454468,
+        "log_loss": 0.7654436079053498,
+        "macro_f1": 0.49421744026190967,
+        "natural_accuracy": 0.6631305987741631
+      },
+      "model": "combined_both100_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5800189310260268,
+        "ETHUSDT": 0.5612172150221187
+      },
+      "means": {
+        "balanced_accuracy": 0.5706180730240727,
+        "log_loss": 0.7651783011769924,
+        "macro_f1": 0.4939202121527524,
+        "natural_accuracy": 0.6631070249882131
+      },
+      "model": "combined_btc100_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5797849366795144,
+        "ETHUSDT": 0.5611253059897569
+      },
+      "means": {
+        "balanced_accuracy": 0.5704551213346356,
+        "log_loss": 0.7620865796051622,
+        "macro_f1": 0.4915532251220327,
+        "natural_accuracy": 0.6645921735030645
+      },
+      "model": "combined_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5776960392296697,
+        "ETHUSDT": 0.5629571638371628
+      },
+      "means": {
+        "balanced_accuracy": 0.5703266015334162,
+        "log_loss": 0.7617054804685268,
+        "macro_f1": 0.4912968909387005,
+        "natural_accuracy": 0.665016501650165
+      },
+      "model": "deep500_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5784027067125943,
+        "ETHUSDT": 0.5621026762337454
+      },
+      "means": {
+        "balanced_accuracy": 0.5702526914731699,
+        "log_loss": 0.7604315548680475,
+        "macro_f1": 0.48873285485858053,
+        "natural_accuracy": 0.6654644035832155
+      },
+      "model": "observations_fx100_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5783575894330028,
+        "ETHUSDT": 0.5613114874448034
+      },
+      "means": {
+        "balanced_accuracy": 0.5698345384389031,
+        "log_loss": 0.7661987404893335,
+        "macro_f1": 0.49408000593529494,
+        "natural_accuracy": 0.6625648279113626
+      },
+      "model": "observations_btc100_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5780728888182304,
+        "ETHUSDT": 0.5615547700380538
+      },
+      "means": {
+        "balanced_accuracy": 0.5698138294281422,
+        "log_loss": 0.7634882557879545,
+        "macro_f1": 0.49135233948636836,
+        "natural_accuracy": 0.6635785007072136
+      },
+      "model": "observations_tree",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5799203879556547,
+        "ETHUSDT": 0.5591947209007334
+      },
+      "means": {
+        "balanced_accuracy": 0.569557554428194,
+        "log_loss": 0.7629705000352227,
+        "macro_f1": 0.48597702508844653,
+        "natural_accuracy": 0.6641442715700141
+      },
+      "model": "combined_both100_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5779395515259099,
+        "ETHUSDT": 0.5607751573607107
+      },
+      "means": {
+        "balanced_accuracy": 0.5693573544433103,
+        "log_loss": 0.7621659262954829,
+        "macro_f1": 0.4871908987148186,
+        "natural_accuracy": 0.6623526638378124
+      },
+      "model": "observations_both100_neural_deep_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5794318708620876,
+        "ETHUSDT": 0.559082850548994
+      },
+      "means": {
+        "balanced_accuracy": 0.5692573607055408,
+        "log_loss": 0.7631976122023906,
+        "macro_f1": 0.4878903824812246,
+        "natural_accuracy": 0.6619990570485621
+      },
+      "model": "observations_btc100_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5776401358254045,
+        "ETHUSDT": 0.5604571623313283
+      },
+      "means": {
+        "balanced_accuracy": 0.5690486490783664,
+        "log_loss": 0.7631622293395391,
+        "macro_f1": 0.49202997578661695,
+        "natural_accuracy": 0.664026402640264
+      },
+      "model": "observations_fx100_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5774494622905176,
+        "ETHUSDT": 0.5606204337147355
+      },
+      "means": {
+        "balanced_accuracy": 0.5690349480026266,
+        "log_loss": 0.7662204324196886,
+        "macro_f1": 0.4931369039998899,
+        "natural_accuracy": 0.662965582272513
+      },
+      "model": "observations_both100_hgb",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5766936028207469,
+        "ETHUSDT": 0.5598969347792447
+      },
+      "means": {
+        "balanced_accuracy": 0.5682952687999958,
+        "log_loss": 0.7658596866776949,
+        "macro_f1": 0.48760583130315877,
+        "natural_accuracy": 0.661150400754361
+      },
+      "model": "observations_both100_blend",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5732675080493091,
+        "ETHUSDT": 0.5559251410240654
+      },
+      "means": {
+        "balanced_accuracy": 0.5645963245366873,
+        "log_loss": 0.7663248952487952,
+        "macro_f1": 0.4814481761068334,
+        "natural_accuracy": 0.661079679396511
+      },
+      "model": "observations_fx100_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5718249191442165,
+        "ETHUSDT": 0.5562456293712418
+      },
+      "means": {
+        "balanced_accuracy": 0.5640352742577291,
+        "log_loss": 0.7680171282974109,
+        "macro_f1": 0.4794494662256923,
+        "natural_accuracy": 0.6584629891560585
+      },
+      "model": "observations_btc100_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5709571576919044,
+        "ETHUSDT": 0.5569339706737267
+      },
+      "means": {
+        "balanced_accuracy": 0.5639455641828156,
+        "log_loss": 0.7696244106053892,
+        "macro_f1": 0.47843066555944325,
+        "natural_accuracy": 0.6598538425271098
+      },
+      "model": "combined_both100_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5742733828651595,
+        "ETHUSDT": 0.5535669359102519
+      },
+      "means": {
+        "balanced_accuracy": 0.5639201593877056,
+        "log_loss": 0.7656091681118974,
+        "macro_f1": 0.47636895254148487,
+        "natural_accuracy": 0.6594295143800094
+      },
+      "model": "combined_fx100_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5707750832157351,
+        "ETHUSDT": 0.5565132680798114
+      },
+      "means": {
+        "balanced_accuracy": 0.5636441756477732,
+        "log_loss": 0.7648820269312594,
+        "macro_f1": 0.483679732452079,
+        "natural_accuracy": 0.6606317774634606
+      },
+      "model": "combined_btc100_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5763527515551485,
+        "ETHUSDT": 0.5498637957764642
+      },
+      "means": {
+        "balanced_accuracy": 0.5631082736658063,
+        "log_loss": 0.7732272645022503,
+        "macro_f1": 0.48161666953833837,
+        "natural_accuracy": 0.6570014144271569
+      },
+      "model": "observations_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5702144012710485,
+        "ETHUSDT": 0.5543588921902673
+      },
+      "means": {
+        "balanced_accuracy": 0.562286646730658,
+        "log_loss": 0.7703185782778391,
+        "macro_f1": 0.47817439580254706,
+        "natural_accuracy": 0.6568128241395569
+      },
+      "model": "combined_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5681839634561773,
+        "ETHUSDT": 0.5508179220324109
+      },
+      "means": {
+        "balanced_accuracy": 0.5595009427442941,
+        "log_loss": 0.7775024715570541,
+        "macro_f1": 0.4767600186024095,
+        "natural_accuracy": 0.6527109853842528
+      },
+      "model": "observations_both100_neural",
+      "policy": "forecast_3600"
+    },
+    {
+      "balanced_accuracy_by_asset": {
+        "BTCUSDT": 0.5382296070519249,
+        "ETHUSDT": 0.524520402636779
+      },
+      "means": {
+        "balanced_accuracy": 0.531375004844352,
+        "log_loss": 0.9145884274405761,
+        "macro_f1": 0.45147272865333704,
+        "natural_accuracy": 0.5885431400282886
+      },
+      "model": "original_reference",
+      "policy": "forecast_3600"
+    }
+  ],
+  "protocol": "docs/research/boundary_quote_currency_screen_20260909.json",
+  "protocol_sha256": "44a4ecfb495af4123cf56ab81d578aa6bc4c57585cd313e05c12ad256a3363ed",
+  "reporting_panels_recomputed_exactly": 456,
+  "resources": [
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 44.49792175000766,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 1585217536,
+      "maximum_sampled_simultaneous_sum_bytes": 1585217536,
+      "model": "observations_fx100_hgb",
+      "supervised_seconds": 48.49698445800459
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 18.918663332995493,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2228633600,
+      "maximum_sampled_simultaneous_sum_bytes": 2228633600,
+      "model": "observations_fx100_neural",
+      "supervised_seconds": 23.102301374950912
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 55.717268375039566,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2298052608,
+      "maximum_sampled_simultaneous_sum_bytes": 2298052608,
+      "model": "observations_btc100_hgb",
+      "supervised_seconds": 58.93684629199561
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 23.456591875001322,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2111258624,
+      "maximum_sampled_simultaneous_sum_bytes": 2111258624,
+      "model": "observations_btc100_neural",
+      "supervised_seconds": 28.152240541996434
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 74.83764454198536,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2442100736,
+      "maximum_sampled_simultaneous_sum_bytes": 2442100736,
+      "model": "observations_both100_hgb",
+      "supervised_seconds": 78.25703058298677
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 27.20142841699999,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2523021312,
+      "maximum_sampled_simultaneous_sum_bytes": 2523021312,
+      "model": "observations_both100_neural",
+      "supervised_seconds": 32.348770416982006
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 67.30778541701147,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2256371712,
+      "maximum_sampled_simultaneous_sum_bytes": 2256371712,
+      "model": "combined_fx100_hgb",
+      "supervised_seconds": 70.81053408398293
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 31.145002458943054,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2599272448,
+      "maximum_sampled_simultaneous_sum_bytes": 2599272448,
+      "model": "combined_fx100_neural",
+      "supervised_seconds": 36.38773220899748
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 83.09041237499332,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2597552128,
+      "maximum_sampled_simultaneous_sum_bytes": 2597552128,
+      "model": "combined_btc100_hgb",
+      "supervised_seconds": 86.93632441700902
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 34.41081995895365,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2434662400,
+      "maximum_sampled_simultaneous_sum_bytes": 2434662400,
+      "model": "combined_btc100_neural",
+      "supervised_seconds": 40.385039457993116
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 92.49889091704972,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 3398926336,
+      "maximum_sampled_simultaneous_sum_bytes": 3398926336,
+      "model": "combined_both100_hgb",
+      "supervised_seconds": 96.48477633297443
+    },
+    {
+      "date": "2023-06-03",
+      "fit_save_reload_seconds": 39.931118624983355,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2958573568,
+      "maximum_sampled_simultaneous_sum_bytes": 2958573568,
+      "model": "combined_both100_neural",
+      "supervised_seconds": 46.74548041704111
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 44.084501833014656,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 1973862400,
+      "maximum_sampled_simultaneous_sum_bytes": 1973862400,
+      "model": "observations_fx100_hgb",
+      "supervised_seconds": 47.490102167008445
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 19.679097459011246,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 1952972800,
+      "maximum_sampled_simultaneous_sum_bytes": 1952972800,
+      "model": "observations_fx100_neural",
+      "supervised_seconds": 23.898283166985493
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 56.85972862504423,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2074083328,
+      "maximum_sampled_simultaneous_sum_bytes": 2074083328,
+      "model": "observations_btc100_hgb",
+      "supervised_seconds": 60.21960333298193
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 24.259330542001408,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2032730112,
+      "maximum_sampled_simultaneous_sum_bytes": 2032730112,
+      "model": "observations_btc100_neural",
+      "supervised_seconds": 29.222849249956198
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 77.07252037501894,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2016526336,
+      "maximum_sampled_simultaneous_sum_bytes": 2016526336,
+      "model": "observations_both100_hgb",
+      "supervised_seconds": 80.64808129100129
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 27.997540750016924,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2019328000,
+      "maximum_sampled_simultaneous_sum_bytes": 2019328000,
+      "model": "observations_both100_neural",
+      "supervised_seconds": 33.14205729198875
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 70.93453858298017,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 1956675584,
+      "maximum_sampled_simultaneous_sum_bytes": 1956675584,
+      "model": "combined_fx100_hgb",
+      "supervised_seconds": 74.46928366698558
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 30.821390540979337,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2055356416,
+      "maximum_sampled_simultaneous_sum_bytes": 2055356416,
+      "model": "combined_fx100_neural",
+      "supervised_seconds": 36.84314275003271
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 92.581069457985,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 1592360960,
+      "maximum_sampled_simultaneous_sum_bytes": 1592360960,
+      "model": "combined_btc100_hgb",
+      "supervised_seconds": 96.72050837497227
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 38.18397720903158,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 1633239040,
+      "maximum_sampled_simultaneous_sum_bytes": 1633239040,
+      "model": "combined_btc100_neural",
+      "supervised_seconds": 44.66446141700726
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 96.2509364169673,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2615803904,
+      "maximum_sampled_simultaneous_sum_bytes": 2615803904,
+      "model": "combined_both100_hgb",
+      "supervised_seconds": 99.97122833301546
+    },
+    {
+      "date": "2023-06-07",
+      "fit_save_reload_seconds": 36.519074417010415,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 3715940352,
+      "maximum_sampled_simultaneous_sum_bytes": 3715940352,
+      "model": "combined_both100_neural",
+      "supervised_seconds": 42.987481707998086
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 42.69736166601069,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 1970339840,
+      "maximum_sampled_simultaneous_sum_bytes": 1970339840,
+      "model": "observations_fx100_hgb",
+      "supervised_seconds": 45.580701750004664
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 17.153750374971423,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2074738688,
+      "maximum_sampled_simultaneous_sum_bytes": 2074738688,
+      "model": "observations_fx100_neural",
+      "supervised_seconds": 21.241776500013657
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 56.44580766704166,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2446082048,
+      "maximum_sampled_simultaneous_sum_bytes": 2446082048,
+      "model": "observations_btc100_hgb",
+      "supervised_seconds": 59.68272295797942
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 21.76406750001479,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2895724544,
+      "maximum_sampled_simultaneous_sum_bytes": 2895724544,
+      "model": "observations_btc100_neural",
+      "supervised_seconds": 26.3206665419857
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 73.32228366698837,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2791604224,
+      "maximum_sampled_simultaneous_sum_bytes": 2791604224,
+      "model": "observations_both100_hgb",
+      "supervised_seconds": 76.55614012503065
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 25.242427334014792,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2604826624,
+      "maximum_sampled_simultaneous_sum_bytes": 2604826624,
+      "model": "observations_both100_neural",
+      "supervised_seconds": 30.28000658302335
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 67.57396925002104,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2721873920,
+      "maximum_sampled_simultaneous_sum_bytes": 2721873920,
+      "model": "combined_fx100_hgb",
+      "supervised_seconds": 71.29592875001254
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 28.617126500001177,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2577121280,
+      "maximum_sampled_simultaneous_sum_bytes": 2577121280,
+      "model": "combined_fx100_neural",
+      "supervised_seconds": 34.12486124999123
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 82.13278054195689,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2116026368,
+      "maximum_sampled_simultaneous_sum_bytes": 2116026368,
+      "model": "combined_btc100_hgb",
+      "supervised_seconds": 85.88444412499666
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 32.975501250009984,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2423046144,
+      "maximum_sampled_simultaneous_sum_bytes": 2423046144,
+      "model": "combined_btc100_neural",
+      "supervised_seconds": 40.444065291958395
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 93.04488429200137,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 1986887680,
+      "maximum_sampled_simultaneous_sum_bytes": 1986887680,
+      "model": "combined_both100_hgb",
+      "supervised_seconds": 96.82081187498989
+    },
+    {
+      "date": "2023-06-11",
+      "fit_save_reload_seconds": 37.075585292011965,
+      "maximum_sampled_gpu_driver_bytes": 0,
+      "maximum_sampled_rss_bytes": 2390294528,
+      "maximum_sampled_simultaneous_sum_bytes": 2390294528,
+      "model": "combined_both100_neural",
+      "supervised_seconds": 43.58996524999384
+    }
+  ],
+  "retained_panels_exact": 96,
+  "status": "complete_exposed_development_only",
+  "stronger_additional_controls": [
+    "counted::observations_q100_100_hgb_old_neural",
+    "expert::confidence_context_eta10_h300"
+  ],
+  "substantial_gain_confirmed": false,
+  "summary": "results/boundary_quote_currency_screen_20260909/summary.json",
+  "summary_sha256": "f7a4252b894232e58b42ba2cee0fb602da5878e422372e3ecd7a9c143cf1a0e3",
+  "trainable_model_fits": 36,
+  "training_rows_by_date": {
+    "2023-06-03": {
+      "BTCUSDT": 85997,
+      "ETHUSDT": 85997
+    },
+    "2023-06-07": {
+      "BTCUSDT": 85997,
+      "ETHUSDT": 85997
+    },
+    "2023-06-11": {
+      "BTCUSDT": 85967,
+      "ETHUSDT": 85967
+    }
+  }
+}
