@@ -1,0 +1,216 @@
+{
+  "all_archive_sha256_md5_and_byte_lengths_reverified": true,
+  "complete": true,
+  "file_count": 28,
+  "file_identities": [
+    {
+      "expected_bytes": 316748108,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-05-29.tar.gz",
+      "official_content_md5_base64": "kxTWdzA2u7c9J8kMunRAiw==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-05-29/BTC-USDT-SWAP-L2orderbook-400lv-2023-05-29.tar.gz",
+      "sha256": "b5ca41df6ad4d8f621767522865158df56d16d4dda6eabeb299ed85c5a7a5aa6"
+    },
+    {
+      "expected_bytes": 238297691,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-05-29.tar.gz",
+      "official_content_md5_base64": "SxVDc9/ZTTuJwJ0tgFv/9A==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-05-29/ETH-USDT-SWAP-L2orderbook-400lv-2023-05-29.tar.gz",
+      "sha256": "52e11cd965f2913626eb49db475a67cd016a9967b11235db657fc6e647ee60c9"
+    },
+    {
+      "expected_bytes": 332480744,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-05-30.tar.gz",
+      "official_content_md5_base64": "rezzEGTjJHTDI18urqkm9A==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-05-30/BTC-USDT-SWAP-L2orderbook-400lv-2023-05-30.tar.gz",
+      "sha256": "3988bb87c18a47e2688de98e706d8740b8ddaf4319f207841bfc7d0ebb4f206a"
+    },
+    {
+      "expected_bytes": 239559697,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-05-30.tar.gz",
+      "official_content_md5_base64": "N1yMqQsafS5c8b2tvizrsA==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-05-30/ETH-USDT-SWAP-L2orderbook-400lv-2023-05-30.tar.gz",
+      "sha256": "a899e7b89ec72fa9ca505ca05c82b66aea4b20c5a68799c2a128d43bdba7c459"
+    },
+    {
+      "expected_bytes": 367337943,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-05-31.tar.gz",
+      "official_content_md5_base64": "t/c0/XYW4DmLR8i+EP5YSA==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-05-31/BTC-USDT-SWAP-L2orderbook-400lv-2023-05-31.tar.gz",
+      "sha256": "3d39c6b5e624925446028f5e076112b30288c4150fff402c517382a0484ffa3d"
+    },
+    {
+      "expected_bytes": 244084953,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-05-31.tar.gz",
+      "official_content_md5_base64": "AAWIYfVBau7epjeZ8Cl0ew==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-05-31/ETH-USDT-SWAP-L2orderbook-400lv-2023-05-31.tar.gz",
+      "sha256": "3f32055bab2913a03d1401f47fad4d06bb5ea70113ef46ee4f8342f6c903ee51"
+    },
+    {
+      "expected_bytes": 370766491,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+      "official_content_md5_base64": "D4INinqmr6KM26PhCzX8Ow==",
+      "path": "data/research/boundary_okx_depth_source_preflight_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+      "sha256": "52eff3a929bd6d09327515e27a950de3072a347105128fbe12d34acb59aa6e3b"
+    },
+    {
+      "expected_bytes": 265667325,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+      "official_content_md5_base64": "1PQzowzArt9hiQ0DhQ3M6g==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-01/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-01.tar.gz",
+      "sha256": "efb285b68c5e6eeb473756b083d7df66d0a03b4ed70d8a4f3d459e872d740266"
+    },
+    {
+      "expected_bytes": 379051678,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-02.tar.gz",
+      "official_content_md5_base64": "TWIAlyVHwAY/WeePYqNidQ==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-02/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-02.tar.gz",
+      "sha256": "a18b713875c076135b6788cb39eecafba87cf847146087e42a891ecea091c8c8"
+    },
+    {
+      "expected_bytes": 262135582,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-02.tar.gz",
+      "official_content_md5_base64": "dT1M/QJl6XrqGMIYnL76tw==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-02/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-02.tar.gz",
+      "sha256": "95906ba66066df23439552e3119943953d323d032e455a78a8c1431a4ad5594c"
+    },
+    {
+      "expected_bytes": 226748592,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-03.tar.gz",
+      "official_content_md5_base64": "rcez+l0eapxJYK8kus6gVQ==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-03/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-03.tar.gz",
+      "sha256": "674a0686ec49e54aca6f2925ef1631a369b7730fa5c55d62856a0105fc8c2b16"
+    },
+    {
+      "expected_bytes": 159221386,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-03.tar.gz",
+      "official_content_md5_base64": "45sqB0r93ZWLrgh/GfuWbg==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-03/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-03.tar.gz",
+      "sha256": "54521c7ea338044ed4db811d3817334ca7f7648070cf58fd189620c4426984b9"
+    },
+    {
+      "expected_bytes": 235763631,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-04.tar.gz",
+      "official_content_md5_base64": "lPHobK+LLhGnWv0QQvKtXQ==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-04/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-04.tar.gz",
+      "sha256": "a0d4601a7baa8c9c5ead3bb6f85e647eff5df6ee7be1968d0487ae6e3b0b113f"
+    },
+    {
+      "expected_bytes": 168895044,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-04.tar.gz",
+      "official_content_md5_base64": "vN3hsn1VY9HMDcRIRVXdRg==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-04/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-04.tar.gz",
+      "sha256": "1c2e6ec0d1248bcc8f5ad43e9514a7100bbf52614014113405a3a6706b12a5f7"
+    },
+    {
+      "expected_bytes": 457133904,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-05.tar.gz",
+      "official_content_md5_base64": "OYv8m4KgWqQ+DTN4qIsoyQ==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-05/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-05.tar.gz",
+      "sha256": "0a8799ee0e9eeab7564ba6b068d27e1567a23652c9d98f29f966e18c91aa6366"
+    },
+    {
+      "expected_bytes": 329070880,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-05.tar.gz",
+      "official_content_md5_base64": "VlqrU1QBatxIjZjT80uyzA==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-05/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-05.tar.gz",
+      "sha256": "86906de94e8228739ecb76cb89734f53d5ae12ecdb2fe9d62e97f52df7eded31"
+    },
+    {
+      "expected_bytes": 474753404,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-06.tar.gz",
+      "official_content_md5_base64": "GQaQPJ9NFA6IBhwc6k3h4A==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-06/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-06.tar.gz",
+      "sha256": "72275ce4d4483e6a6c5b23a15771462943c81e300eb77ddd3ff04991396b0fb3"
+    },
+    {
+      "expected_bytes": 314921909,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-06.tar.gz",
+      "official_content_md5_base64": "XobtOYXOQ9N6ul6LH3xjzw==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-06/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-06.tar.gz",
+      "sha256": "8391c2a5364e508895d786e323cf9cab45be73a25db34ccae9948ea08420f736"
+    },
+    {
+      "expected_bytes": 473872835,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-07.tar.gz",
+      "official_content_md5_base64": "sq1W44K6stG+x1RwA9Mv2g==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-07/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-07.tar.gz",
+      "sha256": "06a7cf020fe6cb3c97d4155306098af81f8b2a04957ecfaf90cb7a606395e363"
+    },
+    {
+      "expected_bytes": 314441247,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-07.tar.gz",
+      "official_content_md5_base64": "eMJlR3jhnWD8MAXpnJ8UPg==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-07/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-07.tar.gz",
+      "sha256": "c0538857b2f879da46e91d76639a2a68d7029fb2c06e7a47ac1e88c7bac6731d"
+    },
+    {
+      "expected_bytes": 350405636,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-08.tar.gz",
+      "official_content_md5_base64": "7RUPdPlfYHj7V0Np+Rl9DA==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-08/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-08.tar.gz",
+      "sha256": "1db55806f0f98ec74b0bb796d13b9102f697b8d9e5cc25d5d8c163742897f2e9"
+    },
+    {
+      "expected_bytes": 228406637,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-08.tar.gz",
+      "official_content_md5_base64": "cZIfyB+pYrOO4e3e59H8xg==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-08/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-08.tar.gz",
+      "sha256": "293f3ba500a9d6320b1f32af0d22d586ab21fb8c25e71fbbc26474d4400f1ecc"
+    },
+    {
+      "expected_bytes": 300778264,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-09.tar.gz",
+      "official_content_md5_base64": "+UrT1TKaMQMR9pdbY22zGQ==",
+      "path": "data/research/boundary_okx_development_raw_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-09/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-09.tar.gz",
+      "sha256": "c8ac19705b2f1333b32999bfefa1a2935743fdae3a17e5c3764961697481398a"
+    },
+    {
+      "expected_bytes": 212708544,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-09.tar.gz",
+      "official_content_md5_base64": "WcLHjrDUbq6NqnbJW06u6w==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-09/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-09.tar.gz",
+      "sha256": "32d3a464b549c8db2b7d4741b012741b60a84634f65d6f6b5d311abcab47d77b"
+    },
+    {
+      "expected_bytes": 503295542,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10.tar.gz",
+      "official_content_md5_base64": "gWwcivnwXfXHeKgdiHskpQ==",
+      "path": "data/research/boundary_okx_transport_recovery_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-10.tar.gz",
+      "sha256": "7ded4cf7f3357fb74a70c78c6ff55e62fe383ac51acc1d932f158c7fefba01b8"
+    },
+    {
+      "expected_bytes": 428277181,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-10.tar.gz",
+      "official_content_md5_base64": "+MwaZIrGOnZAV0M+2fA75g==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-10/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-10.tar.gz",
+      "sha256": "fd008c9c4223ec0c769a4d2b5bd70aa62b8e46994c4c10f9624dde99863cad2d"
+    },
+    {
+      "expected_bytes": 312706566,
+      "filename": "BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11.tar.gz",
+      "official_content_md5_base64": "I65loOs4qJX9kKsjf4yMoA==",
+      "path": "data/research/boundary_okx_transport_recovery_20260909/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11/BTC-USDT-SWAP-L2orderbook-400lv-2023-06-11.tar.gz",
+      "sha256": "58823d84c57ff8d38f4ac96c50b6a335aa0c7619a9fdbf13b454ff02b354bed4"
+    },
+    {
+      "expected_bytes": 224901216,
+      "filename": "ETH-USDT-SWAP-L2orderbook-400lv-2023-06-11.tar.gz",
+      "official_content_md5_base64": "9fW4WJQNnp7TLuiNMTyjZA==",
+      "path": "data/research/boundary_okx_development_raw_20260909/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-11/ETH-USDT-SWAP-L2orderbook-400lv-2023-06-11.tar.gz",
+      "sha256": "9c7ca595940dc91c0742100c2c1d5f4b591eac564de3ad7941c84a081e55d6a0"
+    }
+  ],
+  "gzip_tar_or_market_content_opened_by_this_step": false,
+  "independent_confirmation_data_opened": false,
+  "market_model_fits": 0,
+  "original_attempt": "data/research/boundary_okx_development_raw_20260909/summary.json",
+  "original_attempt_failed_sources": 2,
+  "original_attempt_sha256": "763a0f32d4dfa0fd144e6b7b6c8084757961a4619f574fc0e4e89a8926c0c060",
+  "original_successful_sources": 26,
+  "recovered_sources": 2,
+  "recovery_attempt": "data/research/boundary_okx_transport_recovery_20260909/summary.json",
+  "recovery_attempt_sha256": "49689ac7d1774e9b23d4fc44a5036503a92c4564f92392e0a86e67fc72ca81f4",
+  "summary": "data/research/boundary_okx_development_verified_20260909/summary.json",
+  "summary_sha256": "6c492f964a4d75a9d1c696fb7fe85c485e7425e84b3450707ba9fe7595897146",
+  "total_verified_archive_bytes": 8732432630
+}

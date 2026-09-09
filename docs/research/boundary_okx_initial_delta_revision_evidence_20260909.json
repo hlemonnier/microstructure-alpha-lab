@@ -1,0 +1,69 @@
+{
+  "all_frozen_initial_sources_preserved": true,
+  "assessment_labels_decoded": false,
+  "initial_attempt_progress_not_rewritten": true,
+  "market_model_fits": 0,
+  "original_attempt": "data/research/boundary_okx_depth_development_part_a_20260909",
+  "original_completed_workers": 2,
+  "original_failed_workers": 2,
+  "original_protocol": "docs/research/boundary_okx_depth_development_part_a_20260909.json",
+  "original_queued_workers_not_started": 21,
+  "original_supervisor_exit_code": 143,
+  "preserved_source_directory": "data/research/boundary_okx_initial_delta_revision_20260909",
+  "reason": "Keep an uninitialized book unavailable through any initial incremental prefix; initialize only at its first full 400-level snapshot.",
+  "reused_sidecars": [
+    {
+      "date": "2023-06-01",
+      "observation_path": "data/research/boundary_okx_depth_preparation_preflight_20260909/BTCUSDT/2023-06-01/observations.npz",
+      "observation_sha256": "a84e965e18239e4fa33b54208643603f4229a2e6cd61f238c6aa56ba2c77b69d",
+      "record": "data/research/boundary_okx_depth_preparation_preflight_20260909/BTCUSDT/2023-06-01/record.json",
+      "record_sha256": "e66b5cbee623a4c50a207b9275b162e485f33fc49eb0c0ea6c108352318425cb",
+      "symbol": "BTCUSDT"
+    },
+    {
+      "date": "2023-05-29",
+      "observation_path": "data/research/boundary_okx_depth_development_part_a_20260909/ETHUSDT/2023-05-29/observations.npz",
+      "observation_sha256": "9a4c5b6650f9095c9270feb069a393319d65a751dd54c6a68f56ca3ca4832380",
+      "record": "data/research/boundary_okx_depth_development_part_a_20260909/ETHUSDT/2023-05-29/record.json",
+      "record_sha256": "368468e98f615363faf49ca86089c3905f280a2731fc3f456cdcaf0e82b864e3",
+      "symbol": "ETHUSDT"
+    },
+    {
+      "date": "2023-05-30",
+      "observation_path": "data/research/boundary_okx_depth_development_part_a_20260909/ETHUSDT/2023-05-30/observations.npz",
+      "observation_sha256": "5fa5733bcec2ba622f0b4fe1dc512686c1a78b7a72d2d9eb69e6fef4079ef636",
+      "record": "data/research/boundary_okx_depth_development_part_a_20260909/ETHUSDT/2023-05-30/record.json",
+      "record_sha256": "abe324080653667afbd36abce5203a7726228e7fc63b70ff9750f071349daa21",
+      "symbol": "ETHUSDT"
+    }
+  ],
+  "snapshot_first_prefix_parity": {
+    "arrays_exact": [
+      "decision_times",
+      "delays_ms",
+      "depth",
+      "known_depths",
+      "order_counts",
+      "publisher_times",
+      "query_cutoffs",
+      "segment_ids"
+    ],
+    "assessment_labels_decoded": false,
+    "entire_archive_was_previously_verified_by_separate_full_audit": true,
+    "new_sampler_sha256": "63fe98775c78f6073fac07625477b6f1aaa7704a33ca01f064ce8c51095cb23b",
+    "old_sampler_sha256": "ae399f8ca7e90e3402a1b8f41960fca531638d91a1632c7275e1509b68f80f50",
+    "only_prefix_decoded_for_this_comparison": true,
+    "original_snapshot_first_messages": 1000,
+    "query_rows": 13
+  },
+  "validation": {
+    "full_direct_tests": 697,
+    "full_log_sha256": "776619c5627a5ae101f5b63cce2abcca4e2326802806c6165b42ed37ece82bf7",
+    "full_optional_skips": 0,
+    "minimal_direct_tests": 492,
+    "minimal_log_sha256": "91a1ebff78a6110a3b41e9c98c92e65b8448c03717f5c9130ca756a212e41d1a",
+    "minimal_optional_modules_skipped": 62,
+    "minimal_optional_tests_skipped": 6,
+    "targeted_counted_depth_tests": 22
+  }
+}
