@@ -9,15 +9,18 @@ import pandas as pd
 
 from lob_forge.binance_vision import sha256_file
 from lob_forge.boundary_combined_inputs import load_combined_inputs
+from lob_forge.boundary_okx_quantity_scale import quantity_scale_features
 
 OKX_VARIANTS = {"q25_100": (25, 100, False), "n25_100": (25, 100, True),
                 "q100_100": (100, 100, False), "n100_100": (100, 100, True),
                 "q100_500": (100, 500, False), "n100_500": (100, 500, True)}
 PEER_QUANTITY = ("venue_available", "venue_log_age_ms", "venue_mid_basis_bps", "venue_top_quantity_imbalance",
     "venue_return_bps_1s", "venue_return_bps_5s", "venue_history_available_1s", "venue_history_available_5s",
-    "depth_25_quantity_imbalance", "depth_25_sampled_quantity_pressure_1s", "depth_25_sampled_quantity_pressure_5s")
+    "depth_25_quantity_imbalance", "depth_25_sampled_quantity_pressure_1s", "depth_25_sampled_quantity_pressure_5s",
+    "depth_1_log_source_quantity", "depth_25_log_source_quantity")
 PEER_COUNTS = ("count_1_log_orders", "count_1_imbalance", "count_25_imbalance", "count_25_mean_order_imbalance",
-               "count_25_sampled_count_pressure_1s", "count_25_sampled_count_pressure_5s")
+               "count_25_sampled_count_pressure_1s", "count_25_sampled_count_pressure_5s",
+               "count_1_log_mean_source_quantity", "count_25_log_mean_source_quantity")
 
 
 def counted_columns(columns, include_counts):
@@ -71,6 +74,20 @@ def load_okx_inputs(root, manifest_path, depth_manifest, spot_manifest, feature_
             frame = pd.read_parquet(path, columns=["decision_time", *columns]).set_index("decision_time")
             if len(frame) != record["decision_rows"]:
                 raise ValueError("Cached counted-feature row inventory changed")
+            source_path = root / record["source_record"]
+            if sha256_file(source_path) != record["source_record_sha256"]:
+                raise ValueError("Absolute quantity source identity changed")
+            source_record = json.loads(source_path.read_text())
+            sidecar = root / source_record["observation_path"]
+            if sha256_file(sidecar) != record["source_observation_sha256"]:
+                raise ValueError("Absolute quantity observations changed")
+            with np.load(sidecar, allow_pickle=False) as saved:
+                observations = {k: saved[k] for k in saved.files}
+            np.testing.assert_array_equal(frame.index.to_numpy(), observations["decision_times"])
+            scale = quantity_scale_features(observations, levels=levels, delay_ms=delay)
+            scale.index = frame.index
+            frame = pd.concat([frame, scale[counted_columns(scale.columns, counts)]], axis=1)
+            del observations
             additions[symbol] = frame
         for symbol in ("BTCUSDT", "ETHUSDT"):
             peer = "ETHUSDT" if symbol == "BTCUSDT" else "BTCUSDT"
