@@ -1,0 +1,57 @@
+{
+  "initial_launch": {
+    "assessment_metrics_computed": false,
+    "input_preparations": 0,
+    "log_sha256": "2513eb14db8115e5ed832b4d7cb38a6c325ad6972bef6c67604a6085b311d5fe",
+    "model_fits": 0,
+    "output_directory_created": false,
+    "phase": "dependency_identity_before_input_preparation",
+    "preserved_log": "data/research/boundary_okx_counted_launch_preflight_20260909/initial_launch.log",
+    "returncode": 1
+  },
+  "memory_guard_probe_seconds": 0.5,
+  "memory_guard_readings": {
+    "maximum_sampled_gpu_driver_bytes": 0,
+    "maximum_sampled_rss_bytes": 303890432,
+    "maximum_sampled_simultaneous_sum_bytes": 303890432
+  },
+  "modules": {
+    "numpy": {
+      "module_path": ".venv/lib/python3.12/site-packages/numpy/__init__.py",
+      "version": "2.0.2"
+    },
+    "pandas": {
+      "module_path": ".venv/lib/python3.12/site-packages/pandas/__init__.py",
+      "version": "2.2.3"
+    },
+    "psutil": {
+      "module_path": "data/research/boundary_tabicl_20260908/runtime/psutil/__init__.py",
+      "version": "7.1.0"
+    },
+    "pyarrow": {
+      "module_path": ".venv/lib/python3.12/site-packages/pyarrow/__init__.py",
+      "version": "17.0.0"
+    },
+    "scikit-learn": {
+      "module_path": ".venv/lib/python3.12/site-packages/sklearn/__init__.py",
+      "version": "1.5.2"
+    },
+    "scipy": {
+      "module_path": ".venv/lib/python3.12/site-packages/scipy/__init__.py",
+      "version": "1.18.1"
+    },
+    "torch": {
+      "module_path": ".venv/lib/python3.12/site-packages/torch/__init__.py",
+      "version": "2.8.0"
+    }
+  },
+  "numerical_dependency_versions_match_retained_models": true,
+  "protocol": "docs/research/boundary_okx_counted_screen_20260909.json",
+  "protocol_sha256": "ddc43f5c12e401f0941e91c81bb9c0fac52b583859a98b9cedc2a1fca865f143",
+  "psutil_files_already_pinned_and_reverified": 38,
+  "pythonpath": "src:scripts:.venv/lib/python3.12/site-packages:data/research/boundary_tabicl_20260908/runtime",
+  "recorded_at_utc": "2026-09-09T11:52:02.754066+00:00",
+  "retry_log": "/tmp/pinely-okx-counted-model-runtime-retry.log",
+  "retry_output": "results/boundary_okx_counted_screen_20260909",
+  "retry_scope": "same frozen code, source inputs, model family, resources and assessment protocol; corrected Python search path only"
+}
