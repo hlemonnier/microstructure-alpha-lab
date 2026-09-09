@@ -1,0 +1,16 @@
+{
+  "assessment_metrics_computed": false,
+  "independent_confirmation_data_opened": false,
+  "market_content_scope": "The acquisition and recovery only verified bytes. June 1 training archives were separately decoded in the frozen feature preflight.",
+  "model_fits": 0,
+  "original_failed_attempt_and_prefix_preserved": true,
+  "original_verified_sources": 41,
+  "recovered_sources": 1,
+  "recovery_seconds": 22.69338237500051,
+  "recovery_summary_sha256": "13b0600ce76ed151eeda1cb9feda4a8166befca78e1b547cc870172f0618c937",
+  "source_count": 42,
+  "status": "complete_official_archive_byte_verification",
+  "verified_bytes": 456353742,
+  "verified_source_manifest": "data/research/boundary_quote_currency_trade_recovery_20260909/verified_source_manifest.json",
+  "verified_source_manifest_sha256": "528c4985c93323f6e79575f2bbf16b6669ab7b6eae532c53c8994f496951987c"
+}
