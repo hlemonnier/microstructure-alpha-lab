@@ -1,0 +1,376 @@
+{
+  "archive_bodies_downloaded": 0,
+  "assessment_metrics_computed": false,
+  "bytes_by_symbol": {
+    "BTCTUSD": 291337500,
+    "BTCUSDT": 87938109,
+    "ETHBTC": 6729196,
+    "TUSDUSDT": 7433808
+  },
+  "file_count": 44,
+  "files": [
+    {
+      "date": "2023-05-19",
+      "expected_bytes": 27771996,
+      "filename": "BTCTUSD-aggTrades-2023-05-19.zip",
+      "official_sha256": "fcf4a83be9daf2d3fa805a3a3820250e5872312b5b107ba90f19c33dd3e35592",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-19.zip"
+    },
+    {
+      "date": "2023-05-19",
+      "expected_bytes": 8693905,
+      "filename": "BTCUSDT-aggTrades-2023-05-19.zip",
+      "official_sha256": "27cf6e54b7f13236bedc97a48a34d5bfbd360b2551afd0bec42b373a63787289",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-19.zip"
+    },
+    {
+      "date": "2023-05-19",
+      "expected_bytes": 585969,
+      "filename": "ETHBTC-aggTrades-2023-05-19.zip",
+      "official_sha256": "5c39d2480ce72781aa0689525e9dca25d9bc180e130a82efaeb9b5ebae4e0566",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-19.zip"
+    },
+    {
+      "date": "2023-05-19",
+      "expected_bytes": 894674,
+      "filename": "TUSDUSDT-aggTrades-2023-05-19.zip",
+      "official_sha256": "64b7c1a5a865c5280771b4dcb20d19bf0a3118a902f017756b81bd29fa7f9c94",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-19.zip"
+    },
+    {
+      "date": "2023-05-20",
+      "expected_bytes": 13573506,
+      "filename": "BTCTUSD-aggTrades-2023-05-20.zip",
+      "official_sha256": "e30acac9246afe04f4fb5dee1d64ca979affad1f46cc5d296f558c5ef5c8cc7d",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-20.zip"
+    },
+    {
+      "date": "2023-05-20",
+      "expected_bytes": 5628067,
+      "filename": "BTCUSDT-aggTrades-2023-05-20.zip",
+      "official_sha256": "101d64139a4ee0199a1e81a7c4014d7da068f78af2ab4154f19e4a607c90913a",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-20.zip"
+    },
+    {
+      "date": "2023-05-20",
+      "expected_bytes": 350615,
+      "filename": "ETHBTC-aggTrades-2023-05-20.zip",
+      "official_sha256": "1869d80a567f3f3e98d32c9b490d82f3261efcba13534be36815911dcec6afaf",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-20.zip"
+    },
+    {
+      "date": "2023-05-20",
+      "expected_bytes": 393748,
+      "filename": "TUSDUSDT-aggTrades-2023-05-20.zip",
+      "official_sha256": "ea1059174cb849514ad77425ae3762246cf4e5ad2c6a5f286b0be6495ca60d73",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-20.zip"
+    },
+    {
+      "date": "2023-05-21",
+      "expected_bytes": 17343718,
+      "filename": "BTCTUSD-aggTrades-2023-05-21.zip",
+      "official_sha256": "cad91d7c049d00ac2235a078b8f6f1971a6422b3383eaed830dfdc21a70da819",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-21.zip"
+    },
+    {
+      "date": "2023-05-21",
+      "expected_bytes": 6454684,
+      "filename": "BTCUSDT-aggTrades-2023-05-21.zip",
+      "official_sha256": "6cd14cbc1919cdae0aebe6af10e0a573075a1604e549a13fb973f1175f5dc879",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-21.zip"
+    },
+    {
+      "date": "2023-05-21",
+      "expected_bytes": 478739,
+      "filename": "ETHBTC-aggTrades-2023-05-21.zip",
+      "official_sha256": "0c69807cff6cfce4a3c1a15d7e222424efa297df5c37cbd42dca3f69f4b2d3e9",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-21.zip"
+    },
+    {
+      "date": "2023-05-21",
+      "expected_bytes": 485165,
+      "filename": "TUSDUSDT-aggTrades-2023-05-21.zip",
+      "official_sha256": "f94685609c5cbeb590c0bad2a66aef8b996be5f115779e95d8ce18b603dba80f",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-21.zip"
+    },
+    {
+      "date": "2023-05-22",
+      "expected_bytes": 24491376,
+      "filename": "BTCTUSD-aggTrades-2023-05-22.zip",
+      "official_sha256": "dd9c7c58875c9baf2385f87cd543998fa30d952f77853d8b6a3996348410650f",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-22.zip"
+    },
+    {
+      "date": "2023-05-22",
+      "expected_bytes": 7736100,
+      "filename": "BTCUSDT-aggTrades-2023-05-22.zip",
+      "official_sha256": "1bfa706c026940824de4488b493adb47bbde8ab91e1807501553673f3cc6f3a0",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-22.zip"
+    },
+    {
+      "date": "2023-05-22",
+      "expected_bytes": 714986,
+      "filename": "ETHBTC-aggTrades-2023-05-22.zip",
+      "official_sha256": "f4504bfbfbfe9ad2804285ef696263c9b4913068f375c63c5be13a9f89292c8f",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-22.zip"
+    },
+    {
+      "date": "2023-05-22",
+      "expected_bytes": 688788,
+      "filename": "TUSDUSDT-aggTrades-2023-05-22.zip",
+      "official_sha256": "cd2da8c691b693538809ed1ca8018e083cc573867db549acf1c3bfb6296abf8f",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-22.zip"
+    },
+    {
+      "date": "2023-05-23",
+      "expected_bytes": 28933497,
+      "filename": "BTCTUSD-aggTrades-2023-05-23.zip",
+      "official_sha256": "30ddb973577dec1e37d51bfdcdfe7f83fcbdfe9f5866886c507e23d030af80c2",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-23.zip"
+    },
+    {
+      "date": "2023-05-23",
+      "expected_bytes": 8777932,
+      "filename": "BTCUSDT-aggTrades-2023-05-23.zip",
+      "official_sha256": "f806567c92d726b81a2e30a99fb3676c1e3003efe35fb095c00796e2137640fb",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-23.zip"
+    },
+    {
+      "date": "2023-05-23",
+      "expected_bytes": 777613,
+      "filename": "ETHBTC-aggTrades-2023-05-23.zip",
+      "official_sha256": "15c0ea2250e9590f62f25741e25881059e49e73f9034439eb22534fe536c5242",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-23.zip"
+    },
+    {
+      "date": "2023-05-23",
+      "expected_bytes": 814413,
+      "filename": "TUSDUSDT-aggTrades-2023-05-23.zip",
+      "official_sha256": "e0fbc8226dff9726ca9bbb4a66f5a241da8f699aa4537722f8074dd7e8afd74f",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-23.zip"
+    },
+    {
+      "date": "2023-05-24",
+      "expected_bytes": 32622170,
+      "filename": "BTCTUSD-aggTrades-2023-05-24.zip",
+      "official_sha256": "c172b08daa5f00a6b8eeac956fec7bda8be6dd7a3b3ea6ebf18c6432e1a8b737",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-24.zip"
+    },
+    {
+      "date": "2023-05-24",
+      "expected_bytes": 11331802,
+      "filename": "BTCUSDT-aggTrades-2023-05-24.zip",
+      "official_sha256": "afffdab8a07411faf8d9e7f07b1b868ae355fb4c6d6864670a3345ad96588ba8",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-24.zip"
+    },
+    {
+      "date": "2023-05-24",
+      "expected_bytes": 741859,
+      "filename": "ETHBTC-aggTrades-2023-05-24.zip",
+      "official_sha256": "fc2ab884a549d845c6a2cc27d7092b429c96dc776bc947bf7b217a5eb1fc1517",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-24.zip"
+    },
+    {
+      "date": "2023-05-24",
+      "expected_bytes": 797827,
+      "filename": "TUSDUSDT-aggTrades-2023-05-24.zip",
+      "official_sha256": "3df9f5e093b7513b8eaf862884a166910a7a66d06909a1a1a44c2367148fd63d",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-24.zip"
+    },
+    {
+      "date": "2023-05-25",
+      "expected_bytes": 34003535,
+      "filename": "BTCTUSD-aggTrades-2023-05-25.zip",
+      "official_sha256": "efaf78a563fb03b618d1d8d9de8be2d563f2561766cd77a4bfabf5651232d13f",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-25.zip"
+    },
+    {
+      "date": "2023-05-25",
+      "expected_bytes": 8541110,
+      "filename": "BTCUSDT-aggTrades-2023-05-25.zip",
+      "official_sha256": "88e23c803e37940fa9802025c175fe90e5626cceef6f6d37c73bd9d66691db42",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-25.zip"
+    },
+    {
+      "date": "2023-05-25",
+      "expected_bytes": 708353,
+      "filename": "ETHBTC-aggTrades-2023-05-25.zip",
+      "official_sha256": "7e9bfe5665d2c612c9b714d868d972b7c1d9eaa902953b5163e1c520be39e155",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-25.zip"
+    },
+    {
+      "date": "2023-05-25",
+      "expected_bytes": 772502,
+      "filename": "TUSDUSDT-aggTrades-2023-05-25.zip",
+      "official_sha256": "7845b661efc576d3b0d9741a10ab02904d96e2492e9b81fbb0b725b2c8689386",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-25.zip"
+    },
+    {
+      "date": "2023-05-26",
+      "expected_bytes": 32821085,
+      "filename": "BTCTUSD-aggTrades-2023-05-26.zip",
+      "official_sha256": "a1262669a527796747aa5520a4988f65da279cea9a0732d38ba20f7192514383",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-26.zip"
+    },
+    {
+      "date": "2023-05-26",
+      "expected_bytes": 7400702,
+      "filename": "BTCUSDT-aggTrades-2023-05-26.zip",
+      "official_sha256": "9833743e5d98a7da55dd28fc76c2f12164ec705853140acea2002cadd42b589d",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-26.zip"
+    },
+    {
+      "date": "2023-05-26",
+      "expected_bytes": 879643,
+      "filename": "ETHBTC-aggTrades-2023-05-26.zip",
+      "official_sha256": "6d172856d734482774bd328fb9fc72cc8b95cad4068d31d6ae714bce19314a3b",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-26.zip"
+    },
+    {
+      "date": "2023-05-26",
+      "expected_bytes": 538280,
+      "filename": "TUSDUSDT-aggTrades-2023-05-26.zip",
+      "official_sha256": "efd3970a8119fda489e4b8a1c0ccfc3f94725ef383ddb3ffeef8d905f09a8ec0",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-26.zip"
+    },
+    {
+      "date": "2023-05-27",
+      "expected_bytes": 23734487,
+      "filename": "BTCTUSD-aggTrades-2023-05-27.zip",
+      "official_sha256": "694c4c1e5941f2a48c2679cd5a68740f91c8ef9bc341c0aa85fbabfab3564067",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-27.zip"
+    },
+    {
+      "date": "2023-05-27",
+      "expected_bytes": 4784716,
+      "filename": "BTCUSDT-aggTrades-2023-05-27.zip",
+      "official_sha256": "d686a1994a1a1058ac9240a6e433e2d19e6df1f6b234db2d0a3890c3ba0bfd8c",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-27.zip"
+    },
+    {
+      "date": "2023-05-27",
+      "expected_bytes": 360832,
+      "filename": "ETHBTC-aggTrades-2023-05-27.zip",
+      "official_sha256": "16794ea3c7d2585898be185df7b28e0f016c89649523390fdbd69376013b0bbc",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-27.zip"
+    },
+    {
+      "date": "2023-05-27",
+      "expected_bytes": 349697,
+      "filename": "TUSDUSDT-aggTrades-2023-05-27.zip",
+      "official_sha256": "d1c93d05c211b2d1f93d958df5ef0f77dadc6bb8bc06a3db49fdd36bab69b16f",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-27.zip"
+    },
+    {
+      "date": "2023-05-28",
+      "expected_bytes": 33287191,
+      "filename": "BTCTUSD-aggTrades-2023-05-28.zip",
+      "official_sha256": "bf2fd1482fa7c6641f56f8d68cec2c8fef7a1be1c905eb1b84762ba445e2559d",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-05-28.zip"
+    },
+    {
+      "date": "2023-05-28",
+      "expected_bytes": 9197686,
+      "filename": "BTCUSDT-aggTrades-2023-05-28.zip",
+      "official_sha256": "0da2f9311f7a068aaf0a42cd1589cff2b31b93cd49b567537b725eb94d10d077",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-05-28.zip"
+    },
+    {
+      "date": "2023-05-28",
+      "expected_bytes": 833622,
+      "filename": "ETHBTC-aggTrades-2023-05-28.zip",
+      "official_sha256": "82b267c3f2a2b799c4049e9bc02a436d01959ed5fbac3e9b005bb396f2e52dc5",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-05-28.zip"
+    },
+    {
+      "date": "2023-05-28",
+      "expected_bytes": 862337,
+      "filename": "TUSDUSDT-aggTrades-2023-05-28.zip",
+      "official_sha256": "90a91a575b5b684a915bf20bc6ee9e296aa289e4d55edaa0c9f35ef9c4e9173b",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-05-28.zip"
+    },
+    {
+      "date": "2023-06-12",
+      "expected_bytes": 22754939,
+      "filename": "BTCTUSD-aggTrades-2023-06-12.zip",
+      "official_sha256": "47852c7da5da209843a50a2eb065d932ad9d03b35d7df22e9767b09a2076c2a5",
+      "symbol": "BTCTUSD",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCTUSD/BTCTUSD-aggTrades-2023-06-12.zip"
+    },
+    {
+      "date": "2023-06-12",
+      "expected_bytes": 9391405,
+      "filename": "BTCUSDT-aggTrades-2023-06-12.zip",
+      "official_sha256": "8d0b96da316a2ad135792cdd32d22b38e675102cc9f54b9476f1a79fb385f564",
+      "symbol": "BTCUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/BTCUSDT/BTCUSDT-aggTrades-2023-06-12.zip"
+    },
+    {
+      "date": "2023-06-12",
+      "expected_bytes": 296965,
+      "filename": "ETHBTC-aggTrades-2023-06-12.zip",
+      "official_sha256": "5bd5ddfcd3667c9a326e6cca8003af7b7f92351eeee01db4e2df93f5539f8b5a",
+      "symbol": "ETHBTC",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/ETHBTC/ETHBTC-aggTrades-2023-06-12.zip"
+    },
+    {
+      "date": "2023-06-12",
+      "expected_bytes": 836377,
+      "filename": "TUSDUSDT-aggTrades-2023-06-12.zip",
+      "official_sha256": "9695a44618b485da072f8aac18b714cac6a4553943fbb0947378cd562c900b4b",
+      "symbol": "TUSDUSDT",
+      "url": "https://data.binance.vision/data/spot/daily/aggTrades/TUSDUSDT/TUSDUSDT-aggTrades-2023-06-12.zip"
+    }
+  ],
+  "independent_confirmation_data_opened": false,
+  "market_content_decoded": false,
+  "model_fits": 0,
+  "preserved_initial_failure": "data/research/boundary_quote_currency_broad_inventory_20260909",
+  "preserved_initial_failure_reason": "All 44 HEAD requests returned curl 6: Could not resolve host under restricted execution. The identical metadata scope succeeded with authorized network access.",
+  "protocol_sha256": "74efda420faa88cb87d6c24c95cd9f3018cd2ebd061a2eff05f18fa01a00dc22",
+  "seconds": 34.12957812496461,
+  "status": "complete_metadata_only_readiness_for_exposed_broad_development",
+  "summary": "data/research/boundary_quote_currency_broad_inventory_network_retry_20260909/summary.json",
+  "summary_sha256": "35594dca3b67fa16897ddbc799e963d7fbf135db8c08b53dafb5876ca425b6c7",
+  "total_expected_bytes": 393438613
+}

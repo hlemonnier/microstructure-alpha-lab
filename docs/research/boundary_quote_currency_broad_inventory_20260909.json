@@ -1,0 +1,52 @@
+{
+  "automatic_retries": 0,
+  "confirmed_existing_source_days": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01",
+    "2023-06-02",
+    "2023-06-03",
+    "2023-06-04",
+    "2023-06-05",
+    "2023-06-06",
+    "2023-06-07",
+    "2023-06-08",
+    "2023-06-09",
+    "2023-06-10",
+    "2023-06-11"
+  ],
+  "dates": [
+    "2023-05-19",
+    "2023-05-20",
+    "2023-05-21",
+    "2023-05-22",
+    "2023-05-23",
+    "2023-05-24",
+    "2023-05-25",
+    "2023-05-26",
+    "2023-05-27",
+    "2023-05-28",
+    "2023-06-12"
+  ],
+  "expected_files": 44,
+  "independent_confirmation_scope": "Do not request any source date later than June 12, 2023. The June 13-July 2 reservation remains unopened for market analysis.",
+  "input_hashes": {
+    "data/research/boundary_quote_currency_trade_recovery_20260909/verified_source_manifest.json": "528c4985c93323f6e79575f2bbf16b6669ab7b6eae532c53c8994f496951987c",
+    "data/research/boundary_spot_raw_20260907/source_manifest.json": "dcdc6bb722c1ef3f26ad431f0a923c2008ace5581bd11e0f1fa32b8dee0da960",
+    "docs/research/boundary_broad_accuracy_screen_20260908.json": "adaf2aa8decd39f1e39a8de02a8d35c48399101205544a35f2376fa8c2b30c76",
+    "scripts/inventory_boundary_quote_currency_trades.py": "c2ffe191ca113afac746eb8b9036dd22891c1520f41406b81e63e8f4d091756f",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454"
+  },
+  "purpose": "Metadata-only readiness check for the missing source dates needed by the already exposed twenty-date development cohort. No archive bodies, market content, labels, fits or metrics are read. Acquiring or evaluating a broader predictive candidate requires a separate frozen specification.",
+  "registered_at_utc": "2026-09-09T13:56:02.602358+00:00",
+  "request_seconds": 45,
+  "study": "boundary_quote_currency_broad_inventory_20260909",
+  "symbols": [
+    "BTCTUSD",
+    "TUSDUSDT",
+    "ETHBTC",
+    "BTCUSDT"
+  ],
+  "workers": 2
+}
