@@ -1,0 +1,76 @@
+{
+  "active_counted_model_experiment_unchanged": true,
+  "comparison_units": "Compare base quantity only within BTC or within ETH. Quote volumes retain their own currency. TUSD/USDT close ranges describe an observed conversion market, not a presumed one-to-one peg.",
+  "dataset": "klines",
+  "dates": [
+    "2023-05-29",
+    "2023-05-30",
+    "2023-05-31",
+    "2023-06-01"
+  ],
+  "expected_archives": 32,
+  "expected_requests": 64,
+  "independent_confirmation_data_opened": false,
+  "input_hashes": {
+    "scripts/audit_boundary_quote_currency_activity.py": "58d760a29244b11a52c16a2ee469a0446329f669c4f8a1d3b4169a6ca82668ce",
+    "src/lob_forge/binance_vision.py": "fabd40320cb74c8bc76cd88436343668059fb33f7ab76aba1cb2abab00e9b454"
+  },
+  "interval": "1m",
+  "market": "spot",
+  "maximum_member_bytes": 4194304,
+  "maximum_response_bytes": 8388608,
+  "model_fits": 0,
+  "pairs": {
+    "BTCBUSD": {
+      "base_asset": "BTC",
+      "quote_asset": "BUSD"
+    },
+    "BTCTUSD": {
+      "base_asset": "BTC",
+      "quote_asset": "TUSD"
+    },
+    "BTCUSDT": {
+      "base_asset": "BTC",
+      "quote_asset": "USDT"
+    },
+    "ETHBTC": {
+      "base_asset": "ETH",
+      "quote_asset": "BTC"
+    },
+    "ETHBUSD": {
+      "base_asset": "ETH",
+      "quote_asset": "BUSD"
+    },
+    "ETHTUSD": {
+      "base_asset": "ETH",
+      "quote_asset": "TUSD"
+    },
+    "ETHUSDT": {
+      "base_asset": "ETH",
+      "quote_asset": "USDT"
+    },
+    "TUSDUSDT": {
+      "base_asset": "TUSD",
+      "quote_asset": "USDT"
+    }
+  },
+  "predictive_metrics_computed": false,
+  "primary_sources": [
+    {
+      "fact": "Official March 15 announcement: BTC/TUSD retains zero maker/taker fees from March 22 2023 UTC; BTC/USDT and BTC/BUSD return to ordinary fees, ETH/TUSD retains zero maker fees.",
+      "url": "https://www.binance.com/pt-BR/support/announcement/detail/be13a645cca643d28eab5b9b34f2dc36"
+    },
+    {
+      "fact": "Official daily spot candle schema, date-specific timestamps and checksum distribution.",
+      "url": "https://github.com/binance/binance-public-data"
+    }
+  ],
+  "purpose": "Check whether alternative spot quote pairs contain substantial omitted reported activity in the original first-fold training dates, before any new predictive test. High volume is not proof of information content.",
+  "registered_at_utc": "2026-09-09T11:59:07.516569+00:00",
+  "request_seconds": 45,
+  "retry_count": 0,
+  "study": "boundary_quote_currency_activity_inventory_20260909",
+  "target_labels_decoded": false,
+  "timing_scope": "One-minute candles are used only for source inventory. Any later five-second forecast must use completed or event-time observations strictly before the decision cutoff.",
+  "workers": 2
+}
