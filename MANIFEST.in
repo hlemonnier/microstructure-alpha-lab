@@ -2,7 +2,7 @@ include README.md LICENSE CONTRIBUTING.md CITATION.cff IMPLEMENTATION_TRACEABILI
 include Makefile pyproject.toml requirements-*.txt .gitignore .gitattributes .source-git-commit
 recursive-include .github *.yml *.md
 recursive-include cpp *.cpp
-recursive-include examples/fixtures *.csv
+recursive-include examples/fixtures *.csv *.md
 include data/README.md
 recursive-include docs *.md *.json *.txt *.png *.svg
 recursive-include scripts *.py *.sh

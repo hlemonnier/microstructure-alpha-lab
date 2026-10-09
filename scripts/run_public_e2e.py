@@ -37,6 +37,7 @@ REQUIRED_SOURCE_FILES = {
     "examples/fixtures/feature_fixture.csv",
     "examples/fixtures/l2_replay_fixture.csv",
     "examples/fixtures/l2_sequence_fixture.csv",
+    "examples/fixtures/l2_sequence_e2e_fixture.csv",
     "scripts/run_reduced_e2e.py",
     "scripts/run_public_e2e.py",
     "docs/README.md",

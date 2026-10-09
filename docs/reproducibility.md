@@ -87,7 +87,7 @@ Optional CPU neural smoke when Torch is installed:
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-sequence-experiment \
   --model sequence_transformer \
   --baseline-audit artifacts/reduced_e2e/baseline_audit_fixture.csv \
-  --l2 examples/fixtures/l2_sequence_fixture.csv \
+  --l2 examples/fixtures/l2_sequence_e2e_fixture.csv \
   --output artifacts/reduced_e2e/sequence_transformer_smoke.csv \
   --holdout-manifest artifacts/reduced_e2e/l2_sequence_holdout_manifest.json \
   --development-l2-output artifacts/reduced_e2e/development_l2_sequence_fixture.csv \
@@ -95,7 +95,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-sequence-experiment \
   --predictions-output artifacts/reduced_e2e/sequence_transformer_predictions.csv \
   --device auto --class-weighting balanced \
   --depth 1 --window 3 --label-horizon 1 --epochs 1 \
-  --max-rows 100 --max-snapshots 20 --min-fold-count 1 --min-l2-rows 1
+  --max-rows 100 --max-snapshots 100 --min-fold-count 1 --min-l2-rows 1
 ```
 
 For a serious neural L2 run, do not train against the full source CSV directly. Create a holdout manifest for the L2 source, then pass it through the sequence runner so a filtered development L2 CSV is written and used for training:

@@ -36,7 +36,7 @@ from lob_forge.statistics import (
 
 ROOT = Path(__file__).resolve().parents[1]
 FEATURE_FIXTURE = ROOT / "examples" / "fixtures" / "feature_fixture.csv"
-L2_SEQUENCE_FIXTURE = ROOT / "examples" / "fixtures" / "l2_sequence_fixture.csv"
+L2_SEQUENCE_FIXTURE = ROOT / "examples" / "fixtures" / "l2_sequence_e2e_fixture.csv"
 OUT = ROOT / "artifacts" / "reduced_e2e"
 TRAIN_SIZE = 4
 VALIDATION_SIZE = 2
@@ -99,9 +99,9 @@ def main() -> int:
     sequence_l2_holdout_manifest = build_holdout_manifest(
         L2_SEQUENCE_FIXTURE,
         split_column="exchange_timestamp",
-        holdout_values=["1140"],
+        holdout_values=["1620", "1630"],
         created_at_utc="2026-06-24T00:00:00Z",
-        feature_version="l2_sequence_fixture_v1",
+        feature_version="synthetic_l2_sequence_e2e_v1",
         target_version="fixture_l2_delta_v1",
         git_commit=source_git_commit,
         notes="Synthetic L2 fixture holdout for CI/reduced neural pipeline only; not empirical evidence.",
@@ -449,7 +449,7 @@ def _run_sequence_smokes(
                 min_fold_count=1,
                 min_l2_rows=10,
                 max_rows=100,
-                max_snapshots=50,
+                max_snapshots=100,
                 batch_size=2,
                 class_weighting="balanced",
                 checkpoint_path=checkpoint_path,
