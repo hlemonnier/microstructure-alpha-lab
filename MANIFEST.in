@@ -1,0 +1,18 @@
+include README.md LICENSE CONTRIBUTING.md CITATION.cff IMPLEMENTATION_TRACEABILITY.md
+include Makefile pyproject.toml requirements-*.txt .gitignore .gitattributes .source-git-commit
+recursive-include .github *.yml *.md
+recursive-include cpp *.cpp
+recursive-include examples/fixtures *.csv
+include data/README.md
+recursive-include docs *.md *.json *.txt *.png *.svg
+recursive-include scripts *.py *.sh
+recursive-include tests *.py
+global-exclude *.py[cod] *.bak *.tmp *.swp .DS_Store
+prune data/raw
+prune data/processed
+prune data/normalized_l2
+prune artifacts
+prune results
+prune .venv
+prune build
+prune dist

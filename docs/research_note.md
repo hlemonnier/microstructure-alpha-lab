@@ -124,6 +124,7 @@ Fast verification:
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-ci.txt
+.venv/bin/python -m pip install -e . --no-deps
 bash scripts/run_tests.sh
 .venv/bin/python -m ruff check src tests scripts/run_reduced_e2e.py
 .venv/bin/python -m mypy \
