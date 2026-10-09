@@ -11,9 +11,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from lob_forge.ml_models import SEQUENCE_ECONOMICS_VERSION
+
 
 GIT_COMMIT_RE = re.compile(r"^[0-9a-fA-F]{40,64}$")
-SEQUENCE_ECONOMICS_VERSION = "flat_to_flat_label_horizon_v2"
 
 
 def main(argv: list[str] | None = None) -> int:

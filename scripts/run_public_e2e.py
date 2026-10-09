@@ -332,7 +332,11 @@ def main() -> int:
                 run("cpu-torch", torch_command, work)
             versions = run("runtime-versions", [python, "-m", "pip", "list", "--format=json"], work)
             evidence["runtime_packages"] = json.loads(versions.read_text())
-            run("synthetic-pipeline", [python, source / "scripts/run_reduced_e2e.py"], source)
+            try:
+                run("synthetic-pipeline", [python, source / "scripts/run_reduced_e2e.py"], source)
+            finally:
+                if (source / "artifacts").is_dir():
+                    shutil.copytree(source / "artifacts", output / "pipeline")
             require((source / "artifacts/research_manifest.json").is_file(), "Pipeline evidence is absent")
             run(
                 "pipeline-verifier",
@@ -340,6 +344,38 @@ def main() -> int:
                 source,
             )
             evidence["pipeline"] = inspect_pipeline(source, commit, args.with_models)
+            if args.with_models:
+                result = json.loads((source / "artifacts/reduced_e2e/result_manifest.json").read_text())
+                sequence = result["sequence_smokes"]["sequence_tcn"]
+                sequence_csv = source / sequence["path"]
+                original_csv = sequence_csv.read_bytes()
+                row = csv_rows(sequence_csv)[0]
+                row["economic_simulation_version"] = "flat_to_flat_label_horizon_v2"
+                try:
+                    with sequence_csv.open("w", newline="") as handle:
+                        writer = csv.DictWriter(handle, fieldnames=list(row))
+                        writer.writeheader()
+                        writer.writerow(row)
+                    run(
+                        "reject-legacy-sequence",
+                        [python, source / "scripts/verify_reduced_e2e_artifacts.py", "--project-root", source],
+                        source,
+                        reject="uses stale economic simulation semantics",
+                    )
+                finally:
+                    sequence_csv.write_bytes(original_csv)
+                checkpoint = source / sequence["checkpoint"]
+                original_checkpoint = checkpoint.read_bytes()
+                try:
+                    checkpoint.write_bytes(original_checkpoint + b"synthetic tamper probe")
+                    run(
+                        "reject-tampered-checkpoint",
+                        [python, source / "scripts/verify_reduced_e2e_artifacts.py", "--project-root", source],
+                        source,
+                        reject="checkpoint hash mismatch",
+                    )
+                finally:
+                    checkpoint.write_bytes(original_checkpoint)
             cli = runtime / "bin/microstructure-alpha-lab"
             fixture = source / "examples/fixtures/feature_fixture.csv"
             manifest = source / "artifacts/reduced_e2e/holdout_manifest.json"
@@ -389,8 +425,6 @@ def main() -> int:
                 reject="Package already exists",
                 extra_env=package_env,
             )
-            shutil.copytree(source / "artifacts/reduced_e2e", output / "pipeline/reduced_e2e")
-            shutil.copy2(source / "artifacts/research_manifest.json", output / "pipeline/research_manifest.json")
             evidence["status"] = "passed"
     except (
         OSError,

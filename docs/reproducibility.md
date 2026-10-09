@@ -24,7 +24,7 @@ Optional CPU sequence verification:
 python3 scripts/run_public_e2e.py --with-models
 ```
 
-This installs pinned NumPy 2.0.2 and Torch 2.8.0 in the disposable runtime and requires both TCN and Transformer flows to complete; a skipped model fails this check. The minimal flow records them explicitly as skipped. The CPU model CI job retains checkpoint and prediction artifacts, whose hashes are checked by the existing artifact verifier.
+This installs pinned NumPy 2.0.2 and Torch 2.8.0 in the disposable runtime and requires both TCN and Transformer flows to complete; a skipped model fails this check. The minimal flow records them explicitly as skipped. The CPU model CI job retains checkpoint and prediction artifacts, whose hashes are checked by the existing artifact verifier. It also requires rejection of legacy economic semantics and a deliberately tampered checkpoint. Pipeline outputs are retained when later verification fails.
 
 These are synthetic software checks. Empirical evidence gates remain separate, and the [historical experiments remain paused](research/boundary_research_pause_20260909.md).
 
