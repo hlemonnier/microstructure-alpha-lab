@@ -97,6 +97,19 @@ def inspect_archive(names: list[str]) -> None:
         )
 
 
+def extract_source(archive: tarfile.TarFile, destination: Path) -> None:
+    for member in archive.getmembers():
+        require(member.isfile() or member.isdir(), "Source archive must contain regular files and directories")
+        require(
+            not Path(member.name).is_absolute() and ".." not in Path(member.name).parts, "Invalid source archive path"
+        )
+    if hasattr(tarfile, "data_filter"):
+        archive.extractall(destination, filter="data")
+    else:
+        # Compatibility with Python 3.9 versions predating extraction filters.
+        archive.extractall(destination)
+
+
 def inspect_pipeline(source: Path, commit: str, with_models: bool) -> dict[str, object]:
     research = json.loads((source / "artifacts/research_manifest.json").read_text())
     result = json.loads((source / research["reduced_e2e_manifest"]).read_text())
@@ -242,8 +255,7 @@ def main() -> int:
             evidence["git_commit"] = commit
             with tarfile.open(snapshot) as archive:
                 inspect_archive(archive.getnames())
-                # The archive was made above from this repository's regular public files.
-                archive.extractall(work)
+                extract_source(archive, work)
             require((source / ".source-git-commit").read_text().strip() == commit, "Exported commit marker mismatch")
             run(
                 "repository-hygiene",
@@ -275,7 +287,7 @@ def main() -> int:
             rebuilt_source.mkdir()
             with tarfile.open(sdist) as archive:
                 inspect_archive(archive.getnames())
-                archive.extractall(rebuilt_source)
+                extract_source(archive, rebuilt_source)
             package_source = next(rebuilt_source.iterdir())
             run(
                 "rebuild-from-sdist",
@@ -345,7 +357,7 @@ def main() -> int:
                 "reject-stale-holdout",
                 [cli, "baseline", fixture, "--holdout-manifest", stale_manifest],
                 source,
-                reject="hash mismatch",
+                reject="holdout manifest verification failed",
             )
             require(shutil.which("c++") is not None, "A C++17 compiler is required for replay parity")
             binary = work / "l2_replay"
@@ -379,7 +391,16 @@ def main() -> int:
             shutil.copytree(source / "artifacts/reduced_e2e", output / "pipeline/reduced_e2e")
             shutil.copy2(source / "artifacts/research_manifest.json", output / "pipeline/research_manifest.json")
             evidence["status"] = "passed"
-    except (OSError, RuntimeError, subprocess.SubprocessError, StopIteration, ValueError) as exc:
+    except (
+        OSError,
+        RuntimeError,
+        subprocess.SubprocessError,
+        StopIteration,
+        ValueError,
+        KeyError,
+        tarfile.TarError,
+        zipfile.BadZipFile,
+    ) as exc:
         evidence["status"] = "failed"
         evidence["error"] = str(exc)
         print(str(exc), file=sys.stderr)
