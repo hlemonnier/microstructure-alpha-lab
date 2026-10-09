@@ -2,6 +2,32 @@
 
 This project separates fast local verification from heavy empirical runs.
 
+## Fresh-install public E2E
+
+The default verification starts from a clean committed checkout and runs against exported source and an installed wheel:
+
+```bash
+make e2e
+```
+
+Use `make e2e PYTHON=.venv/bin/python` to choose an interpreter. The runner creates disposable build/runtime environments, installs `requirements-build.txt`, builds a source distribution, rebuilds its wheel, and exercises both installed CLI entry points outside the source directory. Runtime imports come from the installed package, without `PYTHONPATH` or optional research dependencies.
+
+It then checks public-file hygiene, holdout exclusion, validation-only selection, nonempty execution ledgers, artifact provenance and Python/C++ replay parity. Negative scenarios require rejection of a missing holdout, a test-selection objective, a stale source hash and an attempted package overwrite. The source-handoff check also probes exclusion of local backups and bytecode caches.
+
+Requirements: Python 3.9+, Git for checkout provenance, a C++17 compiler, `make`, `bash`, `rsync` and `zip`. PyPI access is needed to install pinned build tools. External market data, trading credentials and cloud execution are not used. An exported source package can use its expanded `.source-git-commit` instead of Git metadata.
+
+Every run retains `artifacts/public_e2e/<run>/evidence.json`, per-step logs, source/wheel/ZIP packages, SHA-256 checksums and the synthetic holdout, registry and execution ledgers. Existing output directories are refused. CI runs the minimal flow on Python 3.9/3.12 on Linux and Python 3.12 on macOS, and uploads the evidence even on failure.
+
+Optional CPU sequence verification:
+
+```bash
+python3 scripts/run_public_e2e.py --with-models
+```
+
+This installs pinned NumPy 2.0.2 and Torch 2.8.0 in the disposable runtime and requires both TCN and Transformer flows to complete; a skipped model fails this check. The minimal flow records them explicitly as skipped. The CPU model CI job retains checkpoint and prediction artifacts, whose hashes are checked by the existing artifact verifier. It also requires rejection of legacy economic semantics and a deliberately tampered checkpoint. Pipeline outputs are retained when later verification fails.
+
+These are synthetic software checks. Empirical evidence gates remain separate, and the [historical experiments remain paused](research/boundary_research_pause_20260909.md).
+
 ## Environment
 
 Recommended local setup:
@@ -9,6 +35,7 @@ Recommended local setup:
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-ci.txt
+.venv/bin/python -m pip install -e . --no-deps
 bash scripts/run_tests.sh
 ```
 
@@ -20,7 +47,7 @@ Run:
 
 ```bash
 bash scripts/run_tests.sh
-.venv/bin/python -m ruff check src tests scripts/run_reduced_e2e.py
+.venv/bin/python -m ruff check src tests scripts
 .venv/bin/python -m mypy \
   src/lob_forge/protocol.py \
   src/lob_forge/holdout.py \
@@ -60,7 +87,7 @@ Optional CPU neural smoke when Torch is installed:
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-sequence-experiment \
   --model sequence_transformer \
   --baseline-audit artifacts/reduced_e2e/baseline_audit_fixture.csv \
-  --l2 examples/fixtures/l2_sequence_fixture.csv \
+  --l2 examples/fixtures/l2_sequence_e2e_fixture.csv \
   --output artifacts/reduced_e2e/sequence_transformer_smoke.csv \
   --holdout-manifest artifacts/reduced_e2e/l2_sequence_holdout_manifest.json \
   --development-l2-output artifacts/reduced_e2e/development_l2_sequence_fixture.csv \
@@ -68,7 +95,7 @@ PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-sequence-experiment \
   --predictions-output artifacts/reduced_e2e/sequence_transformer_predictions.csv \
   --device auto --class-weighting balanced \
   --depth 1 --window 3 --label-horizon 1 --epochs 1 \
-  --max-rows 100 --max-snapshots 20 --min-fold-count 1 --min-l2-rows 1
+  --max-rows 100 --max-snapshots 100 --min-fold-count 1 --min-l2-rows 1
 ```
 
 For a serious neural L2 run, do not train against the full source CSV directly. Create a holdout manifest for the L2 source, then pass it through the sequence runner so a filtered development L2 CSV is written and used for training:

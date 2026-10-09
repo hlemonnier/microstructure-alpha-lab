@@ -1,0 +1,4 @@
+# Build tools shared by the E2E harness and CI (Python 3.9+).
+build==1.2.2.post1
+setuptools==75.8.0
+wheel==0.45.1

@@ -12,10 +12,23 @@ data/*
 results/
 artifacts/
 dist/
+build/
+*.egg-info/
 reports/figures/
 
 # Local planning / chat context.
 chat.md
+/WORKLOG.md
+.env
+.env.*
+!.env.example
+*.bak
+*.tmp
+*.swp
+.coverage
+htmlcov/
+.tox/
+.nox/
 
 # OS/editor noise.
 .DS_Store

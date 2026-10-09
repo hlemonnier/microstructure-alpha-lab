@@ -18,16 +18,42 @@ trap cleanup EXIT
 
 mkdir -p "$DIST_DIR" "$PROJECT_DIR"
 PACKAGE_PATH="$(cd "$DIST_DIR" && pwd)/$PACKAGE_NAME"
-rm -f "$PACKAGE_PATH"
+if [[ -e "$PACKAGE_PATH" ]]; then
+  echo "Package already exists; choose a new PACKAGE_NAME: $PACKAGE_PATH" >&2
+  exit 2
+fi
 SOURCE_GIT_COMMIT="$(source_git_rev)"
+if [[ "$(source_worktree_dirty)" == "true" ]]; then
+  echo "Source packaging requires a clean committed checkout." >&2
+  exit 2
+fi
 
 rsync -a \
+  --exclude='__pycache__/' \
+  --exclude='*.py[cod]' \
+  --exclude='*.egg-info/' \
+  --exclude='* [0-9].*' \
+  --exclude='*.bak' \
+  --exclude='*.tmp' \
+  --exclude='*.swp' \
+  --exclude='.DS_Store' \
   --include='/.gitignore' \
+  --include='/.gitattributes' \
+  --include='/.github/***' \
   --include='/Makefile' \
   --include='/README.md' \
+  --include='/LICENSE' \
+  --include='/CONTRIBUTING.md' \
+  --include='/CITATION.cff' \
+  --include='/IMPLEMENTATION_TRACEABILITY.md' \
+  --include='/MANIFEST.in' \
   --include='/pyproject.toml' \
   --include='/requirements-ci.txt' \
+  --include='/requirements-build.txt' \
   --include='/requirements-research.txt' \
+  --include='/cpp/***' \
+  --include='/data/' \
+  --include='/data/README.md' \
   --include='/docs/***' \
   --include='/examples/***' \
   --include='/scripts/***' \
@@ -37,9 +63,6 @@ rsync -a \
   ./ "$PROJECT_DIR/"
 
 printf '%s\n' "$SOURCE_GIT_COMMIT" > "$PROJECT_DIR/.source-git-commit"
-
-find "$PROJECT_DIR" -type d -name '__pycache__' -prune -exec rm -rf {} +
-find "$PROJECT_DIR" -type f -name '*.pyc' -delete
 
 (
   cd "$STAGING_DIR"

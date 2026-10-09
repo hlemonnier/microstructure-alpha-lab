@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this research software, please cite the repository and the commit used."
+type: software
+title: Microstructure Alpha Lab
+authors:
+  - family-names: Lemonnier
+    given-names: Hugo
+repository-code: "https://github.com/hlemonnier/microstructure-alpha-lab"
+license: MIT
+keywords:
+  - market microstructure
+  - causal validation
+  - execution simulation
+  - cryptocurrency

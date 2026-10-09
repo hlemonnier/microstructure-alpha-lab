@@ -1,6 +1,6 @@
 # Cloud Handoff For Expected-Edge Studies
 
-Use this when the 16 GB laptop is not the right machine for the capped 60-day or full 60-90 day expected-edge study.
+This is an advanced runbook for separately authorized capped or full expected-edge studies. Historical predictive research is [paused](research/boundary_research_pause_20260909.md); exporting source does not resume it.
 
 ## Build The Upload Package
 
@@ -14,10 +14,11 @@ or:
 make cloud-package
 ```
 
-The package contains only the runnable project surface:
+Run packaging from a clean committed checkout. Existing package paths are refused; use a new `PACKAGE_NAME` when repeating a run. The package contains the runnable project surface:
 
-- `README.md`, `Makefile`, `pyproject.toml`, `.gitignore`
-- `requirements-ci.txt`, `requirements-research.txt`
+- `README.md`, `LICENSE`, `CONTRIBUTING.md`, `CITATION.cff`, `Makefile`, `pyproject.toml`, `MANIFEST.in`, `.gitignore`
+- `requirements-build.txt`, `requirements-ci.txt`, `requirements-research.txt`
+- `cpp/`, `.github/`, `data/README.md`, `IMPLEMENTATION_TRACEABILITY.md`
 - `docs/`
 - `examples/`
 - `scripts/`
@@ -25,7 +26,7 @@ The package contains only the runnable project surface:
 - `tests/`
 - `.source-git-commit`
 
-It intentionally excludes local data, result artifacts, virtualenvs, caches, `.git`, `.next`, and `node_modules`.
+It excludes local data, result artifacts, virtualenvs, caches, backup copies, `.git`, `.next`, and `node_modules`. `make e2e` verifies archive completeness, C++ replay parity and cache/backup exclusions without running a cloud study.
 
 The cloud bootstrap installs `requirements-research.txt` first and then installs the local package with `--no-deps`. That keeps the serious run on pinned research dependencies instead of resolving the range-based optional dependencies in `pyproject.toml`.
 

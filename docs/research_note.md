@@ -71,7 +71,7 @@ The benchmark suite is intentionally layered:
 
 The compact CNN is not described as a DeepLOB replication. A faithful DeepLOB-style result requires genuine multi-level book tensors at sufficient historical scale. The current repository has the L2 tensor path and smoke tests, but the empirical DeepLOB gate remains blocked by data coverage.
 
-The Torch path runs on a tiny clean L2 fixture with a positive sequence purge gap. Neural economic scoring now executes explicit flat-to-flat entry/exit pairs at the declared label horizon, orders predictions chronologically, and skips overlapping holding windows; it cannot leave residual inventory or silently hold a signal to the end of the test set. The sequence artifact contract records the baseline, development holdout, checkpoint and prediction hashes, calibration metrics, confusion matrices, and a versioned economic-semantics field. Existing ignored and reduced smoke CSVs predate this contract and are deliberately rejected until regenerated from a clean committed checkout; even then, their scores are wiring evidence rather than alpha evidence.
+The Torch path uses a bounded synthetic L2 fixture with a terminal holdout and a positive sequence purge gap. Its current economic contract, `persistent_l2_payoff_policy_v3`, fits a payoff policy on validation data and evaluates ordered, non-overlapping entry/exit instructions through one stateful account. It uses recorded receipt timestamps when available, explicit latency, measured book quantities and configured costs. Any inventory remaining because of finite liquidity stays marked in equity and is reported; the synthetic E2E verifier requires a flat final account. Baseline, development holdout, checkpoint and prediction hashes bind the outputs to their inputs. Legacy economic versions are rejected. Fixture scores demonstrate software wiring, not alpha.
 
 ## 6. Execution Model
 
@@ -124,6 +124,7 @@ Fast verification:
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-ci.txt
+.venv/bin/python -m pip install -e . --no-deps
 bash scripts/run_tests.sh
 .venv/bin/python -m ruff check src tests scripts/run_reduced_e2e.py
 .venv/bin/python -m mypy \
@@ -153,13 +154,15 @@ Optional CPU neural smoke, when Torch is installed:
 PYTHONPATH=src .venv/bin/python -m lob_forge.cli l2-sequence-experiment \
   --model sequence_tcn \
   --baseline-audit artifacts/reduced_e2e/baseline_audit_fixture.csv \
-  --l2 examples/fixtures/l2_sequence_fixture.csv \
+  --l2 examples/fixtures/l2_sequence_e2e_fixture.csv \
   --output artifacts/reduced_e2e/sequence_tcn_smoke.csv \
+  --holdout-manifest artifacts/reduced_e2e/l2_sequence_holdout_manifest.json \
+  --development-l2-output artifacts/reduced_e2e/development_l2_sequence_fixture.csv \
   --checkpoint-path artifacts/reduced_e2e/sequence_tcn_smoke.pt \
   --predictions-output artifacts/reduced_e2e/sequence_tcn_predictions.csv \
   --device auto --class-weighting balanced \
   --depth 1 --window 3 --label-horizon 1 --epochs 1 \
-  --max-rows 100 --max-snapshots 20 --min-fold-count 1 --min-l2-rows 1
+  --max-rows 100 --max-snapshots 100 --min-fold-count 1 --min-l2-rows 1
 ```
 
 Full cloud study planning:

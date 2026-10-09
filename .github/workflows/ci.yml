@@ -4,8 +4,15 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  fast-verification:
+  static-verification:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -15,10 +22,10 @@ jobs:
           python-version: "3.11"
       - name: Install CI tooling
         run: python -m pip install -r requirements-ci.txt
-      - name: Compile and run fast tests
-        run: bash scripts/run_tests.sh direct
+      - name: Compile Python sources
+        run: python -m compileall -q src scripts
       - name: Lint
-        run: ruff check src tests scripts/run_reduced_e2e.py
+        run: ruff check src tests scripts
       - name: Type check
         run: >
           mypy
@@ -27,8 +34,36 @@ jobs:
           src/lob_forge/execution_sim.py
           src/lob_forge/l2_replay.py
           src/lob_forge/statistics.py
-      - name: C++ replay smoke
-        run: bash scripts/build_cpp_l2_replay.sh /tmp/l2_replay && /tmp/l2_replay examples/fixtures/l2_replay_fixture.csv >/tmp/l2_replay.out
+
+  public-e2e:
+    name: Public E2E (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.9"
+          - os: ubuntu-latest
+            python: "3.12"
+          - os: macos-latest
+            python: "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Build, install and verify from exported source
+        run: python scripts/run_public_e2e.py --output artifacts/public_e2e/ci
+      - name: Retain repeatable E2E evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-e2e-${{ matrix.os }}-py${{ matrix.python }}
+          path: artifacts/public_e2e/ci/
+          if-no-files-found: error
+          retention-days: 30
 
   model-math-cpu:
     runs-on: ubuntu-latest
@@ -38,14 +73,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
-      - name: Install pinned CPU model dependencies
-        run: |
-          python -m pip install -r requirements-ci.txt
-          python -m pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cpu
-          python -m pip install numpy==2.0.2 scikit-learn==1.5.2 xgboost==2.1.3
-      - name: Train, freeze, and evaluate both sequence architectures
-        env:
-          PYTHONPATH: src
-          PYTHONDONTWRITEBYTECODE: "1"
-        run: python -m pytest -q tests/test_math_remediation.py tests/test_model_audit_regressions.py
+      - name: Verify installed package and both CPU sequence architectures
+        run: python scripts/run_public_e2e.py --with-models --output artifacts/public_e2e/models
+      - name: Retain model E2E evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-e2e-cpu-models
+          path: artifacts/public_e2e/models/
+          if-no-files-found: error
+          retention-days: 30
