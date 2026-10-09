@@ -2,7 +2,7 @@
 
 Current corrections are tracked in [the September model/mathematics remediation](docs/model_math_remediation.md). Earlier status counts and empirical interpretations below are historical, including the former pretraining-smoke green gate. Mean imputation does not establish learned pretraining.
 
-Authoritative scope: local implementation specification supplied outside the repository. Status terms: `implemented`, `implemented-smoke-tested`, `empirically-pending`, or `not-applicable`.
+This is a historical implementation record, retained for traceability. Current reproduction starts with the [public E2E instructions](docs/reproducibility.md), and current empirical status is summarized in the [research index](docs/research/README.md). Status terms: `implemented`, `implemented-smoke-tested`, `empirically-pending`, or `not-applicable`.
 
 | Requirement | Status | Files | Tests / Evidence | Blocker |
 |---|---:|---|---|---|
@@ -38,7 +38,7 @@ Authoritative scope: local implementation specification supplied outside the rep
 
 ## Review Gap Status
 
-This table maps the final "must be fixed before sending it" review items from `/Users/lemonnierhugo/.codex/attachments/597785c4-52c9-4068-95ba-a175387a43c2/pasted-text-1.txt` to current repository evidence.
+This table maps the historical implementation review items to the repository evidence available at the time of remediation.
 
 | Review item | Current status | Evidence | Remaining blocker |
 |---|---:|---|---|
