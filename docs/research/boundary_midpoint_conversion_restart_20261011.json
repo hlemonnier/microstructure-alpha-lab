@@ -1,0 +1,89 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "scripts/run_boundary_midpoint_conversion_screen.py",
+    "--protocol",
+    "docs/research/boundary_midpoint_conversion_screen_20260909.json",
+    "--output",
+    "results/boundary_midpoint_conversion_restart_20261011"
+  ],
+  "assessment_gate": "All48fits; unchanged assessor checks576panels,96retained,40attribution pairs and original controls/gates.",
+  "checkout_commit": "733dcfa80d26c74293978d33b7d15744683a59bf",
+  "compatibility_gate_before_score_inspection": "All eight repeated workers must reproduce both assets' saved natural probabilities and training priors exactly; original173files must remain hash- and length-identical.",
+  "confirmation_dates_opened": false,
+  "distinct_registered_date_model_procedures": 48,
+  "environment": {
+    "DYLD_LIBRARY_PATH": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-replay-20261011/source/.venv/lib/python3.12/site-packages/sklearn/.dylibs",
+    "MKL_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src:scripts:.venv/lib/python3.12/site-packages:data/research/boundary_tabicl_20260908/runtime"
+  },
+  "execution_root_at_registration": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-replay-20261011/source",
+  "execution_root_relative_to_checkout": "artifacts/midpoint-replay-20261011/source",
+  "extra_runtime_versions": {
+    "joblib": "1.6.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "fresh_fits": 48,
+  "historical_revision": "5b05940c101cf23eb8ec1038edf0896f60248e7b",
+  "historical_tree": "28fa8c5feac63f5c8ed3e665523fa35d1454a9e8",
+  "input_hashes_verified": 2158,
+  "known_current_checkout_pin_drift": [
+    "pyproject.toml",
+    "scripts/run_reduced_e2e.py",
+    "scripts/verify_reduced_e2e_artifacts.py"
+  ],
+  "new_unit_tests": 0,
+  "original_attempt": "results/boundary_midpoint_conversion_screen_20260909",
+  "output_relative_to_execution_root": "results/boundary_midpoint_conversion_restart_20261011",
+  "pause_evidence": "docs/research/boundary_research_pause_evidence_20260909.json",
+  "pause_evidence_sha256": "acb0bd515e721043a7c80d4d60aa86bcd512f5e3039e6a58612dc00fab01630c",
+  "preserved_artifact_bytes": 2321441829,
+  "preserved_artifacts_verified": 173,
+  "prior_completed_fits": 8,
+  "prior_interrupted_fits": 1,
+  "prior_unstarted_fits": 39,
+  "protocol": "docs/research/boundary_midpoint_conversion_screen_20260909.json",
+  "protocol_sha256": "4bd811dbc1a62c445723aab77078bc3963b06a202970934c371ff3994f99446f",
+  "reason": "User-reactivated goal after a preserved user-requested pause; exact historical source snapshot for three changed packaging pins.",
+  "registered_utc": "2026-10-10T22:50:58.409401+00:00",
+  "require_positive_sampled_rss_each_worker": true,
+  "research_priority": "predictive_accuracy_first",
+  "rss_monitor_preflight": {
+    "process_rss_bytes": 22069248,
+    "psutil_path": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/data/research/boundary_tabicl_20260908/runtime/psutil/__init__.py",
+    "status": "passed_before_fit"
+  },
+  "runtime": {
+    "dependencies": {
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "psutil": "7.1.0",
+      "pyarrow": "17.0.0",
+      "scikit-learn": "1.5.2",
+      "torch": "2.8.0"
+    },
+    "python": "3.12.14"
+  },
+  "snapshot_pin_drift": [],
+  "source_archive": "artifacts/midpoint-replay-20261011/source.tar",
+  "source_archive_sha256": "65d28b9b2666c5f5674098fcdd09d6bee79e9ee0de7f2b17c4f38f96c5db6cae",
+  "status": "registered_before_new_fits",
+  "study": "boundary_midpoint_conversion_restart_20261011",
+  "substantial_gain_confirmed": false,
+  "threadpools": [
+    {
+      "filepath": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/lib/python3.12/site-packages/sklearn/.dylibs/libomp.dylib",
+      "internal_api": "openmp",
+      "num_threads": 2,
+      "prefix": "libomp",
+      "sha256": "7fe04d06d824817d39e4c99ec44e837fd6b5f0f75f2cc3e77a384c298f3f1709",
+      "user_api": "openmp",
+      "version": null
+    }
+  ],
+  "total_completed_fit_executions_if_success": 56,
+  "total_interrupted_fit_executions_before_restart": 1
+}

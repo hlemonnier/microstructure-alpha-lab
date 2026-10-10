@@ -7,7 +7,7 @@ Crypto market microstructure research on a practical question: **does a short-ho
 
 The Python toolkit connects causal quote and trade features to chronological model selection, a stateful execution simulator and provenance checks. A small C++ component cross-checks order-book replay. Spread, fees, latency, available liquidity, inventory and adverse selection are part of the research question.
 
-**Research status:** experiments have been paused since September 2026. The repository contains exploratory results and reproducible software checks; it does not establish independently confirmed executable alpha. The [research summary](docs/research/README.md) explains the findings and the [pause record](docs/research/boundary_research_pause_20260909.md) preserves the interrupted experiment.
+**Research status:** the research goal was reactivated on October 11, 2026. An [explicit restart](docs/research/boundary_midpoint_conversion_restart_20261011.md) preserves the September interrupted experiment and its frozen specification. The repository contains exploratory results and reproducible software checks; it does not establish independently confirmed executable alpha. The [research summary](docs/research/README.md) distinguishes completed findings from pending validation.
 
 ## Quick start
 

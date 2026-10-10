@@ -1,6 +1,6 @@
 # Research findings and status
 
-**Status: paused since September 2026.** The current repository provides research tooling and historical development evidence. A substantial independent improvement and executable alpha have not been established.
+**Status: goal reactivated October 11, 2026; midpoint restart registered.** The current repository provides research tooling and historical development evidence. A substantial independent improvement and executable alpha have not been established.
 
 ## Read the findings
 
@@ -13,6 +13,7 @@
 | [Unadjusted quote-currency comparison](boundary_quote_currency_report_20260909.md) | Best new complete procedure was about 0.0066 points below the retained control; no advancement candidate |
 | [Conversion-price diagnostic](boundary_conversion_microstructure_report_20260909.md) | Training-only evidence of bid–ask bounce; the midpoint transform is a representation hypothesis |
 | [Midpoint experiment pause](boundary_research_pause_20260909.md) | Eight of 48 fits completed, one interrupted, 39 unstarted; no assessment or predictive result |
+| [Explicit midpoint restart](boundary_midpoint_conversion_restart_20261011.md) | Fresh attempt of the unchanged 48-fit family, from an exact historical source snapshot; no new accuracy result yet |
 
 Results from three-date and twenty-date cohorts estimate different quantities and should not be ranked directly. Improvements over a weaker component do not establish improvement over the strongest complete control. Predictive accuracy also requires separate economic evaluation.
 
@@ -29,4 +30,4 @@ The historical `boundary_*.json` protocols and evidence records stay at their or
 
 The full multi-month confirmatory study, immutable final empirical holdout, sufficient genuine L2 neural coverage and calibration against observed trading fills remain pending. Synthetic fixtures verify software behavior only.
 
-Software maintenance does not resume the interrupted experiment. Any future continuation must follow the [explicit resumption contract](boundary_research_pause_20260909.md#resume-only-after-a-new-user-instruction), preserve the old attempt and retain unopened independent confirmation data.
+The October 11 reactivation is separate from the earlier software-maintenance work. Its [registered restart](boundary_midpoint_conversion_restart_20261011.md) follows the [resumption contract](boundary_research_pause_20260909.md#resume-only-after-a-new-user-instruction), preserves the old attempt and retains unopened independent confirmation data. The eight repeated fits are reproducibility checks, not additional independent observations.
