@@ -1,0 +1,63 @@
+{
+  "cases": [
+    {
+      "case": "continuation_37_plus_11",
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/scripts/verify_boundary_midpoint_restart.py",
+        "--root",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-restart-verification-e2e-20261011-attempt-02/additional_cli_checks/continuation_37_plus_11",
+        "--registration",
+        "docs/registration.json",
+        "--evidence",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-restart-verification-e2e-20261011-attempt-02/additional_cli_checks/continuation_37_plus_11/receipt.json"
+      ],
+      "passed": true,
+      "receipt_sha256": "dcabf823126eb752350e1677af818c18a2d8046b46d4ce2b1530d225f3e15f49",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "046780c0bc0c51f2ad03bb965285f0563078f7d976ff0a01212ec01fc0ef8f1a"
+    },
+    {
+      "case": "extra_date",
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/scripts/verify_boundary_midpoint_restart.py",
+        "--root",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-restart-verification-e2e-20261011-attempt-02/additional_cli_checks/extra_date",
+        "--registration",
+        "docs/registration.json",
+        "--evidence",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-restart-verification-e2e-20261011-attempt-02/additional_cli_checks/extra_date/receipt.json"
+      ],
+      "passed": true,
+      "receipt_sha256": "ac8fb3e0a597ee0393a6dafa49c4e493fca861735269460c4d391b7990d9b3b0",
+      "returncode": 1,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "69e165bb2522051f277cddce6cd79726706adf24ec122c05cb0fbb0052b7b138"
+    },
+    {
+      "case": "unsafe_receipt",
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/scripts/verify_boundary_midpoint_restart.py",
+        "--root",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-restart-verification-e2e-20261011-attempt-02/additional_cli_checks/unsafe_receipt",
+        "--registration",
+        "docs/registration.json",
+        "--evidence",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-restart-verification-e2e-20261011-attempt-02/additional_cli_checks/unsafe_receipt/results/old/unsafe_receipt.json"
+      ],
+      "passed": true,
+      "receipt_sha256": null,
+      "returncode": 1,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "814362d015d863597d25b78d2bcda99221637bb7b3f5e1b8f4fa6e90e0491593"
+    }
+  ],
+  "market_data_read": false,
+  "model_fits": 0,
+  "status": "passed",
+  "synthetic_only": true,
+  "verifier_sha256": "3b91647580b8ec970cfb3965ed0f2b4f78c3ea01484b1652a9e5699db6f64d3e"
+}
