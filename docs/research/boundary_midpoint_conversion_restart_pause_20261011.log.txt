@@ -1,0 +1,34 @@
+midpoint_inputs_verified=2023-06-03
+midpoint_inputs_verified=2023-06-07
+midpoint_inputs_verified=2023-06-11
+midpoint_fit=2023-06-03/observations_fx100_raw_side_hgb seconds=46.2
+midpoint_fit=2023-06-03/observations_fx100_raw_side_neural seconds=21.1
+midpoint_fit=2023-06-03/observations_fx100_midpoint_side_hgb seconds=49.4
+midpoint_fit=2023-06-03/observations_fx100_midpoint_side_neural seconds=22.2
+midpoint_fit=2023-06-03/observations_btc100_raw_side_hgb seconds=59.3
+midpoint_fit=2023-06-03/observations_btc100_raw_side_neural seconds=28.6
+midpoint_fit=2023-06-03/observations_btc100_midpoint_side_hgb seconds=56.8
+midpoint_fit=2023-06-03/observations_btc100_midpoint_side_neural seconds=26.9
+midpoint_fit=2023-06-03/combined_fx100_raw_side_hgb seconds=68.7
+midpoint_fit=2023-06-03/combined_fx100_raw_side_neural seconds=33.6
+midpoint_fit=2023-06-03/combined_fx100_midpoint_side_hgb seconds=69.3
+Traceback (most recent call last):
+  File "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-replay-20261011/source/scripts/run_boundary_midpoint_conversion_screen.py", line 349, in <module>
+    run(args.protocol.resolve(), args.output.resolve(), args.prepare_only)
+  File "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-replay-20261011/source/scripts/run_boundary_midpoint_conversion_screen.py", line 315, in run
+    process = subprocess.run([sys.executable, str(Path(__file__).resolve()), "--protocol", str(protocol_path),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 2141, in _communicate
+    self.wait(timeout=self._remaining_time(endtime))
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lemonnierhugo/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 2047, in _wait
+    time.sleep(delay)
+KeyboardInterrupt

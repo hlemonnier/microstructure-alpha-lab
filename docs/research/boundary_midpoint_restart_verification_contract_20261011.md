@@ -1,0 +1,13 @@
+# Restart verification contract, before implementation
+
+**Paused draft.** The verifier was not implemented and no E2E cases were run before the October 11 user-requested pause. The E2E runner was written first and is preserved byte-for-byte as [draft source](drafts/run_midpoint_restart_verification_e2e.py.txt), outside the runnable scripts. Restore it to its intended script path only when work resumes. This contract is a pending design, not passing verification evidence.
+
+The additive verifier runs after the full frozen driver finishes and before any new scores are inspected. It reads worker probabilities and metadata only. It hashes the summary and assessment panels without decoding their labels or metrics. Its receipt lives outside both attempts.
+
+Failure cases: an existing receipt; missing final summary; wrong protocol, pause or runtime identity; old/new directories aliasing or containing each other; missing or extra workers or prediction panels; an incomplete fold; unsuccessful or mismatched supervision; changed logs; zero or excessive sampled RSS; nonzero GPU-driver memory; failed checkpoint/prior/causality checks; altered old file set, lengths or hashes; changed replay array keys, shape, dtype, finite status, probabilities or priors. Reject on any case. Do not compare old/new serialized checkpoints as a substitute for array equality.
+
+The eight original completed procedures must match both assets' natural probability and training-prior arrays exactly. Each probability array has 7,070 rows and three classes. Successful checks cover 16 asset-level comparisons and 32 arrays. All 48 new workers must pass. All three completion inventories and 576 panel filenames must be present, and their files must match the saved hashes.
+
+An isolated CLI E2E fixture will use synthetic probabilities and metadata with these same counts and dimensions. It will first pass, then reject individually corrupted copies for every listed failure category. Fixtures contain no market data and execute no learner. The E2E runner must save commands, exit statuses, receipts and SHA256 values as a repeatable evidence artifact. This is verification of the artifact-checking workflow; the real market experiment and original 576-panel assessor provide the separate research execution evidence.
+
+The utility does not independently rehash the 2,158 model inputs; those remain checked by the unchanged driver and assessor. It verifies that the original and fresh identities contain the same pinned mapping. Its evidence must state this scope explicitly. Sampled memory is not a proof of a continuous peak bound. A PASS receipt is not a predictive result.
