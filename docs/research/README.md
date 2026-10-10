@@ -15,6 +15,7 @@
 | [Midpoint experiment pause](boundary_research_pause_20260909.md) | Eight of 48 fits completed, one interrupted, 39 unstarted; no assessment or predictive result |
 | [Explicit midpoint restart](boundary_midpoint_conversion_restart_20261011.md) | Fresh attempt of the unchanged 48-fit family, from an exact historical source snapshot; no new accuracy result yet |
 | [October checkpoint](boundary_research_pause_20261011.md) | Restart stopped after 11 completed fits, one interrupted, 36 unstarted; no scores assessed |
+| [Quote-renewal prototype](boundary_quote_renewal_synthetic_report_20261011.md) | 44 synthetic E2E checks; numerical stability and market accuracy untested |
 | [Completed midpoint continuation](boundary_midpoint_continuation_report_20261011.md) | 48 fits, 576 panels; best new candidate 57.313% versus 57.341% complete control; no advancement |
 
 Results from three-date and twenty-date cohorts estimate different quantities and should not be ranked directly. Improvements over a weaker component do not establish improvement over the strongest complete control. Predictive accuracy also requires separate economic evaluation.

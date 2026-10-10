@@ -1,0 +1,1815 @@
+{
+  "commands": [
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "replay-paths",
+        "--input",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/reflection_inputs.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/reflection_actual.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "replay_reflection_oracle",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.06163575002574362
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/selected_window_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/selected_window.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "selected_source_window",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.05172529199626297
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/inspection_manifest.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/inspected.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "inspect_exact_endpoints",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.05371474998537451
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/duplicate_id_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/duplicate_id.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_duplicate_id",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.04544329200871289
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/regressing_timestamp_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/regressing_timestamp.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_regressing_timestamp",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.050032125000143424
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/crossed_price_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/crossed_price.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_crossed_price",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.0557751250162255
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/locked_price_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/locked_price.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_locked_price",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.04597829200793058
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/nonfinite_price_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/nonfinite_price.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_nonfinite_price",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.04899574999581091
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/negative_quantity_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/negative_quantity.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_negative_quantity",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.059133208997081965
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/invalid_boundary_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/invalid_boundary.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_invalid_boundary",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.050128208997193724
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "inspect",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/invalid_hash_manifest.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/invalid_hash.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_invalid_hash",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.04798329097684473
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "fit",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/train_manifest.json",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--iterations",
+        "30",
+        "--min-state-transitions",
+        "12",
+        "--paths",
+        "256",
+        "--seed",
+        "914"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "fit_joint_em_and_cache",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.3172431669954676
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/regular.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_regular",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.06603895800071768
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/age_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/age.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_age",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.05931449998752214
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/age_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/age_repeat.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_age_repeat",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.060681792005198076
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/future_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/future.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_future",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.06397575000301003
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/partition_a.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/partition_a.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_partition_a",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.06722904200432822
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/partition_b.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/partition_b.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_partition_b",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.053686500003095716
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/reversed_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/reversed.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_reversed",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.05522574999486096
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/at_decision_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/at_decision.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_exact_decision_excluded",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.05410049998317845
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/low_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/low_reflected.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_reflected_low",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.059781207994092256
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/fractional_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fractional_reflected.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_reflected_fractional",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.0709784579812549
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/at_floor_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/at_floor_reflected.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "predict_reflected_at_floor",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.059615083009703085
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/below_floor_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/below_floor_failure.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_initial_bid_floor",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.05657724998309277
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/survival_underflow_model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/survival_underflow_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/survival_underflow_failure.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_survival_underflow",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.058356207999167964
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/wrong_mark_state_model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/age_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/wrong_mark_state_failure.json"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_joint_mark_state_mismatch",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.05859945798874833
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "fit",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/giant_manifest.json",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/overflow_failure.json",
+        "--iterations",
+        "3",
+        "--paths",
+        "64"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_simulation_overflow",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.04914470898802392
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/probability_oracle_model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/age_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/oracle_predictions.json"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "independent_probability_oracle",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.07366120797814801
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/age_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/independent_seed.json",
+        "--seed",
+        "915",
+        "--paths",
+        "256"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "independent_seed",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.14831404198776
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "predict",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--queries",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/age_queries.json",
+        "--output",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/doubled_paths.json",
+        "--seed",
+        "914",
+        "--paths",
+        "512"
+      ],
+      "exit_code": 0,
+      "expected_rejection": false,
+      "name": "doubled_paths",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.24306329200044274
+    },
+    {
+      "command": [
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+        "-m",
+        "lob_forge.boundary_quote_renewal",
+        "fit",
+        "--manifest",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/fixtures/train_manifest.json",
+        "--model",
+        "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/quote-renewal-e2e-20261010T234923912741Z/model.json",
+        "--iterations",
+        "2",
+        "--paths",
+        "64"
+      ],
+      "exit_code": 1,
+      "expected_rejection": true,
+      "name": "reject_overwrite",
+      "thread_environment": {
+        "MKL_NUM_THREADS": "2",
+        "NUMEXPR_NUM_THREADS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "VECLIB_MAXIMUM_THREADS": "2"
+      },
+      "timed_out": false,
+      "wall_seconds": 0.04959483302081935
+    }
+  ],
+  "files": [
+    {
+      "bytes": 6267,
+      "path": "age.json",
+      "sha256": "c66f0bd9d0cb2ba48a71aa1935378c4c5e1cd71eeeb42dd65766a9e8db067a1a"
+    },
+    {
+      "bytes": 6267,
+      "path": "age_repeat.json",
+      "sha256": "d770e60e0cfa7a699dc4ac6921e2090136e79afb0c6186422683240bb201351b"
+    },
+    {
+      "bytes": 3699,
+      "path": "at_decision.json",
+      "sha256": "36a658b1d4517f1eda69262dcfa77a727972036bc90d77a99841136510ee85ef"
+    },
+    {
+      "bytes": 3708,
+      "path": "at_floor_reflected.json",
+      "sha256": "e0e31e0257828ef01e1def04e29e9b59bca137ee0fc5f950eeecff07781c48c9"
+    },
+    {
+      "bytes": 1167,
+      "path": "attempts/doubled_paths.json",
+      "sha256": "bdabdc48821aa5195d3e10eec6bb58ebb0b99e2c89a08ff2419573a87e5f173f"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/doubled_paths.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 266,
+      "path": "attempts/doubled_paths.stdout.txt",
+      "sha256": "6734b9e6ee9c808a6e15a5998c1f532f9ffb0f6c7ffdc4494c37b4366080c37f"
+    },
+    {
+      "bytes": 1052,
+      "path": "attempts/fit_joint_em_and_cache.json",
+      "sha256": "baccf61ea99bf9462b57b3be20fc59ecf8dec642cc1fda887f671e54a3204832"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/fit_joint_em_and_cache.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 253,
+      "path": "attempts/fit_joint_em_and_cache.stdout.txt",
+      "sha256": "d3c0465e1829da57d6af1ddedf2dc6c3b42f435f07e806405df86930e7e955ae"
+    },
+    {
+      "bytes": 1166,
+      "path": "attempts/independent_probability_oracle.json",
+      "sha256": "46ef8defc17929e8a02531d762d10b0b02ac1fa0d1e19aef157a05984a715950"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/independent_probability_oracle.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 271,
+      "path": "attempts/independent_probability_oracle.stdout.txt",
+      "sha256": "7e314e635d1987475378cb274c321330d6cdbde78ec4f717e26c27b236785ce3"
+    },
+    {
+      "bytes": 1170,
+      "path": "attempts/independent_seed.json",
+      "sha256": "2cc685bb63321a07ebf7270370088a5126ce3e436333f208e8f1844c98252d60"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/independent_seed.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 269,
+      "path": "attempts/independent_seed.stdout.txt",
+      "sha256": "2d805482764ad88f7cbfd598d9d0867ca316ca247a2b9373817151a30319d310"
+    },
+    {
+      "bytes": 1144,
+      "path": "attempts/inspect_exact_endpoints.json",
+      "sha256": "b3ccf3653247698baa1e7ddc3fad2f42660fd4e5909ffbe3703da9bb16a02980"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/inspect_exact_endpoints.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 263,
+      "path": "attempts/inspect_exact_endpoints.stdout.txt",
+      "sha256": "6ed0ebd0b1e728bbe2ea0ed2f250c9fa9c33412207cb15f76fa1ecc0efbfad37"
+    },
+    {
+      "bytes": 1104,
+      "path": "attempts/predict_age.json",
+      "sha256": "958f666fb8c4ce2e1fe53fd9445856533241bd5928e76af0c865f5f35b43f822"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_age.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 257,
+      "path": "attempts/predict_age.stdout.txt",
+      "sha256": "48a0e23d685e7b0a910ed7652b0336a42923a0d9a4c1060733aa60f6eddeeb62"
+    },
+    {
+      "bytes": 1119,
+      "path": "attempts/predict_age_repeat.json",
+      "sha256": "c50c4ca4fa98442858931ff5688154912e642cd1d04550150fc1c30da20093b4"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_age_repeat.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 264,
+      "path": "attempts/predict_age_repeat.stdout.txt",
+      "sha256": "ad9fe1266a8c2cfb674aa2761c16548f1f9b6624ed54e7e081ec30594a66fddf"
+    },
+    {
+      "bytes": 1140,
+      "path": "attempts/predict_exact_decision_excluded.json",
+      "sha256": "8d84c484c14405d249b7ed9af279f12692078af804ca35a5bb0776693ff2d5ab"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_exact_decision_excluded.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 265,
+      "path": "attempts/predict_exact_decision_excluded.stdout.txt",
+      "sha256": "bee43c5843d002e1a2590e3a1d44b5b5f7aadd505441c9e3ff01b4fbc3f5bf6f"
+    },
+    {
+      "bytes": 1113,
+      "path": "attempts/predict_future.json",
+      "sha256": "6230bb40e4ebcdc38b819e5a5d10d47c509807494b1df23c39b6cf3d70cc5ca4"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_future.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 260,
+      "path": "attempts/predict_future.stdout.txt",
+      "sha256": "9a1bfff8f968ed11c590a3cadc315db22ec41cb26d2ea545e5c4a2f2760f7d82"
+    },
+    {
+      "bytes": 1120,
+      "path": "attempts/predict_partition_a.json",
+      "sha256": "33b0481332c8c48acf3950d5be30c032b16c07fc07fa300383487db4e71f9d90"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_partition_a.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 265,
+      "path": "attempts/predict_partition_a.stdout.txt",
+      "sha256": "d2e283d8a98642e782b85134001947bc14548d28aa46eee267b2d9e58bf056cd"
+    },
+    {
+      "bytes": 1121,
+      "path": "attempts/predict_partition_b.json",
+      "sha256": "cf19adbc4c280d4f42f746d6ca8f67b56f608405ea6ede165b05b0d28ba0f8d2"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_partition_b.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 265,
+      "path": "attempts/predict_partition_b.stdout.txt",
+      "sha256": "6eaf4e5aeeda7bffac27fb6a49812e7f460d397724a54e2f10b1cec171ad2abd"
+    },
+    {
+      "bytes": 1140,
+      "path": "attempts/predict_reflected_at_floor.json",
+      "sha256": "7679084c373bb823ca464cb69a77b47d261314eca8490c4ff06903f7cb9e0b58"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_reflected_at_floor.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 271,
+      "path": "attempts/predict_reflected_at_floor.stdout.txt",
+      "sha256": "e271733b48d8ff78cad4c9edff226768abad806b39716b099398276336a72fc5"
+    },
+    {
+      "bytes": 1144,
+      "path": "attempts/predict_reflected_fractional.json",
+      "sha256": "6d66cc2a71d6023a8469a41a55c524f0177f6a4f8bfab98c7d1459722fe53314"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_reflected_fractional.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 273,
+      "path": "attempts/predict_reflected_fractional.stdout.txt",
+      "sha256": "8129da58981d03c8c0b74eca968f52ee27142fd3ec325933671801334be006c4"
+    },
+    {
+      "bytes": 1125,
+      "path": "attempts/predict_reflected_low.json",
+      "sha256": "6833d1cde0a74a69f4028975b410b93ce1711de364e06e796e0d151fd31d6c0a"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_reflected_low.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 267,
+      "path": "attempts/predict_reflected_low.stdout.txt",
+      "sha256": "42214879d3b6092eaaac1a671d8b4d4948dbf98c0d589b5b3a084b416aaf48d3"
+    },
+    {
+      "bytes": 1108,
+      "path": "attempts/predict_regular.json",
+      "sha256": "0b64e1068b24c3f278c9c9be634fc8cdbae6fdd95dc4d44c279a5b157b27b050"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_regular.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 261,
+      "path": "attempts/predict_regular.stdout.txt",
+      "sha256": "4555437ffd17eecf2002fcd988f0b173f1cd5009e4971908ea484b434adb6ab6"
+    },
+    {
+      "bytes": 1119,
+      "path": "attempts/predict_reversed.json",
+      "sha256": "1342a7ae5f241fa4a8c5ff456700759d4cc87c1eee96f1f081b8783d9e6a7138"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/predict_reversed.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 262,
+      "path": "attempts/predict_reversed.stdout.txt",
+      "sha256": "ed285dfb9de4cea262c7b657dc862c8670709dbef057a3485093c2dfd450585f"
+    },
+    {
+      "bytes": 948,
+      "path": "attempts/reject_crossed_price.json",
+      "sha256": "8bebfca7615aaee089dabfac343d8ac79ac6288e1d64759679c38e5d209c4fc6"
+    },
+    {
+      "bytes": 853,
+      "path": "attempts/reject_crossed_price.stderr.txt",
+      "sha256": "3ee3d20ed2568c18326a7f32a2b2dec4be81250d0a3e3502a14995c5469afaed"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_crossed_price.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 946,
+      "path": "attempts/reject_duplicate_id.json",
+      "sha256": "89e0b546ba0ed5cee11b5fdd2cdee57d4f10de3ac0324575674c127b8be5f376"
+    },
+    {
+      "bytes": 819,
+      "path": "attempts/reject_duplicate_id.stderr.txt",
+      "sha256": "4e02dbb2cb7cfcf71c2a785db29831d334bbf9e8a12e7f232f3099a5b1cd02e6"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_duplicate_id.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1140,
+      "path": "attempts/reject_initial_bid_floor.json",
+      "sha256": "8f8135e85fb36043c1651e3d1b9c20ba6ef26f6826d361191634b843374ddd28"
+    },
+    {
+      "bytes": 841,
+      "path": "attempts/reject_initial_bid_floor.stderr.txt",
+      "sha256": "a99c9e4ed01b5406a7fecd678b4573b39e3361225b544e9b19fd6db6eb8b5db7"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_initial_bid_floor.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 959,
+      "path": "attempts/reject_invalid_boundary.json",
+      "sha256": "e0ac9909f7e721016ab8c6d3374a63720a7bedfb27f949b6abb8249143e2748d"
+    },
+    {
+      "bytes": 832,
+      "path": "attempts/reject_invalid_boundary.stderr.txt",
+      "sha256": "f6fa8d6f2ad870fd647d652e919a234133f9afa289e1aa5c92baa2140031aa02"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_invalid_boundary.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 946,
+      "path": "attempts/reject_invalid_hash.json",
+      "sha256": "985eda93679c8a24e20aac5c1ebac07a74e9ac81258e9e0d546f6716d3bb9755"
+    },
+    {
+      "bytes": 808,
+      "path": "attempts/reject_invalid_hash.stderr.txt",
+      "sha256": "32f2d5ca1313dd12737f125c6d6c26a281e2a0d611b8b043c6ac11c7d110416b"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_invalid_hash.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1171,
+      "path": "attempts/reject_joint_mark_state_mismatch.json",
+      "sha256": "65d7a9232d45ce9737223acbfcffb8423537f3b0d1c3438bf20e65d928abf9d6"
+    },
+    {
+      "bytes": 847,
+      "path": "attempts/reject_joint_mark_state_mismatch.stderr.txt",
+      "sha256": "2bcf3a800148a1d8714a36dae8b5ee2939a365942c67611288ebe604133c7e4d"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_joint_mark_state_mismatch.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 946,
+      "path": "attempts/reject_locked_price.json",
+      "sha256": "535cf63a9b0127035020babd9a7ee043310073c82eaac55e9085d9a16fd432b6"
+    },
+    {
+      "bytes": 854,
+      "path": "attempts/reject_locked_price.stderr.txt",
+      "sha256": "837013eb3f16ee612ce9c28b3a9226bec9b5d1a1d9a0df70e05a81bf4b17f9fc"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_locked_price.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 962,
+      "path": "attempts/reject_negative_quantity.json",
+      "sha256": "12476d904c4c681c877a187c1ab9a4557812fbcc85c971564db4768e9d244bff"
+    },
+    {
+      "bytes": 813,
+      "path": "attempts/reject_negative_quantity.stderr.txt",
+      "sha256": "476cb0edf79d3916c9db37d2462c53cb7c49e451b52139b5e61e0bf005b37af1"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_negative_quantity.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 955,
+      "path": "attempts/reject_nonfinite_price.json",
+      "sha256": "d4a96527e518273ac8c61f3d48c8eb30e11cd14bc272c95136e29d9323381677"
+    },
+    {
+      "bytes": 805,
+      "path": "attempts/reject_nonfinite_price.stderr.txt",
+      "sha256": "749a56714bddcedf62749b2e2b9f09ff361e8170077a20bf55b7f07ef9054c28"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_nonfinite_price.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 978,
+      "path": "attempts/reject_overwrite.json",
+      "sha256": "789aa8c5a9351ae0d74dc2406957d05a0139fd9afc14c23799cec83f6dcde9cb"
+    },
+    {
+      "bytes": 834,
+      "path": "attempts/reject_overwrite.stderr.txt",
+      "sha256": "1023509922dd7203343a9b9ce4d00c782d95f49c743537b17e41176a549bbe70"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_overwrite.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 971,
+      "path": "attempts/reject_regressing_timestamp.json",
+      "sha256": "2745594f866f207cf35f6ffdecbb6f365bf6fc262c5004b31e5e50027e5f09b9"
+    },
+    {
+      "bytes": 816,
+      "path": "attempts/reject_regressing_timestamp.stderr.txt",
+      "sha256": "5b20d6fcf2446c67a930061a3119007f732b58b3e3916a4eabe5618bbc8ff4ec"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_regressing_timestamp.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 999,
+      "path": "attempts/reject_simulation_overflow.json",
+      "sha256": "7f854161005382cade640c1bea0d4bbd7350fa4608e5bac6ed79e87a7938cf7f"
+    },
+    {
+      "bytes": 841,
+      "path": "attempts/reject_simulation_overflow.stderr.txt",
+      "sha256": "83bea8b219884e8837d25578d17630d302ef84a16f6f39d93e636a08fe2b0d13"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_simulation_overflow.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1184,
+      "path": "attempts/reject_survival_underflow.json",
+      "sha256": "7511f42b7c277e4a4f05f4c7f2ac6a7e30b9a1de68e01aac4d599bad8cf565a5"
+    },
+    {
+      "bytes": 986,
+      "path": "attempts/reject_survival_underflow.stderr.txt",
+      "sha256": "b85d42635d7fb548fcc820f08af311e1da62684472e6af1d8a1226f8f6422f2e"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/reject_survival_underflow.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 955,
+      "path": "attempts/replay_reflection_oracle.json",
+      "sha256": "2b1fb4d50ae5d389b1bd9799c43d0fd30b62fd13c7353a6bdce6cac228427582"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/replay_reflection_oracle.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 278,
+      "path": "attempts/replay_reflection_oracle.stdout.txt",
+      "sha256": "f43e426a487660eda8662cc722f98b79a3ef53235c98878794ce355c3504bab6"
+    },
+    {
+      "bytes": 465,
+      "path": "attempts/scoped_ruff.json",
+      "sha256": "7921917068e3b73e74357c18067d9a92e724e6ac6a69307662f8bb8bf04cb62d"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/scoped_ruff.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 19,
+      "path": "attempts/scoped_ruff.stdout.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "bytes": 956,
+      "path": "attempts/selected_source_window.json",
+      "sha256": "4a95fac7c2d81efdef867862553714c0d7193a1d4f1c08e96ed8fb0754f3b022"
+    },
+    {
+      "bytes": 0,
+      "path": "attempts/selected_source_window.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 270,
+      "path": "attempts/selected_source_window.stdout.txt",
+      "sha256": "f4f26f2c59532aea557f68743ce5f5cfcfaabdc84f6cad2e1d7262097a36c126"
+    },
+    {
+      "bytes": 977,
+      "path": "below_floor_failure.json",
+      "sha256": "a0954ff2b048d575a6294d0ba5fe3c9dacc7954cfea8582bd2834aef60151ebe"
+    },
+    {
+      "bytes": 989,
+      "path": "crossed_price.json",
+      "sha256": "15ce76facbac95ec2f88e5b1535669f092e2591de82269bb3b554b65454319df"
+    },
+    {
+      "bytes": 6262,
+      "path": "doubled_paths.json",
+      "sha256": "48b785582cbb8f1ffee3e6954f9bae1f80b4fdc255570e065c174853583aee0f"
+    },
+    {
+      "bytes": 955,
+      "path": "duplicate_id.json",
+      "sha256": "27c2590174c7effbafeca8679b84ddd08078942b3aebbfe4931df5a523577c2e"
+    },
+    {
+      "bytes": 1484,
+      "path": "failure_contract.json",
+      "sha256": "92ec37052f6a65aafc3970d8e42de9405cccedff6ca5640cd941930617e9b110"
+    },
+    {
+      "bytes": 214,
+      "path": "fixtures/age.zip",
+      "sha256": "38202f44b284de99320da66563d14f515702a969a343f0aa8602da7465c8c689"
+    },
+    {
+      "bytes": 957,
+      "path": "fixtures/age_queries.json",
+      "sha256": "1ada0d2017114b0acb16dd14565fb67fb8b11ab309a14d10670f0714f2c0bf14"
+    },
+    {
+      "bytes": 244,
+      "path": "fixtures/at_decision.zip",
+      "sha256": "f536f2f461cc92637842d846f04933319ff5bf9ae740a8c81656b8cf75adc1a0"
+    },
+    {
+      "bytes": 279,
+      "path": "fixtures/at_decision_queries.json",
+      "sha256": "b23896d46fbdfc4066c18cd16ffc22992b7853fc102108e7f48d068b95df9b2b"
+    },
+    {
+      "bytes": 237,
+      "path": "fixtures/at_floor_origin.zip",
+      "sha256": "afa474facb697a6c7d682fd9cd1f4b9a7baa972ddd1a17fb74d8a706c9a4b660"
+    },
+    {
+      "bytes": 283,
+      "path": "fixtures/at_floor_queries.json",
+      "sha256": "b2aac142ab95df56095c907ba5010bb678af717f5073ce444e91735dced644f8"
+    },
+    {
+      "bytes": 230,
+      "path": "fixtures/below_floor.zip",
+      "sha256": "f825cdf420c2600f5ceb7b7835964613ba0384f22aaf068d44abe665feff834e"
+    },
+    {
+      "bytes": 279,
+      "path": "fixtures/below_floor_queries.json",
+      "sha256": "23ed9f13969dfb9833c8293f0b9c2b40b30752858c4d0ccf21bd96860c16d2cd"
+    },
+    {
+      "bytes": 252,
+      "path": "fixtures/both_stops_one_block.zip",
+      "sha256": "779f9aaf9257333fcde80c0df51fc546bd53a36b381a681e51378ea114b04be6"
+    },
+    {
+      "bytes": 227,
+      "path": "fixtures/crossed_price.zip",
+      "sha256": "5533280aa7fecc4cd22cbfc7795ca3628557cc645e17630a0c754b6506a2299a"
+    },
+    {
+      "bytes": 455,
+      "path": "fixtures/crossed_price_manifest.json",
+      "sha256": "ef71c90758542b1f61d131b76ceb62596b26b5be31ccee491d89cfd4881479fa"
+    },
+    {
+      "bytes": 277,
+      "path": "fixtures/delayed_entry_fixed_exit.zip",
+      "sha256": "2b8500d88b87b4f71bde8fc08f154f3c14b327687506efa5db51d49bc4407ed0"
+    },
+    {
+      "bytes": 221,
+      "path": "fixtures/duplicate_id.zip",
+      "sha256": "6d81bbb25e85cb24ab502a9faac375f7dcf7c0b4409adbd8cdbf788dab343a6b"
+    },
+    {
+      "bytes": 454,
+      "path": "fixtures/duplicate_id_manifest.json",
+      "sha256": "ebf726036c645dfd5ea9d2399ffecdcf6a8277b3bde6aa6b1faf15a4b2103581"
+    },
+    {
+      "bytes": 241,
+      "path": "fixtures/fractional_origin.zip",
+      "sha256": "d33b9e44365f50c543811727cd668a7c620cc9141f4d541d6277ff434725fcdb"
+    },
+    {
+      "bytes": 285,
+      "path": "fixtures/fractional_queries.json",
+      "sha256": "22856de442df0aaa404e0333dc8511393424bd50e6865b163a71ed513976ac42"
+    },
+    {
+      "bytes": 244,
+      "path": "fixtures/future_changed.zip",
+      "sha256": "a9c025a9a913f055c748eccebcf6504628f33fa712fb5167753fbaa5ebc37cdc"
+    },
+    {
+      "bytes": 1001,
+      "path": "fixtures/future_queries.json",
+      "sha256": "5202dbb6d8d8d36826938737cd066a36b1630add41f89cc55590f4cad73a60f2"
+    },
+    {
+      "bytes": 210,
+      "path": "fixtures/giant.zip",
+      "sha256": "423926d840ea0d62a3feb81f5b338f5cc21afcc6a3d46459c64b9ce6c7ba763f"
+    },
+    {
+      "bytes": 446,
+      "path": "fixtures/giant_manifest.json",
+      "sha256": "d07573390be0075046bdef885866e740aa10d5eb636bf30d63c346778b95ffab"
+    },
+    {
+      "bytes": 2615,
+      "path": "fixtures/inspection_manifest.json",
+      "sha256": "f3a6b69cac61092189c632108eea84dd997e396d02370f6022597d10dd5af0a0"
+    },
+    {
+      "bytes": 453,
+      "path": "fixtures/invalid_boundary_manifest.json",
+      "sha256": "423de25e2c8b1367a379edee4a188bcce5e2d5977c38a6a655595711a642645f"
+    },
+    {
+      "bytes": 453,
+      "path": "fixtures/invalid_hash_manifest.json",
+      "sha256": "94606b5867cb82fbb330142e5877d17382d7c9436258369e3acc83bfb46f98bb"
+    },
+    {
+      "bytes": 223,
+      "path": "fixtures/locked_price.zip",
+      "sha256": "8d70019d50c2141697f27ffe4fa0959a89061303c13463c9b41385275e600ce6"
+    },
+    {
+      "bytes": 454,
+      "path": "fixtures/locked_price_manifest.json",
+      "sha256": "b450825a8c46bb8d917dab600473f7cf28f27be9420fd2f3f8a010b24a571eed"
+    },
+    {
+      "bytes": 226,
+      "path": "fixtures/low_origin.zip",
+      "sha256": "b90762e0fcd02cb3be87221da986a8c4549cf74763566b73c43343bcc48e0d4c"
+    },
+    {
+      "bytes": 278,
+      "path": "fixtures/low_queries.json",
+      "sha256": "285e457e8273c04ae94ab9146290aff2ca95041816ee0aa770cbfed2319f8712"
+    },
+    {
+      "bytes": 235,
+      "path": "fixtures/negative_quantity.zip",
+      "sha256": "77f66c11d6bf2fa2be8314364b20565f88a50878a1015e852f261ae20721549b"
+    },
+    {
+      "bytes": 459,
+      "path": "fixtures/negative_quantity_manifest.json",
+      "sha256": "3066521b033815b16057bed5487717610a60aa6c3babde26c5b721436b1ca825"
+    },
+    {
+      "bytes": 232,
+      "path": "fixtures/nonfinite_price.zip",
+      "sha256": "8986f1fafce70cad0fc36752e93f757d1044b59d8b7aa2007ac80ce72e82ec39"
+    },
+    {
+      "bytes": 457,
+      "path": "fixtures/nonfinite_price_manifest.json",
+      "sha256": "542b139a857590bf3fd0e674a5da6379c711cf721a9854e875f4796a67fda9fc"
+    },
+    {
+      "bytes": 255,
+      "path": "fixtures/off_grid_above_tie.zip",
+      "sha256": "46b39ef3f70a37a3d06de8688320ddfe35209dc523d37e0352bb4a2bf14151e3"
+    },
+    {
+      "bytes": 498,
+      "path": "fixtures/partition_a.json",
+      "sha256": "8ffb3c576b4f1d702edf1286b53b478dc825488bb8988da8845e76c66df18087"
+    },
+    {
+      "bytes": 503,
+      "path": "fixtures/partition_b.json",
+      "sha256": "3de16d731617e6175cb48bae4fb44b553a32c2052698defd89557af1c252881a"
+    },
+    {
+      "bytes": 1685,
+      "path": "fixtures/probability_oracle_model.json",
+      "sha256": "416ab19aebc51619a992c92ff356711aca0056e595a3c3034b5afb93c9a27f35"
+    },
+    {
+      "bytes": 1736,
+      "path": "fixtures/queries.json",
+      "sha256": "789cc54c246ad34ab690d46429f52a7a6c16698375289ad5884a6fec88078d4f"
+    },
+    {
+      "bytes": 257,
+      "path": "fixtures/random_entry_spread.zip",
+      "sha256": "a70bcf8acdd85cb4f3fa1446787afd358bfbeb062e7e0967009ffb7358b342a9"
+    },
+    {
+      "bytes": 3500,
+      "path": "fixtures/reflection_inputs.json",
+      "sha256": "15d1e2f74d97324de862c09f2be2fa36eca3a61710bd1ea9ac8667362bb9219f"
+    },
+    {
+      "bytes": 238,
+      "path": "fixtures/regressing_timestamp.zip",
+      "sha256": "18d58faa9a94dc3910a7b404f5374060c3880c92e8dedd0bede182fc5edc6491"
+    },
+    {
+      "bytes": 462,
+      "path": "fixtures/regressing_timestamp_manifest.json",
+      "sha256": "e39b17195701b59f36188e5d49f3bb6dbe430400f62e67192b5491ac6bcb6114"
+    },
+    {
+      "bytes": 252,
+      "path": "fixtures/reversal.zip",
+      "sha256": "58a0dd5fe84893006b1ce98f80a01d8d518a24110d1c5d032ca833e1e768ab4f"
+    },
+    {
+      "bytes": 957,
+      "path": "fixtures/reversed_queries.json",
+      "sha256": "302426cce2cee5c1d9f69b842c1b32f572a2da438173d886f3beab24998ed268"
+    },
+    {
+      "bytes": 268,
+      "path": "fixtures/selected_window.zip",
+      "sha256": "fe82c7d33d95edb68bacb8d08d4b5c3c4c7f248a2183cb0b3ff263093d989b59"
+    },
+    {
+      "bytes": 493,
+      "path": "fixtures/selected_window_manifest.json",
+      "sha256": "f59e45ced9b4a5ba1aa4e7cbdd060b6801f83fbad552526cf432a692139dc84f"
+    },
+    {
+      "bytes": 213,
+      "path": "fixtures/stale_prefix.zip",
+      "sha256": "2221c99ecf092c7032a06cb89f08c835f4d207555d0207c43eb37ac05364c1d9"
+    },
+    {
+      "bytes": 1680,
+      "path": "fixtures/survival_underflow_model.json",
+      "sha256": "fd5ffed2c8e2430c3157799c5613e244397929c7f64223a069fc5c5b3b80597e"
+    },
+    {
+      "bytes": 520,
+      "path": "fixtures/survival_underflow_queries.json",
+      "sha256": "10c99ec3fdcf87f2ea500f84b9c57b049565790d4e7d357bc78726c8e108f1ff"
+    },
+    {
+      "bytes": 251,
+      "path": "fixtures/ties.zip",
+      "sha256": "4249efdf5757cd2151e02324dd2bebe96f49ac8a5a30cb12e24b9a8ca0e82d08"
+    },
+    {
+      "bytes": 2809,
+      "path": "fixtures/train_0.zip",
+      "sha256": "f62cce955ba55338eb35cd019444d1574745405f2b47a62c271a55ca1d256253"
+    },
+    {
+      "bytes": 2823,
+      "path": "fixtures/train_1.zip",
+      "sha256": "279eaba4b722d0a0a2b51928049b7a8e7bbe3e1db496036ac36f2b7bf1b77e4b"
+    },
+    {
+      "bytes": 2815,
+      "path": "fixtures/train_2.zip",
+      "sha256": "b8a81322aacd9a5a847f04054a2ae7ab7c5f7496e622f70f46edb5fe04c35075"
+    },
+    {
+      "bytes": 2815,
+      "path": "fixtures/train_3.zip",
+      "sha256": "4e5f56d5e7667ad660a780f8e73d2af80fc3cad7731ace283d1d53f342797fd3"
+    },
+    {
+      "bytes": 1521,
+      "path": "fixtures/train_manifest.json",
+      "sha256": "c219d1daca46d471ca38accba8d135e8001251689b257c054157e044ca28f009"
+    },
+    {
+      "bytes": 1694,
+      "path": "fixtures/wrong_mark_state_model.json",
+      "sha256": "be385f947f71282000fef00e3f16d68102c5d94bb95d81eef9f5e0de6239fb5f"
+    },
+    {
+      "bytes": 232,
+      "path": "fixtures/zero_depth.zip",
+      "sha256": "7e921d78c7dbe109c738ce1b8c308fd833c2fca5a2f625a958a1f3cd1297708e"
+    },
+    {
+      "bytes": 3715,
+      "path": "fractional_reflected.json",
+      "sha256": "96002d3421cf6c2707591275432b38a1244a1278c8cf8d877b81ed92269b1d55"
+    },
+    {
+      "bytes": 6311,
+      "path": "future.json",
+      "sha256": "1c3954ab6d14b87f5137ed196d53334bff25df7f37a395c8a4631b4adef01afb"
+    },
+    {
+      "bytes": 6265,
+      "path": "independent_seed.json",
+      "sha256": "7a0689fdaebc663d1e757beb8b34948cf93406e04f4bb44595508fd862c2c9a3"
+    },
+    {
+      "bytes": 12560,
+      "path": "inspected.json",
+      "sha256": "f2731ea46e6f447b4c5d12e8a95eb4a17595010fdd26e4787a7705cb5284dcc8"
+    },
+    {
+      "bytes": 968,
+      "path": "invalid_boundary.json",
+      "sha256": "ff226b0f956f814c4aaf61c4642190fd32f3af2acf786715ee8aca4265d90eaa"
+    },
+    {
+      "bytes": 944,
+      "path": "invalid_hash.json",
+      "sha256": "ed18dfd4817a838d226ecb8a0fb58ce2b8ffb993dcfadfcc5f0d8e03ef114bca"
+    },
+    {
+      "bytes": 990,
+      "path": "locked_price.json",
+      "sha256": "9d1555dfc445286f29f0827575f1288b0a84e93821c8add999e231510eddd272"
+    },
+    {
+      "bytes": 3701,
+      "path": "low_reflected.json",
+      "sha256": "f7c9aef2014ac4f17d9badd79ed7fd3b6ba69eeba2ddde8b68d231a691663c88"
+    },
+    {
+      "bytes": 664051,
+      "path": "model.json",
+      "sha256": "41bc54e1e4f8d5f15de36140891cd71a8179a463f4fdf1d608dd3c5c9bdcbe43"
+    },
+    {
+      "bytes": 949,
+      "path": "negative_quantity.json",
+      "sha256": "a9d0119b21bdc1515dbe711f44a8561960105be06ba85815273b786f8ad31292"
+    },
+    {
+      "bytes": 941,
+      "path": "nonfinite_price.json",
+      "sha256": "391ccbc3b98ed09913b9383cbd898d60031dcb4bdf26702ce6d89be9eb015445"
+    },
+    {
+      "bytes": 1807,
+      "path": "oracle_ledger.csv",
+      "sha256": "6065b7039d098285b4a5ababe7be2545e4b7df8e2d2580bed4435cc2deeeb833"
+    },
+    {
+      "bytes": 3558,
+      "path": "oracle_ledger.json",
+      "sha256": "8e42afabc7785a5fa54d7a8ced627f643d899c15242b0532dddc817ad4883863"
+    },
+    {
+      "bytes": 5288,
+      "path": "oracle_predictions.json",
+      "sha256": "e87ba053ededc5c22c087e19a61def70c7752f6a1777f89451339f01ccdb3cdf"
+    },
+    {
+      "bytes": 977,
+      "path": "overflow_failure.json",
+      "sha256": "36dd2526031af8cb11070f87441c815d623a53079037a899be918a1c7a4822c9"
+    },
+    {
+      "bytes": 4545,
+      "path": "partition_a.json",
+      "sha256": "db927247823c343f111dac66b8640c2485e7aba3e32d8deb2580692efbcde605"
+    },
+    {
+      "bytes": 4558,
+      "path": "partition_b.json",
+      "sha256": "4b69e301c25f4b78a6eb66c31491de5dfcbdcbf3b65e04ea1ce353f1d933d29a"
+    },
+    {
+      "bytes": 182,
+      "path": "probability_oracle.json",
+      "sha256": "e69d2f5a316fba2ddde19d87d042df16276d293a8b17e7dee9f8fca02b669665"
+    },
+    {
+      "bytes": 6235,
+      "path": "reflection_actual.json",
+      "sha256": "2758b3fa3f1efdf957f0002f362d1b9e94bb1d9f802165efa4efcdfbbdaea813"
+    },
+    {
+      "bytes": 4926,
+      "path": "reflection_oracle.json",
+      "sha256": "bffdfbeb31ae3bbf9be00aecd7ab9396d060a7552ad74a392f48a27953165c71"
+    },
+    {
+      "bytes": 952,
+      "path": "regressing_timestamp.json",
+      "sha256": "db49c41ef01a83b0f2334953b0018823f5b174ce7f3fc8c33ae9e30b4fa6a44f"
+    },
+    {
+      "bytes": 8955,
+      "path": "regular.json",
+      "sha256": "b0e0874c0413003cd160731fc31056f56665342b323c915411cd60e0265a8523"
+    },
+    {
+      "bytes": 6267,
+      "path": "reversed.json",
+      "sha256": "95e0b0c68f5b145421e5ec167be5f55cad06f37ac7bc06de3205b7b4eb6c0ec1"
+    },
+    {
+      "bytes": 1737,
+      "path": "selected_window.json",
+      "sha256": "0194bc1a82c81cb8b9effc8d4a8ba338b3edc7e3c8db62c40ce991f9809eea46"
+    },
+    {
+      "bytes": 446,
+      "path": "simulation_convergence.json",
+      "sha256": "ae8e0e6570d71d6291b2dd0ed6da71ade4f852740d1c02b20808aa27373f1e8c"
+    },
+    {
+      "bytes": 45501,
+      "path": "source/boundary_quote_renewal.py",
+      "sha256": "9e18062ea8be79b7aa15ef664786ef753869a45b42edecaa20b9e08ae696ad7e"
+    },
+    {
+      "bytes": 11753,
+      "path": "source/boundary_quote_renewal_design_20261011.md",
+      "sha256": "c3e9c9df18bb6e12c7d8f70a001519252787afa707d4f4ca3b48a4017d73d4ff"
+    },
+    {
+      "bytes": 34678,
+      "path": "source/run_quote_renewal_e2e.py",
+      "sha256": "dfdb523727f35666fc0bd996b1cadd7e0f7e10722c90b09454703d4f5f70223d"
+    },
+    {
+      "bytes": 1122,
+      "path": "survival_underflow_failure.json",
+      "sha256": "3d6f600303b92c5500c0341f569049ec9bb5937c3b60fdb1d1a9d4a32381defb"
+    },
+    {
+      "bytes": 983,
+      "path": "wrong_mark_state_failure.json",
+      "sha256": "a136108abfcc189677056200afe5d80ea2b72f8923b6393aa314409d2c8998a1"
+    }
+  ],
+  "implementation_existed_before_preparation": true,
+  "maximum_probability_variation": 0.04627974891985842,
+  "passed_steps": [
+    "source_zip_and_independent_oracles_prepared",
+    "replay_reflection_oracle",
+    "independent_reflection_ledger_exact",
+    "selected_source_window",
+    "inclusive_start_exclusive_end_exact",
+    "inspect_exact_endpoints",
+    "independent_endpoint_ledger_exact",
+    "reject_duplicate_id",
+    "reject_regressing_timestamp",
+    "reject_crossed_price",
+    "reject_locked_price",
+    "reject_nonfinite_price",
+    "reject_negative_quantity",
+    "reject_invalid_boundary",
+    "reject_invalid_hash",
+    "fit_joint_em_and_cache",
+    "objective_censor_and_backoff_receipts",
+    "predict_regular",
+    "predict_age",
+    "predict_age_repeat",
+    "predict_future",
+    "predict_partition_a",
+    "predict_partition_b",
+    "predict_reversed",
+    "predict_exact_decision_excluded",
+    "prediction_quote_at_decision_excluded",
+    "save_load_prefix_partition_order_and_age_exact",
+    "predict_reflected_low",
+    "predict_reflected_fractional",
+    "predict_reflected_at_floor",
+    "reject_initial_bid_floor",
+    "reflection_full_mass_off_grid_and_initial_floor",
+    "reject_survival_underflow",
+    "reject_joint_mark_state_mismatch",
+    "numerical_survival_limit_and_exact_mark_state_contract",
+    "reject_simulation_overflow",
+    "independent_probability_oracle",
+    "independent_geometric_neutral_probability",
+    "independent_seed",
+    "doubled_paths",
+    "finite_simulation_variation_reported",
+    "reject_overwrite",
+    "rejected_overwrite_preserves_model_hash",
+    "scoped_ruff"
+  ],
+  "platform": "macOS-27.2-arm64-arm-64bit",
+  "python": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/bin/python",
+  "stage": "full",
+  "started_at_utc": "20261010T234923912741Z",
+  "status": "passed",
+  "synthetic_only": true,
+  "wall_seconds": 2.4529931670113
+}
