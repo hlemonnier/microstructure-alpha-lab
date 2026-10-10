@@ -1,0 +1,60 @@
+{
+  "accounting_note": "The unchanged assessor reports 48 completed procedures. Its resource list does not sum repeated or interrupted execution costs. Repeated fits add no independent observations.",
+  "artifacts": [
+    {
+      "bytes": 10127,
+      "path": "docs/research/boundary_midpoint_continuation_report_20261011.md",
+      "sha256": "dac883bf7114bcdd1d93b4186f5a4b3eb3c43f3b0ac78af268ac76e67f04b178"
+    },
+    {
+      "bytes": 157499,
+      "path": "docs/research/boundary_midpoint_continuation_evidence_20261011.json",
+      "sha256": "93f9a326c2d6a314aa09e24ebe4c6502959816172259ed9689dbdbfb1c632aeb"
+    },
+    {
+      "bytes": 615293,
+      "path": "docs/research/boundary_midpoint_continuation_compatibility_20261011.json",
+      "sha256": "b15c056bac53b6017ca167c1dd25d2c7db55465c29b9ca5af60f44e1f5868df3"
+    },
+    {
+      "bytes": 6932,
+      "path": "docs/research/boundary_midpoint_continuation_20261011.json",
+      "sha256": "0b7d077afbefbea553b6dbcb45db9da19929df56cdc7af8ef68b3ca16abb06b0"
+    }
+  ],
+  "best_new_comparison": {
+    "balanced_accuracy_gain_pp": -0.02780199273971958,
+    "candidate": "observations_fx100_raw_side_hgb_old_neural",
+    "development_expansion_gate_passes": false,
+    "gain_pp_by_asset": {
+      "BTCUSDT": 0.09818027377469878,
+      "ETHUSDT": -0.15378425925413794
+    },
+    "gain_pp_by_date": {
+      "2023-06-03": -0.17976890127424094,
+      "2023-06-07": 0.1973982359506743,
+      "2023-06-11": -0.10103531289559209
+    },
+    "log_loss_ratio": 1.0008101385271904,
+    "reference": "combined_instant_hgb_old_neural"
+  },
+  "completed_fit_executions_across_attempts": 56,
+  "completed_fit_executions_by_attempt": {
+    "october_continuation_fresh": 37,
+    "october_restart": 11,
+    "september": 8
+  },
+  "continuation_copied_fits": 11,
+  "continuation_fresh_fits": 37,
+  "date": "2026-10-11",
+  "development_expansion_candidates": [],
+  "distinct_registered_fits": 48,
+  "historical_interrupted_fit_executions": 2,
+  "independent_confirmation_rounds_consumed": 0,
+  "reporting_panels": 576,
+  "retained_panels_exact": 96,
+  "source_inputs_verified": 2158,
+  "source_revision": "5b05940c101cf23eb8ec1038edf0896f60248e7b",
+  "status": "completed_no_advancement",
+  "substantial_gain_confirmed": false
+}
