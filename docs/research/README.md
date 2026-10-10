@@ -1,6 +1,6 @@
 # Research findings and status
 
-**Status: paused at the user's request on October 11, 2026.** The [current checkpoint](boundary_research_pause_20261011.md) records the stopped experiment and the unfinished verification draft. The current repository provides research tooling and historical development evidence. A substantial independent improvement and executable alpha have not been established.
+**Status: resumed from the checkpoint at the user's request on October 11, 2026.** The [explicit continuation](boundary_midpoint_continuation_20261011.md) reuses eleven completed workers and executes the remaining 37 fixed procedures. The current repository provides research tooling and historical development evidence. A substantial independent improvement and executable alpha have not been established.
 
 ## Read the findings
 
@@ -14,7 +14,8 @@
 | [Conversion-price diagnostic](boundary_conversion_microstructure_report_20260909.md) | Training-only evidence of bid–ask bounce; the midpoint transform is a representation hypothesis |
 | [Midpoint experiment pause](boundary_research_pause_20260909.md) | Eight of 48 fits completed, one interrupted, 39 unstarted; no assessment or predictive result |
 | [Explicit midpoint restart](boundary_midpoint_conversion_restart_20261011.md) | Fresh attempt of the unchanged 48-fit family, from an exact historical source snapshot; no new accuracy result yet |
-| [Current research pause](boundary_research_pause_20261011.md) | Restart stopped after 11 completed fits, one interrupted, 36 unstarted; no scores assessed; research resumes only on a new user instruction |
+| [October checkpoint](boundary_research_pause_20261011.md) | Restart stopped after 11 completed fits, one interrupted, 36 unstarted; no scores assessed |
+| [Explicit continuation](boundary_midpoint_continuation_20261011.md) | User resumed; eleven successful workers copied into a new attempt, 37 remaining fits registered; no new result yet |
 
 Results from three-date and twenty-date cohorts estimate different quantities and should not be ranked directly. Improvements over a weaker component do not establish improvement over the strongest complete control. Predictive accuracy also requires separate economic evaluation.
 
@@ -32,4 +33,4 @@ The historical `boundary_*.json` protocols and evidence records stay at their or
 
 The full multi-month confirmatory study, immutable final empirical holdout, sufficient genuine L2 neural coverage and calibration against observed trading fills remain pending. Synthetic fixtures verify software behavior only.
 
-The October 11 reactivation and [registered restart](boundary_midpoint_conversion_restart_20261011.md) were followed by an explicit user-requested pause. Both interrupted attempts remain preserved, and independent confirmation data remain unopened for market analysis. The eight repeated procedures still require exact array comparison after completion; their repetition adds no independent observations. Historical proposed next steps do not authorize resumption.
+The October 11 restart was paused and subsequently resumed by explicit user instruction. Both interrupted attempts remain preserved, and independent confirmation data remain unopened for market analysis. The eight repeated procedures still require exact array comparison after completion; their repetition adds no independent observations. The continuation uses the unchanged model, target, date and advancement contracts.

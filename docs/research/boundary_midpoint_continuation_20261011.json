@@ -1,0 +1,158 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/scripts/continue_boundary_midpoint_screen.py",
+    "--registration",
+    "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/docs/research/boundary_midpoint_continuation_20261011.json",
+    "--phase",
+    "train"
+  ],
+  "assessment_gate": "All48fits; unchanged assessor checks576panels,96retained,40attribution pairs and original controls/gates.",
+  "checkout_commit": "9ae6acbb7e0ed6ac0aea33ad13548a5a7404d449",
+  "checkpoint_attempt": "results/boundary_midpoint_conversion_restart_20261011",
+  "checkpoint_pause_evidence": "docs/research/boundary_research_pause_evidence_20261011.json",
+  "checkpoint_pause_evidence_sha256": "3a1c8593431ef96dfff264da098cadffdd43c71baac5765179908f2772413caa",
+  "compatibility_gate_before_score_inspection": "All eight repeated workers must reproduce both assets' saved natural probabilities and training priors exactly; original173files must remain hash- and length-identical.",
+  "completed_fit_executions_before_continuation": 19,
+  "confirmation_dates_opened": false,
+  "continuation_driver": "scripts/continue_boundary_midpoint_screen.py",
+  "continuation_driver_sha256": "113bc01da4689746f462e0c197dd75c9dd9da879a66954236f1ee1418204cae6",
+  "distinct_registered_date_model_procedures": 48,
+  "environment": {
+    "DYLD_LIBRARY_PATH": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-replay-20261011/source/.venv/lib/python3.12/site-packages/sklearn/.dylibs",
+    "MKL_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src:scripts:.venv/lib/python3.12/site-packages:data/research/boundary_tabicl_20260908/runtime"
+  },
+  "execution_root_at_registration": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/artifacts/midpoint-replay-20261011/source",
+  "execution_root_relative_to_checkout": "artifacts/midpoint-replay-20261011/source",
+  "extra_runtime_versions": {
+    "joblib": "1.6.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "failure_contract": "docs/research/boundary_midpoint_continuation_20261011.md",
+  "failure_contract_sha256": "2f79676151a8c87008a69eee4ce08e08aa8197d107b567257c58015c393bd8f0",
+  "finalization_requires_separate_phase": true,
+  "fresh_fits": 37,
+  "historical_revision": "5b05940c101cf23eb8ec1038edf0896f60248e7b",
+  "historical_tree": "28fa8c5feac63f5c8ed3e665523fa35d1454a9e8",
+  "input_hashes_verified": 2158,
+  "known_current_checkout_pin_drift": [
+    "pyproject.toml",
+    "scripts/run_reduced_e2e.py",
+    "scripts/verify_reduced_e2e_artifacts.py"
+  ],
+  "new_unit_tests": 0,
+  "original_attempt": "results/boundary_midpoint_conversion_screen_20260909",
+  "output_relative_to_execution_root": "results/boundary_midpoint_conversion_continuation_20261011",
+  "pause_evidence": "docs/research/boundary_research_pause_evidence_20260909.json",
+  "pause_evidence_sha256": "acb0bd515e721043a7c80d4d60aa86bcd512f5e3039e6a58612dc00fab01630c",
+  "preflight": "artifacts/midpoint-continuation-20261011/preflight.json",
+  "preflight_sha256": "e3109395a01b4559f4b2ad75fd5a81e2c9d5f2239cb45737dbdc54dbbed4a067",
+  "preserved_artifact_bytes": 2321441829,
+  "preserved_artifacts_verified": 173,
+  "preserved_attempt_evidence": [
+    {
+      "path": "docs/research/boundary_research_pause_evidence_20260909.json",
+      "sha256": "acb0bd515e721043a7c80d4d60aa86bcd512f5e3039e6a58612dc00fab01630c"
+    },
+    {
+      "path": "docs/research/boundary_research_pause_evidence_20261011.json",
+      "sha256": "3a1c8593431ef96dfff264da098cadffdd43c71baac5765179908f2772413caa"
+    }
+  ],
+  "prior_completed_fits": 8,
+  "prior_interrupted_fits": 1,
+  "prior_unstarted_fits": 39,
+  "protocol": "docs/research/boundary_midpoint_conversion_screen_20260909.json",
+  "protocol_sha256": "4bd811dbc1a62c445723aab77078bc3963b06a202970934c371ff3994f99446f",
+  "reason": "Explicit user resumption from the preserved checkpoint; copy 11 complete procedures and run 37 remaining procedures without changing the frozen family.",
+  "registered_fits": 48,
+  "registered_utc": "2026-10-10T23:12:51.027776+00:00",
+  "require_positive_sampled_rss_each_worker": true,
+  "research_priority": "predictive_accuracy_first",
+  "reused_fits": 11,
+  "reused_workers": [
+    {
+      "date": "2023-06-03",
+      "model": "combined_fx100_midpoint_side_hgb"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "combined_fx100_raw_side_hgb"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "combined_fx100_raw_side_neural"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "observations_btc100_midpoint_side_hgb"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "observations_btc100_midpoint_side_neural"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "observations_btc100_raw_side_hgb"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "observations_btc100_raw_side_neural"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "observations_fx100_midpoint_side_hgb"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "observations_fx100_midpoint_side_neural"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "observations_fx100_raw_side_hgb"
+    },
+    {
+      "date": "2023-06-03",
+      "model": "observations_fx100_raw_side_neural"
+    }
+  ],
+  "rss_monitor_preflight": {
+    "process_rss_bytes": 22069248,
+    "psutil_path": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/data/research/boundary_tabicl_20260908/runtime/psutil/__init__.py",
+    "status": "passed_before_fit"
+  },
+  "runtime": {
+    "dependencies": {
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "psutil": "7.1.0",
+      "pyarrow": "17.0.0",
+      "scikit-learn": "1.5.2",
+      "torch": "2.8.0"
+    },
+    "python": "3.12.14"
+  },
+  "snapshot_pin_drift": [],
+  "source_archive": "artifacts/midpoint-replay-20261011/source.tar",
+  "source_archive_sha256": "65d28b9b2666c5f5674098fcdd09d6bee79e9ee0de7f2b17c4f38f96c5db6cae",
+  "status": "registered_before_continuation_fits",
+  "study": "boundary_midpoint_conversion_continuation_20261011",
+  "substantial_gain_confirmed": false,
+  "threadpools": [
+    {
+      "filepath": "/Users/lemonnierhugo/Desktop/Coding Project/Pandora Research/Research/Crypto Microstructure Research/.venv/lib/python3.12/site-packages/sklearn/.dylibs/libomp.dylib",
+      "internal_api": "openmp",
+      "num_threads": 2,
+      "prefix": "libomp",
+      "sha256": "7fe04d06d824817d39e4c99ec44e837fd6b5f0f75f2cc3e77a384c298f3f1709",
+      "user_api": "openmp",
+      "version": null
+    }
+  ],
+  "total_completed_fit_executions_if_success": 56,
+  "total_interrupted_fit_executions_before_restart": 2
+}
