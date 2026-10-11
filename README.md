@@ -58,7 +58,7 @@ Software verification and empirical validation have separate requirements:
 | Historical studies | Exploratory comparisons; cohorts, controls and limitations are stated in each report |
 | Independent confirmation | The substantial-gain requirement has not been met |
 | Executable alpha | Unestablished; full confirmatory economics and observed-fill validation remain pending |
-| Midpoint conversion study | Interrupted before assessment; partial fits have no reported predictive result |
+| Midpoint conversion study | All 48 fits completed; no candidate passed the predictive expansion gate |
 
 Historical protocols and evidence inventories remain at their original paths to preserve their hashes. Older implementation counts and artifacts are dated records, not the current verification result. `make verify-evidence-gates` is an empirical audit and may fail when required studies are missing; a green CI run does not close those gates.
 
