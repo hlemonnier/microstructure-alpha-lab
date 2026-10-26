@@ -14,18 +14,24 @@ The current two-component renewal mixture draws a new duration/mark component af
 
 Let z_n be the observed state at block n and r_n a two-valued latent component governing the next transition. For a complete observed gap and joint mark (g_n,m_n), define
 
-    e_n(r) = p[z_n,r] * (1-p[z_n,r])^(g_n-1) * F[z_n,r](m_n).
+```text
+e_n(r) = p[z_n,r] * (1-p[z_n,r])^(g_n-1) * F[z_n,r](m_n).
+```
 
 The mark supplies z_(n+1). After the transition, draw r_(n+1) from a shared two-by-two matrix A[r_n,:]. An initial row distribution pi starts each independent source interval. For K complete transitions followed by right censoring at E after block t_K, the likelihood is
 
-    pi * [diag(e_0) A] * ... * [diag(e_(K-1)) A] * c,
-    c_r = (1-p[z_K,r])^(E-t_K-1).
+```text
+pi * [diag(e_0) A] * ... * [diag(e_(K-1)) A] * c,
+c_r = (1-p[z_K,r])^(E-t_K-1).
+```
 
 The final multiplication by A introduces the component for the censored next interval; it is not an extra observed event. K=0 reduces to pi*c. No transition joins source windows.
 
 The causal filter at an observed block propagates as
 
-    alpha_(n+1) = normalize((alpha_n * e_n) A).
+```text
+alpha_(n+1) = normalize((alpha_n * e_n) A).
+```
 
 At a decision of age a>=1 after the last strictly earlier block, the current component posterior is proportional to alpha_n(r)*(1-p[z_n,r])^(a-1). Draw the initial residual as Geom(p[z_n,r])-1 and integrate future marked transitions using A. Retain the same first/last quote selection, exact target and explicit reflected-price law. Forecast paths can still be cached by initial observed state/component; past history changes their mixing weights.
 
